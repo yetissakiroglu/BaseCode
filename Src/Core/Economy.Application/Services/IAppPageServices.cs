@@ -6,6 +6,9 @@ namespace Economy.Application.Services
     public interface IAppPageServices : IService<AppPage,int>
     {
 
+
+
+
         //Task<ServiceResult<AppPageDto>> AppPageIsHomePageAsync();
         //Task<ServiceResult<AppPageDto>> AppPageAsync(string url);
 
