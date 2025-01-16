@@ -1,0 +1,6 @@
+@Economy.AuthServer.API_HostAddress = http://localhost:5029
+
+GET {{Economy.AuthServer.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
