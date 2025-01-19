@@ -1,11 +1,9 @@
 ﻿using Economy.Application.Dtos.WebSettingDtos;
-using Economy.Application.Services.BaseServices;
-using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Persistence.Services;
 
 namespace Economy.Application.Services
 {
-    public interface IAppLanguageServices : IService<AppLanguage,int>
+    public interface IAppLanguageServices 
     {
         Task<ServiceResult<AppLanguageDto>> AppLanguageAsync(string languageCode);
         Task<ServiceResult<AppLanguageDto>> AppLanguageDefaultAsync();

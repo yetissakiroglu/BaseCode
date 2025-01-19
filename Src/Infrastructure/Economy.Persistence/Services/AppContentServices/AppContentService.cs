@@ -1,25 +1,16 @@
 ﻿using Economy.Application.ApiDtos;
-using Economy.Application.Dtos.PageDtos;
-using Economy.Application.Repositories;
 using Economy.Application.Repositories.AppContentRepositories;
 using Economy.Application.Services.AppContentServices;
 using Economy.Application.UnitOfWorks;
-using Economy.Domain.Entites.EntityPages;
 using Economy.Domain.Enums;
-using Economy.Infrastructure.DateFormats;
-using Economy.Persistence.Contexts;
 using Economy.Persistence.Repositories;
-using Economy.Persistence.Services.BaseServices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System;
 using System.Net;
 
 namespace Economy.Persistence.Services.AppContentServices
 {
     public class AppContentService(IAppContentRepository repository, IUnitOfWork unitOfWork)
-        : Service<AppContent, int>(repository, unitOfWork), IAppContentService
+        :  IAppContentService
     {
         private readonly IAppContentRepository _repository = repository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -29,7 +20,7 @@ namespace Economy.Persistence.Services.AppContentServices
             var appContents = await _repository.Table
                 .ApplyIsDeletedFalseFilter(true)
                 .Where(ac => ac.ContentType == ContentType.News && ac.IsHeadline && ac.PublicationStatus == PublicationStatus.Published && ac.ApprovalStatus == ApprovalStatus.Approved)
-                .OrderByDescending(ac => ac.CreatedAtUtc)
+                .OrderByDescending(ac => ac.Id)
                 .Take(countRow)
                    .Include(h => h.AppCategory)
                     .ThenInclude(c => c.ParentCategory)
@@ -50,7 +41,7 @@ namespace Economy.Persistence.Services.AppContentServices
             var appContents = await _repository.Table
                 .ApplyIsDeletedFalseFilter(true)
                 .Where(ac => ac.ContentType == ContentType.News && ac.IsFeatured && ac.PublicationStatus == PublicationStatus.Published && ac.ApprovalStatus == ApprovalStatus.Approved)
-                .OrderByDescending(ac => ac.CreatedAtUtc)
+                .OrderByDescending(ac => ac.Id)
                 .Take(countRow)
                    .Include(h => h.AppCategory)
                     .ThenInclude(c => c.ParentCategory)
@@ -71,7 +62,7 @@ namespace Economy.Persistence.Services.AppContentServices
             var appContents = await _repository.Table
                 .ApplyIsDeletedFalseFilter(true)
                 .Where(ac => ac.ContentType == ContentType.News && ac.IsBreakingNews && ac.PublicationStatus == PublicationStatus.Published && ac.ApprovalStatus == ApprovalStatus.Approved)
-                .OrderByDescending(ac => ac.CreatedAtUtc)
+                .OrderByDescending(ac => ac.Id)
                 .Take(countRow)
                    .Include(h => h.AppCategory)
                     .ThenInclude(c => c.ParentCategory)

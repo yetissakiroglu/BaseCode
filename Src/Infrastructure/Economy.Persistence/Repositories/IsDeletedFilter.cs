@@ -6,23 +6,16 @@ namespace Economy.Persistence.Repositories
     {
         public static IQueryable<T> ApplyIsDeletedFalseFilter<T>(this IQueryable<T> query, bool isApplyFilter = true) where T : class, ISoftDelete
 		{
-            if (isApplyFilter)
-            {
-                return query.Where(x => x.IsDeleted == false);
-            }
-
-            return query;
+            // Filtre uygulanacaksa, sorguya 'IsDeleted' filtresi eklenir
+            return isApplyFilter ? query.Where(x => !x.IsDeleted) : query;
         }
 
         public static IQueryable<T> ApplyIsDeletedFilter<T>(this IQueryable<T> query, bool isApplyFilter = true) where T : class, ISoftDelete
         {
-            if (isApplyFilter)
-            {
-                return query.Where(x => x.IsDeleted == true);
-            }
-
-            return query;
+            // Filtre uygulanacaksa, sorguya 'IsDeleted' filtresi eklenir
+            return isApplyFilter ? query.Where(x => x.IsDeleted) : query;
         }
+     
 
     }
 }

@@ -1,9 +1,8 @@
-﻿using Economy.Application.Services.BaseServices;
-using Economy.Domain.Entites.EntityAppDeskTickets;
+﻿using Economy.Domain.Entites.EntityAppDeskTickets;
 
 namespace Economy.Application.Services
 {
-	public interface IDeskTicketThreadService : IService<DeskTicketThread,int>
+    public interface IDeskTicketThreadService
 	{
 		Task<DeskTicketThread?> GetByIdForReadAsync(string? id);
 		Task<DeskTicketThread?> GetByIdForEditAsync(string? id);

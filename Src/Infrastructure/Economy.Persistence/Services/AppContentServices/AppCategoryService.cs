@@ -1,32 +1,18 @@
 ﻿using Economy.Application.ApiDtos;
-using Economy.Application.Repositories;
 using Economy.Application.Repositories.AppContentRepositories;
 using Economy.Application.Services.AppContentServices;
 using Economy.Application.UnitOfWorks;
-using Economy.Domain.Entites.EntityCategories;
-using Economy.Domain.Entites.EntityPages;
-using Economy.Domain.Enums;
-using Economy.Infrastructure.DateFormats;
-using Economy.Persistence.Contexts;
 using Economy.Persistence.Repositories;
-using Economy.Persistence.Services.BaseServices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System.Net;
-using System.Security.Policy;
 
 namespace Economy.Persistence.Services.AppContentServices
 {
-    public class AppCategoryService(IAppCategoryRepository repository, IUnitOfWork unitOfWork, IOptions<DateFormatConfiguration> dateFormatConfiguration,
-        IHttpContextAccessor httpContextAccessor, IAuditColumnTransformer auditColumnTransformer, AppDbContext appContext)
-        : Service<AppCategory, int>(repository, unitOfWork, dateFormatConfiguration, httpContextAccessor, auditColumnTransformer, appContext), IAppCategoryService
+    public class AppCategoryService(IAppCategoryRepository repository, IUnitOfWork unitOfWork): IAppCategoryService
     {
         private readonly IAppCategoryRepository _repository = repository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        protected readonly DateFormatConfiguration _dateFormatConfiguration = dateFormatConfiguration.Value;
-        protected readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-        protected readonly IAuditColumnTransformer _auditColumnTransformer = auditColumnTransformer;
+
 
         public async Task<ServiceResult<ResponseCategoryDetailApiDto>> AppCategoryDetailAsync(string url)
         {

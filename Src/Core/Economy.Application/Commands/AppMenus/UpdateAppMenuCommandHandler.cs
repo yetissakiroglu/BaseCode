@@ -16,7 +16,7 @@ namespace Economy.Application.Commands.AppMenus
         public async Task<bool> Handle(UpdateAppMenuCommand request, CancellationToken cancellationToken)
         {
             // Existing AppMenu fetched from database
-            var existingMenu = await _appMenuRepository.GetByIdAsync(request.Id);
+            var existingMenu = await _appMenuRepository.GetForEditAsync(x=>x.Id==request.Id);
 
             if (existingMenu == null)
             {

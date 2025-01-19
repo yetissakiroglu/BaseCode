@@ -6,15 +6,16 @@ namespace Economy.Application.Commands.AppMenus
 {
     public class CreateAppMenuCommandHandler : IRequestHandler<CreateAppMenuCommand, int>
     {
-        private readonly IAppMenuRepository _repository;
+        private readonly IAppMenuRepository _appMenuRepository;
 
-        public CreateAppMenuCommandHandler(IAppMenuRepository repository)
+        public CreateAppMenuCommandHandler(IAppMenuRepository appMenuRepository)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _appMenuRepository = appMenuRepository;
         }
 
-        public async Task<int> Handle(CreateAppMenuCommand request)
+        public async Task<int> Handle(CreateAppMenuCommand request, CancellationToken cancellationToken)
         {
+            // Yeni bir AppMenu oluşturuyoruz
             var appMenu = new AppMenu
             {
                 Title = request.Title,
@@ -23,7 +24,10 @@ namespace Economy.Application.Commands.AppMenus
                 ParentMenuId = request.ParentMenuId
             };
 
-            await _repository.AddAsync(appMenu);
+            // Menü veritabanına ekleniyor
+            await _appMenuRepository.AddAsync(appMenu);
+
+            // Yeni eklenen menünün ID'si döndürülüyor
             return appMenu.Id;
         }
     }

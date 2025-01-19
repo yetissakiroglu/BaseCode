@@ -1,6 +1,10 @@
 using Core.Models.Business;
+using Economy.Application.Commands.AppMenus;
+using Economy.Application.Dtos;
 using Economy.Application.Infrastructure.ConfigurationModels;
 using Economy.Application.Infrastructure.Services;
+using Economy.Application.Interfaces;
+using Economy.Application.Queries.AppMenus;
 using Economy.Application.Repositories;
 using Economy.Application.Repositories.AppContentRepositories;
 using Economy.Application.Repositories.AppMenuRepositories;
@@ -10,10 +14,8 @@ using Economy.Application.Repositories.UserServiceRepositories;
 using Economy.Application.Repositories.UserServiceRepositoriesa;
 using Economy.Application.Services;
 using Economy.Application.Services.AppContentServices;
-using Economy.Application.Services.AppMenuServices;
 using Economy.Application.Services.AppSectionServices;
 using Economy.Application.Services.AppUserServices;
-using Economy.Application.Services.BaseServices;
 using Economy.Application.Services.FileServices;
 using Economy.Application.UnitOfWorks;
 using Economy.Board.Infrastructure.ConfigurationModels;
@@ -29,7 +31,6 @@ using Economy.Infrastructure.Services;
 using Economy.Infrastructure.Services.FileHelperServices;
 using Economy.Infrastructure.TimeZones;
 using Economy.Persistence.Contexts;
-using Economy.Persistence.Repositories;
 using Economy.Persistence.Repositories.AppBase.EntityFramework;
 using Economy.Persistence.Repositories.AppContentRepositories;
 using Economy.Persistence.Repositories.AppMenuRepositories;
@@ -39,11 +40,10 @@ using Economy.Persistence.Repositories.UserServiceRepositories;
 using Economy.Persistence.Services;
 using Economy.Persistence.Services.AppContentServices;
 using Economy.Persistence.Services.AppFileServices;
-using Economy.Persistence.Services.AppMenuServices;
 using Economy.Persistence.Services.AppSectionServices;
 using Economy.Persistence.Services.AppUserServices;
-using Economy.Persistence.Services.BaseServices;
 using Economy.Persistence.UnitOfWorks;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -61,12 +61,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<ILanguageProvider, LanguageProvider>();
 builder.Services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
-builder.Services.AddScoped<IAuditColumnTransformer, AuditColumnTransformer>();
 builder.Services.AddScoped<IFileImageHelperService, FileImageHelperService>();
 
 builder.Services.AddScoped(typeof(IEntityRepository<,>), typeof(EfEntityRepositoryBase<,>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped(typeof(IService<,>), typeof(Service<,>));
 
 builder.Services.AddScoped<IAppSettingRepository, AppSettingRepository>();
 builder.Services.AddScoped<IAppSettingServices, AppSettingServices>();
@@ -124,6 +122,11 @@ builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 
 builder.Services.AddScoped<IAppSettingServices, AppSettingServices>();
+builder.Services.AddScoped<IRequestHandler<CreateAppMenuCommand, int>, CreateAppMenuCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<UpdateAppMenuCommand, bool>, UpdateAppMenuCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<DeleteAppMenuCommand, bool>, DeleteAppMenuCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<GetAppMenuQuery, AppMenuDto>, GetAppMenuQueryHandler>();
+builder.Services.AddScoped<IRequestHandler<GetAllAppMenusQuery, List<AppMenuDto>>, GetAllAppMenusQueryHandler>();
 
 // Add services to the container.
 builder.Services.Configure<TokenOption>(builder.Configuration.GetSection("TokenOption"));
@@ -210,6 +213,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// Add MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

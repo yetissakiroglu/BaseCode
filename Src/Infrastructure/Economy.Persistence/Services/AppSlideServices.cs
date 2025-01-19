@@ -1,14 +1,4 @@
-﻿using Economy.Application.Dtos.SlideDtos;
-using Economy.Application.Repositories;
-using Economy.Application.Services;
-using Economy.Application.UnitOfWorks;
-using Economy.Domain.Entites.EntitySlides;
-using Economy.Infrastructure.Providers;
-using Economy.Persistence.Services.BaseServices;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
-
-namespace Economy.Persistence.Services
+﻿namespace Economy.Persistence.Services
 {
     //public class AppSlideServices(IEntityRepository<AppSlide, int> readRepository, IUnitOfWork unitOfWork, ILanguageProvider languageProvider) : Service<AppSlide, int>(readRepository, unitOfWork), IAppSlideServices
     //{

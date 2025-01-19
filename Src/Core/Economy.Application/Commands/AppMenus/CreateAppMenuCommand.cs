@@ -1,10 +1,6 @@
-﻿namespace Economy.Application.Commands.AppMenus
+﻿using MediatR;
+
+namespace Economy.Application.Commands.AppMenus
 {
-    public class CreateAppMenuCommand
-    {
-        public string Title { get; set; }
-        public string Slug { get; set; }
-        public bool IsExternal { get; set; }
-        public int? ParentMenuId { get; set; }
-    }
+    public record CreateAppMenuCommand(string Title,string Slug,bool IsExternal,int? ParentMenuId) : IRequest<int>;
 }

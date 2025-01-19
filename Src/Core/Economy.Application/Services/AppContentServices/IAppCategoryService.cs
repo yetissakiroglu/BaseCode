@@ -1,11 +1,9 @@
 ﻿using Economy.Application.ApiDtos;
-using Economy.Application.Services.BaseServices;
-using Economy.Domain.Entites.EntityCategories;
 using Economy.Persistence.Services;
 
 namespace Economy.Application.Services.AppContentServices
 {
-    public interface IAppCategoryService : IService<AppCategory, int>
+    public interface IAppCategoryService
     {
 
         //Task<ServiceResult<AppCategoryDto>> AppCategoryAsync(string languageCode, int CategoryId);

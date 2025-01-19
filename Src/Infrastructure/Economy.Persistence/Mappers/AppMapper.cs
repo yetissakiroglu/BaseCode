@@ -1,8 +1,4 @@
 ﻿using AutoMapper;
-using Economy.Application.Dtos.MenuDtos;
-using Economy.Application.Dtos.PageDtos;
-using Economy.Domain.Entites.EntityMenuItems;
-using Economy.Domain.Entites.EntityPages;
 
 namespace Economy.Persistence.Mappers
 {

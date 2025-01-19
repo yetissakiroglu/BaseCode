@@ -1,21 +1,14 @@
 ﻿using Economy.Application.ApiDtos;
-using Economy.Application.Repositories;
 using Economy.Application.Repositories.AppSectionRepositories;
 using Economy.Application.Services.AppSectionServices;
 using Economy.Application.UnitOfWorks;
-using Economy.Domain.Entites.EntityAppPages;
-using Economy.Infrastructure.DateFormats;
-using Economy.Persistence.Contexts;
-using Economy.Persistence.Services.BaseServices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System.Net;
 
 namespace Economy.Persistence.Services.AppSectionServices
 {
     public class AppPageService(IAppPageRepository repository, IUnitOfWork unitOfWork)
-        : Service<AppPage, int>(repository, unitOfWork), IAppPageService
+        :  IAppPageService
     {
         public async Task<ServiceResult<ResponsePageDetailApiDto>> AppPageDetailAsync(string url)
         {

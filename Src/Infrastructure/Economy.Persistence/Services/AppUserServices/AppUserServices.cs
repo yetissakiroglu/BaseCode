@@ -1,6 +1,5 @@
 ﻿using Core.Models.Business;
 using Core.Models.Dto;
-using Economy.Application.Repositories;
 using Economy.Application.Repositories.UserServiceRepositories;
 using Economy.Application.Repositories.UserServiceRepositoriesa;
 using Economy.Application.Services.AppUserServices;
@@ -9,10 +8,7 @@ using Economy.Domain.BaseEntities;
 using Economy.Domain.Entites.EntityAppUsers;
 using Economy.Domain.Entites.Identities;
 using Economy.Infrastructure.DateFormats;
-using Economy.Persistence.Contexts;
 using Economy.Persistence.Repositories;
-using Economy.Persistence.Services.BaseServices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -20,9 +16,8 @@ using System.Net;
 
 namespace Economy.Persistence.Services.AppUserServices
 {
-	public class AppUserServices(IAppUserRepository repository, IRefreshTokenRepository refreshTokenRepository, UserManager<AppUser> userManager, IUnitOfWork unitOfWork, IOptions<DateFormatConfiguration> dateFormatConfiguration, ITokenService tokenService, IOptions<List<Client>> clients,
-	 IHttpContextAccessor httpContextAccessor, IAuditColumnTransformer auditColumnTransformer, AppDbContext appContext)
-     : Service<AppUser, string>(repository, unitOfWork, dateFormatConfiguration, httpContextAccessor, auditColumnTransformer, appContext), IAppUserServices
+    public class AppUserServices(IAppUserRepository repository, IRefreshTokenRepository refreshTokenRepository, UserManager<AppUser> userManager, IUnitOfWork unitOfWork, IOptions<DateFormatConfiguration> dateFormatConfiguration, ITokenService tokenService, IOptions<List<Client>> clients)
+     :  IAppUserServices
     {
         private readonly IAppUserRepository _repository = repository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -156,14 +151,6 @@ namespace Economy.Persistence.Services.AppUserServices
 					throw new Exception($"Unable to delete default admin: {entity.UserName}");
 				}
 
-				if (entity is IHasAuditColumn auditEntity)
-				{
-					auditEntity.UpdatedBy = "_userId";
-				}
-				if (entity is IHasAuditColumn auditedEntity)
-				{
-					auditedEntity.UpdatedAtUtc = DateTime.Now;
-				}
 
 				if (entity is ISoftDelete softDeleteEntity)
 				{

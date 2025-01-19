@@ -6,6 +6,5 @@ namespace Economy.Application.Repositories.AppMenuRepositories
     {
 
 
-
     }
 }

@@ -1,5 +1,5 @@
-﻿using Economy.Application.Services.AppContentServices;
-using Economy.Application.Services.AppMenuServices;
+﻿using Economy.Application.Interfaces;
+using Economy.Application.Services.AppContentServices;
 using Economy.Application.Services.AppSectionServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,8 +16,10 @@ namespace Economy.AuthServer.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Menus()
         {
-            var dataModel = await _appMenuService.AppMenusAsync();
-            return CreateResult(dataModel);
+            //var dataModel = await _appMenuService.AppMenusAsync();
+            //return CreateResult(dataModel);
+
+            return Ok();
         }
 
         [HttpGet]

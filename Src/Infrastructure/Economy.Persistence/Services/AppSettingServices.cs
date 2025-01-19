@@ -1,22 +1,14 @@
 ﻿using Economy.Application.Dtos.WebSettingDtos;
-using Economy.Application.Repositories;
 using Economy.Application.Repositories.AppSettingRepositories;
 using Economy.Application.Services;
 using Economy.Application.UnitOfWorks;
-using Economy.Domain.Entites.EntityAppSettings;
-using Economy.Infrastructure.DateFormats;
-using Economy.Persistence.Contexts;
-using Economy.Persistence.Services.BaseServices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System.Net;
 
 namespace Economy.Persistence.Services
 {
-    public class AppSettingServices(IAppSettingRepository repository, IUnitOfWork unitOfWork, IOptions<DateFormatConfiguration> dateFormatConfiguration,
-           IHttpContextAccessor httpContextAccessor, IAuditColumnTransformer auditColumnTransformer, AppDbContext appContext)
-           : Service<AppSetting, int>(repository, unitOfWork, dateFormatConfiguration, httpContextAccessor, auditColumnTransformer, appContext), IAppSettingServices
+    public class AppSettingServices(IAppSettingRepository repository, IUnitOfWork unitOfWork)
+           : IAppSettingServices
     {
         private readonly IAppSettingRepository _repository = repository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;

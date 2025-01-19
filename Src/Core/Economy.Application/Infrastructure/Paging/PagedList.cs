@@ -6,7 +6,7 @@
         {
             PageSize = pageSize;
             PageNumber = pageNumber;
-            TotalItemCount = source.Count();
+            TotalItemCount = source.Count;
 
             if (pageSize > 0)
             {

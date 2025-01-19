@@ -9,97 +9,105 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
 {
     public class EfEntityRepositoryBase<T, TId>(AppDbContext _context) : IEntityRepository<T, TId> where T : class, ISoftDelete, IHasId<TId>, new()
     {
-
-
         public DbSet<T> Table => _context.Set<T>();
-
-        /* --- Yeni Repository --- */
-
-        public async Task<IQueryable<T>> GetAllIncludingDeletedAsync()
-        {
-            return await Task.FromResult(Table.AsNoTracking().AsQueryable());
-        }
-
-        public async Task<IQueryable<T>> GetAllOnlyDeletedAsync()
-        {
-            return await Task.FromResult(Table.AsNoTracking().Where(x => x.IsDeleted == true).AsQueryable());
-        }
-
-        public async Task<IQueryable<T>> GetAllOnlyNonDeletedAsync()
-        {
-            return await Task.FromResult(Table.AsNoTracking()
-                                   .ApplyIsDeletedFalseFilter(isApplyFilter: true)
-                                   .AsQueryable());
-
-        }
-
-        public async Task<IQueryable<T>> WhereIncludingDeletedAsync(Expression<Func<T, bool>> expression)
-        {
-            return await Task.FromResult(Table.AsNoTracking()
-                .ApplyIsDeletedFalseFilter(isApplyFilter: false)
-                .Where(expression).AsQueryable());
-        }
-
-        public async Task<IQueryable<T>> WhereOnlyDeletedAsync(Expression<Func<T, bool>> expression)
-        {
-            return await Task.FromResult(Table.AsNoTracking()
-                                          .Where(x => x.IsDeleted == true)
-                                          .Where(expression)
-                                          .AsQueryable());
-        }
-
-        public async Task<IQueryable<T>> WhereOnlyNonDeletedAsync(Expression<Func<T, bool>> expression)
-        {
-            return await Task.FromResult(Table.AsNoTracking()
-                                   .ApplyIsDeletedFalseFilter(isApplyFilter: true)
-                                  .Where(expression)
-                                  .AsQueryable());
-        }
-
-        public async Task<IPagedList<T>> GetAllIncludingDeletedPagedAsync(int page = 0, int pageSize = 0)
-        {
-            var query = await Table
-                   .ApplyIsDeletedFalseFilter(isApplyFilter: false)
-                   .AsNoTracking()
-                   .ToListAsync();
-
-            return new PagedList<T>(query, page, pageSize);
-
-        }
-
-        public async Task<IPagedList<T>> GetAllOnlyDeletedPagedAsync(int page = 0, int pageSize = 0)
-        {
-            var query = await Table
-                .Where(x => x.IsDeleted == true)
-               .AsNoTracking()
-               .ToListAsync();
-
-            return new PagedList<T>(query, page, pageSize);
-        }
-
-        public async Task<IPagedList<T>> GetAllOnlyNonDeletedPagedAsync(int page = 0, int pageSize = 0)
-        {
-            var query = await Table
-                       .ApplyIsDeletedFalseFilter(isApplyFilter: true)
-                       .AsNoTracking()
-                       .ToListAsync();
-
-            return new PagedList<T>(query, page, pageSize);
-        }
-
         public async Task AddAsync(T entity)
         {
             await Table.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
-
-        public async Task UpdateAsync(T entity)
-        {
-            await Task.FromResult(Table.Update(entity));
-        }
-
         public async Task DeleteAsync(T entity)
         {
-            await Task.FromResult(Table.Remove(entity));
+            entity.IsDeleted = true;
+            _context.Update(entity);
+            await _context.SaveChangesAsync();
         }
+        public async Task UpdateAsync(T entity)
+        {
+            Table.Update(entity);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>>? filters = null)
+        {
+            var query = filters == null ? Table : Table.Where(filters);
+            return await query.AnyAsync();
+        }
+        public async Task<bool> AnyNonDeletedAsync(Expression<Func<T, bool>>? filters = null)
+        {
+            var query = Table.ApplyIsDeletedFalseFilter();
+            query = filters == null ? query : query.Where(filters);
+            return await query.AnyAsync();
+        }
+        public async Task<T> GetForEditAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        {
+            var query = filters == null ? Table : Table.Where(filters);
+
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            return await query.FirstOrDefaultAsync();
+        }
+        public async Task<T> GetForEditNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        {
+            var query = Table.ApplyIsDeletedFalseFilter();
+
+            query = filters == null ? query : query.Where(filters);
+
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            return await query.FirstOrDefaultAsync();
+        }
+        public async Task<T> GetForReadAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        {
+            var query = filters == null ? Table : Table.AsTracking().Where(filters);
+
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            return await query.FirstOrDefaultAsync();
+        }
+        public async Task<T> GetForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        {
+            var query = Table.AsTracking().ApplyIsDeletedFalseFilter();
+
+            query = filters == null ? query : query.Where(filters);
+
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            return await query.FirstOrDefaultAsync();
+        }
+        public async Task<IPagedList<T>> PagedListForReadAsync(Expression<Func<T, bool>>? filters = null, int page = 0, int pageSize = 0)
+        {
+            var query = filters == null ? await Table.ToListAsync() : await Table.AsTracking().Where(filters).ToListAsync();
+            return new PagedList<T>(query, page, pageSize);
+        }
+        public async Task<IPagedList<T>> PagedListForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, int page = 0, int pageSize = 0)
+        {
+            var query = filters == null ? await Table.ApplyIsDeletedFalseFilter().ToListAsync() : await Table.ApplyIsDeletedFalseFilter().AsTracking().Where(filters).ToListAsync();
+            return new PagedList<T>(query, page, pageSize);
+        }
+        public async Task<IQueryable<T>> WhereForEditAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        {
+            var query = filters == null ? Table : Table.Where(filters);
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+            return await Task.FromResult(query.AsQueryable());
+        }
+        public async Task<IQueryable<T>> WhereForEditNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        {
+            var query = filters == null ? Table : Table.ApplyIsDeletedFalseFilter().Where(filters);
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+            return await Task.FromResult(query.AsQueryable());
+        }
+        public async Task<IQueryable<T>> WhereForReadAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        {
+            var query = filters == null ? Table : Table.Where(filters);
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+            return await Task.FromResult(query.AsQueryable());
+        }
+        public async Task<IQueryable<T>> WhereForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        {
+            var query = filters == null ? Table : Table.ApplyIsDeletedFalseFilter().Where(filters);
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+            return await Task.FromResult(query.AsQueryable());
+        }
+
+       
     }
 }

@@ -3,6 +3,6 @@ using MediatR;
 
 namespace Economy.Application.Queries.AppMenus
 {
-    public record GetAppMenuQuery(int Id) : IRequest<AppMenuDto>;
+    public record GetAllAppMenusQuery() : IRequest<List<AppMenuDto>>;
 
 }

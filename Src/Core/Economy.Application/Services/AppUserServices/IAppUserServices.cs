@@ -1,11 +1,9 @@
 ﻿using Core.Models.Dto;
-using Economy.Application.Services.BaseServices;
-using Economy.Domain.Entites.Identities;
 using Economy.Persistence.Services;
 
 namespace Economy.Application.Services.AppUserServices
 {
-	public interface IAppUserServices : IService<AppUser, string>
+    public interface IAppUserServices 
     {
 
 		Task<ServiceResult<Token>> CreateTokenAsync(SignIn signIn);

@@ -1,9 +1,8 @@
-﻿using Economy.Application.Services.BaseServices;
-using Economy.Domain.Entites.EntityAppPages;
+﻿using Economy.Domain.Entites.EntityAppPages;
 
 namespace Economy.Application.Services
 {
-    public interface IAppPageServices : IService<AppPage,int>
+    public interface IAppPageServices 
     {
 
 
