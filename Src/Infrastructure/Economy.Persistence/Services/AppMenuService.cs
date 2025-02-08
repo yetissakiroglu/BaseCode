@@ -6,8 +6,8 @@ using Economy.Application.Interfaces;
 using Economy.Application.Queries.AppMenus;
 using Economy.Application.Repositories.AppMenuRepositories;
 using Economy.Application.UnitOfWorks;
+using Economy.Core.Tools;
 using Economy.Domain.Entites.EntityMenuItems;
-using System.Linq.Expressions;
 using System.Net;
 
 namespace Economy.Persistence.Services
@@ -31,28 +31,53 @@ namespace Economy.Persistence.Services
 
         public async Task<ServiceResult<AppMenuDto>> GetForReadAsync(GetAppMenuQuery query)
         {
-            var appMenu = await _appMenuRepository.GetForReadAsync(x => x.Id == query.Id);
+            var appMenu = await _appMenuRepository.GetForReadAsync(x => x.Id == query.Id, x => x.SubMenus, x => x.ParentMenu);
+
             if (appMenu == null)
             {
-                throw new AppMenuNotFoundException(query.Id);
+                throw new NotFoundException($"ID {query.Id} için AppMenu bulunamadı.");
             }
+
             var appMenuDto = _mapper.Map<AppMenuDto>(appMenu);
             return ServiceResult<AppMenuDto>.Success(appMenuDto, HttpStatusCode.OK);
         }
 
-        public Task<ServiceResult<AppMenuDto>> InsertAsync(CreateAppMenuCommand command)
+
+        public async Task<ServiceResult<int>> InsertAsync(CreateAppMenuCommand command)
         {
-            throw new NotImplementedException();
+            var insert = new AppMenu()
+            {
+                Title = command.Title,
+                Slug = command.Slug,
+                IsExternal = command.IsExternal,
+                ParentMenuId = command.ParentMenuId,
+            };
+            await _appMenuRepository.AddAsync(insert);
+            await _unitOfWork.CommitAsync();
+            return ServiceResult<int>.Success(insert.Id,HttpStatusCode.OK);
         }
 
-        public Task<ServiceResult<AppMenuDto>> UpdateAsync(UpdateAppMenuCommand command)
+        public async Task<ServiceResult<AppMenuDto>> UpdateAsync(UpdateAppMenuCommand command)
         {
-            throw new NotImplementedException();
+            var appMenu = await _appMenuRepository.GetForEditAsync(x => x.Id == command.Id) ?? throw new AppMenuNotFoundException(command.Id);
+
+            appMenu.Title = command.Title;
+            appMenu.Slug = command.Slug;
+            appMenu.IsExternal = command.IsExternal;
+            appMenu.ParentMenuId = command.ParentMenuId;
+
+            await _appMenuRepository.UpdateAsync(appMenu);
+            await _unitOfWork.CommitAsync();
+
+            var dto = _mapper.Map<AppMenuDto>(appMenu);
+            return ServiceResult<AppMenuDto>.Success(dto,HttpStatusCode.OK);
         }
 
-        public Task<List<AppMenuDto>> WhereForReadAsync(GetAllAppMenusQuery query)
+        public async Task<ServiceResult<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenusQuery query)
         {
-            throw new NotImplementedException();
+            var appMenu = await _appMenuRepository.WhereForEditAsync(null, x => x.SubMenus, x => x.ParentMenu);
+            var appMenuDto = _mapper.Map<List<AppMenuDto>>(appMenu);
+            return ServiceResult<List<AppMenuDto>>.Success(appMenuDto, HttpStatusCode.OK);
         }
 
 

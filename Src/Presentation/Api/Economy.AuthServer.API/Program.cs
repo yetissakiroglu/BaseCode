@@ -49,6 +49,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Economy.Application.Extensions;
+using FluentValidation.AspNetCore;
+using Economy.Application.Validation;
+using Microsoft.AspNetCore.Mvc;
+using Economy.AuthServer.API.ExceptionMiddleware;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -123,7 +129,7 @@ builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 
 builder.Services.AddScoped<IAppSettingServices, AppSettingServices>();
 builder.Services.AddScoped<IRequestHandler<CreateAppMenuCommand, int>, CreateAppMenuCommandHandler>();
-builder.Services.AddScoped<IRequestHandler<UpdateAppMenuCommand, bool>, UpdateAppMenuCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<UpdateAppMenuCommand, ServiceResult<AppMenuDto>>, UpdateAppMenuCommandHandler>();
 builder.Services.AddScoped<IRequestHandler<DeleteAppMenuCommand, bool>, DeleteAppMenuCommandHandler>();
 builder.Services.AddScoped<IRequestHandler<GetAppMenuQuery, AppMenuDto>, GetAppMenuQueryHandler>();
 builder.Services.AddScoped<IRequestHandler<GetAllAppMenusQuery, List<AppMenuDto>>, GetAllAppMenusQueryHandler>();
@@ -209,7 +215,12 @@ builder.Services
 	.AddDefaultTokenProviders();
 // Add services to the container.
 
+// FluentValidation'ý servis olarak ekleyin
+builder.Services.AddValidatorsFromAssemblyContaining<CreateAppMenuCommandValidator>();
+
+
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -218,7 +229,13 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Progr
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+//builder.Services.UseValidationResponse();
+
 var app = builder.Build();
+// Middleware’i pipeline’a ekleyin
+app.UseMiddleware<ValidationMiddleware>();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -226,6 +243,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+//app.UseMiddleware<ValidationExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

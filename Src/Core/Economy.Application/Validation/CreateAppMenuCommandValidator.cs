@@ -8,12 +8,13 @@ namespace Economy.Application.Validation
         public CreateAppMenuCommandValidator()
         {
             RuleFor(x => x.Title)
-                .NotEmpty().WithMessage("Title is required.")
-                .MaximumLength(255).WithMessage("Title must not exceed 255 characters.");
+            .NotEmpty().WithMessage("Title is required.")
+            .MaximumLength(255).WithMessage("Title must not exceed 255 characters.");
 
             RuleFor(x => x.Slug)
                 .NotEmpty().WithMessage("Slug is required.")
                 .MaximumLength(255).WithMessage("Slug must not exceed 255 characters.");
+
         }
     }
 }

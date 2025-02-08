@@ -1,13 +1,6 @@
 ﻿using Economy.Application.Dtos;
-using Economy.Application.Exceptions;
 using Economy.Application.Interfaces;
-using Economy.Application.Repositories.AppMenuRepositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Economy.Application.Queries.AppMenus
 {
@@ -23,12 +16,7 @@ namespace Economy.Application.Queries.AppMenus
         public async Task<AppMenuDto> Handle(GetAppMenuQuery request, CancellationToken cancellationToken)
         {
             var filters = new GetAppMenuQuery(request.Id);
-
             var appMenu = await _appMenuService.GetForReadAsync(filters);
-            if (appMenu == null)
-            {
-                return null; // Controller'da null kontrolü yapılır.
-            }
 
             return new AppMenuDto
             {

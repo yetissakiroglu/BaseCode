@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Economy.Application.Extensions
 {
-	public static class IdentityExtension
+    public static class IdentityExtension
 	{
 		public static void AddAuthentication(this IServiceCollection services, TokenOption tokenOption)
 		{

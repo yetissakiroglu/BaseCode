@@ -1,10 +1,5 @@
 ﻿using Economy.Application.Commands.AppMenus;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Economy.Application.Validation
 {
@@ -12,16 +7,22 @@ namespace Economy.Application.Validation
     {
         public UpdateAppMenuCommandValidator()
         {
-            RuleFor(x => x.Id).GreaterThan(0).WithMessage("Id must be greater than 0.");
+            // Command alanı zorunlu
             RuleFor(x => x.Title)
-                .NotEmpty().WithMessage("Title is required.")
-                .MaximumLength(100).WithMessage("Title cannot exceed 100 characters.");
+                .NotEmpty().WithMessage("The 'Title' field is required in the request body.");
+
+            // Slug alanı zorunlu
             RuleFor(x => x.Slug)
-                .NotEmpty().WithMessage("Slug is required.")
-                .MaximumLength(100).WithMessage("Slug cannot exceed 100 characters.");
+                .NotEmpty().WithMessage("The 'Slug' field is required in the request body.");
+
+            // parentMenuId, geçerli bir integer olmalı
             RuleFor(x => x.ParentMenuId)
-                .GreaterThanOrEqualTo(0).When(x => x.ParentMenuId.HasValue)
-                .WithMessage("ParentMenuId must be greater than or equal to 0.");
+                .Must(BeValidInteger).WithMessage("Invalid value for 'parentMenuId'. Please ensure it is a valid integer.");
+        }
+
+        private bool BeValidInteger(int? value)
+        {
+            return value.HasValue && value.Value >= 0; // Geçerli bir tamsayı kontrolü
         }
     }
 }

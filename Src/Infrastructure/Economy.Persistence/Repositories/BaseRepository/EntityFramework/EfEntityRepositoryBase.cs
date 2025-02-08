@@ -24,7 +24,6 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
         public async Task UpdateAsync(T entity)
         {
             Table.Update(entity);
-            await _context.SaveChangesAsync();
         }
         public async Task<bool> AnyAsync(Expression<Func<T, bool>>? filters = null)
         {

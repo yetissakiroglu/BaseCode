@@ -1,38 +1,20 @@
-﻿using Economy.Application.Exceptions;
-using Economy.Application.Repositories.AppMenuRepositories;
+﻿using Economy.Application.Dtos;
+using Economy.Application.Interfaces;
+using Economy.Core.Tools;
+using Economy.Persistence.Services;
 using MediatR;
 
 namespace Economy.Application.Commands.AppMenus
 {
-    public class UpdateAppMenuCommandHandler : IRequestHandler<UpdateAppMenuCommand, bool>
+    public class UpdateAppMenuCommandHandler(IAppMenuService appMenuService) : IRequestHandler<UpdateAppMenuCommand, ServiceResult<AppMenuDto>>
     {
-        private readonly IAppMenuRepository _appMenuRepository;
+        private readonly IAppMenuService _appMenuService = appMenuService;
 
-        public UpdateAppMenuCommandHandler(IAppMenuRepository appMenuRepository)
+        public async Task<ServiceResult<AppMenuDto>> Handle(UpdateAppMenuCommand request, CancellationToken cancellationToken)
         {
-            _appMenuRepository = appMenuRepository;
-        }
+            var response = await _appMenuService.UpdateAsync(request);
 
-        public async Task<bool> Handle(UpdateAppMenuCommand request, CancellationToken cancellationToken)
-        {
-            // Existing AppMenu fetched from database
-            var existingMenu = await _appMenuRepository.GetForEditAsync(x=>x.Id==request.Id);
-
-            if (existingMenu == null)
-            {
-                throw new AppMenuNotFoundException(request.Id); // Özel istisna sınıfı kullanıldı
-            }
-
-            // Update properties
-            existingMenu.Title = request.Title;
-            existingMenu.Slug = request.Slug;
-            existingMenu.IsExternal = request.IsExternal;
-            existingMenu.ParentMenuId = request.ParentMenuId;
-
-            // Save changes
-            await _appMenuRepository.UpdateAsync(existingMenu);
-
-            return true;
+            return response;
         }
     }
 }

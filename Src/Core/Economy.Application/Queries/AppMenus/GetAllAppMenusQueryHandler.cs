@@ -17,13 +17,15 @@ namespace Economy.Application.Queries.AppMenus
         public async Task<List<AppMenuDto>> Handle(GetAllAppMenusQuery request, CancellationToken cancellationToken)
         {
             var menus = await _appMenuService.WhereForReadAsync(request);
-            return menus.Select(menu => new AppMenuDto
+            return menus.Data.Select(menu => new AppMenuDto
             {
                 Id = menu.Id,
                 Title = menu.Title,
                 Slug = menu.Slug,
                 IsExternal = menu.IsExternal,
-                ParentMenuId = menu.ParentMenuId
+                ParentMenuId = menu.ParentMenuId,
+                SubMenus = menu.SubMenus
+                
             }).ToList();
         }
     }

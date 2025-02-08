@@ -8,14 +8,14 @@ namespace Economy.Core.Tools
 	public interface IResult
 	{
 		ResultMessage Message { get; set; }
-
 		[JsonIgnore]
 		bool IsSuccess { get; set; }
 		[JsonIgnore]
 		HttpStatusCode Status { get; set; }
 		[JsonIgnore]
 		NotificationType Notification { get; }
-	}
+        ResultValidationError ValidationError { get; }
+    }
 
 	public interface IResult<out T> : IResult
 	{

@@ -39,12 +39,6 @@ namespace Economy.AuthServer.API.Controllers
         {
             var query = new GetAppMenuQuery(id);
             var menu = await _mediator.Send(query);
-
-            if (menu == null)
-            {
-                return NotFound("App menu not found.");
-            }
-
             return Ok(menu);
         }
 
@@ -65,19 +59,8 @@ namespace Economy.AuthServer.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateAppMenu([FromBody] UpdateAppMenuCommand command)
         {
-            if (command == null)
-            {
-                return BadRequest("Invalid request data.");
-            }
-
             var result = await _mediator.Send(command);
-
-            if (!result)
-            {
-                return NotFound("App menu not found.");
-            }
-
-            return Ok("App menu updated successfully.");
+            return CreateResult(result);
         }
 
         /// <summary>

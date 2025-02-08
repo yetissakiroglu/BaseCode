@@ -9,7 +9,8 @@ namespace Economy.Application.Profiles
         public MappingProfile()
         {
             // AppMenu'dan AppMenuDto'ya dönüşüm
-            CreateMap<AppMenu, AppMenuDto>().ReverseMap();
+            CreateMap<AppMenu, AppMenuDto>()
+           .ForMember(dest => dest.SubMenus, opt => opt.MapFrom(src => src.SubMenus));
         }
     }
 }

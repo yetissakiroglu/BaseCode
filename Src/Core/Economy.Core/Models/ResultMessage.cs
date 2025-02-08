@@ -16,8 +16,8 @@
 			Messages.Add(message);
 			IsShow = true;
 		}
-
-		public ResultMessage(List<string> messages, bool isShow)
+ 
+        public ResultMessage(List<string> messages, bool isShow)
 		{
 			Messages = messages ?? [];
 			IsShow = isShow;
