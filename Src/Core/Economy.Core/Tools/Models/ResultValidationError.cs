@@ -1,4 +1,4 @@
-﻿namespace Economy.Core.Models
+﻿namespace Economy.Core.Tools.Models
 {
     public class ResultValidationError
     {

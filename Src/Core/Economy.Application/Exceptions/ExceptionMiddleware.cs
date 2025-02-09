@@ -1,11 +1,10 @@
 ﻿using Economy.Application.Dtos;
-using Economy.Application.Exceptions;
 using Economy.Persistence.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
 
-namespace Economy.AuthServer.API.ExceptionMiddleware
+namespace Economy.Application.Exceptions
 {
     public class ExceptionMiddleware
     {
@@ -28,7 +27,7 @@ namespace Economy.AuthServer.API.ExceptionMiddleware
             {
                 _logger.LogWarning(ex, ex.Message);
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-               var resultModel = ServiceResult.Fail(ex.Message, HttpStatusCode.NotFound);
+                var resultModel = ServiceResult.Fail(ex.Message, HttpStatusCode.NotFound);
                 await context.Response.WriteAsJsonAsync(resultModel);
             }
             catch (Exception ex)

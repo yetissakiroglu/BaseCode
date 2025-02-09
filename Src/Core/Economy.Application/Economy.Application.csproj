@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Commands\AppPages\" />
-    <Folder Include="Services\AppPageServices\" />
   </ItemGroup>
 
 </Project>

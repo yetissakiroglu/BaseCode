@@ -1,11 +1,11 @@
 ﻿using Economy.Core.Enums;
-using Economy.Core.Models;
+using Economy.Core.Tools.Models;
 using System.Net;
 using System.Text.Json.Serialization;
 
 namespace Economy.Core.Tools
 {
-	public interface IResult
+    public interface IResult
 	{
 		ResultMessage Message { get; set; }
 		[JsonIgnore]

@@ -1,6 +1,6 @@
 ﻿using Economy.Core.Enums;
-using Economy.Core.Models;
 using Economy.Core.Tools;
+using Economy.Core.Tools.Models;
 using System.Net;
 using System.Text.Json.Serialization;
 

@@ -10,8 +10,6 @@ namespace Economy.Application.Commands.AppMenus
 
         public async Task<bool> Handle(DeleteAppMenuCommand request, CancellationToken cancellationToken)
         {
-
-
             var filters = new GetAppMenuQuery(request.Id);
 
 

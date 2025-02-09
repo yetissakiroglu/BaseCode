@@ -1,6 +1,6 @@
 ﻿using Core.Models.Business;
 using Core.Models.Dto;
-using Economy.Application.Services.AppUserServices;
+using Economy.Application.Interfaces.AppUserServices;
 using Economy.Core.Business;
 using Economy.Core.Services;
 using Economy.Domain.Entites.Identities;
@@ -12,7 +12,7 @@ using System.Security.Cryptography;
 
 namespace Economy.Infrastructure.Services
 {
-	public class TokenService : ITokenService
+    public class TokenService : ITokenService
 	{
 		private readonly TokenOption _tokenOption;
 

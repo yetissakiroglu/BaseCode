@@ -1,8 +1,8 @@
 ﻿using Core.Models.Business;
 using Core.Models.Dto;
+using Economy.Application.Interfaces.AppUserServices;
 using Economy.Application.Repositories.UserServiceRepositories;
 using Economy.Application.Repositories.UserServiceRepositoriesa;
-using Economy.Application.Services.AppUserServices;
 using Economy.Application.UnitOfWorks;
 using Economy.Domain.BaseEntities;
 using Economy.Domain.Entites.EntityAppUsers;
