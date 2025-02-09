@@ -48,7 +48,7 @@ namespace Economy.AuthServer.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var query = new GetAllAppMenusQuery();
+            var query = new GetAllAppMenuQuery();
             var menus = await _mediator.Send(query);
             return Ok(menus);
         }

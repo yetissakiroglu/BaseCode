@@ -25,4 +25,9 @@
     <ProjectReference Include="..\Economy.Domain\Economy.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\AppPages\" />
+    <Folder Include="Services\AppPageServices\" />
+  </ItemGroup>
+
 </Project>

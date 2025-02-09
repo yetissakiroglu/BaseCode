@@ -21,10 +21,12 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
             _context.Update(entity);
             await _context.SaveChangesAsync();
         }
-        public async Task UpdateAsync(T entity)
+        public Task UpdateAsync(T entity)
         {
             Table.Update(entity);
+            return Task.CompletedTask;
         }
+
         public async Task<bool> AnyAsync(Expression<Func<T, bool>>? filters = null)
         {
             var query = filters == null ? Table : Table.Where(filters);

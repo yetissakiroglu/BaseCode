@@ -6,12 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Economy.AuthServer.API.Controllers
 {
 
-    public class AppController(IAppSectionService appSectionService ,IAppPageService appPageService, IAppMenuService appMenuService, IAppContentService appContentService,IAppCategoryService appCategoryService) : BaseController
+    public class AppController(IAppSectionService appSectionService , IAppMenuService appMenuService, IAppContentService appContentService,IAppCategoryService appCategoryService) : BaseController
     {
         private readonly IAppMenuService _appMenuService = appMenuService;
         private readonly IAppContentService _appContentService = appContentService;
         private readonly IAppCategoryService _appCategoryService = appCategoryService;
-        private readonly IAppPageService _appPageService = appPageService;
         private readonly IAppSectionService _appSectionService = appSectionService;
         [HttpGet]
         public async Task<IActionResult> Menus()
@@ -66,8 +65,8 @@ namespace Economy.AuthServer.API.Controllers
         [HttpGet]
         public async Task<IActionResult> PageDetail(string url)
         {
-            var resultModel = await _appPageService.AppPageDetailAsync(url);
-            return CreateResult(resultModel);
+            //var resultModel = await _appPageService.AppPageDetailAsync(url);
+            return Ok();
         }
 
         [HttpGet]
@@ -81,8 +80,8 @@ namespace Economy.AuthServer.API.Controllers
         [HttpGet]
         public async Task<IActionResult> PageDetailDefault()
         {
-            var resultModel = await _appPageService.AppPageDetailDefaultAsync();
-            return CreateResult(resultModel);
+            //var resultModel = await _appPageService.AppPageDetailDefaultAsync();
+            return Ok();
         }
 
 

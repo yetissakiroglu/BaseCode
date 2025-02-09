@@ -1,4 +1,4 @@
-﻿using Economy.Application.Dtos;
+﻿using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Persistence.Services;
 using MediatR;
 

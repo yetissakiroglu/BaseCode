@@ -26,4 +26,8 @@
     <ProjectReference Include="..\Economy.Infrastructure\Economy.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\AppPageServices\" />
+  </ItemGroup>
+
 </Project>

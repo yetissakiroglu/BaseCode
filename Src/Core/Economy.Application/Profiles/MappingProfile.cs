@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Economy.Application.Dtos;
+using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Domain.Entites.EntityMenuItems;
 
 namespace Economy.Application.Profiles

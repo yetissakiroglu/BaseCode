@@ -1,11 +1,10 @@
 ﻿using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityCategories;
 using Economy.Domain.Extensions;
 using Economy.Domain.Models;
 
 namespace Economy.Domain.Entites.EntityAppPages
 {
-	public class AppPage : BaseEntity<int>
+    public class AppPage : BaseEntity<int>
     {
         public string Title { get; set; }
         public string? ShortDescription { get; set; }

@@ -1,6 +1,5 @@
 using Core.Models.Business;
 using Economy.Application.Commands.AppMenus;
-using Economy.Application.Dtos;
 using Economy.Application.Infrastructure.ConfigurationModels;
 using Economy.Application.Infrastructure.Services;
 using Economy.Application.Interfaces;
@@ -55,6 +54,7 @@ using Economy.Application.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Economy.AuthServer.API.ExceptionMiddleware;
 using FluentValidation;
+using Economy.Application.Dtos.AppMenuDtos;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -111,7 +111,7 @@ builder.Services.AddScoped<IAppSectionRepository, AppSectionRepository>();
 builder.Services.AddScoped<IAppSectionService, AppSectionService>();
 
 builder.Services.AddScoped<IAppPageRepository, AppPageRepository>();
-builder.Services.AddScoped<IAppPageService, AppPageService>();
+//builder.Services.AddScoped<IAppPageService, AppPageService>();
 
 
 
@@ -132,7 +132,7 @@ builder.Services.AddScoped<IRequestHandler<CreateAppMenuCommand, int>, CreateApp
 builder.Services.AddScoped<IRequestHandler<UpdateAppMenuCommand, ServiceResult<AppMenuDto>>, UpdateAppMenuCommandHandler>();
 builder.Services.AddScoped<IRequestHandler<DeleteAppMenuCommand, bool>, DeleteAppMenuCommandHandler>();
 builder.Services.AddScoped<IRequestHandler<GetAppMenuQuery, AppMenuDto>, GetAppMenuQueryHandler>();
-builder.Services.AddScoped<IRequestHandler<GetAllAppMenusQuery, List<AppMenuDto>>, GetAllAppMenusQueryHandler>();
+builder.Services.AddScoped<IRequestHandler<GetAllAppMenuQuery, List<AppMenuDto>>, GetAllAppMenuQueryHandler>();
 
 // Add services to the container.
 builder.Services.Configure<TokenOption>(builder.Configuration.GetSection("TokenOption"));

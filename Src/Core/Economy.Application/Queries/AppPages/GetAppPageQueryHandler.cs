@@ -1,14 +1,15 @@
 ﻿using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Interfaces;
+using Economy.Application.Queries.AppMenus;
 using MediatR;
 
-namespace Economy.Application.Queries.AppMenus
+namespace Economy.Application.Queries.AppPages
 {
-    public class GetAppMenuQueryHandler : IRequestHandler<GetAppMenuQuery, AppMenuDto>
+    public class GetAppPageQueryHandler : IRequestHandler<GetAppMenuQuery, AppMenuDto>
     {
         private readonly IAppMenuService _appMenuService;
 
-        public GetAppMenuQueryHandler(IAppMenuService appMenuService)
+        public GetAppPageQueryHandler(IAppMenuService appMenuService)
         {
             _appMenuService = appMenuService ?? throw new ArgumentNullException(nameof(appMenuService));
         }

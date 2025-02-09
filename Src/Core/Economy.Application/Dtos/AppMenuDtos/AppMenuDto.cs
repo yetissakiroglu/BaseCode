@@ -1,4 +1,4 @@
-﻿namespace Economy.Application.Dtos
+﻿namespace Economy.Application.Dtos.AppMenuDtos
 {
     public class AppMenuDto
     {

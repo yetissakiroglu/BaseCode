@@ -5,8 +5,8 @@ namespace Economy.Domain.Entites.EntityAppPages
 {
 	public class AppPageSection : BaseEntity<int>
     {
-        public string Name { get; set; }
-        public string Content { get; set; }
+        public required string Name { get; set; }
+        public required string Content { get; set; }
         public bool IsVisible { get; set; }
         public SectionType SectionType { get; set; }
         public int AppPageId { get; set; }
