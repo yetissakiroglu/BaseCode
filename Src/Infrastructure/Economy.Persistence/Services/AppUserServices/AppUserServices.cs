@@ -7,7 +7,6 @@ using Economy.Application.UnitOfWorks;
 using Economy.Domain.BaseEntities;
 using Economy.Domain.Entites.EntityAppUsers;
 using Economy.Domain.Entites.Identities;
-using Economy.Infrastructure.DateFormats;
 using Economy.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +15,7 @@ using System.Net;
 
 namespace Economy.Persistence.Services.AppUserServices
 {
-    public class AppUserServices(IAppUserRepository repository, IRefreshTokenRepository refreshTokenRepository, UserManager<AppUser> userManager, IUnitOfWork unitOfWork, IOptions<DateFormatConfiguration> dateFormatConfiguration, ITokenService tokenService, IOptions<List<Client>> clients)
+    public class AppUserServices(IAppUserRepository repository, IRefreshTokenRepository refreshTokenRepository, UserManager<AppUser> userManager, IUnitOfWork unitOfWork, ITokenService tokenService, IOptions<List<Client>> clients)
      :  IAppUserServices
     {
         private readonly IAppUserRepository _repository = repository;
@@ -25,14 +24,7 @@ namespace Economy.Persistence.Services.AppUserServices
         private readonly UserManager<AppUser> _userManager = userManager;
 		private readonly ITokenService _tokenService = tokenService;
 		private readonly List<Client> _clients = clients.Value;
-
-		//protected readonly DateFormatConfiguration _dateFormatConfiguration = dateFormatConfiguration.Value;
-		//protected readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-		//protected readonly IAuditColumnTransformer _auditColumnTransformer = auditColumnTransformer;
-
-
-
-
+		
 		public ServiceResult<ClientToken> CreateToken(ClientSignIn clientSignIn)
 		{
 			var client = _clients.SingleOrDefault(s => s.Id == clientSignIn.ClientId && s.Secret == clientSignIn.ClientSecret);
