@@ -11,9 +11,4 @@
     <ProjectReference Include="..\Economy.Domain\Economy.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
 </Project>
