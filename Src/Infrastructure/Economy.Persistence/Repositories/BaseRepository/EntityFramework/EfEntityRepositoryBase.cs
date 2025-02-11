@@ -1,5 +1,5 @@
-﻿using Economy.Application.Infrastructure.Paging;
-using Economy.Application.Repositories;
+﻿using Economy.Core.PagingModels;
+using Economy.Core.Repositories;
 using Economy.Domain.BaseEntities;
 using Economy.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;

@@ -1,6 +1,6 @@
-﻿namespace Economy.Application.Infrastructure.Paging
+﻿namespace Economy.Core.PagingModels
 {
-	public class PagedList<T> : List<T>, IPagedList<T>
+    public class PagedList<T> : List<T>, IPagedList<T>
     {
         public PagedList(IList<T> source, int pageNumber, int pageSize)
         {

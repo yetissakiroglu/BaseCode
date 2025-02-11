@@ -1,4 +1,5 @@
-﻿using Economy.Domain.Entites.EntityMenuItems;
+﻿using Economy.Core.Repositories;
+using Economy.Domain.Entites.EntityMenuItems;
 
 namespace Economy.Application.Repositories.AppMenuRepositories
 {

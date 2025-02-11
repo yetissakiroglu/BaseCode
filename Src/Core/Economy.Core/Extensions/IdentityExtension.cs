@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Economy.Application.Extensions
+namespace Economy.Core.Extensions
 {
     public static class IdentityExtension
 	{

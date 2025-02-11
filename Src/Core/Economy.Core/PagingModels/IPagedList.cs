@@ -1,6 +1,6 @@
-﻿namespace Economy.Application.Infrastructure.Paging
+﻿namespace Economy.Core.PagingModels
 {
-	public interface IPagedList<T> : IList<T>
+    public interface IPagedList<T> : IList<T>
     {
         int PageNumber { get; }
         int PageSize { get; }

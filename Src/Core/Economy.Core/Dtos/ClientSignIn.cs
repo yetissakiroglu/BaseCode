@@ -1,4 +1,4 @@
-namespace Core.Models.Dto
+namespace Economy.Core.Dtos
 {
     public class ClientSignIn
     {

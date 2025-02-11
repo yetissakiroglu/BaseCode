@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.Models.Dto
+namespace Economy.Core.Dtos
 {
     public class ClientToken
     {

@@ -1,4 +1,5 @@
-﻿using Economy.Domain.Entites.EntityAppUsers;
+﻿using Economy.Core.Repositories;
+using Economy.Domain.Entites.EntityAppUsers;
 
 namespace Economy.Application.Repositories.UserServiceRepositories
 {

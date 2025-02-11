@@ -1,4 +1,4 @@
-namespace Core.Models.Business
+namespace Economy.Core.Business
 {
     public class Client
     {

@@ -3,7 +3,7 @@ using Economy.Domain.Enums;
 
 namespace Economy.Domain.Entites
 {
-	public class SessionActivity : BaseEntity<string>
+    public class SessionActivity : BaseEntity<string>
     {
         public SessionActivity() { }
 

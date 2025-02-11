@@ -1,7 +1,7 @@
-﻿using Economy.Application.Infrastructure.Paging;
+﻿using Economy.Core.PagingModels;
 using System.Linq.Expressions;
 
-namespace Economy.Application.Repositories
+namespace Economy.Core.Repositories
 {
     public interface IEntityRepository<T, TId> : IRepository<T> where T : class, new()
 	{
