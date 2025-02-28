@@ -1,4 +1,6 @@
 using AppWeb.Models;
+using Economy.Application.Queries.AppMenus;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,13 +10,19 @@ namespace AppWeb.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IMediator _mediator;
+
+        public HomeController(ILogger<HomeController> logger, IMediator mediator)
         {
             _logger = logger;
+            _mediator = mediator;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var products = await _mediator.Send(new GetAllAppMenuQuery());
+
+
             return View();
         }
 
