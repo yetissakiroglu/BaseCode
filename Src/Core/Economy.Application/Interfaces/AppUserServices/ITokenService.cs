@@ -1,5 +1,5 @@
-﻿using Core.Models.Business;
-using Core.Models.Dto;
+﻿using Economy.Core.Business;
+using Economy.Core.Dtos;
 using Economy.Domain.Entites.Identities;
 
 namespace Economy.Application.Interfaces.AppUserServices

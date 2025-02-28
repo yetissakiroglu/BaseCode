@@ -1,9 +1,9 @@
-﻿using Economy.Domain.BaseEntities;
+﻿using Economy.Core.Extensions;
+using Economy.Domain.BaseEntities;
 using Economy.Domain.Entites.EntityAppContents;
 using Economy.Domain.Entites.EntityCategories;
 using Economy.Domain.Entites.Identities;
 using Economy.Domain.Enums;
-using Economy.Domain.Extensions;
 using Economy.Domain.Models;
 
 namespace Economy.Domain.Entites.EntityPages

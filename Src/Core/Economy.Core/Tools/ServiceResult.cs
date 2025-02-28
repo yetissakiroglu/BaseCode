@@ -19,10 +19,7 @@ namespace Economy.Persistence.Services
         public ResultMessage Message { get; set; }
         public ResultValidationError ValidationError { get; set; }
 
-        public ServiceResult()
-        {
-            IsSuccess = false;
-        }
+        public ServiceResult() => IsSuccess = false;
 
         // Başarısızlık durumları için statik metotlar
         public static IResult Fail(string message, HttpStatusCode code)
@@ -62,10 +59,10 @@ namespace Economy.Persistence.Services
 
     public class ServiceResult<T> : ServiceResult, IResult<T>
     {
-        public T Data { get; set; }
+        public T Data { get; set; } = default!;
 
         // Başarısızlık durumları için statik metotlar
-        public static ServiceResult<T> Fail(string message, HttpStatusCode code)
+        public static new ServiceResult<T> Fail(string message, HttpStatusCode code)
         {
             return new ServiceResult<T>
             {
@@ -85,7 +82,7 @@ namespace Economy.Persistence.Services
                 Status = HttpStatusCode.NotFound
             };
         }
-  
+
         // Başarı durumları için statik metotlar
         public static ServiceResult<T> Success(T data, HttpStatusCode code)
         {

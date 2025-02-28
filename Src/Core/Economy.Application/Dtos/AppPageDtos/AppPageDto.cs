@@ -1,6 +1,4 @@
-﻿using Economy.Domain.Entites.EntityAppPages;
-using Economy.Domain.Extensions;
-using Economy.Domain.Models;
+﻿using Economy.Domain.Models;
 
 namespace Economy.Application.Dtos.AppPageDtos
 {

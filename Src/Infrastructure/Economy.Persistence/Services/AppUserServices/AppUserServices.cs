@@ -1,9 +1,9 @@
-﻿using Core.Models.Business;
-using Core.Models.Dto;
-using Economy.Application.Interfaces.AppUserServices;
+﻿using Economy.Application.Interfaces.AppUserServices;
 using Economy.Application.Repositories.UserServiceRepositories;
 using Economy.Application.Repositories.UserServiceRepositoriesa;
-using Economy.Application.UnitOfWorks;
+using Economy.Core.Business;
+using Economy.Core.Dtos;
+using Economy.Core.UnitOfWorks;
 using Economy.Domain.BaseEntities;
 using Economy.Domain.Entites.EntityAppUsers;
 using Economy.Domain.Entites.Identities;

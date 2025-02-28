@@ -52,13 +52,13 @@ namespace Economy.Persistence.Contexts
 		public DbSet<AppPage> AppPages { get; set; }
 		public DbSet<AppPageSection> AppPageSections { get; set; }
 		public DbSet<AppSection> AppSections { get; set; }
-		//--------------------------------------------
+        //--------------------------------------------
 
-		
-
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+   
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			base.OnConfiguring(optionsBuilder);
+
 		}
 		protected override void OnModelCreating(ModelBuilder builder)
 		{

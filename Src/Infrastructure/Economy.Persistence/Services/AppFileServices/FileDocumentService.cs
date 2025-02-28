@@ -1,126 +1,121 @@
-﻿using Economy.Application.Services.FileServices;
-using Economy.Domain.Entites.EntityAppFiles;
-using Economy.Persistence.Contexts;
-using Microsoft.AspNetCore.Http;
-
-namespace Economy.Persistence.Services.AppFileServices
+﻿namespace Economy.Persistence.Services.AppFileServices
 {
-    public class FileDocumentService : IFileDocumentService
-    {
-        private readonly AppDbContext _context;
+    //public class FileDocumentService : IFileDocumentService
+    //{
+    //    private readonly AppDbContext _context;
 
-        public FileDocumentService(AppDbContext context)
-        {
-            _context = context;
-        }
+    //    public FileDocumentService(AppDbContext context)
+    //    {
+    //        _context = context;
+    //    }
 
-        public async Task<Guid> UploadDocumentAsync(IFormFile? file)
-        {
-            if (file == null || file.Length == 0)
-            {
-                throw new ArgumentException("Invalid file");
-            }
+    //    public async Task<Guid> UploadDocumentAsync(IFormFile? file)
+    //    {
+    //        if (file == null || file.Length == 0)
+    //        {
+    //            throw new ArgumentException("Invalid file");
+    //        }
 
-            if (!IsValidDocumentFile(file))
-            {
-                throw new ArgumentException("Invalid file type. Only Word, Excel, and PDF files are allowed.");
-            }
+    //        if (!IsValidDocumentFile(file))
+    //        {
+    //            throw new ArgumentException("Invalid file type. Only Word, Excel, and PDF files are allowed.");
+    //        }
 
-            if (file.Length > 10 * 1024 * 1024) // 10 MB in bytes
-            {
-                throw new ArgumentException("File size exceeds the maximum allowed size of 10 MB.");
-            }
+    //        if (file.Length > 10 * 1024 * 1024) // 10 MB in bytes
+    //        {
+    //            throw new ArgumentException("File size exceeds the maximum allowed size of 10 MB.");
+    //        }
 
-            var document = new AppFileDocument
-            {
-                Id = Guid.NewGuid(),
-                OriginalFileName = file.FileName
-            };
+    //        var document = new AppFileDocument
+    //        {
+    //            Id = Guid.NewGuid(),
+    //            OriginalFileName = file.FileName
+    //        };
 
-            using (var memoryStream = new MemoryStream())
-            {
-                await file.CopyToAsync(memoryStream);
-                document.DocumentData = memoryStream.ToArray();
-            }
+    //        using (var memoryStream = new MemoryStream())
+    //        {
+    //            await file.CopyToAsync(memoryStream);
+    //            document.DocumentData = memoryStream.ToArray();
+    //        }
 
-            _context.AppFileDocuments.Add(document);
-            await _context.SaveChangesAsync();
+    //        _context.AppFileDocuments.Add(document);
+    //        await _context.SaveChangesAsync();
 
-            return document.Id;
-        }
+    //        return document.Id;
+    //    }
 
-        public async Task<Guid> UpdateDocumentAsync(Guid? documentId, IFormFile? newFile)
-        {
-            if (documentId == null)
-            {
-                throw new ArgumentException("Invalid documentId");
-            }
+    //    public async Task<Guid> UpdateDocumentAsync(Guid? documentId, IFormFile? newFile)
+    //    {
+    //        if (documentId == null)
+    //        {
+    //            throw new ArgumentException("Invalid documentId");
+    //        }
 
-            if (newFile == null || newFile.Length == 0)
-            {
-                throw new ArgumentException("Invalid file");
-            }
+    //        if (newFile == null || newFile.Length == 0)
+    //        {
+    //            throw new ArgumentException("Invalid file");
+    //        }
 
-            if (!IsValidDocumentFile(newFile))
-            {
-                throw new ArgumentException("Invalid file type. Only Word, Excel, and PDF files are allowed.");
-            }
+    //        if (!IsValidDocumentFile(newFile))
+    //        {
+    //            throw new ArgumentException("Invalid file type. Only Word, Excel, and PDF files are allowed.");
+    //        }
 
-            if (newFile.Length > 10 * 1024 * 1024) // 10 MB in bytes
-            {
-                throw new ArgumentException("File size exceeds the maximum allowed size of 10 MB.");
-            }
+    //        if (newFile.Length > 10 * 1024 * 1024) // 10 MB in bytes
+    //        {
+    //            throw new ArgumentException("File size exceeds the maximum allowed size of 10 MB.");
+    //        }
 
-            var existingDocument = await _context.AppFileDocuments.FindAsync(documentId);
+    //        var existingDocument = await _context.AppFileDocuments.FindAsync(documentId);
 
-            if (existingDocument == null)
-            {
-                throw new ArgumentException($"Document with ID {documentId} not found");
-            }
+    //        if (existingDocument == null)
+    //        {
+    //            throw new ArgumentException($"Document with ID {documentId} not found");
+    //        }
 
-            // Update the existing document with the new data
-            existingDocument.OriginalFileName = newFile.FileName;
+    //        // Update the existing document with the new data
+    //        existingDocument.OriginalFileName = newFile.FileName;
 
-            using (var memoryStream = new MemoryStream())
-            {
-                await newFile.CopyToAsync(memoryStream);
-                existingDocument.DocumentData = memoryStream.ToArray();
-            }
+    //        using (var memoryStream = new MemoryStream())
+    //        {
+    //            await newFile.CopyToAsync(memoryStream);
+    //            existingDocument.DocumentData = memoryStream.ToArray();
+    //        }
 
-            await _context.SaveChangesAsync();
+    //        await _context.SaveChangesAsync();
 
-            return existingDocument.Id;
-        }
+    //        return existingDocument.Id;
+    //    }
 
-        public async Task<AppFileDocument> GetDocumentAsync(Guid? id)
-        {
-            if (id == null)
-            {
-                id = new Guid(Guid.Empty.ToString());
-            }
+    //    public async Task<AppFileDocument> GetDocumentAsync(Guid? id)
+    //    {
+    //        if (id == null)
+    //        {
+    //            id = new Guid(Guid.Empty.ToString());
+    //        }
 
-            var fileDocument = await _context.AppFileDocuments.FindAsync(id);
+    //        var fileDocument = await _context.AppFileDocuments.FindAsync(id);
 
-            if (fileDocument == null)
-            {
-                var defaultDocumentPath = Path.Combine("wwwroot", "admin", "assets", "docs", "nodocument.txt");
+    //        if (fileDocument == null)
+    //        {
+    //            var defaultDocumentPath = Path.Combine("wwwroot", "admin", "assets", "docs", "nodocument.txt");
 
-                fileDocument = new AppFileDocument
-                {
-                    Id = Guid.Empty,
-                    OriginalFileName = "NoDocument.txt",
-                    DocumentData = File.ReadAllBytes(defaultDocumentPath)
-                };
-            }
+    //            fileDocument = new AppFileDocument
+    //            {
+    //                Id = Guid.Empty,
+    //                OriginalFileName = "NoDocument.txt",
+    //                DocumentData = File.ReadAllBytes(defaultDocumentPath)
+    //            };
+    //        }
 
-            return fileDocument;
-        }
+    //        return fileDocument;
+    //    }
 
-        private bool IsValidDocumentFile(IFormFile file)
-        {
-            var allowedDocumentTypes = new[] { "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" };
-            return allowedDocumentTypes.Contains(file.ContentType);
-        }
-    }
+    //    private bool IsValidDocumentFile(IFormFile file)
+    //    {
+    //        var allowedDocumentTypes = new[] { "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" };
+    //        return allowedDocumentTypes.Contains(file.ContentType);
+    //    }
+    //}
 
 }

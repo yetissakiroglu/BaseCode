@@ -1,7 +1,6 @@
-﻿using Core.Models.Business;
-using Core.Models.Dto;
-using Economy.Application.Interfaces.AppUserServices;
+﻿using Economy.Application.Interfaces.AppUserServices;
 using Economy.Core.Business;
+using Economy.Core.Dtos;
 using Economy.Core.Services;
 using Economy.Domain.Entites.Identities;
 using Microsoft.Extensions.Options;

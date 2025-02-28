@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using Economy.Application.Commands.AppMenus;
 using Economy.Application.Dtos.AppMenuDtos;
-using Economy.Application.Exceptions;
 using Economy.Application.Interfaces;
 using Economy.Application.Queries.AppMenus;
 using Economy.Application.Repositories.AppMenuRepositories;
-using Economy.Application.UnitOfWorks;
+using Economy.Core.UnitOfWorks;
 using Economy.Domain.Entites.EntityMenuItems;
 using System.Net;
 
@@ -34,7 +33,7 @@ namespace Economy.Persistence.Services
 
             if (appMenu == null)
             {
-                throw new NotFoundException($"ID {query.Id} için AppMenu bulunamadı.");
+
             }
 
             var appMenuDto = _mapper.Map<AppMenuDto>(appMenu);

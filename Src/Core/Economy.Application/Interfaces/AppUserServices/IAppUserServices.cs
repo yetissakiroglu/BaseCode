@@ -1,4 +1,4 @@
-﻿using Core.Models.Dto;
+﻿using Economy.Core.Dtos;
 using Economy.Persistence.Services;
 
 namespace Economy.Application.Interfaces.AppUserServices

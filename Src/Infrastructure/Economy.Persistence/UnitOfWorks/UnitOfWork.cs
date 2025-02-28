@@ -1,4 +1,4 @@
-﻿using Economy.Application.UnitOfWorks;
+﻿using Economy.Core.UnitOfWorks;
 using Economy.Persistence.Contexts;
 
 namespace Economy.Persistence.UnitOfWorks
