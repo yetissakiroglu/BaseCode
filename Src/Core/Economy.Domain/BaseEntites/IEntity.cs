@@ -1,4 +1,4 @@
-﻿namespace Economy.Domain
+﻿namespace Economy.Domain.BaseEntities
 {
     public abstract class IEntity<T>
     {

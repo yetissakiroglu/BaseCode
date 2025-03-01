@@ -1,32 +1,17 @@
 ﻿using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Interfaces;
-using Economy.Application.Repositories.AppMenuRepositories;
+using Economy.Core.Tools;
 using MediatR;
 
 namespace Economy.Application.Queries.AppMenus
 {
-    public class GetAllAppMenuQueryHandler : IRequestHandler<GetAllAppMenuQuery, List<AppMenuDto>>
+    public class GetAllAppMenuQueryHandler(IAppMenuService appMenuService) : IRequestHandler<GetAllAppMenuQuery, ResponseModel<List<AppMenuDto>>>
     {
-        private readonly IAppMenuService _appMenuService;
+        private readonly IAppMenuService _appMenuService = appMenuService;
 
-        public GetAllAppMenuQueryHandler(IAppMenuService appMenuService)
+        public async Task<ResponseModel<List<AppMenuDto>>> Handle(GetAllAppMenuQuery request, CancellationToken cancellationToken)
         {
-            _appMenuService = appMenuService;
-        }
-
-        public async Task<List<AppMenuDto>> Handle(GetAllAppMenuQuery request, CancellationToken cancellationToken)
-        {
-            var menus = await _appMenuService.WhereForReadAsync(request);
-            return menus.Data.Select(menu => new AppMenuDto
-            {
-                Id = menu.Id,
-                Title = menu.Title,
-                Slug = menu.Slug,
-                IsExternal = menu.IsExternal,
-                ParentMenuId = menu.ParentMenuId,
-                SubMenus = menu.SubMenus
-                
-            }).ToList();
+            return await _appMenuService.WhereForReadAsync(request);
         }
     }
 }

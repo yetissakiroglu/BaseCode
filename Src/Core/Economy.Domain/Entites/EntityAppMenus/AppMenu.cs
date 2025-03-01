@@ -1,6 +1,4 @@
 ﻿using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityCategories;
-using Economy.Domain.Entites.EntityPages;
 
 namespace Economy.Domain.Entites.EntityMenuItems
 {

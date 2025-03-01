@@ -4,6 +4,7 @@ using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Queries.AppMenus;
 using Economy.Application.Repositories.AppMenuRepositories;
+using Economy.Core.Tools;
 using Economy.Core.UnitOfWorks;
 using Economy.Domain.Entites.EntityMenuItems;
 using System.Net;
@@ -17,30 +18,31 @@ namespace Economy.Persistence.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public Task<ServiceResult<bool>> DeleteAsync(int id)
+        public Task<ResponseModel<bool>> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult<bool>> DeleteAsync(AppMenuDto model)
+        public Task<ResponseModel<bool>> DeleteAsync(AppMenuDto model)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ServiceResult<AppMenuDto>> GetForReadAsync(GetAppMenuQuery query)
+        public async Task<ResponseModel<AppMenuDto>> GetForReadAsync(GetAppMenuQuery query)
         {
             var appMenu = await _appMenuRepository.GetForReadAsync(x => x.Id == query.Id, x => x.SubMenus, x => x.ParentMenu);
 
+            // Eğer appMenu bulunamazsa, hata döndürüyoruz
             if (appMenu == null)
             {
-
+                return ResponseModel<AppMenuDto>.Fail("Menu bulunamadı", HttpStatusCode.NotFound);
             }
 
             var appMenuDto = _mapper.Map<AppMenuDto>(appMenu);
-            return ServiceResult<AppMenuDto>.Success(appMenuDto, HttpStatusCode.OK);
+            return ResponseModel<AppMenuDto>.Success(appMenuDto, HttpStatusCode.OK);
         }
 
-        public async Task<ServiceResult<int>> InsertAsync(CreateAppMenuCommand command)
+        public async Task<ResponseModel<int>> InsertAsync(CreateAppMenuCommand command)
         {
             var insert = new AppMenu()
             {
@@ -51,10 +53,10 @@ namespace Economy.Persistence.Services
             };
             await _appMenuRepository.AddAsync(insert);
             await _unitOfWork.CommitAsync();
-            return ServiceResult<int>.Success(insert.Id,HttpStatusCode.OK);
+            return ResponseModel<int>.Success(insert.Id,HttpStatusCode.OK);
         }
 
-        public async Task<ServiceResult<AppMenuDto>> UpdateAsync(UpdateAppMenuCommand command)
+        public async Task<ResponseModel<AppMenuDto>> UpdateAsync(UpdateAppMenuCommand command)
         {
             var appMenu = await _appMenuRepository.GetForEditAsync(x => x.Id == command.Id);
 
@@ -67,14 +69,14 @@ namespace Economy.Persistence.Services
             await _unitOfWork.CommitAsync();
 
             var dto = _mapper.Map<AppMenuDto>(appMenu);
-            return ServiceResult<AppMenuDto>.Success(dto,HttpStatusCode.OK);
+            return ResponseModel<AppMenuDto>.Success(dto,HttpStatusCode.OK);
         }
 
-        public async Task<ServiceResult<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuQuery query)
+        public async Task<ResponseModel<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuQuery query)
         {
-            var appMenu = await _appMenuRepository.WhereForEditAsync(null, x => x.SubMenus, x => x.ParentMenu);
+            var appMenu = await _appMenuRepository.WhereForEditAsync(w=>w.ParentMenuId == query.ParentMenuId, x => x.SubMenus, x => x.ParentMenu);
             var appMenuDto = _mapper.Map<List<AppMenuDto>>(appMenu);
-            return ServiceResult<List<AppMenuDto>>.Success(appMenuDto, HttpStatusCode.OK);
+            return ResponseModel<List<AppMenuDto>>.Success(appMenuDto, HttpStatusCode.OK);
         }
     }
 

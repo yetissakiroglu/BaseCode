@@ -1,0 +1,28 @@
+﻿@model List<AppMenuDto>
+
+
+<div class="main-menu">
+    <div id="header_menu">
+        <img src="img/logo_m.png" width="141" height="40" alt="" data-retina="true">
+    </div>
+    <a href="#" class="open_close" id="close_in"><i class="icon_set_1_icon-77"></i></a>
+    <ul>
+        @foreach (var menu in Model)
+        {
+            <li class="submenu">
+                <a href="javascript:void(0);" class="show-submenu">@menu.Title <i class="icon-down-open-mini"></i></a>
+                @if (menu.SubMenus.Any())
+                {
+                    <ul>
+                        @foreach (var subMenu in menu.SubMenus)
+                        {
+                            <li><a href="@subMenu.Url">@subMenu.Title</a></li>
+                        }
+                    </ul>
+                }
+            </li>
+        }
+        <li><a href="contacts.html">Contacts</a></li>
+        <li><a href="#0">Purchase this template</a></li>
+    </ul>
+</div>

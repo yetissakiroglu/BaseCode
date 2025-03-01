@@ -20,9 +20,7 @@ namespace AppWeb.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var products = await _mediator.Send(new GetAllAppMenuQuery());
-
-
+            var products = await _mediator.Send(new GetAllAppMenuQuery(null));
             return View();
         }
 

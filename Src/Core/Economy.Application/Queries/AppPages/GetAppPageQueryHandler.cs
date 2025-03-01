@@ -23,14 +23,14 @@ namespace Economy.Application.Queries.AppPages
             {
                 Id = appMenu.Data.Id,
                 Title = appMenu.Data.Title,
-                Slug = appMenu.Data.Slug,
+                Url = appMenu.Data.Url,
                 IsExternal = appMenu.Data.IsExternal,
                 ParentMenuId = appMenu.Data.ParentMenuId,
                 SubMenus = appMenu.Data.SubMenus.Select(sm => new AppMenuDto
                 {
                     Id = sm.Id,
                     Title = sm.Title,
-                    Slug = sm.Slug
+                    Url = sm.Url
                 }).ToList()
             };
         }
