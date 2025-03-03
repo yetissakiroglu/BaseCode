@@ -1,34 +1,16 @@
-﻿using Economy.Application.Repositories.AppMenuRepositories;
-using Economy.Domain.Entites.EntityMenuItems;
+﻿using Economy.Application.Interfaces;
+using Economy.Core.Tools;
 using MediatR;
 
 namespace Economy.Application.Commands.AppMenus
 {
-    public class CreateAppMenuCommandHandler : IRequestHandler<CreateAppMenuCommand, int>
+    public class CreateAppMenuCommandHandler(IAppMenuService appMenuService) : IRequestHandler<CreateAppMenuCommand, ResponseModel<int>>
     {
-        private readonly IAppMenuRepository _appMenuRepository;
-
-        public CreateAppMenuCommandHandler(IAppMenuRepository appMenuRepository)
+        private readonly IAppMenuService _appMenuService = appMenuService;
+        public async Task<ResponseModel<int>> Handle(CreateAppMenuCommand request, CancellationToken cancellationToken)
         {
-            _appMenuRepository = appMenuRepository;
-        }
-
-        public async Task<int> Handle(CreateAppMenuCommand request, CancellationToken cancellationToken)
-        {
-            // Yeni bir AppMenu oluşturuyoruz
-            var appMenu = new AppMenu
-            {
-                Title = request.Title,
-                Slug = request.Slug,
-                IsExternal = request.IsExternal,
-                ParentMenuId = request.ParentMenuId
-            };
-
             // Menü veritabanına ekleniyor
-            await _appMenuRepository.AddAsync(appMenu);
-
-            // Yeni eklenen menünün ID'si döndürülüyor
-            return appMenu.Id;
+           return await _appMenuService.InsertAsync(request);
         }
     }
 }

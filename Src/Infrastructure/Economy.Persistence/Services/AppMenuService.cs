@@ -18,19 +18,22 @@ namespace Economy.Persistence.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public Task<ResponseModel<bool>> DeleteAsync(int id)
+        public async Task<ResponseModel<bool>> DeleteAsync(DeleteAppMenuCommand command)
         {
-            throw new NotImplementedException();
+            var appMenu = await _appMenuRepository.GetForReadAsync(x => x.Id == command.MenuId);
+            // Eğer appMenu bulunamazsa, hata döndürüyoruz
+            if (appMenu == null)
+            {
+                return ResponseModel<bool>.Fail("Menu bulunamadı", HttpStatusCode.NotFound);
+            }
+            await _appMenuRepository.DeleteAsync(appMenu);
+            await _unitOfWork.CommitAsync();
+            return ResponseModel<bool>.Success(true,HttpStatusCode.OK);
         }
-
-        public Task<ResponseModel<bool>> DeleteAsync(AppMenuDto model)
+              
+        public async Task<ResponseModel<AppMenuDto>> GetForReadAsync(GetAppMenuByMenuIdQuery query)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ResponseModel<AppMenuDto>> GetForReadAsync(GetAppMenuQuery query)
-        {
-            var appMenu = await _appMenuRepository.GetForReadAsync(x => x.Id == query.Id, x => x.SubMenus, x => x.ParentMenu);
+            var appMenu = await _appMenuRepository.GetForReadAsync(x => x.Id == query.MenuId, x => x.SubMenus, x => x.ParentMenu);
 
             // Eğer appMenu bulunamazsa, hata döndürüyoruz
             if (appMenu == null)
@@ -74,13 +77,16 @@ namespace Economy.Persistence.Services
 
         public async Task<ResponseModel<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuQuery query)
         {
-            var appMenu = await _appMenuRepository.WhereForEditAsync(w=>w.ParentMenuId == query.ParentMenuId, x => x.SubMenus, x => x.ParentMenu);
+            var appMenu = await _appMenuRepository.WhereForReadAsync(null, x => x.SubMenus, x => x.ParentMenu);
+            var appMenuDto = _mapper.Map<List<AppMenuDto>>(appMenu);
+            return ResponseModel<List<AppMenuDto>>.Success(appMenuDto, HttpStatusCode.OK);
+        }
+
+        public async Task<ResponseModel<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuByParentMenuIdQuery query)
+        {
+            var appMenu = await _appMenuRepository.WhereForReadAsync(w => w.ParentMenuId == query.ParentMenuId, x => x.SubMenus, x => x.ParentMenu);
             var appMenuDto = _mapper.Map<List<AppMenuDto>>(appMenu);
             return ResponseModel<List<AppMenuDto>>.Success(appMenuDto, HttpStatusCode.OK);
         }
     }
-
-
-
-
 }

@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="Commands\AppPages\" />
+    <Folder Include="Queries\AppPages\" />
   </ItemGroup>
 
 </Project>

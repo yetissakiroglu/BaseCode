@@ -15,7 +15,7 @@ public class MenuViewComponent : ViewComponent
  
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var menus = await _mediator.Send(new GetAllAppMenuQuery(null));
+        var menus = await _mediator.Send(new GetAllAppMenuByParentMenuIdQuery(null));
         return View(menus.Data);  // View'ı döndür
     }
 

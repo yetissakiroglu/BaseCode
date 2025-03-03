@@ -4,5 +4,5 @@ using MediatR;
 
 namespace Economy.Application.Queries.AppMenus
 {
-    public record GetAllAppMenuQuery() : IRequest<ResponseModel<List<AppMenuDto>>>;
+    public record GetAppMenuByMenuIdQuery(int MenuId) : IRequest<ResponseModel<AppMenuDto>>;    
 }
