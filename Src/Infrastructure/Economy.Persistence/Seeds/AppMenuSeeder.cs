@@ -1,10 +1,5 @@
 ﻿using Economy.Domain.Entites.EntityMenuItems;
 using Economy.Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Economy.Persistence.Seeds
 {

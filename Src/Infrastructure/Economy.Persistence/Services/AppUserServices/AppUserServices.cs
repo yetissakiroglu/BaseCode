@@ -3,11 +3,12 @@ using Economy.Application.Repositories.UserServiceRepositories;
 using Economy.Application.Repositories.UserServiceRepositoriesa;
 using Economy.Core.Business;
 using Economy.Core.Dtos;
+using Economy.Core.Tools;
 using Economy.Core.UnitOfWorks;
 using Economy.Domain.BaseEntities;
 using Economy.Domain.Entites.EntityAppUsers;
 using Economy.Domain.Entites.Identities;
-using Economy.Persistence.Repositories;
+using Economy.Persistence.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -25,20 +26,20 @@ namespace Economy.Persistence.Services.AppUserServices
 		private readonly ITokenService _tokenService = tokenService;
 		private readonly List<Client> _clients = clients.Value;
 		
-		public ServiceResult<ClientToken> CreateToken(ClientSignIn clientSignIn)
+		public ResponseModel<ClientToken> CreateToken(ClientSignIn clientSignIn)
 		{
 			var client = _clients.SingleOrDefault(s => s.Id == clientSignIn.ClientId && s.Secret == clientSignIn.ClientSecret);
 
 			if (client == null)
 			{
-				return ServiceResult<ClientToken>.Fail("Client credentials are invalid.", HttpStatusCode.NotFound);
+				return ResponseModel<ClientToken>.Fail("Client credentials are invalid.", HttpStatusCode.NotFound);
 			}
 
 			var token = _tokenService.CreateToken(client);
-			return ServiceResult<ClientToken>.Success(token, HttpStatusCode.OK);
+			return ResponseModel<ClientToken>.Success(token, HttpStatusCode.OK);
 		}
 
-		public async Task<ServiceResult<Token>> CreateTokenAsync(SignIn signIn)
+		public async Task<ResponseModel<Token>> CreateTokenAsync(SignIn signIn)
 		{
 			if (signIn == null)
 			{
@@ -48,13 +49,13 @@ namespace Economy.Persistence.Services.AppUserServices
 			var user = await _userManager.FindByEmailAsync(signIn.Email);
 			if (user == null)
 			{
-				return ServiceResult<Token>.Fail("Email or password is invalid.",HttpStatusCode.NotFound);
+				return ResponseModel<Token>.Fail("Email or password is invalid.",HttpStatusCode.NotFound);
 			}
 
 			if (!await _userManager.CheckPasswordAsync(user, signIn.Password))
 			{
 
-				return ServiceResult<Token>.Fail("Email or password is invalid.");
+				return ResponseModel<Token>.Fail("Email or password is invalid.");
 			}
 
 			var token = _tokenService.CreateToken(user);
@@ -76,21 +77,21 @@ namespace Economy.Persistence.Services.AppUserServices
 
 			await _unitOfWork.CommitAsync();
 
-			return ServiceResult<Token>.Success(token, HttpStatusCode.OK);
+			return ResponseModel<Token>.Success(token, HttpStatusCode.OK);
 		}
 
-		public  async Task<ServiceResult<Token>> RefreshTokenAsync(string refreshToken)
+		public  async Task<ResponseModel<Token>> RefreshTokenAsync(string refreshToken)
 		{
 			var entity = await _userRefreshTokenRepository.Table.Where(w => w.Token == refreshToken).SingleOrDefaultAsync();
 			if (entity == null)
 			{
-				return ServiceResult<Token>.Fail("Refresh token not found.", HttpStatusCode.NotFound);
+				return ResponseModel<Token>.Fail("Refresh token not found.", HttpStatusCode.NotFound);
 			}
 
 			var user = await _userManager.FindByIdAsync(entity.UserId);
 			if (user == null)
 			{
-				return ServiceResult<Token>.Fail("User not found.", HttpStatusCode.NotFound);
+				return ResponseModel<Token>.Fail("User not found.", HttpStatusCode.NotFound);
 			}
 
 			var token = _tokenService.CreateToken(user);
@@ -100,33 +101,24 @@ namespace Economy.Persistence.Services.AppUserServices
 
 			await _unitOfWork.CommitAsync();
 
-			return ServiceResult<Token>.Success(token, HttpStatusCode.OK);
+			return ResponseModel<Token>.Success(token, HttpStatusCode.OK);
 
 		}
 
-		public async Task<ServiceResult<string>> RevokeRefreshTokenAsync(string refreshToken)
+		public async Task<ResponseModel<string>> RevokeRefreshTokenAsync(string refreshToken)
 		{
 			var entity = await _userRefreshTokenRepository.Table.Where(w => w.Token == refreshToken).SingleOrDefaultAsync();
 			if (entity == null)
 			{
-				return ServiceResult<string>.Fail("Refresh token not found.", HttpStatusCode.NotExtended);
+				return ResponseModel<string>.Fail("Refresh token not found.", HttpStatusCode.NotExtended);
 			}
 
 			_userRefreshTokenRepository.Table.Remove(entity);
 
 			await _unitOfWork.CommitAsync();
 
-			return ServiceResult<string>.Success(refreshToken,HttpStatusCode.OK);
+			return ResponseModel<string>.Success(refreshToken,HttpStatusCode.OK);
 		}
-
-
-
-
-
-
-
-
-
 
 		public async Task DeleteAsync(string? id)
 		{

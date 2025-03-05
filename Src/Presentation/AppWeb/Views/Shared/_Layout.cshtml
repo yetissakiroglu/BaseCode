@@ -1,9 +1,21 @@
-﻿<!DOCTYPE html>
+﻿@using System.Globalization
+@using Economy.Application.Dtos.AppSettingDtos
+
+@{
+    var appSettings = Context.Items["AppSettings"] as AppSettingDto;
+    var siteTitle = appSettings?.SiteTitle;
+    var siteDescription = appSettings?.SiteDescription;
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AppWeb</title>
+    <title>@siteTitle</title>
+    <meta name="description" content="@siteDescription" />
+    <!-- Diğer başlıklar ve stil bağlantıları -->
     <!-- GOOGLE WEB FONT -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
@@ -47,11 +59,8 @@
                 </div>
                 <nav class="col-9 position-relative">
                     <a class="cmn-toggle-switch cmn-toggle-switch__htx open_close" href="javascript:void(0);"><span>Menu mobile</span></a>
-                    <ul id="lang_top">
-                        <li><a href="#" class="active">EN</a></li>
-                        <li><a href="#">FR</a></li>
-                        <li><a href="#">ES</a></li>
-                    </ul>
+                    <!-- Language Component'ı Burada Dahil Ediliyor -->
+                    @await Component.InvokeAsync("Language")
                     <!-- Menü Component'ı Burada Dahil Ediliyor -->
                     @await Component.InvokeAsync("Menu")
                     <!-- End main-menu -->
@@ -60,6 +69,27 @@
         </div><!-- End container -->
     </header>
     <!-- End Header =============================================== -->
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    @{ var lang =        CultureInfo.CurrentUICulture.Name; 
+    }
+
+    <span>@lang</span>
+
+    <div class="language-selector">
+        <a href="@Url.Action("ChangeLanguage", "Language", new { lang = "tr" })">Türkçe</a> |
+        <a href="@Url.Action("ChangeLanguage", "Language", new { lang = "en" })">English</a>
+        <a href="@Url.Action("ChangeLanguage", "Language", new { lang = "ys" })">Yanlış Dil</a>
+
+    </div>
+
     @RenderBody()
  
     <footer>

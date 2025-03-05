@@ -1,8 +1,10 @@
 using AppWeb.Models;
 using Economy.Application.Queries.AppMenus;
+using Economy.Application.Queries.AppSettings;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace AppWeb.Controllers
 {
@@ -19,8 +21,15 @@ namespace AppWeb.Controllers
         }
 
         public async Task<IActionResult> Index()
-        {
-            var products = await _mediator.Send(new GetAllAppMenuByParentMenuIdQuery(null));
+        {  
+            // CultureInfo.CurrentUICulture.Name ile geçerli dil kodunu alýyoruz
+
+            var lang = CultureInfo.CurrentUICulture.Name;
+            var menus = await _mediator.Send(new GetAllAppMenuByParentMenuIdQuery(null));
+
+            
+            var setting = await _mediator.Send(new GetAppSettingQuery());
+
             return View();
         }
 

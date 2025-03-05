@@ -1,0 +1,13 @@
+﻿@using System.Globalization
+@model List<AppLanguageDto>
+@{
+    var activeLanguage = @CultureInfo.CurrentUICulture.Name;
+}
+<ul id="lang_top">
+    @foreach (var lang in Model)
+    {
+        var active = lang.Code == activeLanguage ? "active" : "";
+        <li><a href="@Url.Action("ChangeLanguage", "Language", new { lang = @lang.Code })" class="@active">@lang.Icon</a></li>
+    }
+</ul>
+

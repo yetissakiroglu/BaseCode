@@ -2,7 +2,6 @@
 using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Queries.AppMenus;
 using Economy.Core.Tools;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Economy.Application.Interfaces
 {

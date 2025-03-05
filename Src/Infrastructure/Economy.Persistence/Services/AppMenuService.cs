@@ -35,10 +35,10 @@ namespace Economy.Persistence.Services
         {
             var appMenu = await _appMenuRepository.GetForReadAsync(x => x.Id == query.MenuId, x => x.SubMenus, x => x.ParentMenu);
 
-            // Eğer appMenu bulunamazsa, hata döndürüyoruz
+            // Eğer data bulunamazsa, hata döndürüyoruz
             if (appMenu == null)
             {
-                return ResponseModel<AppMenuDto>.Fail("Menu bulunamadı", HttpStatusCode.NotFound);
+                return ResponseModel<AppMenuDto>.Fail("kayıt bulunamadı", HttpStatusCode.NotFound);
             }
 
             var appMenuDto = _mapper.Map<AppMenuDto>(appMenu);

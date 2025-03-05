@@ -2,6 +2,7 @@
 using Economy.Core.Repositories;
 using Economy.Domain.BaseEntities;
 using Economy.Persistence.Contexts;
+using Economy.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
