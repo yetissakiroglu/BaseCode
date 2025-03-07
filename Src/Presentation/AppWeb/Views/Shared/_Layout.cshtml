@@ -61,8 +61,14 @@
                     <a class="cmn-toggle-switch cmn-toggle-switch__htx open_close" href="javascript:void(0);"><span>Menu mobile</span></a>
                     <!-- Language Component'ı Burada Dahil Ediliyor -->
                     @await Component.InvokeAsync("Language")
-                    <!-- Menü Component'ı Burada Dahil Ediliyor -->
-                    @await Component.InvokeAsync("Menu")
+                    <div class="main-menu">
+                        <div id="header_menu">
+                            <img src="img/logo_m.png" width="141" height="40" alt="" data-retina="true">
+                        </div>
+                        <a href="#" class="open_close" id="close_in"><i class="icon_set_1_icon-77"></i></a>    <!-- Menü Component'ı Burada Dahil Ediliyor -->
+                        @await Component.InvokeAsync("Menu")
+                    </div>
+
                     <!-- End main-menu -->
                 </nav>
             </div><!-- End row -->
@@ -78,7 +84,8 @@
     <br />
     <br />
     <br />
-    @{ var lang =        CultureInfo.CurrentUICulture.Name; 
+    @{
+        var lang = CultureInfo.CurrentUICulture.Name;
     }
 
     <span>@lang</span>
@@ -91,7 +98,7 @@
     </div>
 
     @RenderBody()
- 
+
     <footer>
         <div class="container">
             <div class="row">

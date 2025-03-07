@@ -1,5 +1,6 @@
 ﻿using Economy.Domain.Entites.EntityMenuItems;
 using Economy.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Economy.Persistence.Seeds
 {
@@ -14,9 +15,15 @@ namespace Economy.Persistence.Seeds
 
         public async Task SeedAsync()
         {
+            var menusDelete = await _context.AppMenus.Where(w=>w.ParentMenuId==null).ToListAsync();
+            _context.AppMenus.RemoveRange(menusDelete);
+            await _context.SaveChangesAsync();
+
             if (!_context.AppMenus.Any())
             {
                 var menus = GetPreconfiguredMenus();
+
+
                 await _context.AppMenus.AddRangeAsync(menus);
                 await _context.SaveChangesAsync();
             }
@@ -25,29 +32,51 @@ namespace Economy.Persistence.Seeds
         private IEnumerable<AppMenu> GetPreconfiguredMenus()
         {
             return new List<AppMenu>
+    {
+        new AppMenu
         {
-            new AppMenu
-            {
-                Title = "Ana Menü",
-                Slug = "ana-menu",
-                IsExternal = false,
-                ParentMenuId = null
-            },
-            new AppMenu
-            {
-                Title = "Hakkımızda",
-                Slug = "hakkimizda",
-                IsExternal = false,
-                ParentMenuId = 1
-            },
-            new AppMenu
-            {
-                Title = "İletişim",
-                Slug = "iletisim",
-                IsExternal = true,
-                ParentMenuId = 1
-            }
-        };
+            Title = "Ana Menü",
+            Slug = "ana-menu",
+            IsExternal = false,
+            ParentMenuId = null
+        },
+        new AppMenu
+        {
+            Title = "Odalar & Süitler",
+            Slug = "odalar-suitler",
+            IsExternal = false,
+            ParentMenuId = null
+        },
+        new AppMenu
+        {
+            Title = "Restoran & Bar",
+            Slug = "restoran-bar",
+            IsExternal = false,
+            ParentMenuId = null
+        },
+        new AppMenu
+        {
+            Title = "Spa & Wellness",
+            Slug = "spa-wellness",
+            IsExternal = false,
+            ParentMenuId = null
+        },
+  
+        new AppMenu
+        {
+            Title = "Hakkımızda",
+            Slug = "hakkimizda",
+            IsExternal = false,
+            ParentMenuId = null
+        },
+        new AppMenu
+        {
+            Title = "İletişim",
+            Slug = "iletisim",
+            IsExternal = false,
+            ParentMenuId = null
+        }
+    };
         }
     }
 
