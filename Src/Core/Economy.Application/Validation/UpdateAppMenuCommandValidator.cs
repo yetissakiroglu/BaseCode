@@ -12,8 +12,8 @@ namespace Economy.Application.Validation
                 .NotEmpty().WithMessage("The 'Title' field is required in the request body.");
 
             // Slug alanı zorunlu
-            RuleFor(x => x.Slug)
-                .NotEmpty().WithMessage("The 'Slug' field is required in the request body.");
+            RuleFor(x => x.Url)
+                .NotEmpty().WithMessage("The 'Url' field is required in the request body.");
 
             // parentMenuId, geçerli bir integer olmalı
             RuleFor(x => x.ParentMenuId)

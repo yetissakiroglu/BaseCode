@@ -4,6 +4,7 @@ using Economy.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250308234042_AppPage_v1")]
+    partial class AppPage_v1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,96 +122,6 @@ namespace AppWeb.Migrations
                     b.HasIndex("AppMenuId");
 
                     b.ToTable("AppMenuTranslations");
-                });
-
-            modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsHomePage")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AppPages");
-                });
-
-            modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPageTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AppLanguageId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AppPageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MetaDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetaTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppLanguageId");
-
-                    b.HasIndex("AppPageId");
-
-                    b.ToTable("AppPageTranslations");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppSettings.AppSetting", b =>
@@ -669,21 +582,6 @@ namespace AppWeb.Migrations
                     b.Navigation("AppLanguage");
                 });
 
-            modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPageTranslation", b =>
-                {
-                    b.HasOne("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", "AppLanguage")
-                        .WithMany()
-                        .HasForeignKey("AppLanguageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Economy.Domain.Entites.EntityAppPages.AppPage", null)
-                        .WithMany("Translations")
-                        .HasForeignKey("AppPageId");
-
-                    b.Navigation("AppLanguage");
-                });
-
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppSettings.AppSettingTranslation", b =>
                 {
                     b.HasOne("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", "AppLanguage")
@@ -767,11 +665,6 @@ namespace AppWeb.Migrations
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", b =>
                 {
                     b.Navigation("AppSettingTranslations");
-                });
-
-            modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPage", b =>
-                {
-                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppSettings.AppSetting", b =>

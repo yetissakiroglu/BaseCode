@@ -11,9 +11,9 @@ namespace Economy.Application.Validation
             .NotEmpty().WithMessage("Title is required.")
             .MaximumLength(255).WithMessage("Title must not exceed 255 characters.");
 
-            RuleFor(x => x.Slug)
-                .NotEmpty().WithMessage("Slug is required.")
-                .MaximumLength(255).WithMessage("Slug must not exceed 255 characters.");
+            RuleFor(x => x.Url)
+                .NotEmpty().WithMessage("Url is required.")
+                .MaximumLength(255).WithMessage("Url must not exceed 255 characters.");
 
         }
     }

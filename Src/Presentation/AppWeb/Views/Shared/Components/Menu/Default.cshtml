@@ -1,9 +1,12 @@
 ﻿@model List<AppMenuDto>
-
-
-
-    <ul>
-        @foreach (var menu in Model)
+<ul>
+    @foreach (var menu in Model)
+    {
+        @if (!menu.SubMenus.Any())
+        {
+            <li><a href="@menu.Url">@menu.Title</a></li>
+        }
+        else
         {
             <li class="submenu">
                 <a href="javascript:void(0);" class="show-submenu">@menu.Title <i class="icon-down-open-mini"></i></a>
@@ -18,5 +21,5 @@
                 }
             </li>
         }
-      
-    </ul>
+    }
+</ul>

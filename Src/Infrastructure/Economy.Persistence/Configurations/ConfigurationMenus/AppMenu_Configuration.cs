@@ -10,14 +10,6 @@ namespace Economy.Persistence.Configurations.ConfigurationMenuItems
         {
             builder.HasKey(m => m.Id);
 
-            builder.Property(m => m.Title)
-                .IsRequired()
-                .HasMaxLength(255);
-
-            builder.Property(m => m.Slug)
-                .IsRequired()
-                .HasMaxLength(255);
-
             builder.HasOne(m => m.ParentMenu)
                  .WithMany(m => m.SubMenus)
                  .HasForeignKey(m => m.ParentMenuId)

@@ -4,6 +4,7 @@ using Economy.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250308234419_AppPage_v3")]
+    partial class AppPage_v3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,7 +121,7 @@ namespace AppWeb.Migrations
 
                     b.HasIndex("AppMenuId");
 
-                    b.ToTable("AppMenuTranslations");
+                    b.ToTable("AppMenuTranslation");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPage", b =>
@@ -187,6 +190,9 @@ namespace AppWeb.Migrations
                     b.Property<string>("MetaTitle")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -198,17 +204,13 @@ namespace AppWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AppLanguageId");
 
                     b.HasIndex("AppPageId");
 
-                    b.ToTable("AppPageTranslations");
+                    b.ToTable("AppPageTranslation");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppSettings.AppSetting", b =>
@@ -325,7 +327,7 @@ namespace AppWeb.Migrations
 
                     b.HasIndex("AppSettingId");
 
-                    b.ToTable("AppSettingTranslations");
+                    b.ToTable("AppSettingTranslation");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppUsers.UserRefreshToken", b =>

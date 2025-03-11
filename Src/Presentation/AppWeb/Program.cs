@@ -1,13 +1,19 @@
 using AppWeb.ActionFilters;
+using AppWeb.Providers;
 using Economy.Application;
 using Economy.Persistence;
 using Economy.Persistence.Seeds;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // AppSettingsActionFilter'ý global olarak kaydedin
 builder.Services.AddScoped<AppSettingsActionFilter>();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);  // Session süresi
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 // MVC servislerini ekliyoruz
 builder.Services.AddControllersWithViews(options =>
@@ -17,6 +23,13 @@ builder.Services.AddControllersWithViews(options =>
 })
     .AddDataAnnotationsLocalization()
     .AddViewLocalization();
+
+// HttpContextAccessor'ý DI container'a ekliyoruz
+builder.Services.AddHttpContextAccessor();
+
+// LanguageProvider'ý DI container'a ekliyoruz ve kullanýcý dil saðlayýcýyý kullanýyoruz
+builder.Services.AddScoped<LanguageProvider, UserLanguageProvider>();
+
 
 
 // Servisleri ilgili extension metodlar ile ekliyoruz
@@ -36,6 +49,9 @@ var seederAppLanguage = app.Services.CreateScope().ServiceProvider.GetRequiredSe
 await seederAppLanguage.SeedAsync();
 var seederAppSetting = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppSettingSeeder>();
 await seederAppSetting.SeedAsync();
+var seederAppPage = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppPageSeeder>();
+await seederAppPage.SeedAsync();
+
 
 
 // Configure the HTTP request pipeline.
@@ -45,34 +61,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-// Geliþtirme ortamý kontrolü ve cookie temizliði
-// Cookie'yi temizle
-app.Use(async (context, next) =>
-{
-    var routeData = context.GetRouteData();
-    var lang1 = routeData?.Values["lang"]?.ToString();
 
-    var routeValues = context.Request.RouteValues;
-
-    // Eðer dil parametresi varsa, cookie'yi güncelle
-    var lang = context.Request.RouteValues["lang"]?.ToString();
-    if (!string.IsNullOrEmpty(lang))
-    {  // Cookie'yi temizliyoruz
-        var currentCulture = context.Request.Cookies["CurrentCulture"];
-        context.Response.Cookies.Append("CurrentCulture", lang, new CookieOptions { Expires = DateTime.Now.AddYears(1) });
-    }
-    //else if (string.IsNullOrEmpty(currentCulture))
-    //{
-    //    // Cookie'de dil bilgisi yoksa, varsayýlan bir dil atayýn (örneðin "tr" veya "en")
-    //    context.Response.Cookies.Append("CurrentCulture", "en", new CookieOptions { Expires = DateTime.Now.AddYears(1) });
-    //}
-
-    // Sonraki middleware'a geçiþ
-    await next.Invoke();
-});
-
-
-
+// Session kullanýmý için bu satýr gereklidir
+app.UseSession();
 // Localization middleware
 app.UseRequestLocalization();
 

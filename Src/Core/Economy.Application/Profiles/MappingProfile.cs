@@ -10,7 +10,9 @@ namespace Economy.Application.Profiles
         {
             // AppMenu'dan AppMenuDto'ya dönüşüm
             CreateMap<AppMenu, AppMenuDto>()
-           .ForMember(dest => dest.SubMenus, opt => opt.MapFrom(src => src.SubMenus));
+           .ForMember(dest => dest.SubMenus, opt => opt.MapFrom(src => src.SubMenus))
+           .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Translations.FirstOrDefault().Title))
+           .ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Translations.FirstOrDefault().Url));
         }
     }
 }

@@ -2,6 +2,7 @@
 using Economy.Domain.Entites.EntityAppContents;
 using Economy.Domain.Entites.EntityAppFiles;
 using Economy.Domain.Entites.EntityAppLanguage;
+using Economy.Domain.Entites.EntityAppMenus;
 using Economy.Domain.Entites.EntityAppPages;
 using Economy.Domain.Entites.EntityAppSettings;
 using Economy.Domain.Entites.EntityAppUsers;
@@ -56,9 +57,15 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppLanguage> AppLanguages { get; set; }
         public DbSet<AppSetting> AppSettings { get; set; }
         public DbSet<AppSettingTranslation> AppSettingTranslations { get; set; }
+
         public DbSet<AppMenu> AppMenus { get; set; }
+        public DbSet<AppMenuTranslation> AppMenuTranslations { get; set; }
 
 
+        public DbSet<AppPage> AppPages { get; set; }
+        public DbSet<AppPageTranslation> AppPageTranslations { get; set; }
+
+        
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{

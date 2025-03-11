@@ -1,18 +1,18 @@
-﻿using Azure;
-using Economy.Application.Interfaces;
+﻿using Economy.Application.Interfaces;
 using Economy.Application.Repositories.AppLanguageRepositories;
 using Economy.Application.Repositories.AppMenuRepositories;
+using Economy.Application.Repositories.AppPageRepositories;
 using Economy.Core.Repositories;
 using Economy.Core.UnitOfWorks;
 using Economy.Persistence.Contexts;
 using Economy.Persistence.Repositories.AppBase.EntityFramework;
 using Economy.Persistence.Repositories.AppLanguageRepositories;
 using Economy.Persistence.Repositories.AppMenuRepositories;
+using Economy.Persistence.Repositories.AppPageRepositories;
 using Economy.Persistence.Seeds;
 using Economy.Persistence.Services;
 using Economy.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,7 +41,11 @@ namespace Economy.Persistence
             services.AddScoped<IAppLanguageRepository, AppLanguageRepository>();
             services.AddScoped<IAppLanguageService, AppLanguageService>();
 
-            
+            services.AddScoped<IAppPageRepository, AppPageRepository>();
+            services.AddScoped<IAppPageService, AppPageService>();
+
+
+
 
             services.AddDbContext<AppDbContext>(options =>
             {
@@ -51,11 +55,14 @@ namespace Economy.Persistence
                 });
             });
 
+
+
             services.AddScoped<AppMenuSeeder>();
             services.AddScoped<AppLanguageSeeder>();
             services.AddScoped<AppSettingSeeder>();
+            services.AddScoped<AppPageSeeder>();
 
-
+            
 
 
             // Diğer servisleri ekleyin
@@ -81,20 +88,15 @@ namespace Economy.Persistence
                 // Dil değişikliğini cookie'ye kaydediyoruz
                 options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(async context =>
                 { 
-                    //// Cookie'yi temizle
-                    //context.Response.Cookies.Delete("CurrentCulture");  // Cookie'yi temizliyoruz
-
+         
                     // Cookie'deki mevcut dil bilgisi
-                    var cookieCulture = context.Request.Cookies["CurrentCulture"];
+                    var cookieCulture = context.Request.Cookies["UserLanguage"];
 
                     // Eğer cookie yoksa veya boşsa, default dili kullanıyoruz
                     if (string.IsNullOrEmpty(cookieCulture))
                     {
                         cookieCulture = defaultCulture;
-                        context.Response.Cookies.Append(
-                            "CurrentCulture",
-                            cookieCulture,
-                            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddMinutes(1) });
+                        context.Response.Cookies.Append("UserLanguage",cookieCulture);
                     }
 
                     // Kullanıcının mevcut dilini belirliyoruz
