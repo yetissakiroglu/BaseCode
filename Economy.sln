@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Economy.Persistence", "Src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppWeb", "Src\Presentation\AppWeb\AppWeb.csproj", "{1C8854EC-7BC8-4528-AAC8-B4F4BADFB760}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggingLibrary", "Src\Core\LoggingLibrary\LoggingLibrary\LoggingLibrary.csproj", "{24ECD985-F099-4F1C-8ED6-5EEDBEB83FCB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{1C8854EC-7BC8-4528-AAC8-B4F4BADFB760}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C8854EC-7BC8-4528-AAC8-B4F4BADFB760}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C8854EC-7BC8-4528-AAC8-B4F4BADFB760}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24ECD985-F099-4F1C-8ED6-5EEDBEB83FCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24ECD985-F099-4F1C-8ED6-5EEDBEB83FCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24ECD985-F099-4F1C-8ED6-5EEDBEB83FCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24ECD985-F099-4F1C-8ED6-5EEDBEB83FCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{E06311EB-B134-4308-9734-3F0FDCBAE372} = {7DC9D358-AA0E-471C-A486-A1A41826AA31}
 		{ED93B73B-F2BC-457E-BA0B-7D245ACC113D} = {7DC9D358-AA0E-471C-A486-A1A41826AA31}
 		{1C8854EC-7BC8-4528-AAC8-B4F4BADFB760} = {FA6C4317-017A-46A5-AC2B-2223501710B3}
+		{24ECD985-F099-4F1C-8ED6-5EEDBEB83FCB} = {A562FD7E-981E-4AD8-83BD-2ABE0791DB98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {20E107F7-FA8E-44CE-9C37-93776883CCC7}

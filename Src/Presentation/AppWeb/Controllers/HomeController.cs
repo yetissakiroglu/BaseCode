@@ -3,6 +3,7 @@ using AppWeb.Providers;
 using Economy.Application.Queries.AppMenus;
 using Economy.Application.Queries.AppPages;
 using Economy.Application.Queries.AppSettings;
+using LoggingLibrary;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -22,13 +23,15 @@ namespace AppWeb.Controllers
             _mediator = mediator;
             _languageProvider = languageProvider;
         }
-         
+
         public async Task<IActionResult> Index(string lang)
         {
+
             if (!string.IsNullOrEmpty(lang))
             {
               var defaultPage = await _mediator.Send(new GetAppPageByLanguageCodeQuery(lang));
-            }
+                return View();
+           }
 
             var lang1 = _languageProvider.GetCurrentLanguage();
             var defaultPageNew = await _mediator.Send(new GetAppPageByLanguageCodeQuery(lang1));

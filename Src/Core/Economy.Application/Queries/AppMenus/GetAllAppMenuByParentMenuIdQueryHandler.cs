@@ -1,6 +1,7 @@
 ﻿using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Interfaces;
 using Economy.Core.Tools;
+using LoggingLibrary.Attributes;
 using MediatR;
 
 namespace Economy.Application.Queries.AppMenus

@@ -1,16 +1,26 @@
-using AppWeb.ActionFilters;
+﻿using AppWeb.ActionFilters;
 using AppWeb.Providers;
+using Autofac.Extensions.DependencyInjection;
+using Autofac;
 using Economy.Application;
 using Economy.Persistence;
 using Economy.Persistence.Seeds;
+using LoggingLibrary;
+using LoggingLibrary.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using LoggingLibrary.Extensions;
+using Autofac.Extras.DynamicProxy;
+using LoggingLibrary.Interceptors;
+using Economy.Application.Interfaces;
+using Economy.Persistence.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-// AppSettingsActionFilter'� global olarak kaydedin
+// AppSettingsActionFilter'ı global olarak kaydedin
 builder.Services.AddScoped<AppSettingsActionFilter>();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);  // Session s�resi
+    options.IdleTimeout = TimeSpan.FromMinutes(30);  // Session süresi
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -18,19 +28,55 @@ builder.Services.AddSession(options =>
 // MVC servislerini ekliyoruz
 builder.Services.AddControllersWithViews(options =>
 {
-    // Action Filter'� global olarak uygulamak
+    // Action Filter'ı global olarak uygulamak
     options.Filters.AddService<AppSettingsActionFilter>();
 })
     .AddDataAnnotationsLocalization()
     .AddViewLocalization();
 
-// HttpContextAccessor'� DI container'a ekliyoruz
+// HttpContextAccessor'ı DI container'a ekliyoruz
 builder.Services.AddHttpContextAccessor();
 
-// LanguageProvider'� DI container'a ekliyoruz ve kullan�c� dil sa�lay�c�y� kullan�yoruz
+// LanguageProvider'ı DI container'a ekliyoruz ve kullanıcı dil sağlayıcıyı kullanıyoruz
 builder.Services.AddScoped<LanguageProvider, UserLanguageProvider>();
 
 
+// **Autofac Kullanımı**
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(container =>
+{
+    container.RegisterType<LoggingInterceptor>()
+             .AsSelf()
+             .InstancePerLifetimeScope(); // 📌 **Scoped olarak kaydedildi**
+  
+
+    container.RegisterType<HttpContextAccessor>()
+             .As<IHttpContextAccessor>()
+             .SingleInstance();
+    // 📌 **Servislerin olduğu tüm Assembly'leri al**
+    var assemblies = new[]
+    {
+        Assembly.GetExecutingAssembly(), // **Ana proje**
+        // Eğer servislerin farklı bir class library'deyse onu da ekleyebilirsin:
+         Assembly.Load("Economy.Persistence")
+    };
+
+    // 📌 **Tüm servisleri otomatik kaydet (IService şeklindeki interface'lere karşılık gelenleri)**
+    container.RegisterAssemblyTypes(assemblies)
+             .Where(t => t.Name.EndsWith("Service")) // Sadece *Service ile bitenleri seç
+             .AsImplementedInterfaces() // İlgili interface'ine bağla
+             .EnableInterfaceInterceptors() // ✅ Interceptor kullan
+             .InterceptedBy(typeof(LoggingInterceptor)) // ✅ Loglama interceptor'u uygula
+             .InstancePerLifetimeScope(); // 🔥 Scoped olarak ekle
+});
+
+// **LoggingDbContext'i ekle**
+builder.Services.AddLoggingDbContext(builder.Configuration);
+
+
+
+// 📌 LoggingLibrary’i API’ye Entegre Et
+//builder.Services.AddLoggingServices(builder.Configuration);
 
 // Servisleri ilgili extension metodlar ile ekliyoruz
 builder.Services.AddApplicationServices();
@@ -62,15 +108,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// Session kullan�m� i�in bu sat�r gereklidir
+// Session kullanımı için bu satır gereklidir
 app.UseSession();
 // Localization middleware
 app.UseRequestLocalization();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseRouting(); // Routing middleware'ini ilk s�rada kullan�n
-app.UseAuthorization(); // Authorization ve di�er middleware'ler sonras�nda
+app.UseRouting(); // Routing middleware'ini ilk sırada kullanın
+app.UseAuthorization(); // Authorization ve diğer middleware'ler sonrasında
 
 app.MapControllerRoute(
     name: "localized",
