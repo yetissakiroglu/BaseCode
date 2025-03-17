@@ -10,19 +10,24 @@ using System.Reflection;
 
 namespace LoggingLibrary.Extensions
 {
-  
-        public static class LoggingExtensions
+
+    public static class LoggingExtensions
+    {
+       
+        /// <summary>
+        /// Autofac ContainerBuilder kullanarak LoggingDbContext ekler.
+        /// </summary>
+        public static void AddLoggingDbContextWithAutofac(this ContainerBuilder container, IConfiguration configuration)
         {
-              public static void AddLoggingDbContext(this IServiceCollection services, IConfiguration configuration)
+            container.Register(c =>
             {
-            // 📌 LoggingDbContext'i servis olarak kaydet
-            services.AddDbContext<LoggingDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("LoggingDb")));
-
-
-
-
+                var optionsBuilder = new DbContextOptionsBuilder<LoggingDbContext>();
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("LoggingDb"));
+                return new LoggingDbContext(optionsBuilder.Options);
+            }).InstancePerLifetimeScope();
         }
+
+
     }
-    
+
 }

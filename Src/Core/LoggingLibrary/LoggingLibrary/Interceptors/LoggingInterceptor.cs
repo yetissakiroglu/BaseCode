@@ -15,7 +15,6 @@ namespace LoggingLibrary.Interceptors
         private readonly ILogger<LoggingInterceptor> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-     
         public LoggingInterceptor(LoggingDbContext dbContext, ILogger<LoggingInterceptor> logger, IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
@@ -23,68 +22,71 @@ namespace LoggingLibrary.Interceptors
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async void Intercept(IInvocation invocation)
+        void IInterceptor.Intercept(IInvocation invocation)
         {
             var method = invocation.MethodInvocationTarget ?? invocation.Method;
 
-            // Eğer metodda [Log] attribute yoksa devam et
-            if (method.GetCustomAttribute<LogAttribute>() == null)
+            // Eğer metodda [Log] attribute'u yoksa devam et
+            var logAttribute = method.GetCustomAttribute<LogAttribute>();
+            if (logAttribute == null)
             {
                 invocation.Proceed();
                 return;
             }
 
-
             var httpContext = _httpContextAccessor.HttpContext;
             string ipAddress = httpContext?.Connection.RemoteIpAddress?.ToString() ?? "Unknown IP";
             string userId = httpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Anonymous";
 
-            // Attribute'u kontrol et
-            var logAttribute = method.GetCustomAttribute<LogAttribute>();
+            string logMessage = logAttribute.Message ?? "Method executed";
+            string parameters = JsonSerializer.Serialize(invocation.Arguments);
 
-            string logMessage = logAttribute != null ? logAttribute.Message : "Method executed";
-
-
-
-            var parameters = JsonSerializer.Serialize(invocation.Arguments);
-
-            _logger.LogInformation($"[SERVICE] User: {userId}, Class: {method.DeclaringType.Name}, Method: {method.Name}, Parameters: {parameters}");
-
-            // Metodu çalıştır
-            invocation.Proceed();
+            _logger.LogInformation($"[SERVICE] User: {userId}, Class: {method.DeclaringType?.Name}, Method: {method.Name}, Parameters: {parameters}");
 
             object response = null;
+            Exception exception = null;
 
-            // Eğer dönüş değeri bir Task ise, sonucu bekle
-            if (invocation.Method.ReturnType == typeof(Task))
+            try
             {
-                await (Task)invocation.ReturnValue;
-                response = "Task Completed";
+                invocation.Proceed();
+
+                if (invocation.Method.ReturnType == typeof(Task))
+                {
+                    ((Task)invocation.ReturnValue).GetAwaiter().GetResult();
+                    response = "Task Completed";
+                }
+                else if (invocation.Method.ReturnType.IsGenericType && invocation.Method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+                {
+                    var resultProperty = invocation.Method.ReturnType.GetProperty("Result");
+                    response = resultProperty?.GetValue(invocation.ReturnValue);
+                }
+                else
+                {
+                    response = invocation.ReturnValue;
+                }
             }
-            else if (invocation.Method.ReturnType.IsGenericType && invocation.Method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+            catch (Exception ex)
             {
-                var resultProperty = invocation.Method.ReturnType.GetProperty("Result");
-                response = resultProperty?.GetValue(invocation.ReturnValue);
-            }
-            else
-            {
-                response = invocation.ReturnValue;
+                exception = ex;
+                _logger.LogError(ex, $"Exception in {method.DeclaringType?.Name}.{method.Name}");
             }
 
-            var responseText = response is not null ? JsonSerializer.Serialize(response) : "null";
+            string responseText = exception != null ? $"Exception: {exception.Message}" : JsonSerializer.Serialize(response);
 
-            _dbContext.Logs.Add(new LogEntry
+            var logEntry = new LogEntry
             {
                 UserId = userId,
-                Layer = method.DeclaringType.Name,
+                Layer = method.DeclaringType?.Name ?? "Unknown",
                 Method = method.Name,
                 Parameters = parameters,
                 Response = responseText,
                 LogMessage = logMessage,
-                IpAddress = ipAddress
-            });
+                IpAddress = ipAddress,
+                //Exception = exception?.ToString()
+            };
 
-            _dbContext.SaveChanges();
+            _dbContext.Logs.Add(logEntry);
+            _dbContext.SaveChanges(); // Asenkron yerine senkron çağrı
         }
     }
 }

@@ -41,48 +41,44 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<LanguageProvider, UserLanguageProvider>();
 
 
-// **Autofac Kullanımı**
+// 📌 Autofac Kullanımı
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
 builder.Host.ConfigureContainer<ContainerBuilder>(container =>
 {
     container.RegisterType<LoggingInterceptor>()
              .AsSelf()
              .InstancePerLifetimeScope(); // 📌 **Scoped olarak kaydedildi**
-  
 
     container.RegisterType<HttpContextAccessor>()
              .As<IHttpContextAccessor>()
              .SingleInstance();
+
     // 📌 **Servislerin olduğu tüm Assembly'leri al**
     var assemblies = new[]
     {
         Assembly.GetExecutingAssembly(), // **Ana proje**
-        // Eğer servislerin farklı bir class library'deyse onu da ekleyebilirsin:
-         Assembly.Load("Economy.Persistence")
+        Assembly.Load("Economy.Persistence") // **Eklenen Class Library**
     };
 
     // 📌 **Tüm servisleri otomatik kaydet (IService şeklindeki interface'lere karşılık gelenleri)**
     container.RegisterAssemblyTypes(assemblies)
-             .Where(t => t.Name.EndsWith("Service")) // Sadece *Service ile bitenleri seç
-             .AsImplementedInterfaces() // İlgili interface'ine bağla
-             .EnableInterfaceInterceptors() // ✅ Interceptor kullan
-             .InterceptedBy(typeof(LoggingInterceptor)) // ✅ Loglama interceptor'u uygula
-             .InstancePerLifetimeScope(); // 🔥 Scoped olarak ekle
+             .Where(t => t.Name.EndsWith("Service"))
+             .AsImplementedInterfaces()
+             .EnableInterfaceInterceptors() // 📌 Interceptor'u etkinleştir
+             .InterceptedBy(typeof(LoggingInterceptor))
+             .InstancePerLifetimeScope();
+
+    // 📌 LoggingDbContext'i Autofac Container'ına ekle
+    container.AddLoggingDbContextWithAutofac(builder.Configuration);
 });
-
-// **LoggingDbContext'i ekle**
-builder.Services.AddLoggingDbContext(builder.Configuration);
-
-
-
 // 📌 LoggingLibrary’i API’ye Entegre Et
-//builder.Services.AddLoggingServices(builder.Configuration);
+
 
 // Servisleri ilgili extension metodlar ile ekliyoruz
 builder.Services.AddApplicationServices();
 var connectionString = builder.Configuration.GetConnectionString("SqlServer") ?? throw new InvalidOperationException("Connection string 'SqlServer' not found.");
 builder.Services.AddInfrastructureServices(connectionString);
-
 
 
 var app = builder.Build();
