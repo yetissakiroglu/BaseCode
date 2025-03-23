@@ -1,6 +1,4 @@
-﻿using Economy.Application.Dtos.AppSettingDtos;
-
-namespace Economy.Application.Dtos.AppLanguageDtos
+﻿namespace Economy.Application.Dtos.AppLanguageDtos
 {
     public class AppLanguageDto
     {
@@ -11,6 +9,5 @@ namespace Economy.Application.Dtos.AppLanguageDtos
         public string Icon { get; set; }
         public bool IsActive { get; set; }
         public bool IsDefault { get; set; }
-        public List<AppSettingTranslationDto> AppSettingTranslations { get; set; } = new();
     }
 }

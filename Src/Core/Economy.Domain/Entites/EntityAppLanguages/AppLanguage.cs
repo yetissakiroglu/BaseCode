@@ -1,9 +1,6 @@
-﻿using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityAppSettings;
-
-namespace Economy.Domain.Entites.EntityAppLanguage
+﻿namespace Economy.Domain.Entites.EntityAppLanguage
 {
-    public class AppLanguage:BaseEntity<int>
+    public class AppLanguage
     {
         public string Code { get; set; } // Dil kodu (örneğin: "tr", "en", "ar")
         public string Name { get; set; } // Dilin adı (örneğin: "Türkçe", "English", "العربية")
@@ -21,7 +18,6 @@ namespace Economy.Domain.Entites.EntityAppLanguage
         public bool IsDefault { get; set; }
 
         // Bir dildeki çevirileri tutmak için ilişki
-        public virtual ICollection<AppSettingTranslation> AppSettingTranslations { get; set; } = new List<AppSettingTranslation>();
 
     }
 }
