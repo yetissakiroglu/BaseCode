@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Economy.Application.Queries.AppPages
 {
-    public record GetAppPageByLanguageCodeQuery(string LanguageCode) : IRequest<ResponseModel<AppPageDto>>;
+    public record GetAppPageDefaultByLanguageCodeQuery(string LanguageCode) : IRequest<ResponseModel<AppPageDto>>;
 
    
 }

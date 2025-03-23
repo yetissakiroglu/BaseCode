@@ -5,10 +5,10 @@ using MediatR;
 
 namespace Economy.Application.Queries.AppPages
 {
-    public class GetAppPageQueryHandler(IAppPageService appPageService) : IRequestHandler<GetAppPageQuery, ResponseModel<AppPageDto>>
+    public class GetAppPageDefaultQueryHandler(IAppPageService appPageService) : IRequestHandler<GetAppPageDefaultQuery, ResponseModel<AppPageDto>>
     {
         private readonly IAppPageService _appPageService = appPageService;
-        public async Task<ResponseModel<AppPageDto>> Handle(GetAppPageQuery request, CancellationToken cancellationToken)
+        public async Task<ResponseModel<AppPageDto>> Handle(GetAppPageDefaultQuery request, CancellationToken cancellationToken)
         {
             return await _appPageService.GetForReadDefaultPageAsync(request);
         }

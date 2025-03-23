@@ -39,7 +39,10 @@
 
     <!-- CUSTOM CSS -->
     <link href="css/custom.css" rel="stylesheet">
+    <link href="css/hakkimizda.css" rel="stylesheet">
+    <link href="css/modul.css" rel="stylesheet">
 
+    
 </head>
 <body>
     <div class="layer"></div>
@@ -75,35 +78,10 @@
         </div><!-- End container -->
     </header>
     <!-- End Header =============================================== -->
-    <div class="owl-carousel owl-theme carousel_in">
-        <div><img src="img/room_detail_1.jpg" alt=""><div class="caption"><h3>Fantastic bed room</h3></div></div>
-        <div><img src="img/room_detail_2.jpg" alt=""><div class="caption"><h3>Equiped bathroom</h3></div></div>
-        <div><img src="img/room_detail_3.jpg" alt=""><div class="caption"><h3>Equiped bathroom</h3></div></div>
-        <div><img src="img/room_detail_4.jpg" alt=""><div class="caption"><h3>Nice outdoor</h3></div></div>
-        <div><img src="img/room_detail_5.jpg" alt=""><div class="caption"><h3>Swimming pool</h3></div></div>
-    </div>
+    @await Component.InvokeAsync("Slide")
+
     <!-- End Carousel =============================================== -->
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    @{
-        var lang = CultureInfo.CurrentUICulture.Name;
-    }
-
-    <span>@lang</span>
-
-    <div class="language-selector">
-        <a href="@Url.Action("ChangeLanguage", "Language", new { lang = "tr" })">Türkçe</a> |
-        <a href="@Url.Action("ChangeLanguage", "Language", new { lang = "en" })">English</a>
-        <a href="@Url.Action("ChangeLanguage", "Language", new { lang = "ys" })">Yanlış Dil</a>
-
-    </div>
-
+ 
     @RenderBody()
 
     <footer>
@@ -166,13 +144,13 @@
 
     <div id="toTop"></div><!-- Back to top button -->
     <!-- COMMON SCRIPTS -->
-    <script src="js/jquery-3.7.1.min.js"></script>
-    <script src="js/common_scripts_min.js"></script>
-    <script src="js/functions.js"></script>
+    <script src="js/jquery-3.7.1.min.js" asp-append-version="true"></script>
+    <script src="js/common_scripts_min.js" asp-append-version="true"></script>
+    <script src="js/functions.js" asp-append-version="true"></script>
 
     <!-- SPECIFIC SCRIPTS -->
-    <script src="js/bootstrap-datepicker.js"></script>
-    <script src="js/bootsrap_datepicker_func.js"></script>
+    <script src="js/bootstrap-datepicker.js" asp-append-version="true"></script>
+    <script src="js/bootsrap_datepicker_func.js" asp-append-version="true"></script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

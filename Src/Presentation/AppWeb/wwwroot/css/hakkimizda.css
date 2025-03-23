@@ -1,0 +1,184 @@
+﻿/*Hakkımızda*/
+.section_header {
+    font-family: "Playfair Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin: 0 0 24px 0 !important;
+    position: relative;
+}
+
+    .section_header img {
+        margin: 10px 0 0px 0;
+        width: 160px;
+    }
+
+    .section_header small {
+        display: block;
+    }
+
+    .section_header .btn {
+        margin-top: 10px;
+    }
+
+    .section_header.centered {
+        text-align: center;
+    }
+
+    .section_header.overlay h2 {
+        font-size: 45px;
+    }
+
+    .section_header.overlay h3 {
+        font-size: 37px;
+    }
+
+    .section_header.overlay h4 {
+        font-size: 28px;
+    }
+
+    .section_header.overlay h5 {
+        font-size: 24px;
+    }
+
+    .section_header.overlay h6 {
+        font-size: 21px;
+    }
+
+    .section_header.overlay h1,
+    .section_header.overlay h2,
+    .section_header.overlay h3,
+    .section_header.overlay h4,
+    .section_header.overlay h5,
+    .section_header.overlay h6 {
+        font-weight: 900;
+        margin: 0 0 12px 0;
+    }
+
+    .section_header.overlay p {
+        font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        font-size: 13px;
+        line-height: 1em;
+    }
+
+    .section_header.overlay span {
+        font-size: 140px;
+        position: absolute;
+        top: 24px;
+        left: 0;
+        right: 0;
+        line-height: 0 !important;
+        pointer-events: none;
+        -webkit-pointer-events: none;
+        -moz-pointer-events: none;
+        -ms-pointer-events: none;
+        -o-pointer-events: none;
+        opacity: .03;
+    }
+
+@media (max-width: 768px) {
+    .section_header.overlay span {
+        display: none;
+    }
+}
+
+
+.text-center {
+    text-align: center;
+}
+
+.empty-space {
+    height: 100px;
+}
+
+.h1-introduce .sc-heading.style-02 {
+    padding: 65px 100px 0 0;
+    position: relative;
+    left: -10px;
+    z-index: 2;
+}
+
+.h1-introduce .sc-img-box {
+    position: relative;
+    right: 100px;
+    z-index: 1;
+}
+
+    .h1-introduce .sc-img-box img:hover {
+        transform: scale(1.1);
+    }
+
+    .h1-introduce .sc-img-box a {
+        display: block;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .h1-introduce .sc-img-box img {
+        transition: all 1s;
+    }
+
+@media (max-width:1024px) {
+    .h1-introduce .sc-heading.style-02, .h1-introduce .sc-img-box {
+        position: static;
+    }
+
+    .h1-introduce .sc-heading.style-02 {
+        padding: 0;
+    }
+}
+
+@media (max-width:568px) {
+
+
+    .h1-introduce .sc-heading.style-02 {
+        padding-bottom: 30px;
+    }
+
+    .h1-introduce .sc-img-box .col-sm-6 {
+        width: 50%;
+        float: left;
+    }
+}
+
+.sc-heading.style-02 .head-button a:after {
+    float: right;
+    content: '';
+    position: relative;
+    width: 60px;
+    height: 2px;
+    display: block;
+    margin: 11px 10px 0 20px;
+    background: var(--primary-color-1);
+}
+
+.sc-heading.style-02 .head-button a:hover {
+    color: var(--primary-hover-color-1);
+}
+
+.sc-heading.style-02 .head-button a {
+    position: relative;
+    display: inline-block;
+    font-weight: 400;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: var(--primary-color-1);
+}
+
+.sc-heading.style-02 .head-button {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.sc-heading.style-02 .description {
+    font-size: 15px;
+    margin: 20px auto 0;
+}
+
+.sc-heading.style-02 .title {
+    color: var(--title-color-1);
+    font-size: 46px;
+    line-height: 120%;
+    margin-bottom: 20px;
+}

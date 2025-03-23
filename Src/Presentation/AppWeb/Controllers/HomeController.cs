@@ -29,13 +29,16 @@ namespace AppWeb.Controllers
 
             if (!string.IsNullOrEmpty(lang))
             {
-              var defaultPage = await _mediator.Send(new GetAppPageByLanguageCodeQuery(lang));
+              var defaultPage = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(lang));
                 return View();
            }
 
             var lang1 = _languageProvider.GetCurrentLanguage();
-            var defaultPageNew = await _mediator.Send(new GetAppPageByLanguageCodeQuery(lang1));
-            
+            var defaultPageNew = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(lang1));
+
+
+            var page = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(lang1));
+
 
             return View();
         }

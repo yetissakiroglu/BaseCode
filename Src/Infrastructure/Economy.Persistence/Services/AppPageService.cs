@@ -17,7 +17,7 @@ namespace Economy.Persistence.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
             
-        public async Task<ResponseModel<AppPageDto>> GetForReadDefaultPageAsync(GetAppPageQuery query)
+        public async Task<ResponseModel<AppPageDto>> GetForReadDefaultPageAsync(GetAppPageDefaultQuery query)
         {
 
             var appModel = await _appPageRepository.GetForReadAsync(x=>x.IsHomePage, x => x.Translations);
@@ -32,7 +32,7 @@ namespace Economy.Persistence.Services
 
         }
 
-        public async Task<ResponseModel<AppPageDto>> GetForReadDefaultPageByLanguageCodeAsync(GetAppPageByLanguageCodeQuery query)
+        public async Task<ResponseModel<AppPageDto>> GetForReadDefaultPageByLanguageCodeAsync(GetAppPageDefaultByLanguageCodeQuery query)
         {
             var appModel = await _appPageRepository.GetForReadAsync(w => w.IsHomePage, x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode));
             var appModelDto = _mapper.Map<AppPageDto>(appModel);

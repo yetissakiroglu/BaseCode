@@ -61,6 +61,11 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppMenu> AppMenus { get; set; }
         public DbSet<AppMenuTranslation> AppMenuTranslations { get; set; }
 
+        public DbSet<AppSlide> AppSlides { get; set; }
+        public DbSet<AppSlideTranslation> AppSlideTranslations { get; set; }
+
+
+
 
         public DbSet<AppPage> AppPages { get; set; }
         public DbSet<AppPageTranslation> AppPageTranslations { get; set; }

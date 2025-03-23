@@ -1,0 +1,14 @@
+﻿namespace Economy.Application.Dtos.AppSlideDtos
+{
+    public class AppSlideTranslationDto
+    {
+        public int AppLanguageId { get; set; }
+        public string Title { get; set; }
+        public string? Content { get; set; }
+        public string? Thumbnail { get; set; }
+        public bool IsExternal { get; set; }
+        public string? ButtonText { get; set; }
+        public string? ButtonUrl { get; set; }
+        public string? ButtonIcon { get; set; }
+    }
+}

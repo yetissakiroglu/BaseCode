@@ -93,6 +93,8 @@ var seederAppSetting = app.Services.CreateScope().ServiceProvider.GetRequiredSer
 await seederAppSetting.SeedAsync();
 var seederAppPage = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppPageSeeder>();
 await seederAppPage.SeedAsync();
+var seederAppSlide = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppSlideSeeder>();
+await seederAppSlide.SeedAsync();
 
 
 

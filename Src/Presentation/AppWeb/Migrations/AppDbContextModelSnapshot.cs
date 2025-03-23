@@ -17,7 +17,7 @@ namespace AppWeb.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -403,6 +403,101 @@ namespace AppWeb.Migrations
                     b.ToTable("AppMenus");
                 });
 
+            modelBuilder.Entity("Economy.Domain.Entites.EntitySlides.AppSlide", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppSlides");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntitySlides.AppSlideTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppLanguageId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AppSlideId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ButtonIcon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ButtonText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ButtonUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsExternal")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Thumbnail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppLanguageId");
+
+                    b.HasIndex("AppSlideId");
+
+                    b.ToTable("AppSlideTranslations");
+                });
+
             modelBuilder.Entity("Economy.Domain.Entites.Identities.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -713,6 +808,21 @@ namespace AppWeb.Migrations
                     b.Navigation("ParentMenu");
                 });
 
+            modelBuilder.Entity("Economy.Domain.Entites.EntitySlides.AppSlideTranslation", b =>
+                {
+                    b.HasOne("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", "AppLanguage")
+                        .WithMany()
+                        .HasForeignKey("AppLanguageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Economy.Domain.Entites.EntitySlides.AppSlide", null)
+                        .WithMany("Translations")
+                        .HasForeignKey("AppSlideId");
+
+                    b.Navigation("AppLanguage");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -783,6 +893,11 @@ namespace AppWeb.Migrations
                 {
                     b.Navigation("SubMenus");
 
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntitySlides.AppSlide", b =>
+                {
                     b.Navigation("Translations");
                 });
 #pragma warning restore 612, 618

@@ -4,6 +4,6 @@ using MediatR;
 
 namespace Economy.Application.Queries.AppPages
 {
-    public record GetAppPageQuery() : IRequest<ResponseModel<AppPageDto>>;
+    public record GetAppPageDefaultQuery() : IRequest<ResponseModel<AppPageDto>>;
        
 }

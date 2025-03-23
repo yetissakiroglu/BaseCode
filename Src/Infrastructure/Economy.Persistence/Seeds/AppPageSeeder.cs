@@ -1,8 +1,5 @@
-﻿using Economy.Domain.Entites.EntityAppMenus;
-using Economy.Domain.Entites.EntityAppPages;
-using Economy.Domain.Entites.EntityMenuItems;
+﻿using Economy.Domain.Entites.EntityAppPages;
 using Economy.Persistence.Contexts;
-using Microsoft.EntityFrameworkCore;
 
 namespace Economy.Persistence.Seeds
 {
@@ -17,10 +14,6 @@ namespace Economy.Persistence.Seeds
 
         public async Task SeedAsync()
         {
-            var appPages = await _context.AppPages.Include(x => x.Translations).ToListAsync();
-            _context.AppPages.RemoveRange(appPages);
-            await _context.SaveChangesAsync();
-
             if (!_context.AppPages.Any())
             {
                 var app = GetPreconfiguredAppPages();
@@ -47,8 +40,9 @@ namespace Economy.Persistence.Seeds
             {
                 IsHomePage = false,
                 IsDeleted = false,
-                Translations = new List < AppPageTranslation > { new AppPageTranslation {AppLanguageId = 1, Title = "Anasayfa", Url = "anasayfa", MetaTitle = "Anasayfa", MetaDescription = "Anasayfa"},
-                    new AppPageTranslation {AppLanguageId = 2, Title = "Home", Url = "home", MetaTitle = "Home", MetaDescription = "Home"} }
+                Translations = new List<AppPageTranslation> {
+                          new AppPageTranslation {AppLanguageId = 1, Title = "Slide tr", Url = "Slide tr", MetaTitle = "Slide tr", MetaDescription = "Slide tr"},
+                          new AppPageTranslation {AppLanguageId = 2, Title = "Slide en", Url = "Slide en", MetaTitle = "Slide en", MetaDescription = "Slide en"} }
             }
             };
         }

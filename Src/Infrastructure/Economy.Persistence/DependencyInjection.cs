@@ -2,6 +2,7 @@
 using Economy.Application.Repositories.AppLanguageRepositories;
 using Economy.Application.Repositories.AppMenuRepositories;
 using Economy.Application.Repositories.AppPageRepositories;
+using Economy.Application.Repositories.AppSlideRepositories;
 using Economy.Core.Repositories;
 using Economy.Core.UnitOfWorks;
 using Economy.Persistence.Contexts;
@@ -9,6 +10,7 @@ using Economy.Persistence.Repositories.AppBase.EntityFramework;
 using Economy.Persistence.Repositories.AppLanguageRepositories;
 using Economy.Persistence.Repositories.AppMenuRepositories;
 using Economy.Persistence.Repositories.AppPageRepositories;
+using Economy.Persistence.Repositories.AppSlideRepositories;
 using Economy.Persistence.Seeds;
 using Economy.Persistence.Services;
 using Economy.Persistence.UnitOfWorks;
@@ -44,7 +46,8 @@ namespace Economy.Persistence
             services.AddScoped<IAppPageRepository, AppPageRepository>();
             services.AddScoped<IAppPageService, AppPageService>();
 
-
+            services.AddScoped<IAppSlideRepository, AppSlideRepository>();
+            services.AddScoped<IAppSlideService, AppSlideService>();
 
 
             services.AddDbContext<AppDbContext>(options =>
@@ -61,8 +64,9 @@ namespace Economy.Persistence
             services.AddScoped<AppLanguageSeeder>();
             services.AddScoped<AppSettingSeeder>();
             services.AddScoped<AppPageSeeder>();
+            services.AddScoped<AppSlideSeeder>();
 
-            
+
 
 
             // Diğer servisleri ekleyin
