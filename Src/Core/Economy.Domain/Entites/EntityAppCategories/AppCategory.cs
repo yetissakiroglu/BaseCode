@@ -8,8 +8,10 @@ namespace Economy.Domain.Entites.EntityCategories
     public class AppCategory : BaseEntity<int>
     {
         public string Name { get; set; } 
-        public string Slug { get; set; } 
-        public string? Description { get; set; } // Kategori açıklaması
+        public string Url { get; set; } 
+        public string? ShortDescription { get; set; } // Kategori açıklaması
+        public string? Content { get; set; }
+
         public string? MetaTitle { get; set; }
         public string? MetaDescription { get; set; }
 
@@ -17,9 +19,8 @@ namespace Economy.Domain.Entites.EntityCategories
         public PublicationStatus PublicationStatus { get; set; }
 
         public int? ParentCategoryId { get; set; }
-        public AppCategory? ParentCategory { get; set; }
-        public ICollection<AppCategory> SubCategories { get; set; } = [];
-
+        public AppCategory ParentCategory { get; set; }
+        public ICollection<AppCategory> SubCategories { get; set; } = new List<AppCategory>();
 
         public List<BreadcrumbDto> GetBreadcrumbs()
         {
@@ -44,12 +45,9 @@ namespace Economy.Domain.Entites.EntityCategories
         // URL formatında tam yol
         public string GetUrlPath()
         {
-            return ParentCategory != null ? $"{ParentCategory.GetUrlPath()}/{Slug.ToLowerInvariant()}" : Slug.ToLowerInvariant();
+            return ParentCategory != null ? $"{ParentCategory.GetUrlPath()}/{Url.ToLowerInvariant()}" : Url.ToLowerInvariant();
         }
 
-       
-        // İlişkili içerikler
-        public virtual ICollection<AppContent> AppContents { get; set; } = new List<AppContent>();
-
+     
     }
 }

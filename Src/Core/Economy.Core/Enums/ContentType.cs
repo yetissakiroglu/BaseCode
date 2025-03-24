@@ -4,20 +4,8 @@ namespace Economy.Domain.Enums
 {
     public enum ContentType
     {
-        /// <summary>
-        /// Yazılar
-        /// </summary>
-        ///
-        Articles = 1,
+        General = 1,
+        Odalar = 2
 
-        /// <summary>
-        /// Haberler
-        /// </summary>
-        News = 2,
-
-        /// <summary>
-        /// Raporlar
-        /// </summary>
-        Reports = 3
     }
 }

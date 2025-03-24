@@ -65,8 +65,10 @@ namespace Economy.Persistence
             services.AddScoped<AppSettingSeeder>();
             services.AddScoped<AppPageSeeder>();
             services.AddScoped<AppSlideSeeder>();
+            services.AddScoped<AppCategorySeeder>();
+            services.AddScoped<AppContentSeeder>();
 
-
+            
 
 
             // Diğer servisleri ekleyin

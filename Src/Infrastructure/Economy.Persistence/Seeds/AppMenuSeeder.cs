@@ -16,7 +16,7 @@ namespace Economy.Persistence.Seeds
 
         public async Task SeedAsync()
         {
-            var menusDelete = await _context.AppMenus.Include(x=>x.SubMenus).Include(x => x.ParentMenu).Include(x => x.Translations).Where(w=>w.ParentMenuId==null).ToListAsync();
+            var menusDelete = await _context.AppMenus.Include(x => x.Translations).ToListAsync();
             _context.AppMenus.RemoveRange(menusDelete);
             await _context.SaveChangesAsync();
 

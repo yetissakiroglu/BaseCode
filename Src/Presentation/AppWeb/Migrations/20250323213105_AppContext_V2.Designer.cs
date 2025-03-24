@@ -4,6 +4,7 @@ using Economy.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250323213105_AppContext_V2")]
+    partial class AppContext_V2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,208 @@ namespace AppWeb.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppContents.AppComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppContentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ApprovalStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppContentId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("AppComment");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppContents.AppContentTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppContentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AppTagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppContentId");
+
+                    b.HasIndex("AppTagId");
+
+                    b.ToTable("AppContentTag");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppContents.AppContent_Document", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppContentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DocumentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppContentId");
+
+                    b.ToTable("AppContent_Document");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppContents.AppContent_ImportantNote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppContentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppContentId");
+
+                    b.ToTable("AppContent_ImportantNote");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppContents.AppTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppTag");
+                });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", b =>
                 {
@@ -373,9 +578,6 @@ namespace AppWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("ContentType")
                         .HasColumnType("int");
 
@@ -384,6 +586,9 @@ namespace AppWeb.Migrations
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -405,7 +610,8 @@ namespace AppWeb.Migrations
                     b.Property<int>("PublicationStatus")
                         .HasColumnType("int");
 
-                    b.Property<string>("ShortDescription")
+                    b.Property<string>("Slug")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -415,15 +621,11 @@ namespace AppWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("AppCategories");
+                    b.ToTable("AppCategory");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityMenuItems.AppMenu", b =>
@@ -464,6 +666,91 @@ namespace AppWeb.Migrations
                     b.ToTable("AppMenus");
                 });
 
+            modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppAmenity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppAmenityGroupId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppAmenityGroupId");
+
+                    b.ToTable("AppAmenity");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppAmenityGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppContentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppContentId");
+
+                    b.ToTable("AppAmenityGroup");
+                });
+
             modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppContent", b =>
                 {
                     b.Property<int>("Id")
@@ -474,6 +761,16 @@ namespace AppWeb.Migrations
 
                     b.Property<int>("AppCategoryId")
                         .HasColumnType("int");
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ApprovalStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Author")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -488,13 +785,28 @@ namespace AppWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FeaturedImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBreakingNews")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsExternal")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsFeatured")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsHeadline")
+                        .HasColumnType("bit");
+
                     b.Property<string>("MetaDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetaKeywords")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MetaTitle")
@@ -504,6 +816,10 @@ namespace AppWeb.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ShortDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -517,15 +833,99 @@ namespace AppWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("ViewCount")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AppCategoryId");
 
+                    b.HasIndex("AppUserId");
+
                     b.ToTable("AppContents");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppImageGroupId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCover")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppImageGroupId");
+
+                    b.ToTable("AppImage");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppImageGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppContentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppContentId");
+
+                    b.ToTable("AppImageGroup");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntitySlides.AppSlide", b =>
@@ -874,6 +1274,64 @@ namespace AppWeb.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppContents.AppComment", b =>
+                {
+                    b.HasOne("Economy.Domain.Entites.EntityPages.AppContent", "AppContent")
+                        .WithMany("AppComments")
+                        .HasForeignKey("AppContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Economy.Domain.Entites.Identities.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.Navigation("AppContent");
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppContents.AppContentTag", b =>
+                {
+                    b.HasOne("Economy.Domain.Entites.EntityPages.AppContent", "AppContent")
+                        .WithMany("AppContentTags")
+                        .HasForeignKey("AppContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Economy.Domain.Entites.EntityAppContents.AppTag", "AppTag")
+                        .WithMany("AppContentTags")
+                        .HasForeignKey("AppTagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppContent");
+
+                    b.Navigation("AppTag");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppContents.AppContent_Document", b =>
+                {
+                    b.HasOne("Economy.Domain.Entites.EntityPages.AppContent", "AppContent")
+                        .WithMany("AppContent_Documents")
+                        .HasForeignKey("AppContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppContent");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppContents.AppContent_ImportantNote", b =>
+                {
+                    b.HasOne("Economy.Domain.Entites.EntityPages.AppContent", "AppContent")
+                        .WithMany("AppContent_ImportantNotes")
+                        .HasForeignKey("AppContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppContent");
+                });
+
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppMenus.AppMenuTranslation", b =>
                 {
                     b.HasOne("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", "AppLanguage")
@@ -942,15 +1400,67 @@ namespace AppWeb.Migrations
                     b.Navigation("ParentMenu");
                 });
 
+            modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppAmenity", b =>
+                {
+                    b.HasOne("Economy.Domain.Entites.EntityPages.AppAmenityGroup", "AppAmenityGroup")
+                        .WithMany("AppAmenities")
+                        .HasForeignKey("AppAmenityGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppAmenityGroup");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppAmenityGroup", b =>
+                {
+                    b.HasOne("Economy.Domain.Entites.EntityPages.AppContent", "AppContent")
+                        .WithMany("AppAmenityGroups")
+                        .HasForeignKey("AppContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppContent");
+                });
+
             modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppContent", b =>
                 {
                     b.HasOne("Economy.Domain.Entites.EntityCategories.AppCategory", "AppCategory")
-                        .WithMany()
+                        .WithMany("AppContents")
                         .HasForeignKey("AppCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Economy.Domain.Entites.Identities.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("AppCategory");
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppImage", b =>
+                {
+                    b.HasOne("Economy.Domain.Entites.EntityPages.AppImageGroup", "AppImageGroup")
+                        .WithMany("AppImages")
+                        .HasForeignKey("AppImageGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppImageGroup");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppImageGroup", b =>
+                {
+                    b.HasOne("Economy.Domain.Entites.EntityPages.AppContent", "AppContent")
+                        .WithMany("AppImageGroups")
+                        .HasForeignKey("AppContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppContent");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntitySlides.AppSlideTranslation", b =>
@@ -1019,6 +1529,11 @@ namespace AppWeb.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppContents.AppTag", b =>
+                {
+                    b.Navigation("AppContentTags");
+                });
+
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", b =>
                 {
                     b.Navigation("AppSettingTranslations");
@@ -1036,6 +1551,8 @@ namespace AppWeb.Migrations
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityCategories.AppCategory", b =>
                 {
+                    b.Navigation("AppContents");
+
                     b.Navigation("SubCategories");
                 });
 
@@ -1044,6 +1561,31 @@ namespace AppWeb.Migrations
                     b.Navigation("SubMenus");
 
                     b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppAmenityGroup", b =>
+                {
+                    b.Navigation("AppAmenities");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppContent", b =>
+                {
+                    b.Navigation("AppAmenityGroups");
+
+                    b.Navigation("AppComments");
+
+                    b.Navigation("AppContentTags");
+
+                    b.Navigation("AppContent_Documents");
+
+                    b.Navigation("AppContent_ImportantNotes");
+
+                    b.Navigation("AppImageGroups");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityPages.AppImageGroup", b =>
+                {
+                    b.Navigation("AppImages");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntitySlides.AppSlide", b =>

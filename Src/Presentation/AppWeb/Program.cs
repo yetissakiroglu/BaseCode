@@ -1,19 +1,15 @@
 ﻿using AppWeb.ActionFilters;
 using AppWeb.Providers;
-using Autofac.Extensions.DependencyInjection;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Autofac.Extras.DynamicProxy;
 using Economy.Application;
 using Economy.Persistence;
 using Economy.Persistence.Seeds;
-using LoggingLibrary;
-using LoggingLibrary.Data;
+using LoggingLibrary.Extensions;
+using LoggingLibrary.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using LoggingLibrary.Extensions;
-using Autofac.Extras.DynamicProxy;
-using LoggingLibrary.Interceptors;
-using Economy.Application.Interfaces;
-using Economy.Persistence.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 // AppSettingsActionFilter'ı global olarak kaydedin
@@ -95,6 +91,12 @@ var seederAppPage = app.Services.CreateScope().ServiceProvider.GetRequiredServic
 await seederAppPage.SeedAsync();
 var seederAppSlide = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppSlideSeeder>();
 await seederAppSlide.SeedAsync();
+
+var seederAppCategory = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppCategorySeeder>();
+await seederAppCategory.SeedAsync();
+
+var seederAppContent = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppContentSeeder>();
+await seederAppContent.SeedAsync();
 
 
 
