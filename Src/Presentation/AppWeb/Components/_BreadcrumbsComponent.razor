@@ -1,8 +1,15 @@
-﻿
+﻿@using Economy.Domain.Models
+
 @code {
     [Parameter]
-    public List<BreadcrumbsViewModel>? Breadcrumbs { get; set; }
+    public List<BreadcrumbDto>? Breadcrumbs { get; set; }
 }
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Home</li>
+    </ol>
+</nav>
 
 <!-- Breadcrumbs S t a r t -->
 <section class="breadcrumbs-area breadcrumb-bg">

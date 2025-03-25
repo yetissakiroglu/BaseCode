@@ -36,6 +36,7 @@ namespace Economy.Persistence.Services
         {
             var appModel = await _appPageRepository.GetForReadAsync(null, x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode && w.Url==query.Url), x => x.AppPageSections);
             var appModelDto = _mapper.Map<AppPageDto>(appModel);
+            appModelDto.Breadcrumb = appModel.GetBreadcrumbs();
             return ResponseModel<AppPageDto>.Success(appModelDto, HttpStatusCode.OK);
         }
 

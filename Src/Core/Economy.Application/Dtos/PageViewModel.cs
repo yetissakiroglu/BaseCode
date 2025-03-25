@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Economy.Domain.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Economy.Application.Dtos
 {
@@ -9,10 +10,8 @@ namespace Economy.Application.Dtos
         public string PageURL { get; set; }
         public string PageImageURL { get; set; }
 
-        public List<string> PageCanonicalURLs { get; set; } = [];
-        public List<BreadcrumbsViewModel> Breadcrumbs { get; set; } = [];
-
+        public List<string> PageCanonicalURLs { get; set; } = new();
+        public List<BreadcrumbDto> Breadcrumb { get; set; } = new ();
     }
 
-    public record BreadcrumbsViewModel(string Name, string Url, bool Active);
 }

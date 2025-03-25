@@ -2,7 +2,7 @@
 @model AppPageDto
 
 
-<component type="typeof(_BreadcrumbsComponent)" render-mode="ServerPrerendered" param-Breadcrumbs="@Model.PageDetail.Breadcrumbs" />
+<component type="typeof(_BreadcrumbsComponent)" render-mode="ServerPrerendered" param-Breadcrumbs="@Model.Breadcrumb" />
 
 @{
     foreach (var item in Model.AppPageSections)
