@@ -1,6 +1,4 @@
-﻿using Economy.Core.Extensions;
-using Economy.Domain.BaseEntities;
-using Economy.Domain.Models;
+﻿using Economy.Domain.BaseEntities;
 
 namespace Economy.Domain.Entites.EntityAppPages
 {
@@ -10,6 +8,7 @@ namespace Economy.Domain.Entites.EntityAppPages
 
         // ✅ Dil bağımlı çeviriler
         public ICollection<AppPageTranslation> Translations { get; set; } = new HashSet<AppPageTranslation>();
+        public ICollection<AppPageSection> AppPageSections { get; set; } = new HashSet<AppPageSection>();
 
     }
 }

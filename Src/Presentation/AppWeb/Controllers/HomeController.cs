@@ -1,9 +1,8 @@
 using AppWeb.Models;
 using AppWeb.Providers;
-using Economy.Application.Queries.AppMenus;
+using Economy.Application.Dtos.AppPageDtos;
 using Economy.Application.Queries.AppPages;
-using Economy.Application.Queries.AppSettings;
-using LoggingLibrary;
+using Economy.Core.Tools;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -26,19 +25,16 @@ namespace AppWeb.Controllers
 
         public async Task<IActionResult> Index(string lang)
         {
+            var result = new ResponseModel<AppPageDto>();
 
             if (!string.IsNullOrEmpty(lang))
             {
-              var defaultPage = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(lang));
+                result = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(lang));
                 return View();
-           }
+            }
 
-            var lang1 = _languageProvider.GetCurrentLanguage();
-            var defaultPageNew = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(lang1));
-
-
-            var page = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(lang1));
-
+            var langDefault = _languageProvider.GetCurrentLanguage();
+            result = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(langDefault));
 
             return View();
         }

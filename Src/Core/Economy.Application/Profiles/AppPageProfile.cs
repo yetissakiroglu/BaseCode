@@ -9,7 +9,16 @@ namespace Economy.Application.Profiles
         public AppPageProfile()
         {
             CreateMap<AppPage, AppPageDto>()
-                .ForMember(dest => dest.Translations, opt => opt.MapFrom(src => src.Translations));
+             .ForMember(dest => dest.Translations, opt => opt.MapFrom(src => src.Translations))
+             .ForMember(dest => dest.AppPageSections, opt => opt.MapFrom(src => src.AppPageSections));
+
+            CreateMap<AppPageSection, AppPageSectionDto>()
+                .ForMember(dest => dest.AppSection, opt => opt.MapFrom(src => src.AppSection));
+
+            CreateMap<AppSection, AppSectionDto>();
+
+            CreateMap<AppPageTranslation, AppPageTranslationDto>();
+
 
         }
     }

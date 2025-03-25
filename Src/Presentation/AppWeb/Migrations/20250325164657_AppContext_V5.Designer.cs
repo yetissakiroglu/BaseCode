@@ -4,6 +4,7 @@ using Economy.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250325164657_AppContext_V5")]
+    partial class AppContext_V5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,6 +172,7 @@ namespace AppWeb.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -201,7 +205,7 @@ namespace AppWeb.Migrations
 
                     b.HasIndex("AppSectionId");
 
-                    b.ToTable("AppPageSections");
+                    b.ToTable("AppPageSection");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPageTranslation", b =>
@@ -298,7 +302,7 @@ namespace AppWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppSections");
+                    b.ToTable("AppSection");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppSettings.AppSetting", b =>

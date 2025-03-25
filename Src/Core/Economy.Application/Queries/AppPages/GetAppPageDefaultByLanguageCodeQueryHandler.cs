@@ -10,7 +10,7 @@ namespace Economy.Application.Queries.AppPages
         private readonly IAppPageService _appPageService = appPageService;
         public async Task<ResponseModel<AppPageDto>> Handle(GetAppPageDefaultByLanguageCodeQuery request, CancellationToken cancellationToken)
         {
-            return await _appPageService.GetForReadDefaultPageByLanguageCodeAsync(request);
+            return await _appPageService.GetForReadPageDefaultByLanguageCodeAsync(request);
         }
     }
 

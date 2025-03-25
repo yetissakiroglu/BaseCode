@@ -13,7 +13,6 @@ namespace Economy.Application.Profiles
             CreateMap<AppLanguage, AppLanguageDto>()
                 .ForMember(dest => dest.AppSettingTranslations, opt => opt.MapFrom(src => src.AppSettingTranslations));
 
-            CreateMap<AppPageTranslation, AppPageTranslationDto>();
 
             
         }

@@ -122,6 +122,11 @@ app.MapControllerRoute(
     name: "localized",
     pattern: "{lang?}/{controller=Home}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "dynamic_page",
+    pattern: "{lang}/{url}",
+    defaults: new { controller = "Page", action = "Index" });
+
 
 
 app.Run();

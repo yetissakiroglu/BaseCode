@@ -68,8 +68,10 @@ namespace Economy.Persistence.Contexts
 
         public DbSet<AppPage> AppPages { get; set; }
         public DbSet<AppPageTranslation> AppPageTranslations { get; set; }
+        public DbSet<AppPageSection> AppPageSections { get; set; }
+        public DbSet<AppSection> AppSections { get; set; }
 
-        
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
