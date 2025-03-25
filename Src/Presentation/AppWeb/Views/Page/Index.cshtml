@@ -1,6 +1,40 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using AppWeb.Components
+@model AppPageDto
+
+
+<component type="typeof(_BreadcrumbsComponent)" render-mode="ServerPrerendered" param-Breadcrumbs="@Model.PageDetail.Breadcrumbs" />
+
 @{
+    foreach (var item in Model.AppPageSections)
+    {
+        // `SectionType` değerini kontrol etmek için bir switch-case yapısı
+        switch (item.AppSection.SectionType)
+        {
+
+
+            case SectionType.HTML:
+                {
+                    <p>Html</p>
+
+                    <component type="typeof(_PageComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" />
+
+
+                }
+                break;
+            case SectionType.Slide:
+                {
+                    <p>Slider</p>
+                    // Headline türü için işleme mantığı
+                }
+                break;
+            default:
+                {
+
+                    // Varsayılan işleme mantığı
+                }
+                break;
+        }
+    }
 }
+
 <span>test </span>

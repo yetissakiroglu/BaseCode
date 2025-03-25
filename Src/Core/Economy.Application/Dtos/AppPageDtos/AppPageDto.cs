@@ -1,6 +1,6 @@
 ﻿namespace Economy.Application.Dtos.AppPageDtos
 {
-    public class AppPageDto
+    public class AppPageDto: PageViewModel
     {
         public int Id { get; set; }
         public bool IsHomePage { get; set; }

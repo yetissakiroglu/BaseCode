@@ -1,12 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Economy.Application.Dtos.AppPageDtos;
+using Economy.Application.Queries.AppPages;
+using Economy.Core.Tools;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AppWeb.Controllers
 {
     public class PageController : BaseController
     {
-        public IActionResult Index(string url, string lang)
+        private readonly IMediator _mediator;
+
+        public PageController(IMediator mediator) => _mediator = mediator;
+
+        public async Task<IActionResult> Index(string url, string lang)
         {
-            return View();
+            var result = new ResponseModel<AppPageDto>();
+            var model = await _mediator.Send(new GetAppPageByLanguageCodeByUrlQuery(url, lang));
+            return View(model.Data);
         }
     }
 }

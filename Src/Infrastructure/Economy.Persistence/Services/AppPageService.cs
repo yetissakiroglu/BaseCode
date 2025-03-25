@@ -32,9 +32,11 @@ namespace Economy.Persistence.Services
 
         }
 
-        public Task<ResponseModel<AppPageDto>> GetForReadPageByLanguageCodeByUrlAsync(GetAppPageByLanguageCodeByUrlQuery query)
+        public async Task<ResponseModel<AppPageDto>> GetForReadPageByLanguageCodeByUrlAsync(GetAppPageByLanguageCodeByUrlQuery query)
         {
-            throw new NotImplementedException();
+            var appModel = await _appPageRepository.GetForReadAsync(null, x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode && w.Url==query.Url), x => x.AppPageSections);
+            var appModelDto = _mapper.Map<AppPageDto>(appModel);
+            return ResponseModel<AppPageDto>.Success(appModelDto, HttpStatusCode.OK);
         }
 
         public async Task<ResponseModel<AppPageDto>> GetForReadPageDefaultByLanguageCodeAsync(GetAppPageDefaultByLanguageCodeQuery query)
