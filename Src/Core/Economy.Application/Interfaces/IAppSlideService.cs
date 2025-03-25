@@ -6,7 +6,8 @@ namespace Economy.Application.Interfaces
 {
     public interface IAppSlideService
     {
-        Task<ResponseModel<List<AppSlideDto>>> WhereForReadAsync(GetAllAppSlideByLanguageCodeQuery query);
+        Task<ResponseModel<List<AppSlideDto>>> WhereForReadByLanguageCodeAsync(GetAllAppSlideByLanguageCodeQuery query);
+        Task<ResponseModel<List<AppSlideDto>>> WhereForReadByLanguageCodeBySectionIdAsync(GetAllAppSlideByLanguageCodeBySectionIdQuery query);
 
 
     }

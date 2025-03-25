@@ -1,0 +1,60 @@
+﻿@using Economy.Application.Dtos.AppSlideDtos
+@using Economy.Application.Queries.AppSlides
+@using MediatR
+@inject IMediator _mediator
+
+@code {
+    private List<string> errorMessages = new();
+    private List<AppSlideDto> AppSlides = new();
+
+    [Parameter]
+    public int AppSectionId { get; set; }
+    [Parameter]
+    public string Lang { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _mediator.Send(new GetAllAppSlideByLanguageCodeBySectionIdQuery(AppSectionId, Lang));
+
+        if (result.IsSuccess)
+        {
+            AppSlides = result.Data;
+        }
+        else
+        {
+            // Eğer Messages listesi varsa, tüm mesajları al
+            if (result.Message?.Messages != null && result.Message.Messages.Count() > 0)
+            {
+                errorMessages = result.Message.Messages.ToList();
+            }
+        }
+    }
+}
+
+
+@if (!AppSlides.Any())
+{
+    if (errorMessages.Any())
+    {
+        <div class="error-messages">
+            @foreach (var message in errorMessages)
+            {
+                <p>@message</p>
+            }
+        </div>
+    }
+}
+else
+{
+    <div class="owl-carousel owl-theme carousel_in">
+        @foreach (var slide in AppSlides)
+        {
+            <div>
+                <img src="img/slides/@slide.Translations.FirstOrDefault().Thumbnail" alt="">
+                <div class="caption">
+                    <h3>@slide.Translations.FirstOrDefault().Title</h3>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -1,6 +1,47 @@
-﻿@{
+﻿@using AppWeb.Components
+@model AppPageDto
+
+@{
     ViewData["Title"] = "Home Page";
 }
+
+@{
+    foreach (var item in Model.AppPageSections)
+    {
+        // `SectionType` değerini kontrol etmek için bir switch-case yapısı
+        switch (item.AppSection.SectionType)
+        {
+            case SectionType.Slide:
+                {
+                    <component type="typeof(_SlideHomeComponent)" render-mode="ServerPrerendered" param-AppSectionID="@item.AppSection.Id" param-Lang="@Model.LanguageCode" />
+                }
+                break;
+            case SectionType.Room:
+                {
+                    <component type="typeof(_RoomHomeComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" />
+                }
+                break;
+            case SectionType.HTML:
+                {
+                    <component type="typeof(_PageComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" />
+                }
+                break;
+            default:
+                {
+
+                    // Varsayılan işleme mantığı
+                }
+                break;
+        }
+    }
+}
+
+
+
+
+
+
+
 
 <section class="bg-white kurumsal">
     <div class="h1-introduce">
@@ -78,165 +119,6 @@
     </div><!-- End row -->
 </div><!-- End container -->
 
-<div class="container_styled_1">
-    <div class="container margin_60">
-        <div class="row">
-            <div class="col-lg-5 offset-lg-1">
-                <figure class="room_pic">
-                    <a href="room_detail.html"><img src="img/room_home_1.jpg" alt="" class="img-fluid"></a>
-                    <span class="wow zoomIn"><sup>$</sup>120<small>Per night</small></span>
-                </figure>
-            </div>
-            <div class="col-lg-4 offset-lg-1">
-                <div class="room_desc_home">
-                    <h3>Single Room </h3>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
-                    </p>
-                    <ul>
-                        <li>
-                            <div class="tooltip_styled tooltip-effect-4">
-                                <span class="tooltip-item"><i class="icon_set_2_icon-104"></i></span>
-                                <div class="tooltip-content">
-                                    King size bed
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="tooltip_styled tooltip-effect-4">
-                                <span class="tooltip-item"><i class="icon_set_2_icon-118"></i></span>
-                                <div class="tooltip-content">
-                                    Shower
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="tooltip_styled tooltip-effect-4">
-                                <span class="tooltip-item"><i class="icon_set_2_icon-116"></i></span>
-                                <div class="tooltip-content">
-                                    Plasma TV
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <a href="room_detail.html" class="btn_1_outline">Read more</a>
-                </div><!-- End room_desc_home -->
-            </div>
-        </div><!-- End row -->
-    </div><!-- End container -->
-</div><!-- End container_styled_1 -->
-
-<div class="container margin_60">
-    <div class="row">
-        <div class="col-lg-5 offset-lg-1 order-lg-2">
-            <figure class="room_pic left"><a href="room_detail.html"><img src="img/room_home_3.jpg" alt="" class="img-fluid"></a><span class="wow zoomIn"><sup>$</sup>150<small>Per night</small></span></figure>
-        </div>
-        <div class="col-lg-4 offset-lg-1 order-lg-1">
-            <div class="room_desc_home">
-                <h3>Double Room </h3>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
-                </p>
-                <ul>
-                    <li>
-                        <div class="tooltip_styled tooltip-effect-4">
-                            <span class="tooltip-item"><i class="icon_set_2_icon-104"></i></span>
-                            <div class="tooltip-content">
-                                King size bed
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="tooltip_styled tooltip-effect-4">
-                            <span class="tooltip-item"><i class="icon_set_2_icon-111"></i></span>
-                            <div class="tooltip-content">
-                                Bathtub
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="tooltip_styled tooltip-effect-4">
-                            <span class="tooltip-item"><i class="icon_set_2_icon-116"></i></span>
-                            <div class="tooltip-content">
-                                Plasma TV
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="tooltip_styled tooltip-effect-4">
-                            <span class="tooltip-item"><i class="icon_set_2_icon-106"></i></span>
-                            <div class="tooltip-content">
-                                Safe box
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-                <a href="room_detail.html" class="btn_1_outline">Read more</a>
-            </div><!-- End room_desc_home -->
-        </div>
-    </div><!-- End row -->
-</div><!-- End container -->
-
-<div class="container_styled_1">
-    <div class="container margin_60">
-        <div class="row">
-            <div class="col-lg-5 offset-lg-1">
-                <figure class="room_pic"><a href="room_detail.html"><img src="img/room_home_2.jpg" alt="" class="img-fluid"></a><span class="wow zoomIn"><sup>$</sup>190<small>Per night</small></span></figure>
-            </div>
-            <div class="col-lg-4 offset-lg-1">
-                <div class="room_desc_home">
-                    <h3>Suite Room </h3>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
-                    </p>
-                    <ul>
-                        <li>
-                            <div class="tooltip_styled tooltip-effect-4">
-                                <span class="tooltip-item"><i class="icon_set_2_icon-104"></i></span>
-                                <div class="tooltip-content">
-                                    King size bed
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="tooltip_styled tooltip-effect-4">
-                                <span class="tooltip-item"><i class="icon_set_2_icon-111"></i></span>
-                                <div class="tooltip-content">
-                                    Bathtub
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="tooltip_styled tooltip-effect-4">
-                                <span class="tooltip-item"><i class="icon_set_2_icon-116"></i></span>
-                                <div class="tooltip-content">
-                                    Plasma TV
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="tooltip_styled tooltip-effect-4">
-                                <span class="tooltip-item"><i class="icon_set_1_icon-15"></i></span>
-                                <div class="tooltip-content">
-                                    Welcome bottle
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="tooltip_styled tooltip-effect-4">
-                                <span class="tooltip-item"><i class="icon_set_2_icon-106"></i></span>
-                                <div class="tooltip-content">
-                                    Safe box
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <a href="room_detail.html" class="btn_1_outline">Read more</a>
-                </div><!-- End room_desc_home -->
-            </div>
-        </div><!-- End row -->
-    </div><!-- End container -->
-</div><!-- End container_styled_1 -->
 
 <section class="promo_full">
     <div class="promo_full_wp">

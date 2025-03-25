@@ -114,5 +114,18 @@ namespace Economy.Core.Extensions
         {
             return dateTime.ToString("d MMMM yyyy HH:mm");
         }
+
+        public static SectionTypeModel ParseSectionTypeModel(this string input)
+        {
+            var model = new SectionTypeModel();
+
+            model.SectionHeading = Regex.Match(input, @"<sectionHeading>(.*?)<\/sectionHeading>").Groups[1].Value;
+            model.SectionDescription = Regex.Match(input, @"<sectionDescription>(.*?)<\/sectionDescription>").Groups[1].Value;
+
+            string pageIdsString = Regex.Match(input, @"<pageIDs>(.*?)<\/pageIDs>").Groups[1].Value;
+            model.PageIDs = pageIdsString.Split(',').Select(int.Parse).ToList();
+
+            return model;
+        }
     }
 }

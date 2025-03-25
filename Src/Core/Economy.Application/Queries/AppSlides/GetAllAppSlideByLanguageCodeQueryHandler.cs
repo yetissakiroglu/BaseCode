@@ -10,7 +10,7 @@ namespace Economy.Application.Queries.AppSlides
         private readonly IAppSlideService _appSlideService = appSlideService;
         public async Task<ResponseModel<List<AppSlideDto>>> Handle(GetAllAppSlideByLanguageCodeQuery request, CancellationToken cancellationToken)
         {
-            return await _appSlideService.WhereForReadAsync(request);
+            return await _appSlideService.WhereForReadByLanguageCodeAsync(request);
         }
     }
   

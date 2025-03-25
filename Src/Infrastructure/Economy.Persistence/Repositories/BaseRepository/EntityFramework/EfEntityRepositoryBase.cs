@@ -59,12 +59,15 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
         }
         public async Task<T> GetForReadAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
         {
-            var query = filters == null ? Table : Table.AsTracking().Where(filters);
+            var query = filters == null ? Table : Table.AsNoTracking().Where(filters);
 
             query = includes.Aggregate(query, (current, include) => current.Include(include));
 
             return await query.FirstOrDefaultAsync();
         }
+
+
+
         public async Task<T> GetForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
         {
             var query = Table.AsTracking().ApplyIsDeletedFalseFilter();
@@ -109,7 +112,39 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
             query = includes.Aggregate(query, (current, include) => current.Include(include));
             return await Task.FromResult(query.AsQueryable());
         }
+        public async Task<T?> GetForReadAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes)
+        {
+            var query = Table.AsNoTracking(); // Performans için AsNoTracking kullan
 
-       
+            if (filters != null)
+            {
+                query = query.Where(filters);
+            }
+
+            // Include işlemlerini uygula (Include + ThenInclude desteği)
+            foreach (var include in includes)
+            {
+                query = include(query);
+            }
+
+            return await query.FirstOrDefaultAsync();
+        }
+        public Task<IQueryable<T>> WhereForReadAsync(Expression<Func<T, bool>>? filters = null,params Func<IQueryable<T>, IQueryable<T>>[] includes)
+        {
+            var query = Table.AsNoTracking(); // Performans için AsNoTracking kullan
+
+            if (filters != null)
+            {
+                query = query.Where(filters);
+            }
+
+            // Include işlemlerini uygula (Include + ThenInclude desteği)
+            foreach (var include in includes)
+            {
+                query = include(query);
+            }
+
+            return Task.FromResult(query);
+        }
     }
 }

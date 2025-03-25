@@ -11,14 +11,11 @@ namespace AppWeb.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
         private readonly IMediator _mediator;
         private readonly LanguageProvider _languageProvider;
 
-        public HomeController(ILogger<HomeController> logger, IMediator mediator, LanguageProvider languageProvider)
+        public HomeController(IMediator mediator, LanguageProvider languageProvider)
         {
-            _logger = logger;
             _mediator = mediator;
             _languageProvider = languageProvider;
         }
@@ -30,14 +27,22 @@ namespace AppWeb.Controllers
             if (!string.IsNullOrEmpty(lang))
             {
                 result = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(lang));
-                return View();
+                result.Data.LanguageCode = lang;
+                return View(result.Data);
             }
 
             var langDefault = _languageProvider.GetCurrentLanguage();
             result = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(langDefault));
-
-            return View();
+            result.Data.LanguageCode = langDefault;
+            return View(result.Data);
         }
+
+
+
+
+
+
+
 
         public IActionResult Privacy()
         {

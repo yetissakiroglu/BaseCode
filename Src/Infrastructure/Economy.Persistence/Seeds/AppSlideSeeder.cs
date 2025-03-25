@@ -1,8 +1,5 @@
-﻿using Economy.Domain.Entites.EntityAppMenus;
-using Economy.Domain.Entites.EntityMenuItems;
-using Economy.Domain.Entites.EntitySlides;
+﻿using Economy.Domain.Entites.EntitySlides;
 using Economy.Persistence.Contexts;
-using Microsoft.EntityFrameworkCore;
 
 namespace Economy.Persistence.Seeds
 {
@@ -17,10 +14,6 @@ namespace Economy.Persistence.Seeds
 
         public async Task SeedAsync()
         {
-            var slideDelete = await _context.AppSlides.Include(x => x.Translations).ToListAsync();
-            _context.AppSlides.RemoveRange(slideDelete);
-            await _context.SaveChangesAsync();
-
             if (!_context.AppSlides.Any())
             {
                 var slides = GetPreconfiguredSlides();

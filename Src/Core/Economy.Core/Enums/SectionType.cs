@@ -7,7 +7,8 @@ namespace Economy.Domain.Enums
         [Description("Html Bölüm")]
         HTML = 1,
         [Description("Slider Bölümü")]
-        Slide = 2
-       
+        Slide = 2,
+        [Description("Odalar Bölümü")]
+        Room = 3
     }
 }

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-
-namespace Economy.Application.Exceptions
+﻿namespace Economy.Application.Exceptions
 {
     //public class ExceptionMiddleware
     //{

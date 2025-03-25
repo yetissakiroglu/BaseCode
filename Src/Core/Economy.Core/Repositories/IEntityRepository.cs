@@ -1,4 +1,5 @@
 ﻿using Economy.Core.PagingModels;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Economy.Core.Repositories
@@ -26,6 +27,9 @@ namespace Economy.Core.Repositories
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
-     
+
+        Task<T?> GetForReadAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
+        Task<IQueryable<T>> WhereForReadAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
+
     }
 }

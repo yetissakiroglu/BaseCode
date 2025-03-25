@@ -5,6 +5,7 @@ using Economy.Application.Queries.AppPages;
 using Economy.Application.Repositories.AppPageRepositories;
 using Economy.Core.Tools;
 using Economy.Core.UnitOfWorks;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Economy.Persistence.Services
@@ -42,7 +43,10 @@ namespace Economy.Persistence.Services
 
         public async Task<ResponseModel<AppPageDto>> GetForReadPageDefaultByLanguageCodeAsync(GetAppPageDefaultByLanguageCodeQuery query)
         {
-            var appModel = await _appPageRepository.GetForReadAsync(null, x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode),x=>x.AppPageSections);
+            var appModel = await _appPageRepository.GetForReadAsync(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode))
+                                                                         .Include(x => x.AppPageSections)
+                                                                         .ThenInclude(ps => ps.AppSection));
+
             var appModelDto = _mapper.Map<AppPageDto>(appModel);
             return ResponseModel<AppPageDto>.Success(appModelDto, HttpStatusCode.OK);
         }
