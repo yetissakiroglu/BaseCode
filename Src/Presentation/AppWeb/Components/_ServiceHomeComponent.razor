@@ -1,0 +1,77 @@
+﻿@using Economy.Application.Dtos.AppContentDtos
+@using Economy.Application.Dtos.AppPageDtos
+@using Economy.Application.Queries.AppContents
+@using Economy.Core.Extensions
+@using MediatR
+@inject IMediator _mediator
+
+@code {
+    private List<string> errorMessages = new();
+    private List<AppContentDto> AppContents = new();
+    private SectionTypeModel dataParse = new();
+
+    [Parameter]
+    public AppSectionDto AppSection { get; set; }
+    [Parameter]
+    public string LanguageCode { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        dataParse = AppSection.Content.ParseSectionTypeModel();
+
+        var result = await _mediator.Send(new GetAllAppContentByLanguageCodeByAppContentIdsQuery(dataParse.PageIDs, LanguageCode));
+
+        if (result.IsSuccess)
+        {
+            AppContents = result.Data;
+        }
+        else
+        {
+            // Eğer Messages listesi varsa, tüm mesajları al
+            if (result.Message?.Messages != null && result.Message.Messages.Count() > 0)
+            {
+                errorMessages = result.Message.Messages.ToList();
+            }
+        }
+    }
+}
+
+<div class="container margin_60_35">
+    <h1 class="main_title"><em></em>@dataParse.SectionHeading <span>Hotel and Bed&amp;Breakfast</span></h1>
+    <p class="lead styled">
+        @dataParse.SectionDescription
+    </p>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="mosaic_container">
+                <img src="img/mosaic_1.jpg" alt="" class="img-fluid"><span class="caption_2">Nice Outdoor</span>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="col-12">
+                <div class="mosaic_container">
+                    <img src="img/mosaic_2.jpg" alt="" class="img-fluid"><span class="caption_2">Large Bedroom</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="mosaic_container">
+                        <img src="img/mosaic_3.jpg" alt="" class="img-fluid"><span class="caption_2">Modern Bathroom</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mosaic_container">
+                        <img src="img/mosaic_4.jpg" alt="" class="img-fluid"><span class="caption_2">Wellness</span>
+                    </div>
+                </div>
+            </div><!-- End row -->
+        </div>
+    </div><!-- End row -->
+</div><!-- End container -->
+@foreach (var item in AppContents)
+{
+   
+}
+
+
+

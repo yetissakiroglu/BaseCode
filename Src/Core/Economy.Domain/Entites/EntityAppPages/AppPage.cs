@@ -18,7 +18,7 @@ namespace Economy.Domain.Entites.EntityAppPages
         {
             new BreadcrumbDto
             {
-                Name = this.Translations.FirstOrDefault().Title,
+                Name = this.Translations?.FirstOrDefault().Title,
                 Url = "/" + this.GetUrlPath()
             }
         };
@@ -27,7 +27,7 @@ namespace Economy.Domain.Entites.EntityAppPages
         // URL formatında tam yol (Hiyerarşi kaldırıldığı için direkt slug döndürüyor)
         public string GetUrlPath()
         {
-            return Translations.FirstOrDefault().Url.ToLowerInvariant();
+            return Translations?.FirstOrDefault().Url.ToLowerInvariant();
         }
 
     }

@@ -35,9 +35,13 @@ namespace Economy.Persistence.Services
 
         public async Task<ResponseModel<AppPageDto>> GetForReadPageByLanguageCodeByUrlAsync(GetAppPageByLanguageCodeByUrlQuery query)
         {
-            var appModel = await _appPageRepository.GetForReadAsync(null, x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode && w.Url==query.Url), x => x.AppPageSections);
+            var appModel = await _appPageRepository.GetForReadAsync(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode && w.Url == query.Url))
+                                                                         .Include(x => x.AppPageSections)
+                                                                         .ThenInclude(ps => ps.AppSection));
+
             var appModelDto = _mapper.Map<AppPageDto>(appModel);
             appModelDto.Breadcrumb = appModel.GetBreadcrumbs();
+            appModelDto.AppPageSections = appModelDto.AppPageSections.OrderBy(e => e.Sequence).ToList();
             return ResponseModel<AppPageDto>.Success(appModelDto, HttpStatusCode.OK);
         }
 
@@ -48,6 +52,8 @@ namespace Economy.Persistence.Services
                                                                          .ThenInclude(ps => ps.AppSection));
 
             var appModelDto = _mapper.Map<AppPageDto>(appModel);
+            appModelDto.Breadcrumb = appModel.GetBreadcrumbs();
+            appModelDto.AppPageSections = appModelDto.AppPageSections.OrderBy(e => e.Sequence).ToList();
             return ResponseModel<AppPageDto>.Success(appModelDto, HttpStatusCode.OK);
         }
 

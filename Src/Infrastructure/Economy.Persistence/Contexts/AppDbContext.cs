@@ -1,10 +1,10 @@
-﻿using Economy.Domain.Entites.EntityAppLanguage;
+﻿using Economy.Domain.Entites.EntityAppContents.AppContents;
+using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Domain.Entites.EntityAppMenus;
 using Economy.Domain.Entites.EntityAppPages;
 using Economy.Domain.Entites.EntityAppSettings;
 using Economy.Domain.Entites.EntityCategories;
 using Economy.Domain.Entites.EntityMenuItems;
-using Economy.Domain.Entites.EntityPages;
 using Economy.Domain.Entites.EntitySlides;
 using Economy.Domain.Entites.Identities;
 using Economy.Persistence.Configurations;
@@ -22,6 +22,9 @@ namespace Economy.Persistence.Contexts
 
         /* Post */
         public DbSet<AppContent> AppContents { get; set; }
+        public DbSet<AppContentTranslation> AppContentTranslations { get; set; }
+
+        
         public DbSet<AppCategory> AppCategories { get; set; }
 
         //public DbSet<AppImageGroup> AppImageGroups { get; set; }

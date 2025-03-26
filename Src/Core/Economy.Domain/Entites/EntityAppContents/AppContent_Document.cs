@@ -1,5 +1,5 @@
 ﻿using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityPages;
+using Economy.Domain.Entites.EntityAppContents.AppContents;
 
 namespace Economy.Domain.Entites.EntityAppContents
 {

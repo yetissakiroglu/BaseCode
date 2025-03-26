@@ -1,5 +1,5 @@
 ﻿using Economy.Application.Repositories.AppContentRepositories;
-using Economy.Domain.Entites.EntityPages;
+using Economy.Domain.Entites.EntityAppContents.AppContents;
 using Economy.Persistence.Contexts;
 using Economy.Persistence.Repositories.AppBase.EntityFramework;
 

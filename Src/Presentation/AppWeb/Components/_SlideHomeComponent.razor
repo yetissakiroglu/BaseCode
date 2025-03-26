@@ -10,11 +10,11 @@
     [Parameter]
     public int AppSectionId { get; set; }
     [Parameter]
-    public string Lang { get; set; }
+    public string LanguageCode { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await _mediator.Send(new GetAllAppSlideByLanguageCodeBySectionIdQuery(AppSectionId, Lang));
+        var result = await _mediator.Send(new GetAllAppSlideByLanguageCodeBySectionIdQuery(AppSectionId, LanguageCode));
 
         if (result.IsSuccess)
         {

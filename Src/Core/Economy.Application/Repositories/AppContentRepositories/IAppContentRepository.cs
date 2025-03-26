@@ -1,5 +1,5 @@
 ﻿using Economy.Core.Repositories;
-using Economy.Domain.Entites.EntityPages;
+using Economy.Domain.Entites.EntityAppContents.AppContents;
 
 namespace Economy.Application.Repositories.AppContentRepositories
 {

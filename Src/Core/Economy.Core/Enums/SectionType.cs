@@ -9,6 +9,8 @@ namespace Economy.Domain.Enums
         [Description("Slider Bölümü")]
         Slide = 2,
         [Description("Odalar Bölümü")]
-        Room = 3
+        Room = 3,
+        [Description("Olanaklar Bölümü")]
+        Service = 4
     }
 }

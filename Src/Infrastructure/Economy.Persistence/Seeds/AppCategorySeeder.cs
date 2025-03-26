@@ -18,10 +18,7 @@ namespace Economy.Persistence.Seeds
 
         public async Task SeedAsync()
         {
-            //var delete = await _context.AppCategories.ToListAsync();
-            //_context.AppCategories.RemoveRange(delete);
-            //await _context.SaveChangesAsync();
-
+  
             if (!_context.AppCategories.Any())
             {
                 var data = GetSeedCategories();

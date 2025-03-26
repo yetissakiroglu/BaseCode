@@ -13,12 +13,17 @@
         {
             case SectionType.Slide:
                 {
-                    <component type="typeof(_SlideHomeComponent)" render-mode="ServerPrerendered" param-AppSectionID="@item.AppSection.Id" param-Lang="@Model.LanguageCode" />
+                    <component type="typeof(_SlideHomeComponent)" render-mode="ServerPrerendered" param-AppSectionID="@item.AppSection.Id" param-LanguageCode="@Model.LanguageCode" />
                 }
                 break;
             case SectionType.Room:
                 {
-                    <component type="typeof(_RoomHomeComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" />
+                    <component type="typeof(_RoomHomeComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" param-LanguageCode="@Model.LanguageCode" />
+                }
+                break;
+            case SectionType.Service:
+                {
+                    <component type="typeof(_ServiceHomeComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" param-LanguageCode="@Model.LanguageCode" />
                 }
                 break;
             case SectionType.HTML:
@@ -86,38 +91,6 @@
     </div>
 </section>
 
-<div class="container margin_60_35">
-    <h1 class="main_title"><em></em>Welcome to Albert <span>Hotel and Bed&amp;Breakfast</span></h1>
-    <p class="lead styled">
-        Usu habeo equidem sanctus no. Suas summo id sed, erat erant oporteat cu pri. In eum omnes molestie. Sed ad debet scaevola, ne mel lorem legendos. Unum etiam cum te, an elit assueverit vix, falli aliquam complectitur ex ius.
-    </p>
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="mosaic_container">
-                <img src="img/mosaic_1.jpg" alt="" class="img-fluid"><span class="caption_2">Nice Outdoor</span>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="col-12">
-                <div class="mosaic_container">
-                    <img src="img/mosaic_2.jpg" alt="" class="img-fluid"><span class="caption_2">Large Bedroom</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <div class="mosaic_container">
-                        <img src="img/mosaic_3.jpg" alt="" class="img-fluid"><span class="caption_2">Modern Bathroom</span>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="mosaic_container">
-                        <img src="img/mosaic_4.jpg" alt="" class="img-fluid"><span class="caption_2">Wellness</span>
-                    </div>
-                </div>
-            </div><!-- End row -->
-        </div>
-    </div><!-- End row -->
-</div><!-- End container -->
 
 
 <section class="promo_full">
