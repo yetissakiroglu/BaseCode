@@ -6,9 +6,24 @@
 @inject IMediator _mediator
 
 @code {
+    private class AppContentHtmlDto
+    {
+        public string? Image1 { get; set; }
+        public string? Caption1 { get; set; }
+
+        public string? Image2 { get; set; }
+        public string? Caption2 { get; set; }
+
+        public string? Image3 { get; set; }
+        public string? Caption3 { get; set; }
+
+        public string? Image4 { get; set; }
+        public string? Caption4 { get; set; }
+    }
+
     private List<string> errorMessages = new();
-    private List<AppContentDto> AppContents = new();
     private SectionTypeModel dataParse = new();
+    private AppContentHtmlDto AppContentHtml = new();
 
     [Parameter]
     public AppSectionDto AppSection { get; set; }
@@ -20,10 +35,37 @@
         dataParse = AppSection.Content.ParseSectionTypeModel();
 
         var result = await _mediator.Send(new GetAllAppContentByLanguageCodeByAppContentIdsQuery(dataParse.PageIDs, LanguageCode));
-
         if (result.IsSuccess)
         {
-            AppContents = result.Data;
+            var contents = result.Data;
+
+            if (contents.Count > 0)
+            {
+                var t = contents[0].Translations.FirstOrDefault();
+                AppContentHtml.Image1 = contents[0].Thumbnail;
+                AppContentHtml.Caption1 = t?.Title;
+            }
+
+            if (contents.Count > 1)
+            {
+                var t = contents[1].Translations.FirstOrDefault();
+                AppContentHtml.Image2 = contents[1].Thumbnail;
+                AppContentHtml.Caption2 = t?.Title;
+            }
+
+            if (contents.Count > 2)
+            {
+                var t = contents[2].Translations.FirstOrDefault();
+                AppContentHtml.Image3 = contents[2].Thumbnail;
+                AppContentHtml.Caption3 = t?.Title;
+            }
+
+            if (contents.Count > 3)
+            {
+                var t = contents[3].Translations.FirstOrDefault();
+                AppContentHtml.Image4 = contents[3].Thumbnail;
+                AppContentHtml.Caption4 = t?.Title;
+            }
         }
         else
         {
@@ -35,43 +77,47 @@
         }
     }
 }
-
 <div class="container margin_60_35">
+
     <h1 class="main_title"><em></em>@dataParse.SectionHeading <span>Hotel and Bed&amp;Breakfast</span></h1>
     <p class="lead styled">
         @dataParse.SectionDescription
     </p>
+
     <div class="row">
         <div class="col-lg-6">
             <div class="mosaic_container">
-                <img src="img/mosaic_1.jpg" alt="" class="img-fluid"><span class="caption_2">Nice Outdoor</span>
+                <img src="@AppContentHtml.Image1" alt="" class="img-fluid">
+                <span class="caption_2">@AppContentHtml.Caption1</span>
             </div>
         </div>
+
         <div class="col-lg-6">
             <div class="col-12">
                 <div class="mosaic_container">
-                    <img src="img/mosaic_2.jpg" alt="" class="img-fluid"><span class="caption_2">Large Bedroom</span>
+                    <img src="@AppContentHtml.Image2" alt="" class="img-fluid">
+                    <span class="caption_2">@AppContentHtml.Caption2</span>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-6">
                     <div class="mosaic_container">
-                        <img src="img/mosaic_3.jpg" alt="" class="img-fluid"><span class="caption_2">Modern Bathroom</span>
+                        <img src="@AppContentHtml.Image3" alt="" class="img-fluid">
+                        <span class="caption_2">@AppContentHtml.Caption3</span>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="mosaic_container">
-                        <img src="img/mosaic_4.jpg" alt="" class="img-fluid"><span class="caption_2">Wellness</span>
+                        <img src="@AppContentHtml.Image4" alt="" class="img-fluid">
+                        <span class="caption_2">@AppContentHtml.Caption4</span>
                     </div>
                 </div>
-            </div><!-- End row -->
+            </div>
         </div>
-    </div><!-- End row -->
-</div><!-- End container -->
-@foreach (var item in AppContents)
-{
-   
-}
+    </div>
+</div>
+
 
 
 
