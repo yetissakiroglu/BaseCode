@@ -81,22 +81,22 @@ var app = builder.Build();
 
 
 // Seed the database
-var seederAppMenu = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppMenuSeeder>();
-await seederAppMenu.SeedAsync();
-var seederAppLanguage = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppLanguageSeeder>();
-await seederAppLanguage.SeedAsync();
-var seederAppSetting = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppSettingSeeder>();
-await seederAppSetting.SeedAsync();
-var seederAppPage = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppPageSeeder>();
-await seederAppPage.SeedAsync();
-var seederAppSlide = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppSlideSeeder>();
-await seederAppSlide.SeedAsync();
+//var seederAppMenu = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppMenuSeeder>();
+//await seederAppMenu.SeedAsync();
+//var seederAppLanguage = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppLanguageSeeder>();
+//await seederAppLanguage.SeedAsync();
+//var seederAppSetting = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppSettingSeeder>();
+//await seederAppSetting.SeedAsync();
+//var seederAppPage = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppPageSeeder>();
+//await seederAppPage.SeedAsync();
+//var seederAppSlide = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppSlideSeeder>();
+//await seederAppSlide.SeedAsync();
 
-var seederAppCategory = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppCategorySeeder>();
-await seederAppCategory.SeedAsync();
+//var seederAppCategory = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppCategorySeeder>();
+//await seederAppCategory.SeedAsync();
 
-var seederAppContent = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppContentSeeder>();
-await seederAppContent.SeedAsync();
+//var seederAppContent = app.Services.CreateScope().ServiceProvider.GetRequiredService<AppContentSeeder>();
+//await seederAppContent.SeedAsync();
 
 
 

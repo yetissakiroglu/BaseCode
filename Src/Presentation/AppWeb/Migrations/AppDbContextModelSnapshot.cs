@@ -419,6 +419,10 @@ namespace AppWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AppVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -426,37 +430,41 @@ namespace AppWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CustomCss")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomJs")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DomainName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EnableCDN")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EnableCache")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EnableDebugMode")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ForceSSL")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsMaintenanceMode")
+                    b.Property<bool>("IsSiteLive")
                         .HasColumnType("bit");
-
-                    b.Property<string>("LogoUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaintenanceMessage")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MetaDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetaTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PrimaryColor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SiteDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SiteTitle")
+                    b.Property<string>("StaticFileUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -493,24 +501,28 @@ namespace AppWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("TranslatedMetaDescription")
+                    b.Property<string>("MetaDescription")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
-                    b.Property<string>("TranslatedMetaTitle")
+                    b.Property<string>("MetaTitle")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("TranslatedSiteDescription")
+                    b.Property<string>("SiteTitle")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TranslatedSiteTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -526,6 +538,136 @@ namespace AppWeb.Migrations
                     b.HasIndex("AppSettingId");
 
                     b.ToTable("AppSettingTranslations");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppSettings.AppTechnicalSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AllowedIpAddresses")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("AppVersion")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomCss")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomJs")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DomainName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("EnableCDN")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EnableCache")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EnableCustomFooterScripts")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EnableCustomHeaderScripts")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EnableDebugMode")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EnableGlobalScriptInjection")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EnableMaintenanceIpWhitelist")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EnablePreloader")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FacebookPixelCode")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("ForceSSL")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("GoogleAnalyticsCode")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSiteLive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MaintenanceMessage")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("PreloaderHtml")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StaticFileUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppTechnicalSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            AppVersion = "v1.0.0",
+                            CreatedAt = new DateTime(2025, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = "1",
+                            CustomCss = "",
+                            CustomJs = "",
+                            DomainName = "www.otelsitem.com",
+                            EnableCDN = false,
+                            EnableCache = true,
+                            EnableCustomFooterScripts = false,
+                            EnableCustomHeaderScripts = false,
+                            EnableDebugMode = false,
+                            EnableGlobalScriptInjection = false,
+                            EnableMaintenanceIpWhitelist = false,
+                            EnablePreloader = false,
+                            ForceSSL = true,
+                            IsDeleted = false,
+                            IsSiteLive = true,
+                            MaintenanceMessage = "Sitemiz şu anda bakım modundadır. Lütfen daha sonra tekrar deneyiniz.",
+                            StaticFileUrl = "",
+                            UpdatedAt = new DateTime(2025, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedBy = "1"
+                        });
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppUsers.UserRefreshToken", b =>

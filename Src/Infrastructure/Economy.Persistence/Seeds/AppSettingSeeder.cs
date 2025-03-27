@@ -28,31 +28,31 @@ namespace Economy.Persistence.Seeds
     {
         new AppSetting
         {
-            SiteTitle = "Varsayılan Başlık",
-            SiteDescription = "Varsayılan Açıklama",
-            LogoUrl = "/images/default-logo.png",
-            PrimaryColor = "#000000",
-            MetaTitle = "Varsayılan Meta Başlığı",
-            MetaDescription = "Varsayılan Meta Açıklaması",
-            IsMaintenanceMode = false,
+            //SiteTitle = "Varsayılan Başlık",
+            //SiteDescription = "Varsayılan Açıklama",
+            //LogoUrl = "/images/default-logo.png",
+            //PrimaryColor = "#000000",
+            //MetaTitle = "Varsayılan Meta Başlığı",
+            //MetaDescription = "Varsayılan Meta Açıklaması",
+            //IsMaintenanceMode = false,
             MaintenanceMessage = "Site şu anda bakım modunda.",
             Translations = new List<AppSettingTranslation>
             {
                 new AppSettingTranslation
                 {
                     AppLanguageId = 1, // Türkçe
-                    TranslatedSiteTitle = "Varsayılan Başlık (TR)",
-                    TranslatedSiteDescription = "Varsayılan Açıklama (TR)",
-                    TranslatedMetaTitle = "Varsayılan Meta Başlığı (TR)",
-                    TranslatedMetaDescription = "Varsayılan Meta Açıklaması (TR)",
+                    //TranslatedSiteTitle = "Varsayılan Başlık (TR)",
+                    //TranslatedSiteDescription = "Varsayılan Açıklama (TR)",
+                    //TranslatedMetaTitle = "Varsayılan Meta Başlığı (TR)",
+                    //TranslatedMetaDescription = "Varsayılan Meta Açıklaması (TR)",
                 },
                 new AppSettingTranslation
                 {
                     AppLanguageId = 2, // İngilizce
-                    TranslatedSiteTitle = "Default Title (EN)",
-                    TranslatedSiteDescription = "Default Description (EN)",
-                    TranslatedMetaTitle = "Default Meta Title (EN)",
-                    TranslatedMetaDescription = "Default Meta Description (EN)",
+                    //TranslatedSiteTitle = "Default Title (EN)",
+                    //TranslatedSiteDescription = "Default Description (EN)",
+                    //TranslatedMetaTitle = "Default Meta Title (EN)",
+                    //TranslatedMetaDescription = "Default Meta Description (EN)",
                 }
             }
         }

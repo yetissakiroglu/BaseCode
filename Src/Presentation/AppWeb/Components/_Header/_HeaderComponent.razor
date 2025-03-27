@@ -15,17 +15,19 @@
             <nav class="col-9 position-relative">
                 <a class="cmn-toggle-switch cmn-toggle-switch__htx open_close" href="javascript:void(0);"><span>Menu mobile</span></a>
                 <!-- Language Component'ı Burada Dahil Ediliyor -->
-                @await Component.InvokeAsync("Language")
-                <div class="main-menu">
+@*                 @await Component.InvokeAsync("Language")
+ *@                <div class="main-menu">
                     <div id="header_menu">
                         <img src="img/logo_m.png" width="141" height="40" alt="" data-retina="true">
                     </div>
                     <a href="#" class="open_close" id="close_in"><i class="icon_set_1_icon-77"></i></a>    <!-- Menü Component'ı Burada Dahil Ediliyor -->
-                    @await Component.InvokeAsync("Menu")
-                </div>
+@*                     @await Component.InvokeAsync("Menu")
+ *@                </div>
 
                 <!-- End main-menu -->
             </nav>
         </div><!-- End row -->
     </div><!-- End container -->
 </header>
+@* <_BreadcrumbsComponent Breadcrumbs="@contentDetail.Breadcrumbs" />
+ *@

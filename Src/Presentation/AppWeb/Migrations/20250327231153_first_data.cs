@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AppWeb.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class first_data : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,11 +17,12 @@ namespace AppWeb.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MetaTitle = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    MetaDescription = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShortDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ContentType = table.Column<int>(type: "int", nullable: false),
                     PublicationStatus = table.Column<int>(type: "int", nullable: false),
                     ParentCategoryId = table.Column<int>(type: "int", nullable: true),
@@ -38,34 +39,7 @@ namespace AppWeb.Migrations
                         name: "FK_AppCategories_AppCategories_ParentCategoryId",
                         column: x => x.ParentCategoryId,
                         principalTable: "AppCategories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppFileDocuments",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OriginalFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DocumentData = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppFileDocuments", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppFileImages",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OriginalFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageData = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppFileImages", x => x.Id);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -74,14 +48,12 @@ namespace AppWeb.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LanguageCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CultureInfo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    ResourceFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsRTL = table.Column<bool>(type: "bit", nullable: false),
+                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsDefault = table.Column<bool>(type: "bit", nullable: false),
-                    IconCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -99,8 +71,6 @@ namespace AppWeb.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     IsExternal = table.Column<bool>(type: "bit", nullable: false),
                     ParentMenuId = table.Column<int>(type: "int", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -125,12 +95,6 @@ namespace AppWeb.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShortDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsHomePage = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -169,14 +133,17 @@ namespace AppWeb.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TimeZone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SiteName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SiteLogo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SiteFavicon = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsMaintenanceMode = table.Column<bool>(type: "bit", nullable: false),
-                    MaintenanceMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsSiteLive = table.Column<bool>(type: "bit", nullable: false),
+                    ForceSSL = table.Column<bool>(type: "bit", nullable: false),
+                    DomainName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EnableCDN = table.Column<bool>(type: "bit", nullable: false),
+                    StaticFileUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EnableDebugMode = table.Column<bool>(type: "bit", nullable: false),
+                    CustomCss = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomJs = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AppVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaintenanceMessage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EnableCache = table.Column<bool>(type: "bit", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -208,14 +175,31 @@ namespace AppWeb.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppTags",
+                name: "AppTechnicalSettings",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsSiteLive = table.Column<bool>(type: "bit", nullable: false),
+                    ForceSSL = table.Column<bool>(type: "bit", nullable: false),
+                    DomainName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    EnableCDN = table.Column<bool>(type: "bit", nullable: false),
+                    StaticFileUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    EnableDebugMode = table.Column<bool>(type: "bit", nullable: false),
+                    AppVersion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    MaintenanceMessage = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    EnableCache = table.Column<bool>(type: "bit", nullable: false),
+                    CustomCss = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomJs = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EnableMaintenanceIpWhitelist = table.Column<bool>(type: "bit", nullable: false),
+                    AllowedIpAddresses = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    EnableCustomHeaderScripts = table.Column<bool>(type: "bit", nullable: false),
+                    EnableCustomFooterScripts = table.Column<bool>(type: "bit", nullable: false),
+                    GoogleAnalyticsCode = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    FacebookPixelCode = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    EnableGlobalScriptInjection = table.Column<bool>(type: "bit", nullable: false),
+                    EnablePreloader = table.Column<bool>(type: "bit", nullable: false),
+                    PreloaderHtml = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -224,7 +208,7 @@ namespace AppWeb.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppTags", x => x.Id);
+                    table.PrimaryKey("PK_AppTechnicalSettings", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -284,43 +268,7 @@ namespace AppWeb.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NumberSequences",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EntityName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Prefix = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Suffix = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastUsedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_NumberSequences", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SessionActivity",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ActivityType = table.Column<int>(type: "int", nullable: true),
-                    ActivityTypeString = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ActivityDateTimeUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SessionActivity", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserRefreshTokens",
+                name: "UserRefreshToken",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -335,7 +283,101 @@ namespace AppWeb.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserRefreshTokens", x => x.UserId);
+                    table.PrimaryKey("PK_UserRefreshToken", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppContents",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ContentType = table.Column<int>(type: "int", nullable: false),
+                    PublicationStatus = table.Column<int>(type: "int", nullable: false),
+                    AppCategoryId = table.Column<int>(type: "int", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppContents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppContents_AppCategories_AppCategoryId",
+                        column: x => x.AppCategoryId,
+                        principalTable: "AppCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppMenuTranslations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppLanguageId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AppMenuId = table.Column<int>(type: "int", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppMenuTranslations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppMenuTranslations_AppLanguages_AppLanguageId",
+                        column: x => x.AppLanguageId,
+                        principalTable: "AppLanguages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppMenuTranslations_AppMenus_AppMenuId",
+                        column: x => x.AppMenuId,
+                        principalTable: "AppMenus",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppPageTranslations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppLanguageId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AppPageId = table.Column<int>(type: "int", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppPageTranslations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppPageTranslations_AppLanguages_AppLanguageId",
+                        column: x => x.AppLanguageId,
+                        principalTable: "AppLanguages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppPageTranslations_AppPages_AppPageId",
+                        column: x => x.AppPageId,
+                        principalTable: "AppPages",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -345,9 +387,9 @@ namespace AppWeb.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Sequence = table.Column<int>(type: "int", nullable: false),
                     IsVisible = table.Column<bool>(type: "bit", nullable: false),
-                    SectionType = table.Column<int>(type: "int", nullable: false),
                     AppPageId = table.Column<int>(type: "int", nullable: false),
                     AppSectionId = table.Column<int>(type: "int", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -374,18 +416,55 @@ namespace AppWeb.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppSettingTranslations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppSettingId = table.Column<int>(type: "int", nullable: false),
+                    AppLanguageId = table.Column<int>(type: "int", nullable: false),
+                    SiteTitle = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    MetaTitle = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    MetaDescription = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppSettingTranslations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppSettingTranslations_AppLanguages_AppLanguageId",
+                        column: x => x.AppLanguageId,
+                        principalTable: "AppLanguages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppSettingTranslations_AppSettings_AppSettingId",
+                        column: x => x.AppSettingId,
+                        principalTable: "AppSettings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AppSlideTranslations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AppSlideId = table.Column<int>(type: "int", nullable: false),
-                    LanguageCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    URL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsExternal = table.Column<bool>(type: "bit", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ButtonText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ButtonUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ButtonIcon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AppLanguageId = table.Column<int>(type: "int", nullable: false),
+                    AppSlideId = table.Column<int>(type: "int", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -396,11 +475,16 @@ namespace AppWeb.Migrations
                 {
                     table.PrimaryKey("PK_AppSlideTranslations", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_AppSlideTranslations_AppLanguages_AppLanguageId",
+                        column: x => x.AppLanguageId,
+                        principalTable: "AppLanguages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_AppSlideTranslations_AppSlides_AppSlideId",
                         column: x => x.AppSlideId,
                         principalTable: "AppSlides",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -420,54 +504,6 @@ namespace AppWeb.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppContents",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShortDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsExternal = table.Column<bool>(type: "bit", nullable: false),
-                    MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MetaKeywords = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsHeadline = table.Column<bool>(type: "bit", nullable: false),
-                    IsFeatured = table.Column<bool>(type: "bit", nullable: false),
-                    IsBreakingNews = table.Column<bool>(type: "bit", nullable: false),
-                    ContentType = table.Column<int>(type: "int", nullable: false),
-                    ApprovalStatus = table.Column<int>(type: "int", nullable: false),
-                    PublicationStatus = table.Column<int>(type: "int", nullable: false),
-                    AppCategoryId = table.Column<int>(type: "int", nullable: false),
-                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Author = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ViewCount = table.Column<long>(type: "bigint", nullable: false),
-                    FeaturedImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppContents", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppContents_AppCategories_AppCategoryId",
-                        column: x => x.AppCategoryId,
-                        principalTable: "AppCategories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AppContents_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -558,100 +594,20 @@ namespace AppWeb.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppAmenityGroups",
+                name: "AppContentTranslations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AppContentId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppAmenityGroups", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppAmenityGroups_AppContents_AppContentId",
-                        column: x => x.AppContentId,
-                        principalTable: "AppContents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppComments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ApprovalStatus = table.Column<int>(type: "int", nullable: false),
-                    AppContentId = table.Column<int>(type: "int", nullable: false),
-                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppComments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppComments_AppContents_AppContentId",
-                        column: x => x.AppContentId,
-                        principalTable: "AppContents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AppComments_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppContent_Documents",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DocumentId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AppContentId = table.Column<int>(type: "int", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppContent_Documents", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppContent_Documents_AppContents_AppContentId",
-                        column: x => x.AppContentId,
-                        principalTable: "AppContents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppContent_ImportantNotes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AppContentId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShortDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Sequence = table.Column<int>(type: "int", nullable: false),
+                    IsExternal = table.Column<bool>(type: "bit", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AppLanguageId = table.Column<int>(type: "int", nullable: false),
+                    AppContentId = table.Column<int>(type: "int", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -660,128 +616,24 @@ namespace AppWeb.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppContent_ImportantNotes", x => x.Id);
+                    table.PrimaryKey("PK_AppContentTranslations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AppContent_ImportantNotes_AppContents_AppContentId",
+                        name: "FK_AppContentTranslations_AppContents_AppContentId",
                         column: x => x.AppContentId,
                         principalTable: "AppContents",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AppContentTranslations_AppLanguages_AppLanguageId",
+                        column: x => x.AppLanguageId,
+                        principalTable: "AppLanguages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "AppContentTags",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AppContentId = table.Column<int>(type: "int", nullable: false),
-                    AppTagId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppContentTags", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppContentTags_AppContents_AppContentId",
-                        column: x => x.AppContentId,
-                        principalTable: "AppContents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AppContentTags_AppTags_AppTagId",
-                        column: x => x.AppTagId,
-                        principalTable: "AppTags",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppImageGroups",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AppContentId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppImageGroups", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppImageGroups_AppContents_AppContentId",
-                        column: x => x.AppContentId,
-                        principalTable: "AppContents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppAmenities",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AppAmenityGroupId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppAmenities", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppAmenities_AppAmenityGroups_AppAmenityGroupId",
-                        column: x => x.AppAmenityGroupId,
-                        principalTable: "AppAmenityGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AppImages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AppImageGroupId = table.Column<int>(type: "int", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsCover = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppImages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppImages_AppImageGroups_AppImageGroupId",
-                        column: x => x.AppImageGroupId,
-                        principalTable: "AppImageGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppAmenities_AppAmenityGroupId",
-                table: "AppAmenities",
-                column: "AppAmenityGroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppAmenityGroups_AppContentId",
-                table: "AppAmenityGroups",
-                column: "AppContentId");
+            migrationBuilder.InsertData(
+                table: "AppTechnicalSettings",
+                columns: new[] { "Id", "AllowedIpAddresses", "AppVersion", "CreatedAt", "CreatedBy", "CustomCss", "CustomJs", "DomainName", "EnableCDN", "EnableCache", "EnableCustomFooterScripts", "EnableCustomHeaderScripts", "EnableDebugMode", "EnableGlobalScriptInjection", "EnableMaintenanceIpWhitelist", "EnablePreloader", "FacebookPixelCode", "ForceSSL", "GoogleAnalyticsCode", "IsDeleted", "IsSiteLive", "MaintenanceMessage", "PreloaderHtml", "StaticFileUrl", "UpdatedAt", "UpdatedBy" },
+                values: new object[] { -1, null, "v1.0.0", new DateTime(2025, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "1", "", "", "www.otelsitem.com", false, true, false, false, false, false, false, false, null, true, null, false, true, "Sitemiz şu anda bakım modundadır. Lütfen daha sonra tekrar deneyiniz.", null, "", new DateTime(2025, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "1" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppCategories_ParentCategoryId",
@@ -789,59 +641,34 @@ namespace AppWeb.Migrations
                 column: "ParentCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppComments_AppContentId",
-                table: "AppComments",
-                column: "AppContentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppComments_AppUserId",
-                table: "AppComments",
-                column: "AppUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppContent_Documents_AppContentId",
-                table: "AppContent_Documents",
-                column: "AppContentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppContent_ImportantNotes_AppContentId",
-                table: "AppContent_ImportantNotes",
-                column: "AppContentId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AppContents_AppCategoryId",
                 table: "AppContents",
                 column: "AppCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppContents_AppUserId",
-                table: "AppContents",
-                column: "AppUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppContentTags_AppContentId",
-                table: "AppContentTags",
+                name: "IX_AppContentTranslations_AppContentId",
+                table: "AppContentTranslations",
                 column: "AppContentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppContentTags_AppTagId",
-                table: "AppContentTags",
-                column: "AppTagId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppImageGroups_AppContentId",
-                table: "AppImageGroups",
-                column: "AppContentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppImages_AppImageGroupId",
-                table: "AppImages",
-                column: "AppImageGroupId");
+                name: "IX_AppContentTranslations_AppLanguageId",
+                table: "AppContentTranslations",
+                column: "AppLanguageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppMenus_ParentMenuId",
                 table: "AppMenus",
                 column: "ParentMenuId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppMenuTranslations_AppLanguageId",
+                table: "AppMenuTranslations",
+                column: "AppLanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppMenuTranslations_AppMenuId",
+                table: "AppMenuTranslations",
+                column: "AppMenuId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppPageSections_AppPageId",
@@ -852,6 +679,31 @@ namespace AppWeb.Migrations
                 name: "IX_AppPageSections_AppSectionId",
                 table: "AppPageSections",
                 column: "AppSectionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppPageTranslations_AppLanguageId",
+                table: "AppPageTranslations",
+                column: "AppLanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppPageTranslations_AppPageId",
+                table: "AppPageTranslations",
+                column: "AppPageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppSettingTranslations_AppLanguageId",
+                table: "AppSettingTranslations",
+                column: "AppLanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppSettingTranslations_AppSettingId",
+                table: "AppSettingTranslations",
+                column: "AppSettingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppSlideTranslations_AppLanguageId",
+                table: "AppSlideTranslations",
+                column: "AppLanguageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppSlideTranslations_AppSlideId",
@@ -902,43 +754,25 @@ namespace AppWeb.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AppAmenities");
+                name: "AppContentTranslations");
 
             migrationBuilder.DropTable(
-                name: "AppComments");
-
-            migrationBuilder.DropTable(
-                name: "AppContent_Documents");
-
-            migrationBuilder.DropTable(
-                name: "AppContent_ImportantNotes");
-
-            migrationBuilder.DropTable(
-                name: "AppContentTags");
-
-            migrationBuilder.DropTable(
-                name: "AppFileDocuments");
-
-            migrationBuilder.DropTable(
-                name: "AppFileImages");
-
-            migrationBuilder.DropTable(
-                name: "AppImages");
-
-            migrationBuilder.DropTable(
-                name: "AppLanguages");
-
-            migrationBuilder.DropTable(
-                name: "AppMenus");
+                name: "AppMenuTranslations");
 
             migrationBuilder.DropTable(
                 name: "AppPageSections");
 
             migrationBuilder.DropTable(
-                name: "AppSettings");
+                name: "AppPageTranslations");
+
+            migrationBuilder.DropTable(
+                name: "AppSettingTranslations");
 
             migrationBuilder.DropTable(
                 name: "AppSlideTranslations");
+
+            migrationBuilder.DropTable(
+                name: "AppTechnicalSettings");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -956,28 +790,25 @@ namespace AppWeb.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "NumberSequences");
+                name: "UserRefreshToken");
 
             migrationBuilder.DropTable(
-                name: "SessionActivity");
+                name: "AppContents");
 
             migrationBuilder.DropTable(
-                name: "UserRefreshTokens");
+                name: "AppMenus");
 
             migrationBuilder.DropTable(
-                name: "AppAmenityGroups");
-
-            migrationBuilder.DropTable(
-                name: "AppTags");
-
-            migrationBuilder.DropTable(
-                name: "AppImageGroups");
+                name: "AppSections");
 
             migrationBuilder.DropTable(
                 name: "AppPages");
 
             migrationBuilder.DropTable(
-                name: "AppSections");
+                name: "AppSettings");
+
+            migrationBuilder.DropTable(
+                name: "AppLanguages");
 
             migrationBuilder.DropTable(
                 name: "AppSlides");
@@ -986,13 +817,10 @@ namespace AppWeb.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AppContents");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "AppCategories");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }
