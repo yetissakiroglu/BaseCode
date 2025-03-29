@@ -33,7 +33,7 @@ namespace AppWeb.Controllers
 
             var langDefault = _languageProvider.GetCurrentLanguage();
             result = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(langDefault));
-            result.Data.LanguageCode = langDefault;
+            //result.Data.LanguageCode = langDefault;
             return View(result.Data);
         }
 

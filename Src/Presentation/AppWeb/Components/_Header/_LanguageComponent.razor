@@ -1,0 +1,49 @@
+﻿@using Economy.Application.Dtos.AppLanguageDtos
+@using Economy.Application.Queries.AppLanguages
+@using MediatR
+@using System.Globalization
+@inject IMediator _mediator
+@code {
+    private List<string> errorMessages = new();
+    private List<AppLanguageDto> AppLanguages = new();
+    private string activeLanguage = @CultureInfo.CurrentUICulture.Name;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _mediator.Send(new GetAllAppLanguageQuery(true));
+        if (result.IsSuccess)
+        {
+            AppLanguages = result.Data;
+        }
+        else
+        {
+            // Eğer Messages listesi varsa, tüm mesajları al
+            if (result.Message?.Messages != null && result.Message.Messages.Count() > 0)
+            {
+                errorMessages = result.Message.Messages.ToList();
+            }
+        }
+    }
+}
+@if (!AppLanguages.Any())
+{
+    if (errorMessages.Any())
+    {
+        <div class="error-messages">
+            @foreach (var message in errorMessages)
+            {
+                <p>@message</p>
+            }
+        </div>
+    }
+}
+else
+{
+    <ul id="lang_top">
+        @foreach (var lang in AppLanguages)
+        {
+            var active = lang.Code == activeLanguage ? "active" : "";
+            <li><a href="@($"/Language/ChangeLanguage?lang={lang.Code}")" class="@active">@lang.Icon - @activeLanguage</a></li>
+        }
+    </ul>
+}
