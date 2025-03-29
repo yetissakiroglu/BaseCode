@@ -1,5 +1,4 @@
 ﻿using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityAppSettings;
 
 namespace Economy.Domain.Entites.EntityAppLanguage
 {
@@ -20,8 +19,8 @@ namespace Economy.Domain.Entites.EntityAppLanguage
         // Dilin varsayılan olup olmadığını belirtmek için
         public bool IsDefault { get; set; }
 
-        // Bir dildeki çevirileri tutmak için ilişki
-        public virtual ICollection<AppSettingTranslation> AppSettingTranslations { get; set; } = new List<AppSettingTranslation>();
+        //// Bir dildeki çevirileri tutmak için ilişki
+        //public virtual ICollection<AppSettingTranslation> AppSettingTranslations { get; set; } = new List<AppSettingTranslation>();
 
     }
 }

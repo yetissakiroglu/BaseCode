@@ -28,8 +28,8 @@ namespace Economy.Core.Repositories
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
 
-        Task<T?> GetForReadAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
-        Task<IQueryable<T>> WhereForReadAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
+        Task<T?> GetForReadFuncAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
+        Task<IQueryable<T>> WhereForReadFuncAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
 
     }
 }

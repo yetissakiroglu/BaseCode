@@ -18,14 +18,14 @@ namespace Economy.Persistence.Services
 
         public async Task<ResponseModel<List<AppLanguageDto>>> GetAllForReadAsync(GetAllAppLanguageQuery query)
         {
-            var appLanguage = await _appLanguageRepository.WhereForReadAsync(w => w.IsActive == query.IsActive, x => x.AppSettingTranslations);
+            var appLanguage = await _appLanguageRepository.WhereForReadAsync(w => w.IsActive == query.IsActive);
             var appLanguageDto = _mapper.Map<List<AppLanguageDto>>(appLanguage);
             return ResponseModel<List<AppLanguageDto>>.Success(appLanguageDto, HttpStatusCode.OK);
         }
 
         public async Task<ResponseModel<AppLanguageDto>> GetDefaultForReadAsync(GetAppLanguageByDefaultQuery query)
         {
-            var appLanguage = await _appLanguageRepository.GetForReadAsync(null, x => x.AppSettingTranslations);
+            var appLanguage = await _appLanguageRepository.GetForReadAsync(w => w.IsActive);
 
             // Eğer data bulunamazsa, hata döndürüyoruz
             if (appLanguage == null)

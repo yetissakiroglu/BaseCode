@@ -4,6 +4,7 @@ using Economy.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250329025612_first_data_1")]
+    partial class first_data_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,6 +39,13 @@ namespace AppWeb.Migrations
                     b.Property<int>("ContentType")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -43,6 +53,13 @@ namespace AppWeb.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Thumbnail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -69,6 +86,13 @@ namespace AppWeb.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -85,6 +109,13 @@ namespace AppWeb.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -111,13 +142,18 @@ namespace AppWeb.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Icon")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -133,47 +169,18 @@ namespace AppWeb.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("AppLanguages");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Code = "tr",
-                            Icon = "🇹🇷",
-                            IsActive = true,
-                            IsDefault = true,
-                            IsDeleted = false,
-                            IsRTL = false,
-                            Name = "Türkçe"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Code = "en",
-                            Icon = "🇬🇧",
-                            IsActive = true,
-                            IsDefault = false,
-                            IsDeleted = false,
-                            IsRTL = false,
-                            Name = "English"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Code = "ar",
-                            Icon = "🇸🇦",
-                            IsActive = true,
-                            IsDefault = false,
-                            IsDeleted = false,
-                            IsRTL = true,
-                            Name = "العربية"
-                        });
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppMenus.AppMenuTranslation", b =>
@@ -187,21 +194,33 @@ namespace AppWeb.Migrations
                     b.Property<int>("AppLanguageId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AppMenuId")
+                    b.Property<int?>("AppMenuId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -209,117 +228,7 @@ namespace AppWeb.Migrations
 
                     b.HasIndex("AppMenuId");
 
-                    b.ToTable("AppMenuTranslations", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppLanguageId = 1,
-                            AppMenuId = 1,
-                            IsDeleted = false,
-                            Title = "Ana Menü",
-                            Url = "ana-menu"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AppLanguageId = 2,
-                            AppMenuId = 1,
-                            IsDeleted = false,
-                            Title = "Main Menu",
-                            Url = "main-menu"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AppLanguageId = 1,
-                            AppMenuId = 2,
-                            IsDeleted = false,
-                            Title = "Odalar & Süitler",
-                            Url = "odalar-suitler"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AppLanguageId = 2,
-                            AppMenuId = 2,
-                            IsDeleted = false,
-                            Title = "Rooms & Suites",
-                            Url = "rooms-suites"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AppLanguageId = 1,
-                            AppMenuId = 3,
-                            IsDeleted = false,
-                            Title = "Restoran & Bar",
-                            Url = "restoran-bar"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AppLanguageId = 2,
-                            AppMenuId = 3,
-                            IsDeleted = false,
-                            Title = "Restaurant & Bar",
-                            Url = "restaurant-bar"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AppLanguageId = 1,
-                            AppMenuId = 4,
-                            IsDeleted = false,
-                            Title = "Spa & Wellness",
-                            Url = "spa-wellness"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AppLanguageId = 2,
-                            AppMenuId = 4,
-                            IsDeleted = false,
-                            Title = "Spa & Wellness",
-                            Url = "spa-wellness"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            AppLanguageId = 1,
-                            AppMenuId = 5,
-                            IsDeleted = false,
-                            Title = "Hakkımızda",
-                            Url = "hakkimizda"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            AppLanguageId = 2,
-                            AppMenuId = 5,
-                            IsDeleted = false,
-                            Title = "About Us",
-                            Url = "about-us"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            AppLanguageId = 1,
-                            AppMenuId = 6,
-                            IsDeleted = false,
-                            Title = "İletişim",
-                            Url = "iletisim"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            AppLanguageId = 2,
-                            AppMenuId = 6,
-                            IsDeleted = false,
-                            Title = "Contact",
-                            Url = "contact"
-                        });
+                    b.ToTable("AppMenuTranslations");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPage", b =>
@@ -330,11 +239,25 @@ namespace AppWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsHomePage")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -358,6 +281,13 @@ namespace AppWeb.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -370,6 +300,13 @@ namespace AppWeb.Migrations
 
                     b.Property<int>("Sequence")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -397,6 +334,13 @@ namespace AppWeb.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -407,6 +351,13 @@ namespace AppWeb.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -434,6 +385,13 @@ namespace AppWeb.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -443,6 +401,13 @@ namespace AppWeb.Migrations
 
                     b.Property<int>("SectionType")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -458,6 +423,13 @@ namespace AppWeb.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AppVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -499,6 +471,13 @@ namespace AppWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("AppSettings");
@@ -517,6 +496,13 @@ namespace AppWeb.Migrations
 
                     b.Property<int>("AppSettingId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -540,6 +526,13 @@ namespace AppWeb.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -566,6 +559,13 @@ namespace AppWeb.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CustomCss")
                         .IsRequired()
@@ -634,6 +634,13 @@ namespace AppWeb.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("AppTechnicalSettings");
@@ -643,6 +650,8 @@ namespace AppWeb.Migrations
                         {
                             Id = 1,
                             AppVersion = "v1.0.0",
+                            CreatedAt = new DateTime(2025, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = "1",
                             CustomCss = "",
                             CustomJs = "",
                             DomainName = "www.otelsitem.com",
@@ -658,7 +667,9 @@ namespace AppWeb.Migrations
                             IsDeleted = false,
                             IsSiteLive = true,
                             MaintenanceMessage = "Sitemiz şu anda bakım modundadır. Lütfen daha sonra tekrar deneyiniz.",
-                            StaticFileUrl = ""
+                            StaticFileUrl = "",
+                            UpdatedAt = new DateTime(2025, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedBy = "1"
                         });
                 });
 
@@ -666,6 +677,13 @@ namespace AppWeb.Migrations
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Expiration")
                         .HasColumnType("datetime2");
@@ -677,6 +695,13 @@ namespace AppWeb.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -698,6 +723,13 @@ namespace AppWeb.Migrations
 
                     b.Property<int>("ContentType")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -721,6 +753,13 @@ namespace AppWeb.Migrations
                     b.Property<string>("ShortDescription")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -740,6 +779,13 @@ namespace AppWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -749,49 +795,18 @@ namespace AppWeb.Migrations
                     b.Property<int?>("ParentMenuId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ParentMenuId");
 
-                    b.ToTable("AppMenus", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsDeleted = false,
-                            IsExternal = false
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsDeleted = false,
-                            IsExternal = false
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IsDeleted = false,
-                            IsExternal = false
-                        },
-                        new
-                        {
-                            Id = 4,
-                            IsDeleted = false,
-                            IsExternal = false
-                        },
-                        new
-                        {
-                            Id = 5,
-                            IsDeleted = false,
-                            IsExternal = false
-                        },
-                        new
-                        {
-                            Id = 6,
-                            IsDeleted = false,
-                            IsExternal = false
-                        });
+                    b.ToTable("AppMenus");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntitySlides.AppSlide", b =>
@@ -805,11 +820,25 @@ namespace AppWeb.Migrations
                     b.Property<int>("AppSectionId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<int>("Sequence")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -842,6 +871,13 @@ namespace AppWeb.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -852,6 +888,13 @@ namespace AppWeb.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -1146,14 +1189,12 @@ namespace AppWeb.Migrations
                     b.HasOne("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", "AppLanguage")
                         .WithMany()
                         .HasForeignKey("AppLanguageId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Economy.Domain.Entites.EntityMenuItems.AppMenu", null)
                         .WithMany("Translations")
-                        .HasForeignKey("AppMenuId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppMenuId");
 
                     b.Navigation("AppLanguage");
                 });
@@ -1195,7 +1236,7 @@ namespace AppWeb.Migrations
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppSettings.AppSettingTranslation", b =>
                 {
                     b.HasOne("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", "AppLanguage")
-                        .WithMany()
+                        .WithMany("AppSettingTranslations")
                         .HasForeignKey("AppLanguageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1225,7 +1266,7 @@ namespace AppWeb.Migrations
                     b.HasOne("Economy.Domain.Entites.EntityMenuItems.AppMenu", "ParentMenu")
                         .WithMany("SubMenus")
                         .HasForeignKey("ParentMenuId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("ParentMenu");
                 });
@@ -1299,6 +1340,11 @@ namespace AppWeb.Migrations
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppContents.AppContents.AppContent", b =>
                 {
                     b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", b =>
+                {
+                    b.Navigation("AppSettingTranslations");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPage", b =>

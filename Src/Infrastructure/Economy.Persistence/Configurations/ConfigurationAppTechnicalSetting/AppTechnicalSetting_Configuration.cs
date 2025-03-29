@@ -4,11 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Economy.Persistence.Configurations.ConfigurationAppTechnicalSetting
 {
-    public static class SeedIds
-    {
-        public static readonly Guid TechnicalSettingId = new Guid("B56A8EE5-5B38-4F2C-9EE8-0BFD8CC0C42B");
-    }
-
+  
     public class AppTechnicalSetting_Configuration : IEntityTypeConfiguration<AppTechnicalSetting>
     {
         public void Configure(EntityTypeBuilder<AppTechnicalSetting> entity)
@@ -72,11 +68,8 @@ namespace Economy.Persistence.Configurations.ConfigurationAppTechnicalSetting
                 EnableGlobalScriptInjection = false,
                 EnablePreloader = false,
                 PreloaderHtml = null,
-                IsDeleted = false,
-                CreatedAt = new DateTime(2025, 03, 28, 0, 0, 0),  // ✅ SABİT DEĞER
-                CreatedBy = "1",
-                UpdatedAt = new DateTime(2025, 03, 28, 0, 0, 0),  // ✅ SABİT DEĞER
-                UpdatedBy = "1"
+                IsDeleted = false
+               
 
             });
         }

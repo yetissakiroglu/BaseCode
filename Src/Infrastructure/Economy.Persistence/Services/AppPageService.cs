@@ -35,7 +35,7 @@ namespace Economy.Persistence.Services
 
         public async Task<ResponseModel<AppPageDto>> GetForReadPageByLanguageCodeByUrlAsync(GetAppPageByLanguageCodeByUrlQuery query)
         {
-            var appModel = await _appPageRepository.GetForReadAsync(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode && w.Url == query.Url))
+            var appModel = await _appPageRepository.GetForReadFuncAsync(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode && w.Url == query.Url))
                                                                          .Include(x => x.AppPageSections)
                                                                          .ThenInclude(ps => ps.AppSection));
 
@@ -47,13 +47,13 @@ namespace Economy.Persistence.Services
 
         public async Task<ResponseModel<AppPageDto>> GetForReadPageDefaultByLanguageCodeAsync(GetAppPageDefaultByLanguageCodeQuery query)
         {
-            var appModel = await _appPageRepository.GetForReadAsync(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode))
+            var appModel = await _appPageRepository.GetForReadFuncAsync(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode))
                                                                          .Include(x => x.AppPageSections)
                                                                          .ThenInclude(ps => ps.AppSection));
 
             var appModelDto = _mapper.Map<AppPageDto>(appModel);
-            appModelDto.Breadcrumb = appModel.GetBreadcrumbs();
-            appModelDto.AppPageSections = appModelDto.AppPageSections.OrderBy(e => e.Sequence).ToList();
+            //appModelDto.Breadcrumb = appModel?.GetBreadcrumbs();
+            //appModelDto.AppPageSections = appModelDto.AppPageSections.OrderBy(e => e.Sequence).ToList();
             return ResponseModel<AppPageDto>.Success(appModelDto, HttpStatusCode.OK);
         }
 

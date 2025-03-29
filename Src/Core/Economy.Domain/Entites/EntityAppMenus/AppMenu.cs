@@ -1,6 +1,5 @@
 ﻿using Economy.Domain.BaseEntities;
 using Economy.Domain.Entites.EntityAppMenus;
-using Economy.Domain.Entites.EntityAppSettings;
 
 namespace Economy.Domain.Entites.EntityMenuItems
 {

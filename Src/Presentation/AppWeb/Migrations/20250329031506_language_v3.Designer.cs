@@ -4,6 +4,7 @@ using Economy.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250329031506_language_v3")]
+    partial class language_v3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,7 +190,7 @@ namespace AppWeb.Migrations
                     b.Property<int>("AppLanguageId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AppMenuId")
+                    b.Property<int?>("AppMenuId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -195,13 +198,11 @@ namespace AppWeb.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -209,117 +210,7 @@ namespace AppWeb.Migrations
 
                     b.HasIndex("AppMenuId");
 
-                    b.ToTable("AppMenuTranslations", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppLanguageId = 1,
-                            AppMenuId = 1,
-                            IsDeleted = false,
-                            Title = "Ana Menü",
-                            Url = "ana-menu"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AppLanguageId = 2,
-                            AppMenuId = 1,
-                            IsDeleted = false,
-                            Title = "Main Menu",
-                            Url = "main-menu"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AppLanguageId = 1,
-                            AppMenuId = 2,
-                            IsDeleted = false,
-                            Title = "Odalar & Süitler",
-                            Url = "odalar-suitler"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AppLanguageId = 2,
-                            AppMenuId = 2,
-                            IsDeleted = false,
-                            Title = "Rooms & Suites",
-                            Url = "rooms-suites"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AppLanguageId = 1,
-                            AppMenuId = 3,
-                            IsDeleted = false,
-                            Title = "Restoran & Bar",
-                            Url = "restoran-bar"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AppLanguageId = 2,
-                            AppMenuId = 3,
-                            IsDeleted = false,
-                            Title = "Restaurant & Bar",
-                            Url = "restaurant-bar"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AppLanguageId = 1,
-                            AppMenuId = 4,
-                            IsDeleted = false,
-                            Title = "Spa & Wellness",
-                            Url = "spa-wellness"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AppLanguageId = 2,
-                            AppMenuId = 4,
-                            IsDeleted = false,
-                            Title = "Spa & Wellness",
-                            Url = "spa-wellness"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            AppLanguageId = 1,
-                            AppMenuId = 5,
-                            IsDeleted = false,
-                            Title = "Hakkımızda",
-                            Url = "hakkimizda"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            AppLanguageId = 2,
-                            AppMenuId = 5,
-                            IsDeleted = false,
-                            Title = "About Us",
-                            Url = "about-us"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            AppLanguageId = 1,
-                            AppMenuId = 6,
-                            IsDeleted = false,
-                            Title = "İletişim",
-                            Url = "iletisim"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            AppLanguageId = 2,
-                            AppMenuId = 6,
-                            IsDeleted = false,
-                            Title = "Contact",
-                            Url = "contact"
-                        });
+                    b.ToTable("AppMenuTranslations");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPage", b =>
@@ -753,45 +644,7 @@ namespace AppWeb.Migrations
 
                     b.HasIndex("ParentMenuId");
 
-                    b.ToTable("AppMenus", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsDeleted = false,
-                            IsExternal = false
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsDeleted = false,
-                            IsExternal = false
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IsDeleted = false,
-                            IsExternal = false
-                        },
-                        new
-                        {
-                            Id = 4,
-                            IsDeleted = false,
-                            IsExternal = false
-                        },
-                        new
-                        {
-                            Id = 5,
-                            IsDeleted = false,
-                            IsExternal = false
-                        },
-                        new
-                        {
-                            Id = 6,
-                            IsDeleted = false,
-                            IsExternal = false
-                        });
+                    b.ToTable("AppMenus");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntitySlides.AppSlide", b =>
@@ -1146,14 +999,12 @@ namespace AppWeb.Migrations
                     b.HasOne("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", "AppLanguage")
                         .WithMany()
                         .HasForeignKey("AppLanguageId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Economy.Domain.Entites.EntityMenuItems.AppMenu", null)
                         .WithMany("Translations")
-                        .HasForeignKey("AppMenuId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppMenuId");
 
                     b.Navigation("AppLanguage");
                 });
@@ -1225,7 +1076,7 @@ namespace AppWeb.Migrations
                     b.HasOne("Economy.Domain.Entites.EntityMenuItems.AppMenu", "ParentMenu")
                         .WithMany("SubMenus")
                         .HasForeignKey("ParentMenuId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("ParentMenu");
                 });

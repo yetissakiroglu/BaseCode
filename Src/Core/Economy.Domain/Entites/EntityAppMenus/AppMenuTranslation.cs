@@ -5,6 +5,7 @@ namespace Economy.Domain.Entites.EntityAppMenus
 {
     public  class AppMenuTranslation : BaseEntity<int>
     {
+        public int AppMenuId { get; set; }       
         public int AppLanguageId { get; set; }
         public string Title { get; set; }
         public string Url { get; set; } // SEO uyumlu URL

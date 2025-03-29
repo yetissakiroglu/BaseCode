@@ -112,7 +112,7 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
             query = includes.Aggregate(query, (current, include) => current.Include(include));
             return await Task.FromResult(query.AsQueryable());
         }
-        public async Task<T?> GetForReadAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes)
+        public async Task<T?> GetForReadFuncAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes)
         {
             var query = Table.AsNoTracking(); // Performans için AsNoTracking kullan
 
@@ -129,7 +129,7 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
 
             return await query.FirstOrDefaultAsync();
         }
-        public Task<IQueryable<T>> WhereForReadAsync(Expression<Func<T, bool>>? filters = null,params Func<IQueryable<T>, IQueryable<T>>[] includes)
+        public Task<IQueryable<T>> WhereForReadFuncAsync(Expression<Func<T, bool>>? filters = null,params Func<IQueryable<T>, IQueryable<T>>[] includes)
         {
             var query = Table.AsNoTracking(); // Performans için AsNoTracking kullan
 
