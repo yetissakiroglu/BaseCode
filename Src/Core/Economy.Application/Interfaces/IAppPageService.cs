@@ -6,9 +6,8 @@ namespace Economy.Application.Interfaces
 {
     public interface IAppPageService
     {
-        Task<ResponseModel<AppPageDto>> GetForReadDefaultPageAsync(GetAppPageDefaultQuery query);
-        Task<ResponseModel<AppPageDto>> GetForReadPageDefaultByLanguageCodeAsync(GetAppPageDefaultByLanguageCodeQuery query);
-        Task<ResponseModel<AppPageDto>> GetForReadPageByLanguageCodeByUrlAsync(GetAppPageByLanguageCodeByUrlQuery query);
-
+        ResponseModel<AppPageDto> GetForReadDefaultPage(GetAppPageDefaultQuery query);
+        ResponseModel<AppPageDto> GetForReadPageDefaultByLanguageCode(GetAppPageDefaultByLanguageCodeQuery query);
+        ResponseModel<AppPageDto> GetForReadPageByLanguageCodeByUrl(GetAppPageByLanguageCodeByUrlQuery query);
     }
 }

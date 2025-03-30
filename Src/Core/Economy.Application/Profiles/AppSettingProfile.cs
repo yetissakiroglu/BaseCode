@@ -11,12 +11,8 @@ namespace Economy.Application.Profiles
         {
             CreateMap<AppSetting, AppSettingDto>()
                 .ForMember(dest => dest.Translations, opt => opt.MapFrom(src => src.Translations));
-
             CreateMap<AppSettingTranslation, AppSettingTranslationDto>();
-
             CreateMap<AppLogoSetting, AppLogoSettingDto>();
-
-
         }
     }
 

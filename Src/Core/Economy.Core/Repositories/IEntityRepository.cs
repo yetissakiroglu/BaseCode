@@ -5,30 +5,30 @@ namespace Economy.Core.Repositories
 {
     public interface IEntityRepository<T, TId> : IRepository<T> where T : class, new()
 	{
-        Task<T> GetForReadAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
-        Task<T> GetForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        T? GetForRead(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        T? GetForReadNonDeleted(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
 
-        Task<T> GetForEditAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
-        Task<T> GetForEditNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        T? GetForEdit(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        T? GetForEditNonDeleted(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
 
-        List<T> WhereForReadAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
-        List<T> WhereForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        List<T> WhereForRead(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        List<T> WhereForReadNonDeleted(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
 
-        List<T> WhereForEditAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
-        List<T> WhereForEditNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        List<T> WhereForEdit(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        List<T> WhereForEditNonDeleted(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
 
-        Task<IPagedList<T>> PagedListForReadAsync(Expression<Func<T, bool>>? filters = null, int page = 0, int pageSize = 0);
-        Task<IPagedList<T>> PagedListForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, int page = 0, int pageSize = 0);
+        IPagedList<T> PagedListForRead(Expression<Func<T, bool>>? filters = null, int page = 0, int pageSize = 0);
+        IPagedList<T> PagedListForReadNonDeleted(Expression<Func<T, bool>>? filters = null, int page = 0, int pageSize = 0);
 
-        Task<bool> AnyAsync(Expression<Func<T, bool>>? filters = null);
-        Task<bool> AnyNonDeletedAsync(Expression<Func<T, bool>>? filters = null);
+        bool Any(Expression<Func<T, bool>>? filters = null);
+        bool AnyNonDeleted(Expression<Func<T, bool>>? filters = null);
 
-        Task AddAsync(T entity);
-        Task UpdateAsync(T entity);
-        Task DeleteAsync(T entity);
+        void Add(T entity);
+        void Update(T entity);
+        void Delete(T entity);
 
-        Task<T?> GetForReadFuncAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
-        IQueryable<T> WhereForReadFuncAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
+        T? GetForReadFunc(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
+        List<T> WhereForReadFunc(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
 
     }
 }

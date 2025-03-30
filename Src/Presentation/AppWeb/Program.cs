@@ -4,13 +4,12 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Economy.Application;
+using Economy.Caching.Interceptors;
 using Economy.Persistence;
 using LoggingLibrary.Extensions;
 using LoggingLibrary.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using Economy.Caching.Extensions;
-using Economy.Caching.Interceptors;
 
 var builder = WebApplication.CreateBuilder(args);
 // AppSettingsActionFilter'ı global olarak kaydedin
@@ -36,7 +35,6 @@ builder.Services.AddHttpContextAccessor();
 
 // LanguageProvider'ı DI container'a ekliyoruz ve kullanıcı dil sağlayıcıyı kullanıyoruz
 builder.Services.AddScoped<LanguageProvider, UserLanguageProvider>();
-
 
 // 📌 Autofac Kullanımı
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -65,10 +63,6 @@ builder.Host.ConfigureContainer<ContainerBuilder>(container =>
         Assembly.Load("Economy.Persistence"),
         // **Eklenen Class Library**
     };
-
- 
-    //container.RegisterCachingInterceptors(assemblies);
-
 
 
     // 📌 **Tüm servisleri otomatik kaydet (IService şeklindeki interface'lere karşılık gelenleri)**

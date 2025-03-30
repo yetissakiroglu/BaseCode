@@ -1,19 +1,17 @@
 ﻿using Economy.Application.Commands.AppMenus;
 using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Queries.AppMenus;
-using Economy.Caching.Attributes;
 using Economy.Core.Tools;
 
 namespace Economy.Application.Interfaces
 {
     public interface IAppMenuService
     {
-        Task<ResponseModel<AppMenuDto>> GetForReadAsync(GetAppMenuByMenuIdQuery query);
-        Task<ResponseModel<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuQuery query);
-        Task<ResponseModel<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuByParentMenuIdQuery query);
-        Task<ResponseModel<bool>> DeleteAsync(DeleteAppMenuCommand command);
-        Task<ResponseModel<int>> InsertAsync(CreateAppMenuCommand command);
-        Task<ResponseModel<AppMenuDto>> UpdateAsync(UpdateAppMenuCommand command);
+        ResponseModel<AppMenuDto> GetForRead(GetAppMenuByMenuIdQuery query);
+        ResponseModel<List<AppMenuDto>> WhereForRead(GetAllAppMenuQuery query);
+        ResponseModel<List<AppMenuDto>> WhereForRead(GetAllAppMenuByParentMenuIdQuery query);
+        ResponseModel<bool> Delete(DeleteAppMenuCommand command);
+        ResponseModel<int> Insert(CreateAppMenuCommand command);
+        ResponseModel<AppMenuDto> Update(UpdateAppMenuCommand command);
     }
-
 }

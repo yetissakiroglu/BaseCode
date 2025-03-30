@@ -10,7 +10,7 @@ namespace Economy.Application.Queries.AppSettings
         private readonly IAppSettingService _appSettingService = appSettingService;
         public async Task<ResponseModel<AppLogoSettingDto>> Handle(GetAppLogoSettingQuery request, CancellationToken cancellationToken)
         {
-            return await _appSettingService.GetForReadLogoAsync(request);
+            return _appSettingService.GetForReadLogo(request);
         }
     }
 }

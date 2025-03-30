@@ -9,10 +9,8 @@ namespace Economy.Application.Profiles
         public AppLanguageProfile()
         {
             CreateMap<AppLanguage, AppLanguageDto>();
-
-
             
         }
     }
-   
+  
 }

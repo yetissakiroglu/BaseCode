@@ -17,7 +17,7 @@ namespace AppWeb.ActionFilters
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             // AppSettings verilerini alın
-            var appSettings = await _appSettingsService.GetForReadAsync(new GetAppSettingQuery());
+            var appSettings = _appSettingsService.GetForRead(new GetAppSettingQuery());
 
             // ViewData'ya veya ViewBag'a atama yaparak view'da kullanılabilir hale getirin
             if (appSettings.Data is null)

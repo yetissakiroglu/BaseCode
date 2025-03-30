@@ -12,14 +12,9 @@ namespace Economy.Application.Profiles
             CreateMap<AppContent, AppContentDto>()
              .ForMember(dest => dest.AppCategory, opt => opt.MapFrom(src => src.AppCategory));
 
-
             CreateMap<AppContentTranslation, AppContentTranslationDto>();
-
             
             CreateMap<AppCategory, AppCategoryDto>();
-
-
-
         }
     }
   

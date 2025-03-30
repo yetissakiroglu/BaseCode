@@ -16,16 +16,16 @@ namespace Economy.Persistence.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<ResponseModel<List<AppLanguageDto>>> GetAllForReadAsync(GetAllAppLanguageQuery query)
+        public ResponseModel<List<AppLanguageDto>> GetAllForRead(GetAllAppLanguageQuery query)
         {
-            var appLanguage = _appLanguageRepository.WhereForReadAsync(w => w.IsActive == query.IsActive);
+            var appLanguage = _appLanguageRepository.WhereForRead(w => w.IsActive == query.IsActive);
             var appLanguageDto = _mapper.Map<List<AppLanguageDto>>(appLanguage);
             return ResponseModel<List<AppLanguageDto>>.Success(appLanguageDto, HttpStatusCode.OK);
         }
 
-        public async Task<ResponseModel<AppLanguageDto>> GetDefaultForReadAsync(GetAppLanguageByDefaultQuery query)
+        public ResponseModel<AppLanguageDto> GetDefaultForRead(GetAppLanguageByDefaultQuery query)
         {
-            var appLanguage = await _appLanguageRepository.GetForReadAsync(w => w.IsActive);
+            var appLanguage = _appLanguageRepository.GetForRead(w => w.IsActive);
 
             // Eğer data bulunamazsa, hata döndürüyoruz
             if (appLanguage == null)

@@ -19,27 +19,27 @@ namespace Economy.Persistence.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<ResponseModel<AppContentDto>> GetForReadByLanguageCodeByAppContentIdAsync(GetAppContentByLanguageCodeByAppContentIdQuery query)
+        public ResponseModel<AppContentDto> GetForReadByLanguageCodeByAppContentId(GetAppContentByLanguageCodeByAppContentIdQuery query)
         {
-            var appModel = await _appContentRepository.GetForReadFuncAsync(w => w.Id == query.AppContentId,
+            var appModel = _appContentRepository.GetForReadFunc(w => w.Id == query.AppContentId,
                 q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode))
                    .Include(x => x.AppCategory));
             var appModelDto = _mapper.Map<AppContentDto>(appModel);
             return ResponseModel<AppContentDto>.Success(appModelDto, HttpStatusCode.OK);
         }
 
-        public async Task<ResponseModel<List<AppContentDto>>> WhereForReadByLanguageCodeByAppContentIdsAsync(GetAllAppContentByLanguageCodeByAppContentIdsQuery query)
+        public ResponseModel<List<AppContentDto>> WhereForReadByLanguageCodeByAppContentIds(GetAllAppContentByLanguageCodeByAppContentIdsQuery query)
         {
-            var appModel = _appContentRepository.WhereForReadFuncAsync(w => query.AppContentIds.Contains(w.Id),
+            var appModel = _appContentRepository.WhereForReadFunc(w => query.AppContentIds.Contains(w.Id),
                 q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode))
                    .Include(x => x.AppCategory));
             var appModelDto = _mapper.Map<List<AppContentDto>>(appModel);
             return ResponseModel<List<AppContentDto>>.Success(appModelDto, HttpStatusCode.OK);
         }
 
-        public async Task<ResponseModel<AppContentDto>> GetForReadByLanguageCodeByUrlAsync(GetAppContentByLanguageCodeByUrlQuery query)
+        public ResponseModel<AppContentDto> GetForReadByLanguageCodeByUrl(GetAppContentByLanguageCodeByUrlQuery query)
         {
-            var appModel = await _appContentRepository.GetForReadFuncAsync(null,
+            var appModel = _appContentRepository.GetForReadFunc(null,
                 q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode))
                    .Include(x => x.AppCategory));
             var appModelDto = _mapper.Map<AppContentDto>(appModel);

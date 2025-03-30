@@ -9,6 +9,7 @@ using Economy.Core.UnitOfWorks;
 using Economy.Domain.Entites.EntityAppMenus;
 using Economy.Domain.Entites.EntityMenuItems;
 using LoggingLibrary.Attributes;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Economy.Persistence.Services
@@ -19,22 +20,22 @@ namespace Economy.Persistence.Services
         private readonly IAppMenuRepository _appMenuRepository = repository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
-        public async Task<ResponseModel<bool>> DeleteAsync(DeleteAppMenuCommand command)
+        public ResponseModel<bool> Delete(DeleteAppMenuCommand command)
         {
-            var appMenu = await _appMenuRepository.GetForReadAsync(x => x.Id == command.MenuId, x => x.Translations);
+            var appMenu = _appMenuRepository.GetForRead(x => x.Id == command.MenuId, x => x.Translations);
             // Eğer appMenu bulunamazsa, hata döndürüyoruz
             if (appMenu == null)
             {
                 return ResponseModel<bool>.Fail("Menu bulunamadı", HttpStatusCode.NotFound);
             }
-            await _appMenuRepository.DeleteAsync(appMenu);
-            await _unitOfWork.CommitAsync();
+            _appMenuRepository.Delete(appMenu);
+            _unitOfWork.CommitAsync();
             return ResponseModel<bool>.Success(true, HttpStatusCode.OK);
         }
         //[Cache(Duration = 30)]  // BU DOĞRU!
-        public async Task<ResponseModel<AppMenuDto>> GetForReadAsync(GetAppMenuByMenuIdQuery query)
+        public ResponseModel<AppMenuDto> GetForRead(GetAppMenuByMenuIdQuery query)
         {
-            var appMenu = await _appMenuRepository.GetForReadAsync(x => x.Id == query.MenuId, x => x.SubMenus, x => x.ParentMenu, x => x.Translations);
+            var appMenu = _appMenuRepository.GetForRead(x => x.Id == query.MenuId, x => x.SubMenus, x => x.ParentMenu, x => x.Translations);
 
             // Eğer data bulunamazsa, hata döndürüyoruz
             if (appMenu == null)
@@ -45,7 +46,7 @@ namespace Economy.Persistence.Services
             var appMenuDto = _mapper.Map<AppMenuDto>(appMenu);
             return ResponseModel<AppMenuDto>.Success(appMenuDto, HttpStatusCode.OK);
         }
-        public async Task<ResponseModel<int>> InsertAsync(CreateAppMenuCommand command)
+        public ResponseModel<int> Insert(CreateAppMenuCommand command)
         {
             var insert = new AppMenu()
             {
@@ -61,13 +62,13 @@ namespace Economy.Persistence.Services
             }
         }
             };
-            await _appMenuRepository.AddAsync(insert);
-            await _unitOfWork.CommitAsync();
+            _appMenuRepository.Add(insert);
+             _unitOfWork.CommitAsync();
             return ResponseModel<int>.Success(insert.Id, HttpStatusCode.OK);
         }
-        public async Task<ResponseModel<AppMenuDto>> UpdateAsync(UpdateAppMenuCommand command)
+        public  ResponseModel<AppMenuDto> Update(UpdateAppMenuCommand command)
         {
-            var appMenu = await _appMenuRepository.GetForEditAsync(x => x.Id == command.Id, x => x.SubMenus, x => x.ParentMenu, x => x.Translations);
+            var appMenu = _appMenuRepository.GetForEdit(x => x.Id == command.Id, x => x.SubMenus, x => x.ParentMenu, x => x.Translations);
 
             if (appMenu == null)
             {
@@ -94,24 +95,25 @@ namespace Economy.Persistence.Services
             appMenu.IsExternal = command.IsExternal;
             appMenu.ParentMenuId = command.ParentMenuId;
 
-            await _appMenuRepository.UpdateAsync(appMenu);
-            await _unitOfWork.CommitAsync();
+            _appMenuRepository.Update(appMenu);
+             _unitOfWork.CommitAsync();
 
             var dto = _mapper.Map<AppMenuDto>(appMenu);
             return ResponseModel<AppMenuDto>.Success(dto, HttpStatusCode.OK);
         }
         //[Cache(Duration = 30)]  // BU DOĞRU!
-        public async Task<ResponseModel<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuQuery query)
+        public ResponseModel<List<AppMenuDto>> WhereForRead(GetAllAppMenuQuery query)
         {
-            var appMenu = _appMenuRepository.WhereForReadAsync(null, x => x.SubMenus, x => x.ParentMenu, x => x.Translations);
+            var appMenu = _appMenuRepository.WhereForRead(null, x => x.SubMenus, x => x.ParentMenu, x => x.Translations);
             var appMenuDto = _mapper.Map<List<AppMenuDto>>(appMenu);
             return ResponseModel<List<AppMenuDto>>.Success(appMenuDto, HttpStatusCode.OK);
         }
         [Log("Menü WhereForReadAsync alındı.")]
         //[Cache(Duration = 30)]  // BU DOĞRU!
-        public async Task<ResponseModel<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuByParentMenuIdQuery query)
+        public ResponseModel<List<AppMenuDto>> WhereForRead(GetAllAppMenuByParentMenuIdQuery query)
         {
-            var appMenu = _appMenuRepository.WhereForReadAsync(w => w.ParentMenuId == query.ParentMenuId,x => x.SubMenus,x => x.ParentMenu,x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode));
+            var appMenu = _appMenuRepository.WhereForReadFunc(w => w.ParentMenuId == query.ParentMenuId,
+            q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode)).Include(w=>w.Translations).ThenInclude(w=>w.AppLanguage));
             var appMenuDto = _mapper.Map<List<AppMenuDto>>(appMenu);
             return ResponseModel<List<AppMenuDto>>.Success(appMenuDto, HttpStatusCode.OK);
         }

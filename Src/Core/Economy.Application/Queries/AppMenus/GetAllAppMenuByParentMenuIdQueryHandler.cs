@@ -12,7 +12,7 @@ namespace Economy.Application.Queries.AppMenus
         public async Task<ResponseModel<List<AppMenuDto>>> Handle(GetAllAppMenuByParentMenuIdQuery request, CancellationToken cancellationToken)
         {
             var filters = new GetAllAppMenuByParentMenuIdQuery(request.ParentMenuId, request.LanguageCode);
-            var appMenu = await _appMenuService.WhereForReadAsync(filters);
+            var appMenu = _appMenuService.WhereForRead(filters);
             return appMenu;
         }
     }

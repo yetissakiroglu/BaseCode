@@ -10,7 +10,7 @@ namespace Economy.Application.Queries.AppSettings
         private readonly IAppSettingService _appSettingService = appSettingService;
         public async Task<ResponseModel<AppSettingDto>> Handle(GetAppSettingQuery request, CancellationToken cancellationToken)
         {
-            return await _appSettingService.GetForReadAsync(request);
+            return _appSettingService.GetForRead(request);
         }
     }
     

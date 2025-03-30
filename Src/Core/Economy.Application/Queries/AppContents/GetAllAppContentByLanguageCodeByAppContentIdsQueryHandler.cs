@@ -10,7 +10,7 @@ namespace Economy.Application.Queries.AppContents
         private readonly IAppContentService _appContentService = appContentService;
         public async Task<ResponseModel<List<AppContentDto>>> Handle(GetAllAppContentByLanguageCodeByAppContentIdsQuery request, CancellationToken cancellationToken)
         {
-            return await _appContentService.WhereForReadByLanguageCodeByAppContentIdsAsync(request);
+            return _appContentService.WhereForReadByLanguageCodeByAppContentIds(request);
         }
     }
 

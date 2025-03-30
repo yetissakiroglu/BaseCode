@@ -62,7 +62,7 @@ namespace Economy.Persistence.Services.AppUserServices
 			var userRefreshToken = await _userRefreshTokenRepository.Table.Where(w => w.UserId == user.Id).SingleOrDefaultAsync();
 			if (userRefreshToken == null)
 			{
-				await _userRefreshTokenRepository.AddAsync(new UserRefreshToken
+				_userRefreshTokenRepository.Add(new UserRefreshToken
 				{
 					UserId = user.Id,
 					Token = token.RefreshToken,
@@ -139,11 +139,11 @@ namespace Economy.Persistence.Services.AppUserServices
 				if (entity is ISoftDelete softDeleteEntity)
 				{
 					softDeleteEntity.IsDeleted = true;
-					await _repository.UpdateAsync(entity);
+					_repository.Update(entity);
 				}
 				else
 				{
-					await _repository.DeleteAsync(entity);
+					_repository.Delete(entity);
 				}
 
 				await _unitOfWork.CommitAsync();

@@ -10,7 +10,7 @@ namespace Economy.Application.Queries.AppMenus
         private readonly IAppMenuService _appMenuService = appMenuService;
         public async Task<ResponseModel<List<AppMenuDto>>> Handle(GetAllAppMenuQuery request, CancellationToken cancellationToken)
         {
-            return await _appMenuService.WhereForReadAsync(request);
+            return _appMenuService.WhereForRead(request);
         }
     }
 }

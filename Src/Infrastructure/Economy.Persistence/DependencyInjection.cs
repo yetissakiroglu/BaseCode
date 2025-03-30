@@ -1,4 +1,5 @@
 ﻿using Economy.Application.Interfaces;
+using Economy.Application.Queries.AppLanguages;
 using Economy.Application.Repositories.AppContentRepositories;
 using Economy.Application.Repositories.AppLanguageRepositories;
 using Economy.Application.Repositories.AppMenuRepositories;
@@ -79,17 +80,16 @@ namespace Economy.Persistence
 
 
             // Diğer servisleri ekleyin
-            services.AddScoped<LanguageService>();
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 // Dil bilgilerini veritabanından alıyoruz
-                var languageService = services.BuildServiceProvider().GetRequiredService<LanguageService>();
-                var supportedLanguages = languageService.GetSupportedLanguages();
+                var languageService = services.BuildServiceProvider().GetRequiredService<IAppLanguageService>();
+                var supportedLanguages = languageService.GetAllForRead( new GetAllAppLanguageQuery(true));
 
                 // Varsayılan dil (IsDefault = true olanı seçiyoruz)
-                var defaultCulture = supportedLanguages.FirstOrDefault(l => l.IsDefault)?.Code ?? "tr";
+                var defaultCulture = supportedLanguages.Data.FirstOrDefault(l => l.IsDefault)?.Code ?? "tr";
 
-                var supportedCultures = supportedLanguages
+                var supportedCultures = supportedLanguages.Data
                     .Where(l => l.IsActive)
                     .Select(l => l.Code)
                     .ToArray();

@@ -10,7 +10,7 @@ namespace Economy.Application.Queries.AppPages
         private readonly IAppPageService _appPageService = appPageService;
         public async Task<ResponseModel<AppPageDto>> Handle(GetAppPageDefaultQuery request, CancellationToken cancellationToken)
         {
-            return await _appPageService.GetForReadDefaultPageAsync(request);
+            return _appPageService.GetForReadDefaultPage(request);
         }
     }
 

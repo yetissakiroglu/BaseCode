@@ -10,7 +10,7 @@ namespace Economy.Application.Commands.AppMenus
         private readonly IAppMenuService _appMenuService = appMenuService;
         public async Task<ResponseModel<AppMenuDto>> Handle(UpdateAppMenuCommand request, CancellationToken cancellationToken)
         {
-            var response = await _appMenuService.UpdateAsync(request);
+            var response = _appMenuService.Update(request);
             return response;
         }
     }

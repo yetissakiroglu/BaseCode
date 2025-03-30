@@ -18,16 +18,16 @@ namespace Economy.Persistence.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<ResponseModel<AppSettingDto>> GetForReadAsync(GetAppSettingQuery query)
+        public ResponseModel<AppSettingDto> GetForRead(GetAppSettingQuery query)
         {
-            var appSetting = await _appSettingRepository.GetForReadAsync(null, x => x.Translations);
+            var appSetting = _appSettingRepository.GetForRead(null, x => x.Translations);
             var appSettingDto = _mapper.Map<AppSettingDto>(appSetting);
             return ResponseModel<AppSettingDto>.Success(appSettingDto, HttpStatusCode.OK);
         }
 
-        public async Task<ResponseModel<AppLogoSettingDto>> GetForReadLogoAsync(GetAppLogoSettingQuery query)
+        public ResponseModel<AppLogoSettingDto> GetForReadLogo(GetAppLogoSettingQuery query)
         {
-            var appSetting = await _appLogoSettingRepository.GetForReadAsync();
+            var appSetting = _appLogoSettingRepository.GetForRead();
             var appSettingDto = _mapper.Map<AppLogoSettingDto>(appSetting);
             return ResponseModel<AppLogoSettingDto>.Success(appSettingDto, HttpStatusCode.OK);
         }

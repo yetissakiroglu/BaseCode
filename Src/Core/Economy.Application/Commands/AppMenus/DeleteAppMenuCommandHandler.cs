@@ -9,7 +9,7 @@ namespace Economy.Application.Commands.AppMenus
         private readonly IAppMenuService _appMenuService = appMenuService;
         public async Task<ResponseModel<bool>> Handle(DeleteAppMenuCommand request, CancellationToken cancellationToken)
         {
-            var appMenuDelete = await _appMenuService.DeleteAsync(request);
+            var appMenuDelete = _appMenuService.Delete(request);
             return appMenuDelete;
         }
     }

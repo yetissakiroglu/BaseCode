@@ -10,7 +10,7 @@ namespace Economy.Application.Queries.AppLanguages
         private readonly IAppLanguageService _appLanguageService = appLanguageService;
         public async Task<ResponseModel<AppLanguageDto>> Handle(GetAppLanguageByDefaultQuery request, CancellationToken cancellationToken)
         {
-            return await _appLanguageService.GetDefaultForReadAsync(request);
+            return _appLanguageService.GetDefaultForRead(request);
         }
     }
    

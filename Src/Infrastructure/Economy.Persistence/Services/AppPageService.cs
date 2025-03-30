@@ -18,10 +18,10 @@ namespace Economy.Persistence.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<ResponseModel<AppPageDto>> GetForReadDefaultPageAsync(GetAppPageDefaultQuery query)
+        public ResponseModel<AppPageDto> GetForReadDefaultPage(GetAppPageDefaultQuery query)
         {
 
-            var appModel = await _appPageRepository.GetForReadAsync(x => x.IsHomePage, x => x.Translations);
+            var appModel = _appPageRepository.GetForRead(x => x.IsHomePage, x => x.Translations);
             // Eğer data bulunamazsa, hata döndürüyoruz
             if (appModel == null)
             {
@@ -33,9 +33,9 @@ namespace Economy.Persistence.Services
 
         }
 
-        public async Task<ResponseModel<AppPageDto>> GetForReadPageByLanguageCodeByUrlAsync(GetAppPageByLanguageCodeByUrlQuery query)
+        public ResponseModel<AppPageDto> GetForReadPageByLanguageCodeByUrl(GetAppPageByLanguageCodeByUrlQuery query)
         {
-            var appModel = await _appPageRepository.GetForReadFuncAsync(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode && w.Url == query.Url))
+            var appModel = _appPageRepository.GetForReadFunc(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode && w.Url == query.Url))
                                                                          .Include(x => x.AppPageSections)
                                                                          .ThenInclude(ps => ps.AppSection));
 
@@ -45,9 +45,9 @@ namespace Economy.Persistence.Services
             return ResponseModel<AppPageDto>.Success(appModelDto, HttpStatusCode.OK);
         }
 
-        public async Task<ResponseModel<AppPageDto>> GetForReadPageDefaultByLanguageCodeAsync(GetAppPageDefaultByLanguageCodeQuery query)
+        public ResponseModel<AppPageDto> GetForReadPageDefaultByLanguageCode(GetAppPageDefaultByLanguageCodeQuery query)
         {
-            var appModel = await _appPageRepository.GetForReadFuncAsync(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode))
+            var appModel = _appPageRepository.GetForReadFunc(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode))
                                                                          .Include(x => x.AppPageSections)
                                                                          .ThenInclude(ps => ps.AppSection));
 

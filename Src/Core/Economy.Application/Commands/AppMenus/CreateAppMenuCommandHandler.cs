@@ -10,7 +10,7 @@ namespace Economy.Application.Commands.AppMenus
         public async Task<ResponseModel<int>> Handle(CreateAppMenuCommand request, CancellationToken cancellationToken)
         {
             // Menü veritabanına ekleniyor
-           return await _appMenuService.InsertAsync(request);
+           return _appMenuService.Insert(request);
         }
     }
 }

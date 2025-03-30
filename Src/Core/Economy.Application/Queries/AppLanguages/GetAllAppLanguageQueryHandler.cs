@@ -10,8 +10,9 @@ namespace Economy.Application.Queries.AppLanguages
         private readonly IAppLanguageService _appLanguageService = appLanguageService;
         public async Task<ResponseModel<List<AppLanguageDto>>> Handle(GetAllAppLanguageQuery request, CancellationToken cancellationToken)
         {
-            return await _appLanguageService.GetAllForReadAsync(request);
+            return _appLanguageService.GetAllForRead(request);
         }
+
     }
    
 }
