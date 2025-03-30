@@ -19,7 +19,6 @@ namespace Economy.Persistence.Services
         public async Task<ResponseModel<List<AppLanguageDto>>> GetAllForReadAsync(GetAllAppLanguageQuery query)
         {
             var appLanguage = _appLanguageRepository.WhereForReadAsync(w => w.IsActive == query.IsActive);
-            var test= appLanguage.ToList(); 
             var appLanguageDto = _mapper.Map<List<AppLanguageDto>>(appLanguage);
             return ResponseModel<List<AppLanguageDto>>.Success(appLanguageDto, HttpStatusCode.OK);
         }
