@@ -1,4 +1,5 @@
-﻿using Economy.Application.Interfaces;
+﻿using Economy.Application.Dtos.AppSettingDtos;
+using Economy.Application.Interfaces;
 using Economy.Application.Queries.AppSettings;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -19,8 +20,20 @@ namespace AppWeb.ActionFilters
             var appSettings = await _appSettingsService.GetForReadAsync(new GetAppSettingQuery());
 
             // ViewData'ya veya ViewBag'a atama yaparak view'da kullanılabilir hale getirin
-            context.HttpContext.Items["AppSettings"] = appSettings.Data;
+            if (appSettings.Data is null)
+            {
+                var test = new AppSettingDto()
+                {
+                    SiteTitle = "Test",
+                    SiteDescription = "Test"
+                };
 
+                context.HttpContext.Items["AppSettings"] = test;
+            }
+            else
+            {
+                context.HttpContext.Items["AppSettings"] = appSettings.Data;
+            }
             // Bir sonraki filtreyi çalıştırın (action'ı çağırın)
             await next();
         }

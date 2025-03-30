@@ -56,7 +56,6 @@ namespace Economy.Persistence.Contexts
 
         //--------------------------------------------
         //Yeni
-        public DbSet<AppLanguage> AppLanguages { get; set; }
         public DbSet<AppSetting> AppSettings { get; set; }
         public DbSet<AppSettingTranslation> AppSettingTranslations { get; set; }
 
@@ -77,12 +76,15 @@ namespace Economy.Persistence.Contexts
         //*---------------- End -----------------*/
 
         //-begin new-   
+        public DbSet<AppLanguage> AppLanguages { get; set; }
         public DbSet<AppTechnicalSetting> AppTechnicalSettings { get; set; }
+        public DbSet<AppLogoSetting> AppLogoSettings { get; set; }
 
+        
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-            optionsBuilder.EnableSensitiveDataLogging();
+            //optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
         protected override void OnModelCreating(ModelBuilder builder)

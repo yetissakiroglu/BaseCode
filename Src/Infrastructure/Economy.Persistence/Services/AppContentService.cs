@@ -30,7 +30,7 @@ namespace Economy.Persistence.Services
 
         public async Task<ResponseModel<List<AppContentDto>>> WhereForReadByLanguageCodeByAppContentIdsAsync(GetAllAppContentByLanguageCodeByAppContentIdsQuery query)
         {
-            var appModel = await _appContentRepository.WhereForReadFuncAsync(w => query.AppContentIds.Contains(w.Id),
+            var appModel = _appContentRepository.WhereForReadFuncAsync(w => query.AppContentIds.Contains(w.Id),
                 q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode))
                    .Include(x => x.AppCategory));
             var appModelDto = _mapper.Map<List<AppContentDto>>(appModel);

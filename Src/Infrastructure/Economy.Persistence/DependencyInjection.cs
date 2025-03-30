@@ -3,6 +3,7 @@ using Economy.Application.Repositories.AppContentRepositories;
 using Economy.Application.Repositories.AppLanguageRepositories;
 using Economy.Application.Repositories.AppMenuRepositories;
 using Economy.Application.Repositories.AppPageRepositories;
+using Economy.Application.Repositories.AppSettingRepositories;
 using Economy.Application.Repositories.AppSlideRepositories;
 using Economy.Core.Repositories;
 using Economy.Core.UnitOfWorks;
@@ -13,7 +14,6 @@ using Economy.Persistence.Repositories.AppLanguageRepositories;
 using Economy.Persistence.Repositories.AppMenuRepositories;
 using Economy.Persistence.Repositories.AppPageRepositories;
 using Economy.Persistence.Repositories.AppSlideRepositories;
-using Economy.Persistence.Seeds;
 using Economy.Persistence.Services;
 using Economy.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Builder;
@@ -32,7 +32,6 @@ namespace Economy.Persistence
             // AutoMapper'ı ekle
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-
             services.AddScoped(typeof(IEntityRepository<,>), typeof(EfEntityRepositoryBase<,>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -40,6 +39,7 @@ namespace Economy.Persistence
             services.AddScoped<IAppMenuService, AppMenuService>();
 
             services.AddScoped<IAppSettingRepository, AppSettingRepository>();
+            services.AddScoped<IAppLogoSettingRepository, AppLogoSettingRepository>();
             services.AddScoped<IAppSettingService, AppSettingService>();
 
             services.AddScoped<IAppLanguageRepository, AppLanguageRepository>();
@@ -54,6 +54,9 @@ namespace Economy.Persistence
             services.AddScoped<IAppContentRepository, AppContentRepository>();
             services.AddScoped<IAppContentService, AppContentService>();
 
+
+            
+
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(connectionString, configure =>
@@ -64,13 +67,13 @@ namespace Economy.Persistence
 
 
 
-            services.AddScoped<AppMenuSeeder>();
-            services.AddScoped<AppLanguageSeeder>();
-            services.AddScoped<AppSettingSeeder>();
-            services.AddScoped<AppPageSeeder>();
-            services.AddScoped<AppSlideSeeder>();
-            services.AddScoped<AppCategorySeeder>();
-            services.AddScoped<AppContentSeeder>();
+            //services.AddScoped<AppMenuSeeder>();
+            //services.AddScoped<AppLanguageSeeder>();
+            //services.AddScoped<AppSettingSeeder>();
+            //services.AddScoped<AppPageSeeder>();
+            //services.AddScoped<AppSlideSeeder>();
+            //services.AddScoped<AppCategorySeeder>();
+            //services.AddScoped<AppContentSeeder>();
 
             
 

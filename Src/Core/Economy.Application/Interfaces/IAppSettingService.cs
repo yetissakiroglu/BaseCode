@@ -7,6 +7,7 @@ namespace Economy.Application.Interfaces
     public interface IAppSettingService
     {
         Task<ResponseModel<AppSettingDto>> GetForReadAsync(GetAppSettingQuery query);
+        Task<ResponseModel<AppLogoSettingDto>> GetForReadLogoAsync(GetAppLogoSettingQuery query);
 
     }
 }

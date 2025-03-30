@@ -88,29 +88,29 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
             var query = filters == null ? await Table.ApplyIsDeletedFalseFilter().ToListAsync() : await Table.ApplyIsDeletedFalseFilter().AsTracking().Where(filters).ToListAsync();
             return new PagedList<T>(query, page, pageSize);
         }
-        public async Task<IQueryable<T>> WhereForEditAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        public IQueryable<T>WhereForEditAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
         {
             var query = filters == null ? Table : Table.Where(filters);
             query = includes.Aggregate(query, (current, include) => current.Include(include));
-            return await Task.FromResult(query.AsQueryable());
+            return query.AsQueryable();
         }
-        public async Task<IQueryable<T>> WhereForEditNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        public IQueryable<T>WhereForEditNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
         {
             var query = filters == null ? Table : Table.ApplyIsDeletedFalseFilter().Where(filters);
             query = includes.Aggregate(query, (current, include) => current.Include(include));
-            return await Task.FromResult(query.AsQueryable());
+            return query.AsQueryable();
         }
-        public async Task<IQueryable<T>> WhereForReadAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        public IQueryable<T> WhereForReadAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
         {
             var query = filters == null ? Table : Table.Where(filters);
             query = includes.Aggregate(query, (current, include) => current.Include(include));
-            return await Task.FromResult(query.AsQueryable());
+            return query.AsQueryable();
         }
-        public async Task<IQueryable<T>> WhereForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
+        public IQueryable<T> WhereForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
         {
             var query = filters == null ? Table : Table.ApplyIsDeletedFalseFilter().Where(filters);
             query = includes.Aggregate(query, (current, include) => current.Include(include));
-            return await Task.FromResult(query.AsQueryable());
+            return query.AsQueryable();
         }
         public async Task<T?> GetForReadFuncAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes)
         {
@@ -129,7 +129,7 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
 
             return await query.FirstOrDefaultAsync();
         }
-        public Task<IQueryable<T>> WhereForReadFuncAsync(Expression<Func<T, bool>>? filters = null,params Func<IQueryable<T>, IQueryable<T>>[] includes)
+        public IQueryable<T> WhereForReadFuncAsync(Expression<Func<T, bool>>? filters = null,params Func<IQueryable<T>, IQueryable<T>>[] includes)
         {
             var query = Table.AsNoTracking(); // Performans için AsNoTracking kullan
 
@@ -144,7 +144,7 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
                 query = include(query);
             }
 
-            return Task.FromResult(query);
+            return query;
         }
     }
 }

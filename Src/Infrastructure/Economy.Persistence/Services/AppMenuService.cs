@@ -103,7 +103,7 @@ namespace Economy.Persistence.Services
         //[Cache(Duration = 30)]  // BU DOĞRU!
         public async Task<ResponseModel<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuQuery query)
         {
-            var appMenu = await _appMenuRepository.WhereForReadAsync(null, x => x.SubMenus, x => x.ParentMenu, x => x.Translations);
+            var appMenu = _appMenuRepository.WhereForReadAsync(null, x => x.SubMenus, x => x.ParentMenu, x => x.Translations);
             var appMenuDto = _mapper.Map<List<AppMenuDto>>(appMenu);
             return ResponseModel<List<AppMenuDto>>.Success(appMenuDto, HttpStatusCode.OK);
         }
@@ -111,7 +111,7 @@ namespace Economy.Persistence.Services
         //[Cache(Duration = 30)]  // BU DOĞRU!
         public async Task<ResponseModel<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuByParentMenuIdQuery query)
         {
-            var appMenu = await _appMenuRepository.WhereForReadAsync(w => w.ParentMenuId == query.ParentMenuId,x => x.SubMenus,x => x.ParentMenu,x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode));
+            var appMenu = _appMenuRepository.WhereForReadAsync(w => w.ParentMenuId == query.ParentMenuId,x => x.SubMenus,x => x.ParentMenu,x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode));
             var appMenuDto = _mapper.Map<List<AppMenuDto>>(appMenu);
             return ResponseModel<List<AppMenuDto>>.Success(appMenuDto, HttpStatusCode.OK);
         }

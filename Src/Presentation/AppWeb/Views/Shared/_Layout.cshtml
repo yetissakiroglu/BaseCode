@@ -4,8 +4,8 @@
 
 @{
     var appSettings = Context.Items["AppSettings"] as AppSettingDto;
-    var siteTitle = appSettings?.SiteTitle;
-    var siteDescription = appSettings?.SiteDescription;
+    var siteTitle = appSettings?.SiteTitle ?? "Boş";
+    var siteDescription = appSettings?.SiteDescription ?? "Boş";
 }
 
 

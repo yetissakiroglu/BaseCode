@@ -3,7 +3,7 @@
     public class AppSettingDto
     {
         public string SiteTitle { get; set; }
-        public string SiteDescription { get; set; }
+        public string? SiteDescription { get; set; }
         public string LogoUrl { get; set; }
         public string PrimaryColor { get; set; }
         public string MetaTitle { get; set; }

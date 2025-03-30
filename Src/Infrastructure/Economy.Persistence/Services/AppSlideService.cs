@@ -18,14 +18,14 @@ namespace Economy.Persistence.Services
 
         public async Task<ResponseModel<List<AppSlideDto>>> WhereForReadByLanguageCodeAsync(GetAllAppSlideByLanguageCodeQuery query)
         {
-            var appSlide = await _appSlideRepository.WhereForReadAsync(null, x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode));
+            var appSlide = _appSlideRepository.WhereForReadAsync(null, x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode));
             var appSlideDto = _mapper.Map<List<AppSlideDto>>(appSlide);
             return ResponseModel<List<AppSlideDto>>.Success(appSlideDto, HttpStatusCode.OK);
         }
 
         public async Task<ResponseModel<List<AppSlideDto>>> WhereForReadByLanguageCodeBySectionIdAsync(GetAllAppSlideByLanguageCodeBySectionIdQuery query)
         {
-            var appSlide = await _appSlideRepository.WhereForReadAsync(x=>x.AppSectionId==query.AppSectionId, x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode));
+            var appSlide = _appSlideRepository.WhereForReadAsync(x=>x.AppSectionId==query.AppSectionId, x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode));
             var appSlideDto = _mapper.Map<List<AppSlideDto>>(appSlide);
             return ResponseModel<List<AppSlideDto>>.Success(appSlideDto, HttpStatusCode.OK);
         }

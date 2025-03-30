@@ -1,5 +1,4 @@
 ﻿using Economy.Core.PagingModels;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Economy.Core.Repositories
@@ -12,11 +11,11 @@ namespace Economy.Core.Repositories
         Task<T> GetForEditAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
         Task<T> GetForEditNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
 
-        Task<IQueryable<T>> WhereForReadAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
-        Task<IQueryable<T>> WhereForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        IQueryable<T> WhereForReadAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        IQueryable<T> WhereForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
 
-        Task<IQueryable<T>> WhereForEditAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
-        Task<IQueryable<T>> WhereForEditNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        IQueryable<T> WhereForEditAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
+        IQueryable<T> WhereForEditNonDeletedAsync(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
 
         Task<IPagedList<T>> PagedListForReadAsync(Expression<Func<T, bool>>? filters = null, int page = 0, int pageSize = 0);
         Task<IPagedList<T>> PagedListForReadNonDeletedAsync(Expression<Func<T, bool>>? filters = null, int page = 0, int pageSize = 0);
@@ -29,7 +28,7 @@ namespace Economy.Core.Repositories
         Task DeleteAsync(T entity);
 
         Task<T?> GetForReadFuncAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
-        Task<IQueryable<T>> WhereForReadFuncAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
+        IQueryable<T> WhereForReadFuncAsync(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
 
     }
 }
