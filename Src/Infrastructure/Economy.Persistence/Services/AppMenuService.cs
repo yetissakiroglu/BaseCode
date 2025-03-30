@@ -31,6 +31,7 @@ namespace Economy.Persistence.Services
             await _unitOfWork.CommitAsync();
             return ResponseModel<bool>.Success(true, HttpStatusCode.OK);
         }
+        //[Cache(Duration = 30)]  // BU DOĞRU!
         public async Task<ResponseModel<AppMenuDto>> GetForReadAsync(GetAppMenuByMenuIdQuery query)
         {
             var appMenu = await _appMenuRepository.GetForReadAsync(x => x.Id == query.MenuId, x => x.SubMenus, x => x.ParentMenu, x => x.Translations);
@@ -99,7 +100,7 @@ namespace Economy.Persistence.Services
             var dto = _mapper.Map<AppMenuDto>(appMenu);
             return ResponseModel<AppMenuDto>.Success(dto, HttpStatusCode.OK);
         }
-
+        //[Cache(Duration = 30)]  // BU DOĞRU!
         public async Task<ResponseModel<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuQuery query)
         {
             var appMenu = await _appMenuRepository.WhereForReadAsync(null, x => x.SubMenus, x => x.ParentMenu, x => x.Translations);
@@ -107,6 +108,7 @@ namespace Economy.Persistence.Services
             return ResponseModel<List<AppMenuDto>>.Success(appMenuDto, HttpStatusCode.OK);
         }
         [Log("Menü WhereForReadAsync alındı.")]
+        //[Cache(Duration = 30)]  // BU DOĞRU!
         public async Task<ResponseModel<List<AppMenuDto>>> WhereForReadAsync(GetAllAppMenuByParentMenuIdQuery query)
         {
             var appMenu = await _appMenuRepository.WhereForReadAsync(w => w.ParentMenuId == query.ParentMenuId,x => x.SubMenus,x => x.ParentMenu,x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode));

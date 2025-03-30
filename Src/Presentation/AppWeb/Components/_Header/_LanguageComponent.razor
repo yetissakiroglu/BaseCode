@@ -6,7 +6,8 @@
 @code {
     private List<string> errorMessages = new();
     private List<AppLanguageDto> AppLanguages = new();
-    private string activeLanguage = @CultureInfo.CurrentUICulture.Name;
+    [Parameter]
+    public string? LanguageCode { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -42,8 +43,8 @@ else
     <ul id="lang_top">
         @foreach (var lang in AppLanguages)
         {
-            var active = lang.Code == activeLanguage ? "active" : "";
-            <li><a href="@($"/Language/ChangeLanguage?lang={lang.Code}")" class="@active">@lang.Icon - @activeLanguage</a></li>
+            var active = lang.Code == LanguageCode ? "active" : "";
+            <li><a href="@($"/Language/ChangeLanguage?lang={lang.Code}")" class="@active">@lang.Icon</a></li>
         }
     </ul>
 }

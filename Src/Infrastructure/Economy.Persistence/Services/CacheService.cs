@@ -1,12 +1,6 @@
 ﻿using Economy.Application.Interfaces;
-using Economy.Domain.Entites.EntityAppSettings;
 using Economy.Persistence.Contexts;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Economy.Persistence.Services
 {
@@ -45,7 +39,7 @@ namespace Economy.Persistence.Services
         public bool IsCacheEnabled()
         {
             // Her zaman veritabanından oku
-            var setting = _context.AppSettings.FirstOrDefault(x => x.Id == 1);
+            var setting = _context.AppTechnicalSettings.FirstOrDefault(x => x.Id == 1);
             return setting?.EnableCache ?? false;
         }
     }

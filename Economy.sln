@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppWeb", "Src\Presentation\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggingLibrary", "Src\Core\LoggingLibrary\LoggingLibrary\LoggingLibrary.csproj", "{24ECD985-F099-4F1C-8ED6-5EEDBEB83FCB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.Caching", "Src\Core\Economy.Caching\Economy.Caching.csproj", "{97D40EF3-156B-44BA-8F3C-7634701F2C39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{24ECD985-F099-4F1C-8ED6-5EEDBEB83FCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24ECD985-F099-4F1C-8ED6-5EEDBEB83FCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24ECD985-F099-4F1C-8ED6-5EEDBEB83FCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97D40EF3-156B-44BA-8F3C-7634701F2C39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97D40EF3-156B-44BA-8F3C-7634701F2C39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97D40EF3-156B-44BA-8F3C-7634701F2C39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97D40EF3-156B-44BA-8F3C-7634701F2C39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{ED93B73B-F2BC-457E-BA0B-7D245ACC113D} = {7DC9D358-AA0E-471C-A486-A1A41826AA31}
 		{1C8854EC-7BC8-4528-AAC8-B4F4BADFB760} = {FA6C4317-017A-46A5-AC2B-2223501710B3}
 		{24ECD985-F099-4F1C-8ED6-5EEDBEB83FCB} = {A562FD7E-981E-4AD8-83BD-2ABE0791DB98}
+		{97D40EF3-156B-44BA-8F3C-7634701F2C39} = {A562FD7E-981E-4AD8-83BD-2ABE0791DB98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {20E107F7-FA8E-44CE-9C37-93776883CCC7}

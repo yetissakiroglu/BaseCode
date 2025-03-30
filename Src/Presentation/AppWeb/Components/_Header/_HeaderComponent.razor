@@ -1,7 +1,14 @@
-﻿@code {
+﻿@using AppWeb.Providers
+@inject LanguageProvider _languageProvider
 
+
+@code {
+    public string? LanguageCode { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+         LanguageCode = _languageProvider.GetCurrentLanguage();
+    }
 }
-
 
 <header>
     <div class="container">
@@ -13,24 +20,17 @@
             </div>
             <nav class="col-9 position-relative">
                 <a class="cmn-toggle-switch cmn-toggle-switch__htx open_close" href="javascript:void(0);"><span>Menu mobile</span></a>
-                <!-- Language Component'ı Burada Dahil Ediliyor -->
-                <_LanguageComponent />
-
-
-@*                 @await Component.InvokeAsync("Language")
- *@            
-                    <div class="main-menu">
+                  <_LanguageComponent LanguageCode="@LanguageCode" />
+                <div class="main-menu">
                     <div id="header_menu">
                         <img src="img/logo_m.png" width="141" height="40" alt="" data-retina="true">
                     </div>
-                    <a href="#" class="open_close" id="close_in"><i class="icon_set_1_icon-77"></i></a>    <!-- Menü Component'ı Burada Dahil Ediliyor -->
-@*                     @await Component.InvokeAsync("Menu")
- *@                </div>
-
-                <!-- End main-menu -->
+                    <a href="#" class="open_close" id="close_in"><i class="icon_set_1_icon-77"></i></a>
+                    <_MenuComponent LanguageCode="@LanguageCode" />
+                </div>
             </nav>
-        </div><!-- End row -->
-    </div><!-- End container -->
+        </div>
+    </div>
 </header>
 @* <_BreadcrumbsComponent Breadcrumbs="@contentDetail.Breadcrumbs" />
  *@

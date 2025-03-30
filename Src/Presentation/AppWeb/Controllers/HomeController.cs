@@ -27,7 +27,7 @@ namespace AppWeb.Controllers
             if (!string.IsNullOrEmpty(lang))
             {
                 result = await _mediator.Send(new GetAppPageDefaultByLanguageCodeQuery(lang));
-                result.Data.LanguageCode = lang;
+                //result.Data.LanguageCode = lang;
                 return View(result.Data);
             }
 
@@ -36,11 +36,6 @@ namespace AppWeb.Controllers
             //result.Data.LanguageCode = langDefault;
             return View(result.Data);
         }
-
-
-
-
-
 
 
 

@@ -1,6 +1,7 @@
 ﻿using Economy.Application.Commands.AppMenus;
 using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Queries.AppMenus;
+using Economy.Caching.Attributes;
 using Economy.Core.Tools;
 
 namespace Economy.Application.Interfaces

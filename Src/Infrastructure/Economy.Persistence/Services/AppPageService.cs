@@ -40,8 +40,8 @@ namespace Economy.Persistence.Services
                                                                          .ThenInclude(ps => ps.AppSection));
 
             var appModelDto = _mapper.Map<AppPageDto>(appModel);
-            appModelDto.Breadcrumb = appModel.GetBreadcrumbs();
-            appModelDto.AppPageSections = appModelDto.AppPageSections.OrderBy(e => e.Sequence).ToList();
+            //appModelDto.Breadcrumb = appModel.GetBreadcrumbs();
+            //appModelDto.AppPageSections = appModelDto.AppPageSections.OrderBy(e => e.Sequence).ToList();
             return ResponseModel<AppPageDto>.Success(appModelDto, HttpStatusCode.OK);
         }
 

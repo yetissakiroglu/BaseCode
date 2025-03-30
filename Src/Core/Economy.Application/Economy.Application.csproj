@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Economy.Caching\Economy.Caching.csproj" />
     <ProjectReference Include="..\Economy.Core\Economy.Core.csproj" />
     <ProjectReference Include="..\Economy.Domain\Economy.Domain.csproj" />
     <ProjectReference Include="..\LoggingLibrary\LoggingLibrary\LoggingLibrary.csproj" />

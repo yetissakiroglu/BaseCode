@@ -5,11 +5,12 @@ using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using Economy.Application;
 using Economy.Persistence;
-using Economy.Persistence.Seeds;
 using LoggingLibrary.Extensions;
 using LoggingLibrary.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Economy.Caching.Extensions;
+using Economy.Caching.Interceptors;
 
 var builder = WebApplication.CreateBuilder(args);
 // AppSettingsActionFilter'ı global olarak kaydedin
@@ -39,9 +40,16 @@ builder.Services.AddScoped<LanguageProvider, UserLanguageProvider>();
 
 // 📌 Autofac Kullanımı
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+// IMemoryCache
+builder.Services.AddMemoryCache();
 
 builder.Host.ConfigureContainer<ContainerBuilder>(container =>
 {
+
+    container.RegisterType<CacheInterceptor>()
+         .AsSelf()
+         .InstancePerLifetimeScope();
+
     container.RegisterType<LoggingInterceptor>()
              .AsSelf()
              .InstancePerLifetimeScope(); // 📌 **Scoped olarak kaydedildi**
@@ -54,8 +62,14 @@ builder.Host.ConfigureContainer<ContainerBuilder>(container =>
     var assemblies = new[]
     {
         Assembly.GetExecutingAssembly(), // **Ana proje**
-        Assembly.Load("Economy.Persistence") // **Eklenen Class Library**
+        Assembly.Load("Economy.Persistence"),
+        // **Eklenen Class Library**
     };
+
+ 
+    //container.RegisterCachingInterceptors(assemblies);
+
+
 
     // 📌 **Tüm servisleri otomatik kaydet (IService şeklindeki interface'lere karşılık gelenleri)**
     container.RegisterAssemblyTypes(assemblies)
@@ -63,6 +77,8 @@ builder.Host.ConfigureContainer<ContainerBuilder>(container =>
              .AsImplementedInterfaces()
              .EnableInterfaceInterceptors() // 📌 Interceptor'u etkinleştir
              .InterceptedBy(typeof(LoggingInterceptor))
+                          .InterceptedBy(typeof(CacheInterceptor))
+
              .InstancePerLifetimeScope();
 
     // 📌 LoggingDbContext'i Autofac Container'ına ekle
@@ -75,6 +91,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(container =>
 builder.Services.AddApplicationServices();
 var connectionString = builder.Configuration.GetConnectionString("SqlServer") ?? throw new InvalidOperationException("Connection string 'SqlServer' not found.");
 builder.Services.AddInfrastructureServices(connectionString);
+
 
 
 var app = builder.Build();
@@ -121,6 +138,10 @@ app.UseAuthorization(); // Authorization ve diğer middleware'ler sonrasında
 app.MapControllerRoute(
     name: "localized",
     pattern: "{lang?}/{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "dynamic_page",

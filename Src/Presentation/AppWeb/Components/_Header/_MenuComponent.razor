@@ -1,0 +1,69 @@
+﻿@using Economy.Application.Dtos.AppMenuDtos
+@using Economy.Application.Queries.AppMenus
+@using MediatR
+@inject IMediator _mediator
+@code {
+    [Parameter]
+    public string? LanguageCode { get; set; }
+
+    private List<string> errorMessages = new();
+    private List<AppMenuDto> AppMenus = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _mediator.Send(new GetAllAppMenuByParentMenuIdQuery(null, LanguageCode));
+        if (result.IsSuccess)
+        {
+            AppMenus = result.Data;
+        }
+        else
+        {
+            if (result.Message?.Messages != null && result.Message.Messages.Count() > 0)
+            {
+                errorMessages = result.Message.Messages.ToList();
+            }
+        }
+    }
+
+
+}
+@if (!AppMenus.Any())
+{
+    if (errorMessages.Any())
+    {
+        <div class="error-messages">
+            @foreach (var message in errorMessages)
+            {
+                <p>@message</p>
+            }
+        </div>
+    }
+}
+else
+{
+    <ul>
+        @foreach (var menu in AppMenus)
+        {
+            @if (!menu.SubMenus.Any())
+            {
+                <li><a href="/@menu.LanguageCode/@menu.Url">@menu.Title</a></li>
+            }
+            else
+            {
+                <li class="submenu">
+                    <a href="javascript:void(0);" class="show-submenu">@menu.Title <i class="icon-down-open-mini"></i></a>
+                    @if (menu.SubMenus.Any())
+                    {
+                        <ul>
+                            @foreach (var subMenu in menu.SubMenus)
+                            {
+                                <li><a href="/@subMenu.LanguageCode/@subMenu.Url">@subMenu.Title</a></li>
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        }
+    </ul>
+
+}
