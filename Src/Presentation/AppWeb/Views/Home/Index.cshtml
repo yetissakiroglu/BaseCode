@@ -1,152 +1,52 @@
 ﻿@using AppWeb.Components
+@using System.Globalization
 @model AppPageDto
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
-@* @{
-    if(Model is not null ){
-    foreach (var item in Model.AppPageSections)
+@{
+    if (Model is not null)
     {
-        // `SectionType` değerini kontrol etmek için bir switch-case yapısı
-        switch (item.AppSection.SectionType)
+        foreach (var item in Model.AppPageSections)
         {
-            case SectionType.Slide:
-                {
-                    <component type="typeof(_SlideHomeComponent)" render-mode="ServerPrerendered" param-AppSectionID="@item.AppSection.Id" param-LanguageCode="@Model.LanguageCode" />
-                }
-                break;
-            case SectionType.Room:
-                {
-                    <component type="typeof(_RoomHomeComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" param-LanguageCode="@Model.LanguageCode" />
-                }
-                break;
-            case SectionType.Service:
-                {
-                    <component type="typeof(_ServiceHomeComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" param-LanguageCode="@Model.LanguageCode" />
-                }
-                break;
-            case SectionType.HTML:
-                {
-                    <component type="typeof(_PageComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" />
-                }
-                break;
-            default:
-                {
+            // `SectionType` değerini kontrol etmek için bir switch-case yapısı
+            switch (item.AppSection.SectionType)
+            {
+                case SectionType.Slide:
+                    {
+                        <component type="typeof(_SlideHomeComponent)" render-mode="ServerPrerendered" param-AppSectionID="@item.AppSection.Id" param-LanguageCode="@Model.LanguageCode" />
+                    }
+                    break;
+                case SectionType.Room:
+                    {
+                        <component type="typeof(_RoomHomeComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" param-LanguageCode="@Model.LanguageCode" />
+                    }
+                    break;
+                case SectionType.Service:
+                    {
+                        <component type="typeof(_ServiceHomeComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" param-LanguageCode="@Model.LanguageCode" />
+                    }
+                    break;
+                case SectionType.Corporate:
+                    {
+                        <component type="typeof(_CorporateComponent)" render-mode="ServerPrerendered" param-AppSection="@item.AppSection" />
+                    }
+                    break;
+                default:
+                    {
 
-                    // Varsayılan işleme mantığı
-                }
-                break;
+                        // Varsayılan işleme mantığı
+                    }
+                    break;
+            }
         }
     }
-    }
 }
- *@
 
 
 
-
-
-
-
-<section class="bg-white kurumsal">
-    <div class="h1-introduce">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-6 text-center ">
-                    <div class="sc-heading style-02">
-                        <div class="section_header overlay">
-                            <span>HOŞGELDİNİZ</span>
-
-                            <p>Imperial Turkiz Resort Hotel</p>
-                            <img src="img/decoration-1.png" alt="Image">
-                        </div>
-
-                        <div class="description">
-                            Doğanın nefes kesen güzelliğinin turkuaz sularla buluştuğu Kemer’ in kalbinde konumlanan Türkiz Resort Hotel göz alıcı mimarisi ve sıcak atmosferi ile sizi eşsiz bir mutluluğa davet ediyor.
-                        </div>
-                        <div class="head-button">
-                            <a href="/tr/otelimiz" class="more-info">Daha Fazla Bilgi</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="sc-img-box row">
-
-                        <div class="col-sm-6">
-                            <a href="">
-                                <img src="img/essiz-misafirperverligi-595bb.jpg" alt="Nefes Kesen Konumuyla Büyüleyici Bir Otel">
-                            </a>
-                        </div>
-
-                        <div class="col-sm-6">
-                            <a href="">
-                                <img src="img/essiz-osmanli-stili-ve-misafirperverligi-7315a.jpg" alt="Eşsiz Misafirperverliği">
-                            </a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-
-<section class="promo_full">
-    <div class="promo_full_wp">
-        <div>
-            <h3>What Clients say<span>Id tale utinam ius, an mei omnium recusabo iracundia.</span></h3>
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-7">
-                        <div class="owl-carousel owl-theme carousel_testimonials">
-
-                            <div>
-                                <div class="box_overlay">
-                                    <div class="pic">
-                                        <figure><img src="img/testimonial_1.jpg" alt="" class="img-circle"></figure>
-                                        <h4>Roberta<small>12 October 2015</small></h4>
-                                    </div>
-                                    <div class="comment">
-                                        "Mea ad postea meliore fuisset. Timeam repudiare id eum, ex paulo dictas elaboraret sed, mel cu unum nostrud. No nam indoctum accommodare, vix ei discere civibus philosophia. Vis ea dicant diceret ocurreret."
-                                    </div>
-                                </div><!-- End box_overlay -->
-                            </div>
-
-                            <div>
-                                <div class="box_overlay">
-                                    <div class="pic">
-                                        <figure><img src="img/testimonial_1.jpg" alt="" class="img-circle"></figure>
-                                        <h4>Roberta<small>12 October 2015</small></h4>
-                                    </div>
-                                    <div class="comment">
-                                        "Mea ad postea meliore fuisset. Timeam repudiare id eum, ex paulo dictas elaboraret sed, mel cu unum nostrud. No nam indoctum accommodare, vix ei discere civibus philosophia. Vis ea dicant diceret ocurreret."
-                                    </div>
-                                </div><!-- End box_overlay -->
-                            </div>
-
-                            <div>
-                                <div class="box_overlay">
-                                    <div class="pic">
-                                        <figure><img src="img/testimonial_1.jpg" alt="" class="img-circle"></figure>
-                                        <h4>Roberta<small>12 October 2015</small></h4>
-                                    </div>
-                                    <div class="comment">
-                                        "Mea ad postea meliore fuisset. Timeam repudiare id eum, ex paulo dictas elaboraret sed, mel cu unum nostrud. No nam indoctum accommodare, vix ei discere civibus philosophia. Vis ea dicant diceret ocurreret."
-                                    </div>
-                                </div><!-- End box_overlay -->
-                            </div>
-
-                        </div><!-- End carousel_testimonials -->
-                    </div><!-- End col-lg-8 -->
-                </div><!-- End row -->
-            </div><!-- End container -->
-        </div><!-- End promo_full_wp -->
-    </div><!-- End promo_full -->
-</section><!-- End section -->
 
 
 
@@ -159,22 +59,14 @@
 <br />
 <br />
 @{
-    // var lang = CultureInfo.CurrentUICulture.Name;
+    var lang = CultureInfo.CurrentUICulture.Name;
 }
 
-@* <span>@lang</span>
- *@
+<span>@lang</span>
+ 
 @* <div class="language-selector">
     <a href="@Url.Action("ChangeLanguage", "Language", new { lang = "tr" })">Türkçe</a> |
     <a href="@Url.Action("ChangeLanguage", "Language", new { lang = "en" })">English</a>
     <a href="@Url.Action("ChangeLanguage", "Language", new { lang = "ys" })">Yanlış Dil</a>
 
 </div> *@
-
-
-
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>

@@ -18,6 +18,10 @@ namespace Economy.Application.Profiles
             CreateMap<AppSection, AppSectionDto>();
 
             CreateMap<AppPageTranslation, AppPageTranslationDto>();
+
+            CreateMap<AppSectionImage, AppSectionImageDto>();
+
+            
         }
     }
   

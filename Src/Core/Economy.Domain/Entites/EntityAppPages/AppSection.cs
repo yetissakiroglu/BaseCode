@@ -8,5 +8,8 @@ namespace Economy.Domain.Entites.EntityAppPages
         public string Name { get; set; }
         public string? Content { get; set; }
         public SectionType SectionType { get; set; }
+        public ICollection<AppPageSection> AppPageSections { get; set; }
+        public ICollection<AppSectionImage> AppSectionImages { get; set; } 
+
     }
 }

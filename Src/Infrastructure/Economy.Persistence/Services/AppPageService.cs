@@ -37,7 +37,8 @@ namespace Economy.Persistence.Services
         {
             var appModel = _appPageRepository.GetForReadFunc(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode && w.Url == query.Url))
                                                                          .Include(x => x.AppPageSections)
-                                                                         .ThenInclude(ps => ps.AppSection));
+                                                                         .ThenInclude(ps => ps.AppSection)
+                                                                         .ThenInclude(s => s.AppSectionImages));
 
             var appModelDto = _mapper.Map<AppPageDto>(appModel);
             //appModelDto.Breadcrumb = appModel.GetBreadcrumbs();
@@ -49,7 +50,8 @@ namespace Economy.Persistence.Services
         {
             var appModel = _appPageRepository.GetForReadFunc(null, q => q.Include(x => x.Translations.Where(w => w.AppLanguage.Code == query.LanguageCode))
                                                                          .Include(x => x.AppPageSections)
-                                                                         .ThenInclude(ps => ps.AppSection));
+                                                                         .ThenInclude(ps => ps.AppSection)
+                                                                         .ThenInclude(s=>s.AppSectionImages));
 
             var appModelDto = _mapper.Map<AppPageDto>(appModel);
             //appModelDto.Breadcrumb = appModel?.GetBreadcrumbs();

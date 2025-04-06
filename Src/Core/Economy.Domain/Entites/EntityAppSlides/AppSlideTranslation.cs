@@ -5,9 +5,9 @@ namespace Economy.Domain.Entites.EntitySlides
 {
 	public class AppSlideTranslation : BaseEntity<int>
     {
+        public int AppSlideId { get; set; }
         public string Title { get; set; }
         public string? Content { get; set; }
-        public string? Thumbnail { get; set; }
         public bool IsExternal { get; set; }
         public string? ButtonText { get; set; }
         public string? ButtonUrl { get; set; }

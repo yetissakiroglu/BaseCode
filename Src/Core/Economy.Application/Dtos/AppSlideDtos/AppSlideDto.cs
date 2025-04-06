@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public int Sequence { get; set; }
+        public string? Thumbnail { get; set; }
         public List<AppSlideTranslationDto> Translations { get; set; } = new();
     }
 }

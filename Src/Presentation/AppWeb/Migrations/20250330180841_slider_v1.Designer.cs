@@ -4,6 +4,7 @@ using Economy.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250330180841_slider_v1")]
+    partial class slider_v1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -338,15 +341,7 @@ namespace AppWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppPages", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsDeleted = false,
-                            IsHomePage = true
-                        });
+                    b.ToTable("AppPages");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPageSection", b =>
@@ -364,8 +359,7 @@ namespace AppWeb.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -375,8 +369,7 @@ namespace AppWeb.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Sequence")
                         .HasColumnType("int");
@@ -387,7 +380,7 @@ namespace AppWeb.Migrations
 
                     b.HasIndex("AppSectionId");
 
-                    b.ToTable("AppPageSections", (string)null);
+                    b.ToTable("AppPageSections");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPageTranslation", b =>
@@ -401,7 +394,7 @@ namespace AppWeb.Migrations
                     b.Property<int>("AppLanguageId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AppPageId")
+                    b.Property<int?>("AppPageId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -430,33 +423,7 @@ namespace AppWeb.Migrations
 
                     b.HasIndex("AppPageId");
 
-                    b.ToTable("AppPageTranslations", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppLanguageId = 1,
-                            AppPageId = 1,
-                            Content = "Anasayfa",
-                            IsDeleted = false,
-                            MetaDescription = "Anasayfa",
-                            MetaTitle = "Anasayfa",
-                            Title = "Anasayfa",
-                            Url = "anasayfa"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AppLanguageId = 2,
-                            AppPageId = 1,
-                            Content = "Home",
-                            IsDeleted = false,
-                            MetaDescription = "Home",
-                            MetaTitle = "Home",
-                            Title = "Home",
-                            Url = "home"
-                        });
+                    b.ToTable("AppPageTranslations");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppSection", b =>
@@ -494,72 +461,6 @@ namespace AppWeb.Migrations
                             IsDeleted = false,
                             Name = "Anasayfa Slider",
                             SectionType = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Content = "Doğanın nefes kesen güzelliğinin turkuaz sularla buluştuğu Kemer’ in kalbinde konumlanan Türkiz Resort Hotel göz alıcı mimarisi ve sıcak atmosferi ile sizi eşsiz bir mutluluğa davet ediyor.",
-                            IsDeleted = false,
-                            Name = "Imperial Turkiz Resort Hotel",
-                            SectionType = 1
-                        });
-                });
-
-            modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppSectionImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AppSectionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Thumbnail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppSectionId");
-
-                    b.ToTable("AppSectionImages", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppSectionId = 2,
-                            Content = "",
-                            IsDeleted = false,
-                            Name = "Kurumsal 1",
-                            Sequence = 1,
-                            Thumbnail = "essiz-misafirperverligi-595bb.jpg"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AppSectionId = 2,
-                            Content = "",
-                            IsDeleted = false,
-                            Name = "Kurumsal 2",
-                            Sequence = 2,
-                            Thumbnail = "essiz-osmanli-stili-ve-misafirperverligi-7315a.jpg"
                         });
                 });
 
@@ -960,38 +861,9 @@ namespace AppWeb.Migrations
                     b.Property<int>("Sequence")
                         .HasColumnType("int");
 
-                    b.Property<string>("Thumbnail")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
-                    b.ToTable("AppSlides", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppSectionId = 1,
-                            IsDeleted = false,
-                            Sequence = 1,
-                            Thumbnail = "slide_1.jpg"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AppSectionId = 1,
-                            IsDeleted = false,
-                            Sequence = 1,
-                            Thumbnail = "slide_2.jpg"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AppSectionId = 1,
-                            IsDeleted = false,
-                            Sequence = 1,
-                            Thumbnail = "slide_3.jpg"
-                        });
+                    b.ToTable("AppSlides");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntitySlides.AppSlideTranslation", b =>
@@ -1005,7 +877,7 @@ namespace AppWeb.Migrations
                     b.Property<int>("AppLanguageId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AppSlideId")
+                    b.Property<int?>("AppSlideId")
                         .HasColumnType("int");
 
                     b.Property<string>("ButtonIcon")
@@ -1026,6 +898,9 @@ namespace AppWeb.Migrations
                     b.Property<bool>("IsExternal")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Thumbnail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1036,87 +911,7 @@ namespace AppWeb.Migrations
 
                     b.HasIndex("AppSlideId");
 
-                    b.ToTable("AppSlideTranslations", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppLanguageId = 1,
-                            AppSlideId = 1,
-                            ButtonIcon = "fa-search",
-                            ButtonText = "Keşfet",
-                            ButtonUrl = "/explore",
-                            Content = "En iyi tatil deneyimi için bizimle olun.",
-                            IsDeleted = false,
-                            IsExternal = false,
-                            Title = "Hoş Geldiniz"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AppLanguageId = 2,
-                            AppSlideId = 1,
-                            ButtonIcon = "fa-search",
-                            ButtonText = "Explore",
-                            ButtonUrl = "/explore",
-                            Content = "Join us for the best vacation experience.",
-                            IsDeleted = false,
-                            IsExternal = false,
-                            Title = "Welcome"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AppLanguageId = 1,
-                            AppSlideId = 2,
-                            ButtonIcon = "fa-search",
-                            ButtonText = "Keşfet",
-                            ButtonUrl = "/explore",
-                            Content = "En iyi tatil deneyimi için bizimle olun.",
-                            IsDeleted = false,
-                            IsExternal = false,
-                            Title = "Hoş Geldiniz"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AppLanguageId = 2,
-                            AppSlideId = 2,
-                            ButtonIcon = "fa-search",
-                            ButtonText = "Explore",
-                            ButtonUrl = "/explore",
-                            Content = "Join us for the best vacation experience.",
-                            IsDeleted = false,
-                            IsExternal = false,
-                            Title = "Welcome"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AppLanguageId = 1,
-                            AppSlideId = 3,
-                            ButtonIcon = "fa-search",
-                            ButtonText = "Keşfet",
-                            ButtonUrl = "/explore",
-                            Content = "En iyi tatil deneyimi için bizimle olun.",
-                            IsDeleted = false,
-                            IsExternal = false,
-                            Title = "Hoş Geldiniz"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AppLanguageId = 2,
-                            AppSlideId = 3,
-                            ButtonIcon = "fa-search",
-                            ButtonText = "Explore",
-                            ButtonUrl = "/explore",
-                            Content = "Join us for the best vacation experience.",
-                            IsDeleted = false,
-                            IsExternal = false,
-                            Title = "Welcome"
-                        });
+                    b.ToTable("AppSlideTranslations");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.Identities.AppUser", b =>
@@ -1422,7 +1217,7 @@ namespace AppWeb.Migrations
                         .IsRequired();
 
                     b.HasOne("Economy.Domain.Entites.EntityAppPages.AppSection", "AppSection")
-                        .WithMany("AppPageSections")
+                        .WithMany()
                         .HasForeignKey("AppSectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1442,22 +1237,9 @@ namespace AppWeb.Migrations
 
                     b.HasOne("Economy.Domain.Entites.EntityAppPages.AppPage", null)
                         .WithMany("Translations")
-                        .HasForeignKey("AppPageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppPageId");
 
                     b.Navigation("AppLanguage");
-                });
-
-            modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppSectionImage", b =>
-                {
-                    b.HasOne("Economy.Domain.Entites.EntityAppPages.AppSection", "AppSection")
-                        .WithMany("Translations")
-                        .HasForeignKey("AppSectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppSection");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppSettings.AppSettingTranslation", b =>
@@ -1508,9 +1290,7 @@ namespace AppWeb.Migrations
 
                     b.HasOne("Economy.Domain.Entites.EntitySlides.AppSlide", null)
                         .WithMany("Translations")
-                        .HasForeignKey("AppSlideId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppSlideId");
 
                     b.Navigation("AppLanguage");
                 });
@@ -1572,13 +1352,6 @@ namespace AppWeb.Migrations
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppPage", b =>
-                {
-                    b.Navigation("AppPageSections");
-
-                    b.Navigation("Translations");
-                });
-
-            modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppSection", b =>
                 {
                     b.Navigation("AppPageSections");
 

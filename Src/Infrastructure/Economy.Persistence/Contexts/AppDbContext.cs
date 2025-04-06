@@ -68,11 +68,6 @@ namespace Economy.Persistence.Contexts
 
 
 
-        public DbSet<AppPage> AppPages { get; set; }
-        public DbSet<AppPageTranslation> AppPageTranslations { get; set; }
-        public DbSet<AppPageSection> AppPageSections { get; set; }
-        public DbSet<AppSection> AppSections { get; set; }
-
         //*---------------- End -----------------*/
 
         //-begin new-   
@@ -80,11 +75,17 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppTechnicalSetting> AppTechnicalSettings { get; set; }
         public DbSet<AppLogoSetting> AppLogoSettings { get; set; }
 
-        
+
+        public DbSet<AppPage> AppPages { get; set; }
+        public DbSet<AppPageTranslation> AppPageTranslations { get; set; }
+        public DbSet<AppPageSection> AppPageSections { get; set; }
+        public DbSet<AppSection> AppSections { get; set; }
+        public DbSet<AppSectionImage> AppSectionImages { get; set; }
+       
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-            //optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
         protected override void OnModelCreating(ModelBuilder builder)

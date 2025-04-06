@@ -4,6 +4,7 @@ using Economy.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppWeb.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250330204502_page_v8")]
+    partial class page_v8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -502,64 +505,6 @@ namespace AppWeb.Migrations
                             IsDeleted = false,
                             Name = "Imperial Turkiz Resort Hotel",
                             SectionType = 1
-                        });
-                });
-
-            modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppSectionImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AppSectionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Thumbnail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppSectionId");
-
-                    b.ToTable("AppSectionImages", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppSectionId = 2,
-                            Content = "",
-                            IsDeleted = false,
-                            Name = "Kurumsal 1",
-                            Sequence = 1,
-                            Thumbnail = "essiz-misafirperverligi-595bb.jpg"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AppSectionId = 2,
-                            Content = "",
-                            IsDeleted = false,
-                            Name = "Kurumsal 2",
-                            Sequence = 2,
-                            Thumbnail = "essiz-osmanli-stili-ve-misafirperverligi-7315a.jpg"
                         });
                 });
 
@@ -1449,17 +1394,6 @@ namespace AppWeb.Migrations
                     b.Navigation("AppLanguage");
                 });
 
-            modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppSectionImage", b =>
-                {
-                    b.HasOne("Economy.Domain.Entites.EntityAppPages.AppSection", "AppSection")
-                        .WithMany("Translations")
-                        .HasForeignKey("AppSectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppSection");
-                });
-
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppSettings.AppSettingTranslation", b =>
                 {
                     b.HasOne("Economy.Domain.Entites.EntityAppLanguage.AppLanguage", "AppLanguage")
@@ -1581,8 +1515,6 @@ namespace AppWeb.Migrations
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppPages.AppSection", b =>
                 {
                     b.Navigation("AppPageSections");
-
-                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.EntityAppSettings.AppSetting", b =>

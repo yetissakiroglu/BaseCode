@@ -1,38 +1,24 @@
-﻿using Economy.Domain.Entites.EntitySlides;
-using Economy.Persistence.Contexts;
+﻿using Economy.Domain.Entites.EntityAppSettings;
+using Economy.Domain.Entites.EntitySlides;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Economy.Persistence.Seeds
+namespace Economy.Persistence.Configurations.ConfigurationAppSlide
 {
-    public class AppSlideSeeder
+    public class AppAppSlideTranslation_Configuration : IEntityTypeConfiguration<AppSlideTranslation>
     {
-        private readonly AppDbContext _context;
-
-        public AppSlideSeeder(AppDbContext context)
+        public void Configure(EntityTypeBuilder<AppSlideTranslation> builder)
         {
-            _context = context;
-        }
+            builder.ToTable("AppSlideTranslations");
 
-        public async Task SeedAsync()
-        {
-            if (!_context.AppSlides.Any())
+            builder.HasKey(x => x.Id);
+
+
+            var models = new List<AppSlideTranslation>
             {
-                var slides = GetPreconfiguredSlides();
-                await _context.AppSlides.AddRangeAsync(slides);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        private IEnumerable<AppSlide> GetPreconfiguredSlides()
-        {
-            return new List<AppSlide>
-    {
-
-        new AppSlide
-        {
-            Sequence = 1,
-            Translations = new List<AppSlideTranslation>
-            {
-                new AppSlideTranslation {
+                new AppSlideTranslation {AppSlideId = 1,
+                Id = 1,
+                IsDeleted = false,
                 Title = "Hoş Geldiniz",
                 Content = "En iyi tatil deneyimi için bizimle olun.",
                 IsExternal = false,
@@ -41,7 +27,7 @@ namespace Economy.Persistence.Seeds
                 ButtonIcon = "fa-search",
                 AppLanguageId = 1,
                 },
-               new AppSlideTranslation {
+               new AppSlideTranslation {AppSlideId = 1,Id = 2,IsDeleted = false,
                 Title = "Welcome",
                 Content = "Join us for the best vacation experience.",
                 IsExternal = false,
@@ -49,15 +35,9 @@ namespace Economy.Persistence.Seeds
                 ButtonUrl = "/explore",
                 ButtonIcon = "fa-search",
                 AppLanguageId = 2,
-                }
-            }
-        },
-                new AppSlide
-        {
-            Sequence = 1,
-            Translations = new List<AppSlideTranslation>
-            {
-                new AppSlideTranslation {
+                },
+                new AppSlideTranslation {AppSlideId = 2,Id = 3,IsDeleted = false,
+
                 Title = "Hoş Geldiniz",
                 Content = "En iyi tatil deneyimi için bizimle olun.",
                 IsExternal = false,
@@ -66,7 +46,7 @@ namespace Economy.Persistence.Seeds
                 ButtonIcon = "fa-search",
                 AppLanguageId = 1,
                 },
-               new AppSlideTranslation {
+               new AppSlideTranslation {AppSlideId = 2,Id = 4,IsDeleted = false,
                 Title = "Welcome",
                 Content = "Join us for the best vacation experience.",
                 IsExternal = false,
@@ -74,15 +54,8 @@ namespace Economy.Persistence.Seeds
                 ButtonUrl = "/explore",
                 ButtonIcon = "fa-search",
                 AppLanguageId = 2,
-                }
-            }
-        },
-                                new AppSlide
-        {
-            Sequence = 1,
-            Translations = new List<AppSlideTranslation>
-            {
-                new AppSlideTranslation {
+                },
+                  new AppSlideTranslation {AppSlideId = 3,Id = 5,IsDeleted = false,
                 Title = "Hoş Geldiniz",
                 Content = "En iyi tatil deneyimi için bizimle olun.",
                 IsExternal = false,
@@ -91,7 +64,7 @@ namespace Economy.Persistence.Seeds
                 ButtonIcon = "fa-search",
                 AppLanguageId = 1,
                 },
-               new AppSlideTranslation {
+               new AppSlideTranslation {AppSlideId = 3,Id = 6,IsDeleted = false,
                 Title = "Welcome",
                 Content = "Join us for the best vacation experience.",
                 IsExternal = false,
@@ -100,14 +73,13 @@ namespace Economy.Persistence.Seeds
                 ButtonIcon = "fa-search",
                 AppLanguageId = 2,
                 }
-            }
-        }
+            };
 
 
-
-    };
+            // Seed Data
+            builder.HasData(models);
         }
     }
 
-  
+
 }

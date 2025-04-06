@@ -5,6 +5,7 @@ namespace Economy.Domain.Entites.EntityAppPages
 {
     public class AppPageTranslation : BaseEntity<int>
     {
+        public int AppPageId { get; set; }
         public int AppLanguageId { get; set; }
         public virtual AppLanguage AppLanguage { get; set; } = null!;
         public required string Title { get; set; }

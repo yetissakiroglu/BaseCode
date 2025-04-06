@@ -5,7 +5,7 @@
     @foreach (var slide in Model)
     {
         <div>
-            <img src="img/slides/@slide.Translations.FirstOrDefault().Thumbnail" alt="">
+            <img src="img/slides/@slide.Thumbnail" alt="">
             <div class="caption">
                 <h3>@slide.Translations.FirstOrDefault().Title</h3>
             </div>

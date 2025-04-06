@@ -8,5 +8,7 @@ namespace Economy.Application.Dtos.AppPageDtos
         public string Name { get; set; }
         public string? Content { get; set; }
         public SectionType SectionType { get; set; }
+        public List<AppSectionImageDto> AppSectionImages { get; set; }
+
     }
 }
