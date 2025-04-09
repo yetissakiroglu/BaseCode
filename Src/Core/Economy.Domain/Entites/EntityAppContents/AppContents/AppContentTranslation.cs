@@ -5,6 +5,7 @@ namespace Economy.Domain.Entites.EntityAppContents.AppContents
 {
     public class AppContentTranslation : BaseEntity<int>
     {
+        public int AppContentId { get; set; }
         public string Title { get; set; }
         public string? ShortDescription { get; set; }
         public string? Content { get; set; }

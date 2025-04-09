@@ -69,8 +69,6 @@ namespace Economy.Persistence.Configurations.ConfigurationAppTechnicalSetting
                 EnablePreloader = false,
                 PreloaderHtml = null,
                 IsDeleted = false
-               
-
             });
         }
     }
