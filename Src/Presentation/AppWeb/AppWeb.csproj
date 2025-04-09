@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Economy.Caching\Economy.Caching.csproj" />
-    <ProjectReference Include="..\..\Core\LoggingLibrary\LoggingLibrary\LoggingLibrary.csproj" />
+    <ProjectReference Include="..\..\Core\LoggingLibrary\LoggingLibrary\Economy.Logging.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Economy.Persistence\Economy.Persistence.csproj" />
   </ItemGroup>
 
