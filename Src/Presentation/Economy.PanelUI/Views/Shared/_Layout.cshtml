@@ -1,50 +1,97 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - Economy.PanelUI</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Economy.PanelUI.styles.css" asp-append-version="true" />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Multipurpose, super Feb, powerful, clean modern responsive bootstrap 5 admin template"
+          name="description">
+    <meta content="admin template, axelit admin template, dashboard template, flat admin template, responsive admin template, web app"
+          name="keywords">
+    <meta content="la-themes" name="author">
+    <link href="../assets/images/logo/favicon.png" rel="icon" type="image/x-icon">
+    <link href="../assets/images/logo/favicon.png" rel="shortcut icon" type="image/x-icon">
+    <title>axelit - Premium Admin Template</title>
+    <!--font-awesome-css-->
+    <link href="../assets/vendor/fontawesome/css/all.css" rel="stylesheet">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+
+
+    <!-- iconoir icon css  -->
+    <link href="../assets/vendor/ionio-icon/css/iconoir.css" rel="stylesheet">
+
+    <!-- tabler icons-->
+    <link href="../assets/vendor/tabler-icons/tabler-icons.css" rel="stylesheet" type="text/css">
+
+    <!--flag Icon css-->
+    <link href="../assets/vendor/flag-icons-master/flag-icon.css" rel="stylesheet" type="text/css">
+
+    <!-- Bootstrap css-->
+    <link href="../assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <!--  prism CSS-->
+    <link href="../assets/vendor/prism/prism.min.css" rel="stylesheet">
+
+    <!-- simplebar css-->
+    <link href="../assets/vendor/simplebar/simplebar.css" rel="stylesheet" type="text/css">
+
+    <!--Prism JS-->
+    <script src="../assets/vendor/prism/prism.min.js"></script>
+
+
+    <!-- editor css -->
+    <link href="../assets/vendor/trumbowyg/trumbowyg.min.css" rel="stylesheet">
+
+    <!-- App css-->
+    <link href="../assets/css/style.css" rel="stylesheet" type="text/css">
+
+    <!-- Responsive css-->
+    <link href="../assets/css/responsive.css" rel="stylesheet" type="text/css">
+
+
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Economy.PanelUI</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Economy.PanelUI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderBody()
+
+
+    <!--customizer-->
+    <div id="customizer"></div>
+
+
+
+
+    <!-- latest jquery-->
+    <script src="../assets/js/jquery-3.6.3.min.js"></script>
+
+    <!-- Simple bar js-->
+    <script src="../assets/vendor/simplebar/simplebar.js"></script>
+
+    <!-- Bootstrap js-->
+    <script src="../assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <!-- phosphor js -->
+    <script src="../assets/vendor/phosphor/phosphor.js"></script>
+
+    <!-- Trumbowyg js -->
+    <script src="../assets/vendor/trumbowyg/trumbowyg.min.js"></script>
+
+    <!-- editor js -->
+    <script src="../assets/js/editor.js"></script>
+
+    <!-- App js-->
+    <script src="../assets/js/script.js"></script>
+
+    <!-- Customizer js-->
+    <script src="../assets/js/customizer.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
