@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Economy.Domain\Economy.Domain.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Economy.Persistence\Economy.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -59,12 +59,12 @@ namespace Economy.Persistence.Services.AppUserServices
 			}
 
 			var token = _tokenService.CreateToken(user);
-			var userRefreshToken = await _userRefreshTokenRepository.Table.Where(w => w.UserId == user.Id).SingleOrDefaultAsync();
+			var userRefreshToken = await _userRefreshTokenRepository.Table.Where(w => w.UserId == user.Id.ToString()).SingleOrDefaultAsync();
 			if (userRefreshToken == null)
 			{
 				_userRefreshTokenRepository.Add(new UserRefreshToken
 				{
-					UserId = user.Id,
+					UserId = user.Id.ToString(),
 					Token = token.RefreshToken,
 					Expiration = token.RefreshTokenExpiration
 				});
@@ -120,46 +120,46 @@ namespace Economy.Persistence.Services.AppUserServices
 			return ResponseModel<string>.Success(refreshToken,HttpStatusCode.OK);
 		}
 
-		public async Task DeleteAsync(string? id)
-		{
+		//public async Task DeleteAsync(string? id)
+		//{
 
-			var entity = await _repository.Table
-				.ApplyIsDeletedFalseFilter(isApplyFilter: true)
-				.FirstOrDefaultAsync(x => x.Id == id);
+		//	var entity = await _repository.Table
+		//		.ApplyIsDeletedFalseFilter(isApplyFilter: true)
+		//		.FirstOrDefaultAsync(x => x.Id == id);
 
-			if (entity != null)
-			{
+		//	if (entity != null)
+		//	{
 
-				if (entity.IsDefaultAdmin == true)
-				{
-					throw new Exception($"Unable to delete default admin: {entity.UserName}");
-				}
+		//		if (entity.IsDefaultAdmin == true)
+		//		{
+		//			throw new Exception($"Unable to delete default admin: {entity.UserName}");
+		//		}
 
 
-				if (entity is ISoftDelete softDeleteEntity)
-				{
-					softDeleteEntity.IsDeleted = true;
-					_repository.Update(entity);
-				}
-				else
-				{
-					_repository.Delete(entity);
-				}
+		//		if (entity is ISoftDelete softDeleteEntity)
+		//		{
+		//			softDeleteEntity.IsDeleted = true;
+		//			_repository.Update(entity);
+		//		}
+		//		else
+		//		{
+		//			_repository.Delete(entity);
+		//		}
 
-				await _unitOfWork.CommitAsync();
-			}
-		}
+		//		await _unitOfWork.CommitAsync();
+		//	}
+		//}
 
-		public async Task<AppUser?> GetUndeletedUserAsync(string email)
-		{
-			var user = await _repository.Table
-				.Where(x => x.UserName == email)
-				.ApplyIsDeletedFalseFilter(true)
-				.AsNoTracking()
-				.FirstOrDefaultAsync();
+		//public async Task<AppUser?> GetUndeletedUserAsync(string email)
+		//{
+		//	var user = await _repository.Table
+		//		.Where(x => x.UserName == email)
+		//		.ApplyIsDeletedFalseFilter(true)
+		//		.AsNoTracking()
+		//		.FirstOrDefaultAsync();
 
-			return user;
-		}
+		//	return user;
+		//}
 
 
 	}

@@ -3,21 +3,37 @@ using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Domain.Entites.EntityAppMenus;
 using Economy.Domain.Entites.EntityAppPages;
 using Economy.Domain.Entites.EntityAppSettings;
+using Economy.Domain.Entites.EntityAppUsers;
 using Economy.Domain.Entites.EntityCategories;
 using Economy.Domain.Entites.EntityMenuItems;
 using Economy.Domain.Entites.EntitySlides;
 using Economy.Domain.Entites.Identities;
-using Economy.Persistence.Configurations;
+using Economy.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Economy.Persistence.Contexts
 {
+    public class AppDbContext : IdentityDbContext<AppUser, AppRole, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
 
-    public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<AppUser>(options)
-	{
+
+        }
+        public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<AppRole> Roles { get; set; }
+        public DbSet<RoleClaim> RoleClaims { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<UserClaim> UserClaims { get; set; }
+        public DbSet<UserLogin> UserLogins { get; set; }
+        public DbSet<UserToken> UserTokens { get; set; }
+        public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
+
+
+
+
 
 
         /* Post */
