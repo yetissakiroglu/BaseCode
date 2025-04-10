@@ -9,28 +9,30 @@ using Economy.Domain.Entites.EntityMenuItems;
 using Economy.Domain.Entites.EntitySlides;
 using Economy.Domain.Entites.Identities;
 using Economy.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Economy.Persistence.Contexts
 {
-    public class AppDbContext : IdentityDbContext<AppUser, AppRole, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
+    public class AppDbContext : IdentityDbContext<AppUser, AppRole, int, AppUserClaim, AppUserRole, AppUserLogin, AppRoleClaim, AppUserToken>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
 
         }
+        /* Begin */
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<AppRole> Roles { get; set; }
-        public DbSet<RoleClaim> RoleClaims { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
-        public DbSet<UserClaim> UserClaims { get; set; }
-        public DbSet<UserLogin> UserLogins { get; set; }
-        public DbSet<UserToken> UserTokens { get; set; }
-        public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
-
+        public DbSet<AppRoleClaim> RoleClaims { get; set; }
+        public DbSet<AppUserRole> UserRoles { get; set; }
+        public DbSet<AppUserClaim> UserClaims { get; set; }
+        public DbSet<AppUserLogin> UserLogins { get; set; }
+        public DbSet<AppUserToken> UserTokens { get; set; }
+        public DbSet<AppUserRefreshToken> UserRefreshTokens { get; set; }
+        /*---------------- End -----------------*/
 
 
 
@@ -105,10 +107,22 @@ namespace Economy.Persistence.Contexts
             base.OnConfiguring(optionsBuilder);
         }
         protected override void OnModelCreating(ModelBuilder builder)
-		{
-
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly()); // Diğer tüm konfigürasyonları otomatik olarak uygular
+        {
             base.OnModelCreating(builder);
+
+            // Identity tablolarının adlarını özelleştir
+            //builder.Entity<AppUser>().ToTable("AppUsers");
+            //builder.Entity<AppRole>().ToTable("AppRoles");
+            //builder.Entity<AppUserRole>().ToTable("AppUserRoles");
+            //builder.Entity<AppUserClaim>().ToTable("AppUserClaims");
+            //builder.Entity<AppUserLogin>().ToTable("AppUserLogins");
+            //builder.Entity<AppUserToken>().ToTable("AppUserTokens");
+            //builder.Entity<AppRoleClaim>().ToTable("AppRoleClaims");
+            //builder.Entity<AppUserRefreshToken>().ToTable("AppUserRefreshTokens");
+
+            builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+            //builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly()); // Diğer tüm konfigürasyonları otomatik olarak uygular
 		}
 
 	}

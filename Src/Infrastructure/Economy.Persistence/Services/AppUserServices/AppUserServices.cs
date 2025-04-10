@@ -62,7 +62,7 @@ namespace Economy.Persistence.Services.AppUserServices
 			var userRefreshToken = await _userRefreshTokenRepository.Table.Where(w => w.UserId == user.Id.ToString()).SingleOrDefaultAsync();
 			if (userRefreshToken == null)
 			{
-				_userRefreshTokenRepository.Add(new UserRefreshToken
+				_userRefreshTokenRepository.Add(new AppUserRefreshToken
 				{
 					UserId = user.Id.ToString(),
 					Token = token.RefreshToken,
