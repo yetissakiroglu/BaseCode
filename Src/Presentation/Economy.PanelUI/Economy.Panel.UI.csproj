@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Economy.Domain\Economy.Domain.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Economy.Persistence\Economy.Persistence.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Economy.Persistence\Economy.Base.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

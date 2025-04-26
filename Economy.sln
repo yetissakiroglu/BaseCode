@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{FA6C4317-017A-46A5-AC2B-2223501710B3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Economy.Application", "Src\Core\Economy.Application\Economy.Application.csproj", "{B3F38C23-164F-4988-A60C-F747E261BAEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Economy.Base.Application", "Src\Core\Economy.Application\Economy.Base.Application.csproj", "{B3F38C23-164F-4988-A60C-F747E261BAEA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Economy.Core", "Src\Core\Economy.Core\Economy.Core.csproj", "{1B92D751-7789-4447-8F48-F470C3C869D2}"
 EndProject
@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Economy.Domain", "Src\Core\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Economy.Infrastructure", "Src\Infrastructure\Economy.Infrastructure\Economy.Infrastructure.csproj", "{E06311EB-B134-4308-9734-3F0FDCBAE372}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Economy.Persistence", "Src\Infrastructure\Economy.Persistence\Economy.Persistence.csproj", "{ED93B73B-F2BC-457E-BA0B-7D245ACC113D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Economy.Base.Persistence", "Src\Infrastructure\Economy.Persistence\Economy.Base.Persistence.csproj", "{ED93B73B-F2BC-457E-BA0B-7D245ACC113D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppWeb", "Src\Presentation\AppWeb\AppWeb.csproj", "{1C8854EC-7BC8-4528-AAC8-B4F4BADFB760}"
 EndProject
@@ -27,17 +27,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.Logging", "Src\Core
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.Caching", "Src\Core\Economy.Caching\Economy.Caching.csproj", "{97D40EF3-156B-44BA-8F3C-7634701F2C39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.PanelUI", "Src\Presentation\Economy.PanelUI\Economy.PanelUI.csproj", "{372C2FDA-6C7A-4504-9EF2-56536A9F4465}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.Panel.UI", "Src\Presentation\Economy.PanelUI\Economy.Panel.UI.csproj", "{372C2FDA-6C7A-4504-9EF2-56536A9F4465}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.WebUI", "Src\Presentation\Economy.WebUI\Economy.WebUI.csproj", "{D00A1125-0F12-484C-9FD4-C9D45563F036}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.Web.UI", "Src\Presentation\Economy.WebUI\Economy.Web.UI.csproj", "{D00A1125-0F12-484C-9FD4-C9D45563F036}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.UIApplication", "Src\Core\Economy.UIApplication\Economy.UIApplication.csproj", "{0D0DD03A-E4D3-456E-8C74-6A3EF60DBE1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.UI.Application", "Src\Core\Economy.UIApplication\Economy.UI.Application.csproj", "{0D0DD03A-E4D3-456E-8C74-6A3EF60DBE1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.PanelApplication", "Src\Core\Economy.ApplicationUI\Economy.PanelApplication\Economy.PanelApplication.csproj", "{07D39229-7E3A-44A1-ACE0-C90EC0F2C438}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.Panel.Application", "Src\Core\Economy.ApplicationUI\Economy.PanelApplication\Economy.Panel.Application.csproj", "{07D39229-7E3A-44A1-ACE0-C90EC0F2C438}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.UIPersistence", "Src\Infrastructure\Economy.UIPersistence\Economy.UIPersistence.csproj", "{78CBD934-8E69-46EC-A3E3-5F119B553C11}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.UI.Persistence", "Src\Infrastructure\Economy.UIPersistence\Economy.UI.Persistence.csproj", "{78CBD934-8E69-46EC-A3E3-5F119B553C11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.PanelPersistence", "Src\Infrastructure\Economy.PanelPersistence\Economy.PanelPersistence.csproj", "{74F5CFEC-8612-4D9E-935C-7A8BF83F5F7E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.Panel.Persistence", "Src\Infrastructure\Economy.PanelPersistence\Economy.Panel.Persistence.csproj", "{74F5CFEC-8612-4D9E-935C-7A8BF83F5F7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

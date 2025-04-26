@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Economy.Application\Economy.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Economy.Application\Economy.Base.Application.csproj" />
   </ItemGroup>
 
 </Project>

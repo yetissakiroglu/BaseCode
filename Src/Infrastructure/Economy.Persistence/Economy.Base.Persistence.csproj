@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Economy.Application\Economy.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Economy.Application\Economy.Base.Application.csproj" />
     <ProjectReference Include="..\Economy.Infrastructure\Economy.Infrastructure.csproj" />
   </ItemGroup>
 

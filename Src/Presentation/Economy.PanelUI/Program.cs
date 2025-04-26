@@ -2,6 +2,7 @@ using Autofac.Core;
 using Economy.Domain.Entites.Identities;
 using Economy.Persistence.Contexts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,14 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = new PathString($"/Error/{HttpStatusCode.Forbidden}");
 });
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("SqlServer") ?? throw new InvalidOperationException("Connection string 'SqlServer' not found.");
+    options.UseSqlServer(connectionString, configure =>
+    {
+        configure.MigrationsAssembly("Economy.Base.Persistence");
+    });
+});
 
 
 var app = builder.Build();
