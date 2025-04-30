@@ -3,7 +3,7 @@ using Economy.Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Economy.Persistence.Configurations.ConfigurationUserRefreshToken
+namespace Economy.Base.Persistence.Configurations.ConfigurationApps
 {
     public class UserClaimConfiguration : IEntityTypeConfiguration<AppUserClaim>
 	{

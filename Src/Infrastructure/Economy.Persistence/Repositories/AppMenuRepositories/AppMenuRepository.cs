@@ -5,7 +5,7 @@ using Economy.Persistence.Repositories.AppBase.EntityFramework;
 
 namespace Economy.Persistence.Repositories.AppMenuRepositories
 {
-    public class AppMenuRepository(AppDbContext context) : EfEntityRepositoryBase<AppMenu ,int>(context), IAppMenuRepository
+    public class AppMenuRepository(DefaultDbContext context) : EfEntityRepositoryBase<AppMenu ,int>(context), IAppMenuRepository
     {
 
 

@@ -1,20 +1,4 @@
-﻿using Economy.Application.Interfaces.AppUserServices;
-using Economy.Application.Repositories.UserServiceRepositories;
-using Economy.Application.Repositories.UserServiceRepositoriesa;
-using Economy.Core.Business;
-using Economy.Core.Dtos;
-using Economy.Core.Tools;
-using Economy.Core.UnitOfWorks;
-using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityAppUsers;
-using Economy.Domain.Entites.Identities;
-using Economy.Persistence.Extensions;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System.Net;
-
-namespace Economy.Persistence.Services.AppUserServices
+﻿namespace Economy.Persistence.Services.AppUserServices
 {
  //   public class AppUserServices(IAppUserRepository repository, IRefreshTokenRepository refreshTokenRepository, UserManager<AppUser> userManager, IUnitOfWork unitOfWork, ITokenService tokenService, IOptions<List<Client>> clients)
  //    :  IAppUserServices

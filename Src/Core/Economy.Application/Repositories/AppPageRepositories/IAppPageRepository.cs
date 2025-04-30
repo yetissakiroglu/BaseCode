@@ -1,4 +1,4 @@
-﻿using Economy.Core.Repositories;
+﻿using Economy.Core.Interfaces;
 using Economy.Domain.Entites.EntityAppPages;
 
 namespace Economy.Application.Repositories.AppPageRepositories

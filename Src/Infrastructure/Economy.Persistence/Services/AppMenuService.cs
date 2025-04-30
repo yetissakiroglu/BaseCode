@@ -4,8 +4,8 @@ using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Queries.AppMenus;
 using Economy.Application.Repositories.AppMenuRepositories;
+using Economy.Core.Interfaces;
 using Economy.Core.Tools;
-using Economy.Core.UnitOfWorks;
 using Economy.Domain.Entites.EntityAppMenus;
 using Economy.Domain.Entites.EntityMenuItems;
 using LoggingLibrary.Attributes;
@@ -29,7 +29,7 @@ namespace Economy.Persistence.Services
                 return ResponseModel<bool>.Fail("Menu bulunamadı", HttpStatusCode.NotFound);
             }
             _appMenuRepository.Delete(appMenu);
-            _unitOfWork.CommitAsync();
+            _unitOfWork.SaveChangesAsync();
             return ResponseModel<bool>.Success(true, HttpStatusCode.OK);
         }
         //[Cache(Duration = 30)]  // BU DOĞRU!
@@ -63,7 +63,7 @@ namespace Economy.Persistence.Services
         }
             };
             _appMenuRepository.Add(insert);
-             _unitOfWork.CommitAsync();
+             _unitOfWork.SaveChangesAsync();
             return ResponseModel<int>.Success(insert.Id, HttpStatusCode.OK);
         }
         public  ResponseModel<AppMenuDto> Update(UpdateAppMenuCommand command)
@@ -96,7 +96,7 @@ namespace Economy.Persistence.Services
             appMenu.ParentMenuId = command.ParentMenuId;
 
             _appMenuRepository.Update(appMenu);
-             _unitOfWork.CommitAsync();
+             _unitOfWork.SaveChangesAsync();
 
             var dto = _mapper.Map<AppMenuDto>(appMenu);
             return ResponseModel<AppMenuDto>.Success(dto, HttpStatusCode.OK);

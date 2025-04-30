@@ -1,6 +1,10 @@
-using Autofac.Core;
+using Economy.Base.Persistence.ContextFactorys;
+using Economy.Base.Persistence.Providers;
+using Economy.Core.Interfaces;
+using Economy.Core.Services.Providers;
 using Economy.Domain.Entites.Identities;
 using Economy.Persistence.Contexts;
+using Economy.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -9,6 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<DefaultDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), configure =>
+    {
+        configure.MigrationsAssembly("Economy.Panel.UI");
+    });
+});
 
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
 {
@@ -25,7 +37,7 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
     // User Username and Email Options
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+$";
     options.User.RequireUniqueEmail = true;
-}).AddEntityFrameworkStores<AppDbContext>()
+}).AddEntityFrameworkStores<DefaultDbContext>()
     .AddRoles<AppRole>().AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -44,17 +56,42 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = new PathString($"/Error/{HttpStatusCode.Forbidden}");
 });
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("SqlServer") ?? throw new InvalidOperationException("Connection string 'SqlServer' not found.");
-    options.UseSqlServer(connectionString, configure =>
-    {
-        configure.MigrationsAssembly("Economy.Base.Persistence");
-    });
-});
+
+// Services
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<TenantProvider>();
+builder.Services.AddScoped<MigrationService>();
+builder.Services.AddScoped<HotelDbContextFactory>();
+
+// UnitOfWork Master DB için
+builder.Services.AddScoped<IUnitOfWork>(sp =>
+    new UnitOfWork(sp.GetRequiredService<HotelDbContext>()));
+
+
+
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//{
+//    var connectionString = builder.Configuration.GetConnectionString("SqlServer") ?? throw new InvalidOperationException("Connection string 'SqlServer' not found.");
+//    options.UseSqlServer(connectionString, configure =>
+//    {
+//        configure.MigrationsAssembly("Economy.Base.Persistence");
+//    });
+//});
 
 
 var app = builder.Build();
+
+// Uygulama baþlatýldýðýnda migrasyonlarý çalýþtýrmak için örneðin þöyle bir iþlev ekleyebilirsiniz:
+using (var scope = app.Services.CreateScope())
+{
+    var migrationService = scope.ServiceProvider.GetRequiredService<MigrationService>();
+
+    // Master veritabaný migrasyonunu baþlatma
+    await migrationService.MigrateMasterDbAsync();
+
+    // Ýstenirse her bir tenant için de migrasyon yapýlabilir
+    // await migrationService.MigrateTenantAsync(tenantId);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

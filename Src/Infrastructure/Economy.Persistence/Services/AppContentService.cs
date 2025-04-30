@@ -5,8 +5,8 @@ using Economy.Application.Dtos.AppPageDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Queries.AppContents;
 using Economy.Application.Repositories.AppContentRepositories;
+using Economy.Core.Interfaces;
 using Economy.Core.Tools;
-using Economy.Core.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 

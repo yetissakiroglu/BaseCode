@@ -5,21 +5,21 @@ namespace Economy.Persistence.Seeds
 {
     public class AppPageSeeder
     {
-        private readonly AppDbContext _context;
+        private readonly DefaultDbContext _context;
 
-        public AppPageSeeder(AppDbContext context)
+        public AppPageSeeder(DefaultDbContext context)
         {
             _context = context;
         }
 
         public async Task SeedAsync()
         {
-            if (!_context.AppPages.Any())
-            {
-                var app = GetPreconfiguredAppPages();
-                await _context.AppPages.AddRangeAsync(app);
-                await _context.SaveChangesAsync();
-            }
+            //if (!_context.AppPages.Any())
+            //{
+            //    var app = GetPreconfiguredAppPages();
+            //    await _context.AppPages.AddRangeAsync(app);
+            //    await _context.SaveChangesAsync();
+            //}
         }
 
         private IEnumerable<AppPage> GetPreconfiguredAppPages()

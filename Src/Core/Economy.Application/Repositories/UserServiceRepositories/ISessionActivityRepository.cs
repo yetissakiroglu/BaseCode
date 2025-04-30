@@ -1,4 +1,4 @@
-﻿using Economy.Core.Repositories;
+﻿using Economy.Core.Interfaces;
 using Economy.Domain.Entites;
 
 namespace Economy.Application.Repositories.UserServiceRepositories

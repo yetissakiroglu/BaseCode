@@ -5,7 +5,7 @@ using Economy.Persistence.Repositories.AppBase.EntityFramework;
 
 namespace Economy.Persistence.Repositories.AppLanguageRepositories
 {
-    public class AppLanguageRepository(AppDbContext context) : EfEntityRepositoryBase<AppLanguage, int>(context), IAppLanguageRepository
+    public class AppLanguageRepository(DefaultDbContext context) : EfEntityRepositoryBase<AppLanguage, int>(context), IAppLanguageRepository
     {
 
 

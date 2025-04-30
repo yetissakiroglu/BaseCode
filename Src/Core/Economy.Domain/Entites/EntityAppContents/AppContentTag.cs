@@ -3,7 +3,7 @@ using Economy.Domain.Entites.EntityAppContents.AppContents;
 
 namespace Economy.Domain.Entites.EntityAppContents
 {
-    public class AppContentTag: IEntity<int>
+    public class AppContentTag: BaseEntity<int>
     {
         public int AppContentId { get; set; } // Blog ID'si
         public AppContent AppContent { get; set; } // Blog yazısı

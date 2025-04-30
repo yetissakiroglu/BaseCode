@@ -6,21 +6,21 @@ namespace Economy.Persistence.Seeds
 {
     public class AppContentSeeder
     {
-        private readonly AppDbContext _context;
+        private readonly DefaultDbContext _context;
 
-        public AppContentSeeder(AppDbContext context)
+        public AppContentSeeder(DefaultDbContext context)
         {
             _context = context;
         }
 
         public async Task SeedAsync()
         {
-            if (!_context.AppContents.Any())
-            {
-                var data = GetSeedContents();
-                await _context.AppContents.AddRangeAsync(data);
-                await _context.SaveChangesAsync();
-            }
+            //if (!_context.AppContents.Any())
+            //{
+            //    var data = GetSeedContents();
+            //    await _context.AppContents.AddRangeAsync(data);
+            //    await _context.SaveChangesAsync();
+            //}
         }
         private IEnumerable<AppContent> GetSeedContents()
         {

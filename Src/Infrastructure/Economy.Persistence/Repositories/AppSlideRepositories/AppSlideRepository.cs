@@ -5,7 +5,7 @@ using Economy.Persistence.Repositories.AppBase.EntityFramework;
 
 namespace Economy.Persistence.Repositories.AppSlideRepositories
 {
-    public class AppSlideRepository(AppDbContext context) : EfEntityRepositoryBase<AppSlide, int>(context), IAppSlideRepository
+    public class AppSlideRepository(DefaultDbContext context) : EfEntityRepositoryBase<AppSlide, int>(context), IAppSlideRepository
     {
 
 

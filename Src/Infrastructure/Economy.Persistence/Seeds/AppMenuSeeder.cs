@@ -7,27 +7,27 @@ namespace Economy.Persistence.Seeds
 {
     public class AppMenuSeeder
     {
-        private readonly AppDbContext _context;
+        private readonly DefaultDbContext _context;
 
-        public AppMenuSeeder(AppDbContext context)
+        public AppMenuSeeder(DefaultDbContext context)
         {
             _context = context;
         }
 
         public async Task SeedAsync()
         {
-            var menusDelete = await _context.AppMenus.Include(x => x.Translations).ToListAsync();
-            _context.AppMenus.RemoveRange(menusDelete);
-            await _context.SaveChangesAsync();
+            //var menusDelete = await _context.AppMenus.Include(x => x.Translations).ToListAsync();
+            //_context.AppMenus.RemoveRange(menusDelete);
+            //await _context.SaveChangesAsync();
 
-            if (!_context.AppMenus.Any())
-            {
-                var menus = GetPreconfiguredMenus();
+            //if (!_context.AppMenus.Any())
+            //{
+            //    var menus = GetPreconfiguredMenus();
 
 
-                await _context.AppMenus.AddRangeAsync(menus);
-                await _context.SaveChangesAsync();
-            }
+            //    await _context.AppMenus.AddRangeAsync(menus);
+            //    await _context.SaveChangesAsync();
+            //}
         }
 
         private IEnumerable<AppMenu> GetPreconfiguredMenus()

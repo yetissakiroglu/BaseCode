@@ -6,7 +6,7 @@ namespace Economy.Persistence.BaseRepositories
 {
     public abstract class AppUserBaseRepository : EfEntityRepositoryBase<AppUser, int>
     {
-        protected AppUserBaseRepository(AppDbContext _context) : base(_context)
+        protected AppUserBaseRepository(DefaultDbContext _context) : base(_context)
         {
         }
     }

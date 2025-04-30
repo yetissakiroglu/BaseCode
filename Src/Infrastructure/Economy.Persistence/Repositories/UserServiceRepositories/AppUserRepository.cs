@@ -5,7 +5,7 @@ using Economy.Persistence.Repositories.AppBase.EntityFramework;
 
 namespace Economy.Persistence.Repositories.UserServiceRepositories
 {
-    public class AppUserRepository(AppDbContext context) : EfEntityRepositoryBase<AppUser, int>(context), IAppUserRepository
+    public class AppUserRepository(DefaultDbContext context) : EfEntityRepositoryBase<AppUser, int>(context), IAppUserRepository
     {
 
 

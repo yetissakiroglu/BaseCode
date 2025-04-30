@@ -1,4 +1,4 @@
-﻿using Economy.Core.Repositories;
+﻿using Economy.Core.Interfaces;
 using Economy.Domain.Entites.EntityAppSettings;
 
 namespace Economy.Application.Repositories.AppSettingRepositories

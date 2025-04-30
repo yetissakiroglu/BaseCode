@@ -6,8 +6,7 @@ using Economy.Application.Repositories.AppMenuRepositories;
 using Economy.Application.Repositories.AppPageRepositories;
 using Economy.Application.Repositories.AppSettingRepositories;
 using Economy.Application.Repositories.AppSlideRepositories;
-using Economy.Core.Repositories;
-using Economy.Core.UnitOfWorks;
+using Economy.Core.Interfaces;
 using Economy.Persistence.Contexts;
 using Economy.Persistence.Repositories.AppBase.EntityFramework;
 using Economy.Persistence.Repositories.AppContentRepositories;
@@ -58,7 +57,7 @@ namespace Economy.Persistence
 
             
 
-            services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<DefaultDbContext>(options =>
             {
                 options.UseSqlServer(connectionString, configure =>
                 {

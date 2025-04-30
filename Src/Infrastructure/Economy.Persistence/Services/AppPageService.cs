@@ -3,8 +3,8 @@ using Economy.Application.Dtos.AppPageDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Queries.AppPages;
 using Economy.Application.Repositories.AppPageRepositories;
+using Economy.Core.Interfaces;
 using Economy.Core.Tools;
-using Economy.Core.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 

@@ -3,8 +3,8 @@ using Economy.Application.Dtos.AppSlideDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Queries.AppSlides;
 using Economy.Application.Repositories.AppSlideRepositories;
+using Economy.Core.Interfaces;
 using Economy.Core.Tools;
-using Economy.Core.UnitOfWorks;
 using System.Net;
 
 namespace Economy.Persistence.Services

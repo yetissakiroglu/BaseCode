@@ -5,7 +5,7 @@ using Economy.Persistence.Repositories.AppBase.EntityFramework;
 
 namespace Economy.Persistence.Repositories.UserServiceRepositories
 {
-	public class RefreshTokenRepository(AppDbContext context) : EfEntityRepositoryBase<AppUserRefreshToken, string>(context), IRefreshTokenRepository
+	public class RefreshTokenRepository(DefaultDbContext context) : EfEntityRepositoryBase<AppUserRefreshToken, string>(context), IRefreshTokenRepository
 	{
 
 

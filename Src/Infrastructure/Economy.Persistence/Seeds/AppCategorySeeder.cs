@@ -9,9 +9,9 @@ namespace Economy.Persistence.Seeds
 {
     public class AppCategorySeeder
     {
-        private readonly AppDbContext _context;
+        private readonly DefaultDbContext _context;
 
-        public AppCategorySeeder(AppDbContext context)
+        public AppCategorySeeder(DefaultDbContext context)
         {
             _context = context;
         }
@@ -19,12 +19,12 @@ namespace Economy.Persistence.Seeds
         public async Task SeedAsync()
         {
 
-            if (!_context.AppCategories.Any())
-            {
-                var data = GetSeedCategories();
-                await _context.AppCategories.AddRangeAsync(data);
-                await _context.SaveChangesAsync();
-            }
+            //if (!_context.AppCategories.Any())
+            //{
+            //    var data = GetSeedCategories();
+            //    await _context.AppCategories.AddRangeAsync(data);
+            //    await _context.SaveChangesAsync();
+            //}
         }
         private IEnumerable<AppCategory> GetSeedCategories()
         {

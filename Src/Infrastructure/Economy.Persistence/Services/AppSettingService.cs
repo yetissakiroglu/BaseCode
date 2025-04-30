@@ -4,8 +4,8 @@ using Economy.Application.Interfaces;
 using Economy.Application.Queries.AppSettings;
 using Economy.Application.Repositories.AppMenuRepositories;
 using Economy.Application.Repositories.AppSettingRepositories;
+using Economy.Core.Interfaces;
 using Economy.Core.Tools;
-using Economy.Core.UnitOfWorks;
 using System.Net;
 
 namespace Economy.Persistence.Services

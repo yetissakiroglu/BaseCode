@@ -5,7 +5,7 @@ using Economy.Persistence.Repositories.AppBase.EntityFramework;
 
 namespace Economy.Persistence.Repositories.AppPageRepositories
 {
-    public class AppPageRepository(AppDbContext context) : EfEntityRepositoryBase<AppPage, int>(context), IAppPageRepository
+    public class AppPageRepository(DefaultDbContext context) : EfEntityRepositoryBase<AppPage, int>(context), IAppPageRepository
     {
 
 

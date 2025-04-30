@@ -3,8 +3,8 @@ using Economy.Application.Dtos.AppLanguageDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Queries.AppLanguages;
 using Economy.Application.Repositories.AppLanguageRepositories;
+using Economy.Core.Interfaces;
 using Economy.Core.Tools;
-using Economy.Core.UnitOfWorks;
 using System.Net;
 
 namespace Economy.Persistence.Services
