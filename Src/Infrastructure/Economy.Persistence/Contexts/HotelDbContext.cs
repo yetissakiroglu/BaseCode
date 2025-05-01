@@ -1,11 +1,13 @@
 ﻿using Economy.Domain.Entites.EntityAppSettings;
 using Microsoft.EntityFrameworkCore;
-
 namespace Economy.Persistence.Contexts
 {
-  
-    public class HotelDbContext(DbContextOptions<HotelDbContext> options) : DbContext(options)
+    public class HotelDbContext : DbContext
     {
+        public HotelDbContext(DbContextOptions<HotelDbContext> options)
+            : base(options)
+        {
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -13,13 +15,13 @@ namespace Economy.Persistence.Contexts
         }
 
         public DbSet<AppSetting> AppSettings { get; set; }
+        public DbSet<AppTechnicalSetting> AppTechnicalSettings { get; set; }
+
         // diğer otel tabloları...
-  
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
         }
     }
-
-  
 }

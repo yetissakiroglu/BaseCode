@@ -1,7 +1,6 @@
 ﻿using Economy.Persistence.Contexts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Economy.Core.Services.Providers
 {
@@ -9,7 +8,7 @@ namespace Economy.Core.Services.Providers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly DefaultDbContext _masterDbContext;
-        private readonly int defultUserId = 1;
+        private readonly int defultUserId = 2;
         public TenantProvider(IHttpContextAccessor httpContextAccessor, DefaultDbContext masterDbContext)
         {
             _httpContextAccessor = httpContextAccessor;

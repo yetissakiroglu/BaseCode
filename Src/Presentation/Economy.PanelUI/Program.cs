@@ -1,4 +1,3 @@
-using Economy.Base.Persistence.ContextFactorys;
 using Economy.Base.Persistence.Providers;
 using Economy.Core.Interfaces;
 using Economy.Core.Services.Providers;
@@ -61,7 +60,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<TenantProvider>();
 builder.Services.AddScoped<MigrationService>();
-builder.Services.AddScoped<HotelDbContextFactory>();
 
 // UnitOfWork Master DB için
 builder.Services.AddScoped<IUnitOfWork>(sp =>
