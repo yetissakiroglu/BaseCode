@@ -1,5 +1,7 @@
 ﻿using Economy.Core.Dtos;
+using Economy.Domain.Entites.Identities;
 using Economy.Panel.Application.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Economy.Panel.UI.Controllers
@@ -7,9 +9,14 @@ namespace Economy.Panel.UI.Controllers
     public class AccountController : Controller
     {
         private readonly IPanelAppUserService _panelAppUserService;
-        public AccountController(IPanelAppUserService panelAppUserService)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly SignInManager<AppUser> _signInManager;
+
+        public AccountController(IPanelAppUserService panelAppUserService, IHttpContextAccessor httpContextAccessor, SignInManager<AppUser> signInManager)
         {
             _panelAppUserService = panelAppUserService;
+            _httpContextAccessor = httpContextAccessor;
+            _signInManager = signInManager;
         }
 
         [HttpGet]
@@ -19,21 +26,51 @@ namespace Economy.Panel.UI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(SignIn model)
+        public async Task<IActionResult> Login(SignIn model, string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var result = await _panelAppUserService.LoginAsync(model);
+            // Kullanıcıyı doğrula
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
-            if (!result.IsSuccess)
+            if (result.Succeeded)
             {
-                ModelState.AddModelError(string.Empty,"");
-                return View(model);
+                // Yönlendirme yapılacak URL
+                return RedirectToLocal(returnUrl);
             }
 
-            // Giriş başarılıysa yönlendirme yapılabilir
-            return RedirectToAction("Index", "Home");
+            // Hata mesajını loglayın
+            if (result.IsLockedOut)
+            {
+                // Kullanıcı hesabı kilitliyse
+                ModelState.AddModelError(string.Empty, "Hesabınız kilitlenmiş.");
+            }
+            else if (result.RequiresTwoFactor)
+            {
+                // İki faktörlü kimlik doğrulama gerekiyorsa
+                ModelState.AddModelError(string.Empty, "İki faktörlü kimlik doğrulama gerekiyor.");
+            }
+            else
+            {
+                // Diğer tüm hatalar için genel bir mesaj
+                ModelState.AddModelError(string.Empty, "Geçersiz giriş denemesi.");
+            }
+
+            return View(model);
+        }
+
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
         }
     }
 }

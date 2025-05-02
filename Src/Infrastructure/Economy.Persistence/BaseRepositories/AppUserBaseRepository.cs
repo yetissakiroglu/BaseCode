@@ -48,14 +48,18 @@ namespace Economy.Persistence.BaseRepositories
 
             //Token oluşturma işlemi
             var token = _tokenService.CreateToken(user);
+            var loginProvider = $"MyApp_{user.TenantId}";
 
             //Refresh token'ı veritabanında saklama
             var userToken = new AppUserToken
             {
                 UserId = user.Id,
-                Token = token.AccessToken,
+                LoginProvider = loginProvider, // Boş geçme
+                Name = "Token",          // Refresh token ya da access token türüne göre değişebilir
+                Value = token.AccessToken,
                 RefreshToken = token.RefreshToken,
-                ExpirationDate = token.RefreshTokenExpiration
+                ExpirationDate = token.RefreshTokenExpiration,
+                Token = token.AccessToken,
             };
 
 

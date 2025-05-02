@@ -1,8 +1,10 @@
+using Autofac.Core;
 using Economy.Application.BaseRepositories;
 using Economy.Application.Interfaces.AppUserServices;
 using Economy.Base.Application.BaseRepositories;
 using Economy.Base.Persistence.BaseRepositories;
 using Economy.Base.Persistence.Providers;
+using Economy.Core.Business;
 using Economy.Core.ContextFactory;
 using Economy.Core.Interfaces;
 using Economy.Core.Services.Providers;
@@ -16,8 +18,10 @@ using Economy.Panel.UI;
 using Economy.Persistence.BaseRepositories;
 using Economy.Persistence.Contexts;
 using Economy.Persistence.UnitOfWorks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 using System.Net;
 using System.Reflection;
 
@@ -33,6 +37,15 @@ builder.Services.AddDbContext<DefaultDbContext>(options =>
         configure.MigrationsAssembly("Economy.Panel.UI");
     });
 });
+
+// TokenOption ayarlarýný oku ve DI container'a ekle
+builder.Services.Configure<TokenOption>(
+    builder.Configuration.GetSection("TokenOption"));
+
+// TokenOption doðrudan kullanýlacaksa (örneðin TokenService içinde ctor ile)
+var tokenOptions = builder.Configuration.GetSection("TokenOption").Get<TokenOption>();
+builder.Services.AddSingleton(tokenOptions);
+
 
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
 {
@@ -51,6 +64,18 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
     options.User.RequireUniqueEmail = true;
 }).AddEntityFrameworkStores<DefaultDbContext>()
     .AddRoles<AppRole>().AddDefaultTokenProviders();
+
+// Add Authentication and Cookie Configuration
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = new PathString("/Account/Login");
+        options.LogoutPath = new PathString("/Account/Logout");
+        options.Cookie.Name = "DijitalPanel";
+        options.SlidingExpiration = true;
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+    });
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -90,6 +115,7 @@ builder.Services.AddScoped<IPanelAppUserService, PanelAppUserService>(); // Serv
 builder.Services.AddScoped<ITokenService, TokenService>(); // Token service kaydý
 // Diðer servisler (örneðin AutoMapper)
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 
 

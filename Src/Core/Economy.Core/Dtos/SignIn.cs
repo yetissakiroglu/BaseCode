@@ -10,5 +10,6 @@ namespace Economy.Core.Dtos
 
         [Required(ErrorMessage = "Þifre gereklidir.")]
         public string Password { get; set; } = default!;
+        public bool RememberMe { get; set; } = false;
     }
 }
