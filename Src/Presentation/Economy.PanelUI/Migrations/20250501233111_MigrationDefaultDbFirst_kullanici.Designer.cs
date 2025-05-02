@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Economy.Panel.UI.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    [Migration("20250430230338_MigrationDefaultDbFirst")]
-    partial class MigrationDefaultDbFirst
+    [Migration("20250501233111_MigrationDefaultDbFirst_kullanici")]
+    partial class MigrationDefaultDbFirst_kullanici
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,30 +98,6 @@ namespace Economy.Panel.UI.Migrations
                             ServerName = "MSI",
                             UserName = "user1"
                         });
-                });
-
-            modelBuilder.Entity("Economy.Domain.Entites.EntityAppUsers.AppUserRefreshToken", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("Expiration")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserRefreshTokens");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.Identities.AppRole", b =>
@@ -262,7 +238,7 @@ namespace Economy.Panel.UI.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "HOTEL1@EXAMPLE.COM",
                             NormalizedUserName = "Hotel1",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGCzY20L2G+TswPL8nVZ7gCm+3OaKjk9iN9abVdTOf5wjMPVnljfMRZsWYixI4LSQg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENTd6wlppRLil0VbnPSjSF66HtD4Ckjs1Uraqpgi3/41X9LTDtE+ANyVCJQLfpjVyw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "11111111-aaaa-bbbb-cccc-222222222222",
                             TenantId = 1,
@@ -283,7 +259,7 @@ namespace Economy.Panel.UI.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "HOTEL2@EXAMPLE.COM",
                             NormalizedUserName = "Hotel2",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGCzY20L2G+TswPL8nVZ7gCm+3OaKjk9iN9abVdTOf5wjMPVnljfMRZsWYixI4LSQg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGhEU2J20Dt9rbBXKRMbF5MaTTD8UzKKRrYn+gZZfQsOImpHd+x/0sY1AA++BQV4Xw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "11111111-aaaa-bbbb-cccc-222222222222",
                             TenantId = 2,
@@ -393,6 +369,23 @@ namespace Economy.Panel.UI.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");

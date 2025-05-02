@@ -4,7 +4,7 @@ namespace Economy.Core.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IEntityRepository<T, int> EntityRepository<T>() where T : class, ISoftDelete, IHasId<int>;
+        IEntityRepository<T, int> EntityRepository<T>(string connectionString) where T : class, ISoftDelete, IHasId<int>;
         Task<int> SaveChangesAsync();
     }
 }

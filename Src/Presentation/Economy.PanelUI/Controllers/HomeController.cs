@@ -1,9 +1,11 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using Economy.PanelUI.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace Economy.PanelUI.Controllers;
 
+[Authorize]  // Bu, sadece giriþ yapmýþ kullanýcýlarýn eriþmesini saðlar
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -15,6 +17,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+     
         return View();
     }
     public IActionResult Editor()

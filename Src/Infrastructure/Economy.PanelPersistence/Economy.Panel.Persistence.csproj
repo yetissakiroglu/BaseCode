@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Economy.ApplicationUI\Economy.PanelApplication\Economy.Panel.Application.csproj" />
+    <ProjectReference Include="..\Economy.Persistence\Economy.Base.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

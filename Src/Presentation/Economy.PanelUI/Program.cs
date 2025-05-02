@@ -1,12 +1,25 @@
+using Economy.Application.BaseRepositories;
+using Economy.Application.Interfaces.AppUserServices;
+using Economy.Base.Application.BaseRepositories;
+using Economy.Base.Persistence.BaseRepositories;
 using Economy.Base.Persistence.Providers;
+using Economy.Core.ContextFactory;
 using Economy.Core.Interfaces;
 using Economy.Core.Services.Providers;
 using Economy.Domain.Entites.Identities;
+using Economy.Infrastructure.Services;
+using Economy.Panel.Application.Interfaces;
+using Economy.Panel.Application.Repositories;
+using Economy.Panel.Persistence.Repositories;
+using Economy.Panel.Persistence.Services;
+using Economy.Panel.UI;
+using Economy.Persistence.BaseRepositories;
 using Economy.Persistence.Contexts;
 using Economy.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,26 +68,36 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = new PathString($"/Error/{HttpStatusCode.Forbidden}");
 });
 
+// Repository'leri otomatik olarak ekle
+builder.Services.AddRepositories(Assembly.GetExecutingAssembly());
+// EfEntityRepositoryBase<T> kaydý
+// HotelDbContextFactory'nin kaydedilmesi
+builder.Services.AddScoped<IHotelDbContextFactory, HotelDbContextFactory>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// IAppUserTokenBaseRepository ve AppUserTokenBaseRepository kaydýný yapalým.
+builder.Services.AddScoped<IAppUserTokenBaseRepository, AppUserTokenBaseRepository>();
+builder.Services.AddScoped<IAppUserBaseRepository, AppUserBaseRepository>();
+
+// PanelAppUserRepository ve ConcretePanelAppUserRepository kaydýný yapalým.
+builder.Services.AddScoped<PanelAppUserRepository, ConcretePanelAppUserRepository>(); // Concrete sýnýfý kullanýyoruz.
+builder.Services.AddScoped<PanelAppUserTokenRepository, ConcretePanelAppUserTokenRepository>(); // Token repository'si.
+
+// Service kaydýný yapalým.
+builder.Services.AddScoped<IPanelAppUserService, PanelAppUserService>(); // Service sýnýfý kaydediliyor.
+
+// Token service kaydýný yapalým.
+builder.Services.AddScoped<ITokenService, TokenService>(); // Token service kaydý
+// Diðer servisler (örneðin AutoMapper)
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
 
 // Services
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<TenantProvider>();
 builder.Services.AddScoped<MigrationService>();
 
-// UnitOfWork Master DB için
-builder.Services.AddScoped<IUnitOfWork>(sp =>
-    new UnitOfWork(sp.GetRequiredService<HotelDbContext>()));
-
-
-
-//builder.Services.AddDbContext<AppDbContext>(options =>
-//{
-//    var connectionString = builder.Configuration.GetConnectionString("SqlServer") ?? throw new InvalidOperationException("Connection string 'SqlServer' not found.");
-//    options.UseSqlServer(connectionString, configure =>
-//    {
-//        configure.MigrationsAssembly("Economy.Base.Persistence");
-//    });
-//});
 
 
 var app = builder.Build();

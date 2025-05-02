@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace Economy.Persistence.Repositories.AppBase.EntityFramework
 {
-    public class EfEntityRepositoryBase<T, TId> : IEntityRepository<T, TId> where T : class, ISoftDelete, IHasId<TId>
+    public class EfEntityRepositoryBase<T> : IEntityRepository<T, int> where T : class, ISoftDelete, IHasId<int>
     {
         protected readonly DbContext _context;
         protected readonly DbSet<T> _entities;

@@ -1,6 +1,5 @@
 ﻿using Economy.Base.Persistence.Configurations.ConfigurationApps;
 using Economy.Domain.Entites.AppEntities;
-using Economy.Domain.Entites.EntityAppUsers;
 using Economy.Domain.Entites.Identities;
 using Economy.Domain.Entities.Identity;
 using Economy.Persistence.Configurations.ConfigurationAppSlide;
@@ -24,7 +23,6 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppUserClaim> UserClaims { get; set; }
         public DbSet<AppUserLogin> UserLogins { get; set; }
         public DbSet<AppUserToken> UserTokens { get; set; }
-        public DbSet<AppUserRefreshToken> UserRefreshTokens { get; set; }
         public DbSet<App> Apps { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

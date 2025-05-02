@@ -5,7 +5,7 @@ using Economy.Persistence.Repositories.AppBase.EntityFramework;
 
 namespace Economy.Persistence.Repositories.AppMenuRepositories
 {
-    public class AppLogoSettingRepository(DefaultDbContext context) : EfEntityRepositoryBase<AppLogoSetting ,int>(context), IAppLogoSettingRepository
+    public class AppLogoSettingRepository(DefaultDbContext context) : EfEntityRepositoryBase<AppLogoSetting>(context), IAppLogoSettingRepository
     {
 
 

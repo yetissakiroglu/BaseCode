@@ -27,7 +27,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationApps
                    IsDefaultAdmin = true,
                    SecurityStamp = "11111111-aaaa-bbbb-cccc-222222222222",
                    ConcurrencyStamp = "33333333-dddd-eeee-ffff-444444444444",
-                   PasswordHash = "AQAAAAEAACcQAAAAEGCzY20L2G+TswPL8nVZ7gCm+3OaKjk9iN9abVdTOf5wjMPVnljfMRZsWYixI4LSQg==",
+                   PasswordHash = "AQAAAAIAAYagAAAAENTd6wlppRLil0VbnPSjSF66HtD4Ckjs1Uraqpgi3/41X9LTDtE+ANyVCJQLfpjVyw==",
                    TenantId = 1,
                    //Bu örnek hash değeri "Admin123*" parolası için geçerlidir.
                },
@@ -43,7 +43,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationApps
                         IsDefaultAdmin = true,
                     SecurityStamp = "11111111-aaaa-bbbb-cccc-222222222222",
                         ConcurrencyStamp = "33333333-dddd-eeee-ffff-444444444444",
-                    PasswordHash = "AQAAAAEAACcQAAAAEGCzY20L2G+TswPL8nVZ7gCm+3OaKjk9iN9abVdTOf5wjMPVnljfMRZsWYixI4LSQg==",
+                    PasswordHash = "AQAAAAIAAYagAAAAEGhEU2J20Dt9rbBXKRMbF5MaTTD8UzKKRrYn+gZZfQsOImpHd+x/0sY1AA++BQV4Xw==",
                     TenantId = 2,
                     //Bu örnek hash değeri "Admin123*" parolası için geçerlidir.
                 }

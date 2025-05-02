@@ -8,14 +8,12 @@ using Economy.Application.Repositories.AppSettingRepositories;
 using Economy.Application.Repositories.AppSlideRepositories;
 using Economy.Core.Interfaces;
 using Economy.Persistence.Contexts;
-using Economy.Persistence.Repositories.AppBase.EntityFramework;
 using Economy.Persistence.Repositories.AppContentRepositories;
 using Economy.Persistence.Repositories.AppLanguageRepositories;
 using Economy.Persistence.Repositories.AppMenuRepositories;
 using Economy.Persistence.Repositories.AppPageRepositories;
 using Economy.Persistence.Repositories.AppSlideRepositories;
 using Economy.Persistence.Services;
-using Economy.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -32,8 +30,8 @@ namespace Economy.Persistence
             // AutoMapper'ı ekle
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            services.AddScoped(typeof(IEntityRepository<,>), typeof(EfEntityRepositoryBase<,>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            //services.AddScoped(typeof(IEntityRepository<,>), typeof(EfEntityRepositoryBase<,>));
+            //services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IAppMenuRepository, AppMenuRepository>();
             services.AddScoped<IAppMenuService, AppMenuService>();

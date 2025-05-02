@@ -1,12 +1,9 @@
-﻿using Economy.Core.Interfaces;
-using Economy.Domain.Entites.EntityAppUsers;
-
-namespace Economy.Application.Repositories.UserServiceRepositories
+﻿namespace Economy.Application.Repositories.UserServiceRepositories
 {
-	public interface IRefreshTokenRepository : IEntityRepository<AppUserRefreshToken, string>
-	{
+	//public interface IRefreshTokenRepository : IEntityRepository<AppUserRefreshToken, string>
+	//{
 
 
 
-	}
+	//}
 }

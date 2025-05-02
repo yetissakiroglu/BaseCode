@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Economy.Panel.UI.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationDefaultDbFirst : Migration
+    public partial class MigrationDefaultDbFirst_kullanici : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -77,21 +77,6 @@ namespace Economy.Panel.UI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserRefreshTokens",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Expiration = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserRefreshTokens", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -187,6 +172,11 @@ namespace Economy.Panel.UI.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -219,8 +209,8 @@ namespace Economy.Panel.UI.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IsDefaultAdmin", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TenantId", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "33333333-dddd-eeee-ffff-444444444444", "Hotel1@example.com", true, "Hotel1", true, false, "Yöneticisi", false, null, "HOTEL1@EXAMPLE.COM", "Hotel1", "AQAAAAEAACcQAAAAEGCzY20L2G+TswPL8nVZ7gCm+3OaKjk9iN9abVdTOf5wjMPVnljfMRZsWYixI4LSQg==", null, false, "11111111-aaaa-bbbb-cccc-222222222222", 1, false, "Hotel1" },
-                    { 2, 0, "33333333-dddd-eeee-ffff-444444444444", "Hotel1@example.com", true, "Hotel2", true, false, "Yöneticisi", false, null, "HOTEL2@EXAMPLE.COM", "Hotel2", "AQAAAAEAACcQAAAAEGCzY20L2G+TswPL8nVZ7gCm+3OaKjk9iN9abVdTOf5wjMPVnljfMRZsWYixI4LSQg==", null, false, "11111111-aaaa-bbbb-cccc-222222222222", 2, false, "Hotel2" }
+                    { 1, 0, "33333333-dddd-eeee-ffff-444444444444", "Hotel1@example.com", true, "Hotel1", true, false, "Yöneticisi", false, null, "HOTEL1@EXAMPLE.COM", "Hotel1", "AQAAAAIAAYagAAAAENTd6wlppRLil0VbnPSjSF66HtD4Ckjs1Uraqpgi3/41X9LTDtE+ANyVCJQLfpjVyw==", null, false, "11111111-aaaa-bbbb-cccc-222222222222", 1, false, "Hotel1" },
+                    { 2, 0, "33333333-dddd-eeee-ffff-444444444444", "Hotel1@example.com", true, "Hotel2", true, false, "Yöneticisi", false, null, "HOTEL2@EXAMPLE.COM", "Hotel2", "AQAAAAIAAYagAAAAEGhEU2J20Dt9rbBXKRMbF5MaTTD8UzKKRrYn+gZZfQsOImpHd+x/0sY1AA++BQV4Xw==", null, false, "11111111-aaaa-bbbb-cccc-222222222222", 2, false, "Hotel2" }
                 });
 
             migrationBuilder.InsertData(
@@ -288,9 +278,6 @@ namespace Economy.Panel.UI.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "UserRefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
