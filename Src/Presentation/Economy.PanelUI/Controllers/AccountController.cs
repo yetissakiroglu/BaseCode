@@ -60,6 +60,19 @@ namespace Economy.Panel.UI.Controllers
             return View(model);
         }
 
+        // POST: Account/Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            // Kullanıcıyı oturumdan çıkartıyoruz
+            await _signInManager.SignOutAsync();
+
+            // Çıkış işleminden sonra, kullanıcıyı ana sayfaya yönlendiriyoruz
+            return RedirectToAction("Index", "Home");
+        }
+
+
         private IActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))

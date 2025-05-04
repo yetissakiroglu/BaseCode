@@ -67,7 +67,8 @@
             </div>
         </div>
         <component type="typeof(_MenuComponent)" render-mode="ServerPrerendered" />
-        <component type="typeof(_HeaderComponent)" render-mode="ServerPrerendered" />
+        @await Component.InvokeAsync("_Header")
+
         <div class="app-content">
             <div class="">
                 @RenderBody()

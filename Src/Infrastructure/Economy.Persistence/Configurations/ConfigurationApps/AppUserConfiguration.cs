@@ -35,7 +35,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationApps
                     Id = 2,
                     UserName = "Hotel2",
                     NormalizedUserName = "Hotel2",
-                    Email = "Hotel1@example.com",
+                    Email = "Hotel2@example.com",
                     NormalizedEmail = "HOTEL2@EXAMPLE.COM",
                     EmailConfirmed = true,
                     FirstName = "Hotel2",

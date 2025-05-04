@@ -1,4 +1,3 @@
-using Autofac.Core;
 using Economy.Application.BaseRepositories;
 using Economy.Application.Interfaces.AppUserServices;
 using Economy.Base.Application.BaseRepositories;
@@ -21,13 +20,13 @@ using Economy.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Configuration;
 using System.Net;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
+// MVC ve Razor Pages'ý ekleyin
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<DefaultDbContext>(options =>
@@ -147,19 +146,39 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+// HTTPS yönlendirmesi ve routing iþlemleri
 app.UseHttpsRedirection();
 app.UseRouting();
+app.MapStaticAssets();
 
+// MVC, Razor Sayfalarý ve Blazor bileþenleri için routing iþlemleri
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Authorization ve Authentication iþlemleri
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
-
+// Uygulamayý çalýþtýr
 app.Run();
+//// Https yönlendirmesi ve routing iþlemleri
+//app.UseHttpsRedirection();
+//app.UseRouting();
+
+//app.MapStaticAssets();
+
+//// Authorization ve Authentication iþlemleri
+//app.UseAuthentication();
+//app.UseAuthorization();
+
+//app.MapRazorPages();
+
+
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+//// Uygulamayý çalýþtýr
+//app.Run();

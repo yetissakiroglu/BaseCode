@@ -1,9 +1,52 @@
-﻿
-@code {
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
 
+@code {
+    private string userName;
+    private bool isAuthenticated;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        isAuthenticated = user.Identity.IsAuthenticated;
+        userName = isAuthenticated ? user.Identity.Name : "Misafir";
+    }
+
+    private void Logout()
+    {
+        Navigation.NavigateTo("logout", forceLoad: true); // Identity kullanıyorsan
+    }
+
+    private void Login()
+    {
+        Navigation.NavigateTo("login"); // login sayfasına yönlendir
+    }
 }
+
+
+
+
+
 <!-- Header Section starts -->
 <header class="header-main">
+
+
+    @if (isAuthenticated)
+    {
+        <span>Hoş geldin, @userName</span>
+        <button @onclick="Logout">Çıkış</button>
+    }
+    else
+    {
+                <button @onclick="Logout">Çıkış</button>
+
+        <a href="#" @onclick="Logout" @onclick:preventDefault="true">Çıkış</a>
+    }
+
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-6 col-sm-4 d-flex align-items-center header-left p-0">
@@ -952,11 +995,16 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="mb-0 btn btn-light-danger btn-sm justify-content-center "
-                                           href="./sign_in.html"
-                                           role="button">
-                                            <i class="ph-duotone  ph-sign-out pe-1 f-s-20"></i> Log Out
-                                        </a>
+                                        <button @onclick="Logout" class="mb-0 btn btn-light-danger btn-sm justify-content-center"> <i class="ph-duotone  ph-sign-out pe-1 f-s-20"></i> Çıkış Yap</button>
+
+                                       @*  @if (user != null)
+                                        {
+                                        }
+                                        else
+                                        {
+                                            <button @onclick="NavigateToLogin" class="mb-0 btn btn-light-danger btn-sm justify-content-center"> Giriş Yap</button>
+                                        } *@
+
                                     </li>
                                 </ul>
                             </div>

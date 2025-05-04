@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.UI.Persistence", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.Panel.Persistence", "Src\Infrastructure\Economy.PanelPersistence\Economy.Panel.Persistence.csproj", "{74F5CFEC-8612-4D9E-935C-7A8BF83F5F7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.AdminUI", "Src\Presentation\Economy.AdminUI\Economy.AdminUI.csproj", "{879B20E3-1068-4C9A-868B-A731F3B1C610}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,10 @@ Global
 		{74F5CFEC-8612-4D9E-935C-7A8BF83F5F7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74F5CFEC-8612-4D9E-935C-7A8BF83F5F7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74F5CFEC-8612-4D9E-935C-7A8BF83F5F7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{879B20E3-1068-4C9A-868B-A731F3B1C610}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{879B20E3-1068-4C9A-868B-A731F3B1C610}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{879B20E3-1068-4C9A-868B-A731F3B1C610}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{879B20E3-1068-4C9A-868B-A731F3B1C610}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{07D39229-7E3A-44A1-ACE0-C90EC0F2C438} = {A562FD7E-981E-4AD8-83BD-2ABE0791DB98}
 		{78CBD934-8E69-46EC-A3E3-5F119B553C11} = {7DC9D358-AA0E-471C-A486-A1A41826AA31}
 		{74F5CFEC-8612-4D9E-935C-7A8BF83F5F7E} = {7DC9D358-AA0E-471C-A486-A1A41826AA31}
+		{879B20E3-1068-4C9A-868B-A731F3B1C610} = {FA6C4317-017A-46A5-AC2B-2223501710B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {20E107F7-FA8E-44CE-9C37-93776883CCC7}
