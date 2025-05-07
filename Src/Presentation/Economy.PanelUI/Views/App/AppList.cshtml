@@ -1,0 +1,132 @@
+﻿@model IEnumerable<AppDto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<main>
+    <div class="container-fluid">
+        <!-- Breadcrumb start -->
+        <div class="row m-1">
+            <div class="col-12 ">
+                <h4 class="main-title">Basic Table</h4>
+                <ul class="app-line-breadcrumbs mb-3">
+                    <li class="">
+                        <a class="f-s-14 f-w-500" href="#">
+                            <span>
+                                <i class="ph-duotone  ph-table f-s-16"></i> Table
+                            </span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a class="f-s-14 f-w-500" href="#">Basic Table</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <p>
+            <a asp-action="CreateApp">Create New</a>
+        </p>
+
+        <!-- Breadcrumb end -->
+        <!-- tables start  -->
+        <div class="row table-section">
+
+            <!-- Hoverable Table start -->
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5> Hoverable Table</h5>
+                        <p>
+                            Using the Hoverable table need to add <code> .table-hover </code> class to table
+                            tag
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bottom-border table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.HotelName)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.ServerName)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.DatabaseName)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.UserName)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.PasswordStatus)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Password)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Domain)
+                                        </th>
+                                       
+                                        <th></th>
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Id)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.HotelName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.ServerName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.DatabaseName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.UserName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PasswordStatus)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Password)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Domain)
+                                            </td>
+                              
+                                            <td>
+                                                @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
+                                                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Hoverable Table end -->
+   
+
+        </div>
+        <!-- tables-end  -->
+    </div>
+</main>
+

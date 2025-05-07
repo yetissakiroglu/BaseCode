@@ -66,16 +66,23 @@
                 <span></span>
             </div>
         </div>
-        <component type="typeof(_MenuComponent)" render-mode="ServerPrerendered" />
-        @await Component.InvokeAsync("_Header")
+        @await Component.InvokeAsync("_Menu")
 
         <div class="app-content">
             <div class="">
+                @await Component.InvokeAsync("_Header")
                 @RenderBody()
-                <component type="typeof(_FooterComponent)" render-mode="ServerPrerendered" />
+                @await Component.InvokeAsync("_Footer")
             </div>
         </div>
     </div>
+    <!-- tap on top -->
+    <div class="go-top">
+        <span class="progress-value">
+            <i class="ti ti-chevron-up"></i>
+        </span>
+    </div>
+
     <!--customizer-->
     <div id="customizer"></div>
 

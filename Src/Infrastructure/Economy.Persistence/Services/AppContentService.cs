@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Economy.Application.Dtos.AppContentDtos;
-using Economy.Application.Dtos.AppMenuDtos;
-using Economy.Application.Dtos.AppPageDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Queries.AppContents;
 using Economy.Application.Repositories.AppContentRepositories;

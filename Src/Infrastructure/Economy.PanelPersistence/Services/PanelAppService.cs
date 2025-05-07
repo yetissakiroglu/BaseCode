@@ -1,0 +1,68 @@
+﻿using Economy.Core.Interfaces;
+using Economy.Core.Tools;
+using Economy.Domain.Entites.AppEntities;
+using Economy.Panel.Application.Dtos.AppDtos;
+using Economy.Panel.Application.Interfaces;
+using Economy.Panel.Application.Repositories;
+using System.Threading.Tasks;
+
+namespace Economy.Panel.Persistence.Services
+{
+    public class PanelAppService : IPanelAppService
+    {
+        private readonly PanelAppRepository _panelAppRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public PanelAppService(PanelAppRepository panelAppRepository, IUnitOfWork unitOfWork)
+        {
+            _panelAppRepository = panelAppRepository;
+            _unitOfWork = unitOfWork;
+        }
+
+        public ResponseModel<IEnumerable<AppDto>> Apps(bool isDeleted)
+        {
+            var result = _panelAppRepository.WhereForRead(x => x.IsDeleted == isDeleted).Select(x => new AppDto
+            {
+                Id = x.Id,
+                HotelName = x.HotelName,
+                ServerName = x.ServerName,
+                DatabaseName = x.DatabaseName,
+                UserName = x.UserName,
+                IsPassword = x.IsPassword,
+                Password = x.Password,
+                Domain = x.Domain,
+            }).ToList();
+
+            return ResponseModel<IEnumerable<AppDto>>.Success(result, System.Net.HttpStatusCode.OK);
+        }
+
+        public async Task<ResponseModel<AppDto>> CreateApp(AppCreateDto createApp)
+        {
+            var app = new App
+            {
+                Id = createApp.Id,
+                HotelName = createApp.HotelName,
+                ServerName = createApp.ServerName,
+                DatabaseName = createApp.DatabaseName,
+                UserName = createApp.UserName,
+                IsPassword = createApp.IsPassword,
+                Password = createApp.Password,
+                Domain = createApp.Domain,
+            };
+
+            _panelAppRepository.Add(app);
+            await _unitOfWork.SaveChangesAsync();
+            return ResponseModel<AppDto>.Success(new AppDto
+            {
+                Id = app.Id,
+                HotelName = app.HotelName,
+                ServerName = app.ServerName,
+                DatabaseName = app.DatabaseName,
+                UserName = app.UserName,
+                IsPassword = app.IsPassword,
+                Password = app.Password,
+                Domain = app.Domain,
+            }, System.Net.HttpStatusCode.Created);
+        }
+    }
+}

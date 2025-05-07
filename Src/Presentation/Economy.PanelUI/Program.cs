@@ -103,12 +103,23 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAppUserTokenBaseRepository, AppUserTokenBaseRepository>();
 builder.Services.AddScoped<IAppUserBaseRepository, AppUserBaseRepository>();
 
+
 // PanelAppUserRepository ve ConcretePanelAppUserRepository kaydýný yapalým.
 builder.Services.AddScoped<PanelAppUserRepository, ConcretePanelAppUserRepository>(); // Concrete sýnýfý kullanýyoruz.
 builder.Services.AddScoped<PanelAppUserTokenRepository, ConcretePanelAppUserTokenRepository>(); // Token repository'si.
 
 // Service kaydýný yapalým.
 builder.Services.AddScoped<IPanelAppUserService, PanelAppUserService>(); // Service sýnýfý kaydediliyor.
+
+
+
+builder.Services.AddScoped<IAppBaseRepository, AppBaseRepository>();
+builder.Services.AddScoped<PanelAppRepository, ConcretePanelAppRepository>(); // Concrete sýnýfý kullanýyoruz.
+builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sýnýfý kaydediliyor.
+
+
+
+
 
 // Token service kaydýný yapalým.
 builder.Services.AddScoped<ITokenService, TokenService>(); // Token service kaydý

@@ -2,14 +2,14 @@
 
 namespace Economy.Panel.UI.ViewComponents
 {
-    public class _HeaderViewComponent : ViewComponent
+    public class _FooterViewComponent : ViewComponent
     {
         // Bu metod, kullanıcının giriş yapıp yapmadığını kontrol eder
         public IViewComponentResult Invoke()
         {
 
             // Kullanıcı giriş yapmamışsa, login formunu gösteriyoruz
-            return View("Components/Header/_HeaderComponent.cshtml");
+            return View("Components/Footer/_FooterComponent.cshtml");
 
         }
     }
