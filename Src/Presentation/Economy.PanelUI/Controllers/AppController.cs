@@ -1,11 +1,10 @@
 ﻿using Economy.Panel.Application.Dtos.AppDtos;
 using Economy.Panel.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.Controllers
 {
-    public class AppController : Controller
+    public class AppController : BaseController
     {
         private readonly IPanelAppService _panelAppService;
 
@@ -30,6 +29,7 @@ namespace Economy.Panel.UI.Controllers
         public async Task<IActionResult> CreateApp(AppCreateDto model)
         {
             var result = await _panelAppService.CreateApp(model);
+            AddMessage(result);
             return RedirectToAction(nameof(AppList));
         }
 

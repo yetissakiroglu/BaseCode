@@ -4,7 +4,6 @@ using Economy.Domain.Entites.AppEntities;
 using Economy.Panel.Application.Dtos.AppDtos;
 using Economy.Panel.Application.Interfaces;
 using Economy.Panel.Application.Repositories;
-using System.Threading.Tasks;
 
 namespace Economy.Panel.Persistence.Services
 {

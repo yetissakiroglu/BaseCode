@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Economy.Core.Enums
+@using Economy.Core.Helpers
+
+<!DOCTYPE html>
 <html lang="tr">
 <head>
 
@@ -47,6 +50,8 @@
 
     <!-- Selecrt css -->
     <link href="../assets/vendor/select/select2.min.css" rel="stylesheet" type="text/css">
+    <!-- toastify css-->
+    <link href="../assets/vendor/toastify/toastify.css" rel="stylesheet" type="text/css">
 
     <!-- App css-->
     <link href="../assets/css/style.css" rel="stylesheet" type="text/css">
@@ -110,11 +115,34 @@
     <!--js-->
     <script src="../assets/js/select.js"></script>
 
+    <!-- Toatify js-->
+    <script src="../assets/vendor/notifications/toastify-js.js"></script>
+    <script src="../assets/vendor/toastify/toastify.js"></script>
+
+@*     <!-- notification js -->
+    <script src="../assets/js/notifications.js"></script>
+ *@
+    <script src="~/components/component.js"></script>
     <!-- App js-->
     <script src="../assets/js/script.js"></script>
+    <!-- Block ui js  -->
+    <!--<script src="../assets/vendor/block-ui/jquery.min.js"></script>-->
+    <script src="../assets/vendor/block-ui/jquery.blockUI.js"></script>
 
+   @*  <!-- block ui custom js  -->
+    <script src="../assets/js/block_ui.js"></script>
+ *@
     <!-- Customizer js-->
     <script src="../assets/js/customizer.js"></script>
+    <script>
+        $(document).ready(function () {
+        @if (TempData["NotificationType"] != null)
+        {
+            @Html.Notification((NotificationType)TempData["NotificationType"], (string)TempData["MessageTitle"], (string)TempData["MessageNotification"])
+        }
+        });
+    </script>
+
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
