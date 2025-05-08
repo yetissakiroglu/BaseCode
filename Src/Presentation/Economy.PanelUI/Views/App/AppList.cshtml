@@ -26,22 +26,33 @@
             </div>
         </div>
 
-        <p>
-            <a asp-action="CreateApp">Create New</a>
-        </p>
-
         <!-- Breadcrumb end -->
         <!-- tables start  -->
         <div class="row table-section">
 
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                                <div class="app-btn-list">
+                                    <a class="btn btn-primary" asp-action="CreateApp">Yeni Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+          
+                </div>
+            </div>
             <!-- Hoverable Table start -->
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5> Hoverable Table</h5>
+                        <h5> Kayıtlar </h5>
                         <p>
-                            Using the Hoverable table need to add <code> .table-hover </code> class to table
-                            tag
+                           Aşağıda kayıtlı bilgiler bulunmaktadır.
                         </p>
                     </div>
                     <div class="card-body">
@@ -73,7 +84,7 @@
                                         <th>
                                             @Html.DisplayNameFor(model => model.Domain)
                                         </th>
-                                       
+
                                         <th></th>
                                     </tr>
 
@@ -107,11 +118,11 @@
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.Domain)
                                             </td>
-                              
+
                                             <td>
-                                                @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
-                                                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+                                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                                @Html.ActionLink("Details", "DetailsApp", new { id = item.Id }) |
+                                                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                                             </td>
                                         </tr>
                                     }
@@ -123,7 +134,7 @@
                 </div>
             </div>
             <!-- Hoverable Table end -->
-   
+
 
         </div>
         <!-- tables-end  -->

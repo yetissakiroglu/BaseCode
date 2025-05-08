@@ -4,7 +4,7 @@ $.ajaxSetup({
     cache: false,
     beforeSend: function () { ajaxCount++; if (ajaxCount == 1) { $.blockUI({ message: '  <h6> ... İşleniyor ... </h6>' }); } },
     complete: function () { ajaxCount--; if (ajaxCount < 1) { ajaxCount = 0; $.unblockUI(); } },
-    error: function (x, status, error) { showAjaxError(x, status, error); }
+    error: function (x, status, error) {/* showAjaxError(x, status, error);*/ }
 });
 
 window.onerror = function (message, url, lineNumber) {
@@ -19,50 +19,50 @@ window.onerror = function (message, url, lineNumber) {
     }
 
 };
-function showAjaxError(x, status, error) {
-    var statusMsg = "";
-    var warningMsg = "";
-    var redirectURL = "";
-    if (x.status == 0) {
-        statusMsg = "Ağ bağlantısı bulunamıyor yada yoğunluk nedeni ile data alınamıyor. Lütfen ağ bağlantısının sorunsuz çalıştığını kontrol edin, eğer bağlantınızda bir sorun yoksa bir süre bekleyiniz.";
-    }
-    else if (x.status == 200) {
-        statusMsg = "";
-    }
-    else if (x.status == 400) {
-        statusMsg = "Böyle bir servis bulunamıyor.";
-    }
-    else if (x.status == 405) {
-        statusMsg = "Metot Hatası.";
-    }
-    else if (x.status == 403) {
-        statusMsg = "Oturum süresi dolmuş. Lütfen kullanıcı adınız ve parolanızı kullanarak yeniden oturum açın.";
-    }
-    else if (x.status == 406) {
-        if (x.responseText != "" && x.responseText != null && x.responseText != undefined) {
-            warningMsg = x.responseText;
-        }
-        else if (error != "" && error != null && error != undefined) {
-            warningMsg = error;
-        }
-        else {
-            warningMsg = "İşlemi gerçekleştirmek için gereken kriterler sağlanamadı.";
-        }
-    }
-    else {
-        statusMsg = "Ağ bağlantısı bulunamıyor yada yoğunluk nedeni ile data alınamıyor. Lütfen ağ bağlantısının sorunsuz çalıştığını kontrol edin, eğer bağlantınızda bir sorun yoksa bir süre bekleyiniz.";
-    }
-    if (statusMsg != "") {
-        showErrorMessage(statusMsg);
-    }
-    if (warningMsg != "") {
-        showWarningNotification(warningMsg, "Uyarı !");
-    }
-    if (redirectURL != "") {
-        window.location.href = redirectURL;
-    }
+//function showAjaxError(x, status, error) {
+//    var statusMsg = "";
+//    var warningMsg = "";
+//    var redirectURL = "";
+//    if (x.status == 0) {
+//        statusMsg = "Ağ bağlantısı bulunamıyor yada yoğunluk nedeni ile data alınamıyor. Lütfen ağ bağlantısının sorunsuz çalıştığını kontrol edin, eğer bağlantınızda bir sorun yoksa bir süre bekleyiniz.";
+//    }
+//    else if (x.status == 200) {
+//        statusMsg = "";
+//    }
+//    else if (x.status == 400) {
+//        statusMsg = "Böyle bir servis bulunamıyor.";
+//    }
+//    else if (x.status == 405) {
+//        statusMsg = "Metot Hatası.";
+//    }
+//    else if (x.status == 403) {
+//        statusMsg = "Oturum süresi dolmuş. Lütfen kullanıcı adınız ve parolanızı kullanarak yeniden oturum açın.";
+//    }
+//    else if (x.status == 406) {
+//        if (x.responseText != "" && x.responseText != null && x.responseText != undefined) {
+//            warningMsg = x.responseText;
+//        }
+//        else if (error != "" && error != null && error != undefined) {
+//            warningMsg = error;
+//        }
+//        else {
+//            warningMsg = "İşlemi gerçekleştirmek için gereken kriterler sağlanamadı.";
+//        }
+//    }
+//    else {
+//        statusMsg = "Ağ bağlantısı bulunamıyor yada yoğunluk nedeni ile data alınamıyor. Lütfen ağ bağlantısının sorunsuz çalıştığını kontrol edin, eğer bağlantınızda bir sorun yoksa bir süre bekleyiniz.";
+//    }
+//    if (statusMsg != "") {
+//        showErrorMessage(statusMsg);
+//    }
+//    if (warningMsg != "") {
+//        showWarningNotification(warningMsg, "Uyarı !");
+//    }
+//    if (redirectURL != "") {
+//        window.location.href = redirectURL;
+//    }
 
-}
+//}
 
 
 function showInfoNotification(msgContent, msgHeader) { showToastNotification(msgContent, msgHeader, false, 1); }
@@ -73,7 +73,6 @@ function showInfoMessage(msgContent, msgHeader) { showToastNotification(msgConte
 function showWarningMessage(msgContent, msgHeader) { showToastNotification(msgContent, msgHeader, false, 2); }
 function showSuccessMessage(msgContent, msgHeader) { showToastNotification(msgContent, msgHeader, false, 0); }
 function showErrorMessage(msgContent, msgHeader) { showToastNotification(msgContent, msgHeader, false, 3); }
-
 function showToastNotification(msgContent, msgHeader, boolNotification, msgType) {
     if (typeof msgContent === 'undefined') msgContent = '';
     if (typeof msgHeader === 'undefined') msgHeader = '';
@@ -131,6 +130,72 @@ function showToastNotification(msgContent, msgHeader, boolNotification, msgType)
 
     
 }
+
+
+function confirmAndPostDelete(actionURL, actionData, successCallback, errorCallback) {
+    if (!wsLib.isNullOrEmpty(actionURL)) {
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: "Bu işlemi geri alamazsınız!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'Vazgeç'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
+                actionData.__RequestVerificationToken = token;
+
+                $.ajax({
+                    url: actionURL,
+                    data: actionData,
+                    type: "POST",
+                    success: function (response) {
+
+                        debugger;
+
+                        if (response.isSuccess) {
+                            // Mesaj varsa göster
+                            if (response.message?.messages?.length > 0) {
+                                showSuccessNotification(response.message.messages.join("<br>"), "Başarılı");
+                            } else {
+                                showSuccessNotification("İşlem başarılı.", "Başarılı");
+                            }
+
+                            if (successCallback && typeof successCallback === "function") {
+                                successCallback(response);
+                            }
+
+                            // Redirect işlemi varsa
+                            if (response.message?.redirectUrl) {
+                                window.location.href = response.message.redirectUrl;
+                            }
+
+                        } else {
+                            // Hata mesajı varsa
+                            if (response.message?.messages?.length > 0) {
+                                showErrorNotification("1 İşlem sırasında hata oluştu. <br> Mesaj: " + response.message.messages.join("<br>"), "Hata");
+                            } else {
+                                showErrorNotification("2 İşlem sırasında bir hata oluştu.", "Hata");
+                            }
+
+                            if (errorCallback && typeof errorCallback === "function") {
+                                errorCallback(response);
+                            }
+                        }
+                    },
+                    error: function () {
+                        showErrorNotification("Sunucu ile iletişim sırasında bir hata oluştu.", "Hata");
+                    }
+                });
+            }
+        });
+    }
+}
+
+
 
 
 

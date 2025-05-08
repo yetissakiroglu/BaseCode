@@ -6,5 +6,7 @@ namespace Economy.Core.Interfaces
     {
         IEntityRepository<T, int> EntityRepository<T>(string connectionString) where T : class, ISoftDelete, IHasId<int>;
         Task<int> SaveChangesAsync();
+        int SaveChanges();
+
     }
 }

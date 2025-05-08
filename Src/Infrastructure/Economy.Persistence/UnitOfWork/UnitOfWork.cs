@@ -38,10 +38,16 @@ namespace Economy.Persistence.UnitOfWorks
             var defaultDbChanges = await _defaultDbContext.SaveChangesAsync();
             return defaultDbChanges;
         }
-
+        public int SaveChanges()
+        {
+            var defaultDbChanges = _defaultDbContext.SaveChanges();
+            return defaultDbChanges;
+        }
         public void Dispose()
         {
             _defaultDbContext.Dispose();
         }
+
+        
     }
 }

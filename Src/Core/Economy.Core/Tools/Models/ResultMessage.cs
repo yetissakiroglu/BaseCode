@@ -5,7 +5,7 @@
     {
         public List<string> Messages { get; private set; } = [];
         public bool IsShow { get; private set; }
-
+        public string RedirectUrl { get; set; }
         public ResultMessage(string message, bool isShow)
         {
             Messages.Add(message);
@@ -15,6 +15,12 @@
         {
             Messages.Add(message);
             IsShow = true;
+        }
+        public ResultMessage(string message, string redirectUrl)
+        {
+            Messages.Add(message);
+            IsShow = true;
+            RedirectUrl = redirectUrl;
         }
 
         public ResultMessage(List<string> messages, bool isShow)

@@ -109,5 +109,16 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
 
             return query.ToList();
         }
+
+        public void Delete(int Id)
+        {
+            var entity = _entities.Find(Id);
+            if (entity != null)
+            {
+                entity.IsDeleted = true;
+                _context.Update(entity);
+            }              
+
+        }
     }
 }

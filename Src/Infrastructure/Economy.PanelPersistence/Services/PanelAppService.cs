@@ -63,5 +63,47 @@ namespace Economy.Panel.Persistence.Services
                 Domain = app.Domain,
             }, System.Net.HttpStatusCode.Created);
         }
+
+        public ResponseModel<AppDto> DeleteApp(int Id)
+        {
+           var result = _panelAppRepository.GetForEdit(x=>x.Id == Id);
+            if(result is null)
+            { return ResponseModel<AppDto>.Fail("App not found", System.Net.HttpStatusCode.NotFound); }
+            result.IsDeleted = true;
+            _panelAppRepository.Update(result);
+            _unitOfWork.SaveChanges();
+            return ResponseModel<AppDto>.Success(new AppDto
+            {
+                Id = result.Id,
+                HotelName = result.HotelName,
+                ServerName = result.ServerName,
+                DatabaseName = result.DatabaseName,
+                UserName = result.UserName,
+                IsPassword = result.IsPassword,
+                Password = result.Password,
+                Domain = result.Domain,
+            }, System.Net.HttpStatusCode.OK);
+        }
+
+        public ResponseModel<AppDto> GetApp(int Id, bool isDeleted)
+        {
+           var result = _panelAppRepository.GetForRead(x => x.Id == Id && x.IsDeleted == isDeleted);
+            if (result == null)
+            {
+                return ResponseModel<AppDto>.Fail("App not found", System.Net.HttpStatusCode.NotFound);
+            }
+            var appDto = new AppDto
+            {
+                Id = result.Id,
+                HotelName = result.HotelName,
+                ServerName = result.ServerName,
+                DatabaseName = result.DatabaseName,
+                UserName = result.UserName,
+                IsPassword = result.IsPassword,
+                Password = result.Password,
+                Domain = result.Domain,
+            };
+            return ResponseModel<AppDto>.Success(appDto, System.Net.HttpStatusCode.OK);
+        }
     }
 }

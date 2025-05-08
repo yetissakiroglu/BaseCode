@@ -10,7 +10,6 @@ namespace Economy.Core.Tools
         [JsonIgnore]
         public NotificationType Notification { get; set; }
 
-        [JsonIgnore]
         public bool IsSuccess { get; set; } = isSuccess;
 
         [JsonIgnore]
