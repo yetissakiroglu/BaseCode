@@ -27,4 +27,8 @@
     <ProjectReference Include="..\LoggingLibrary\LoggingLibrary\Economy.Logging.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Profiles\" />
+  </ItemGroup>
+
 </Project>
