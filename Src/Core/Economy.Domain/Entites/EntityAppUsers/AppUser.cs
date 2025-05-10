@@ -11,6 +11,4 @@ namespace Economy.Domain.Entites.Identities
         public bool IsDeleted { get; set; }
         public int TenantId { get; set; }
     }
-
-
 }

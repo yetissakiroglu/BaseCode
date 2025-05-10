@@ -2,6 +2,7 @@
 using Economy.Panel.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.Controllers
 {
@@ -35,10 +36,36 @@ namespace Economy.Panel.UI.Controllers
         }
 
         [HttpGet]
+        public IActionResult EditApp(int Id)
+        {
+            var result = _panelAppService.GetApp(Id, false);   
+            var editDto = new AppEditDto
+            {
+                Id = result.Data.Id,
+                HotelName = result.Data.HotelName,
+                ServerName = result.Data.ServerName,
+                DatabaseName = result.Data.DatabaseName,
+                UserName = result.Data.UserName,
+                IsPassword = result.Data.IsPassword,
+                Password = result.Data.Password,
+                Domain = result.Data.Domain
+            };
+            return View(editDto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditApp(AppEditDto modelDto)
+        {
+              var editModel = await _panelAppService.EditApp(modelDto);
+            AddMessage(editModel);
+            return RedirectToAction(nameof(AppList));
+        }
+
+
+        [HttpGet]
         public IActionResult DetailsApp(int Id)
         {
             var result = _panelAppService.GetApp(Id, false);
-            AddMessage(result);
             return View(result.Data);
         }
 
@@ -47,7 +74,10 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult DeleteApp(int Id)
         {
             var result = _panelAppService.DeleteApp(Id);
-
+            if(result.IsSuccess)
+            {
+                result.Message.RedirectUrl = "/App/"+ nameof(AppList);
+            }
             string json = JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true });
 
             return Json(result);

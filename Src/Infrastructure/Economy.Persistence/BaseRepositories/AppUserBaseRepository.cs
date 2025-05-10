@@ -1,6 +1,7 @@
 ﻿using Economy.Application.BaseRepositories;
 using Economy.Application.Interfaces.AppUserServices;
 using Economy.Base.Application.BaseRepositories;
+using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Core.Dtos;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools;
@@ -25,6 +26,48 @@ namespace Economy.Persistence.BaseRepositories
             _tokenService = tokenService;
             _appUserTokenBaseRepository = appUserTokenBaseRepository;
             _unitOfWork = unitOfWork;
+        }
+        public async Task<ResponseModel<AppUserDto>> CreateUser(AppUserCreateDto userCreateDto)
+        {
+            var response = new ResponseModel<AppUserDto>();
+
+            var user = new AppUser
+            {
+                UserName = userCreateDto.UserName,
+                Email = userCreateDto.Email,
+                PhoneNumber = userCreateDto.PhoneNumber,
+                EmailConfirmed = userCreateDto.EmailConfirmed,
+                PhoneNumberConfirmed = userCreateDto.PhoneNumberConfirmed
+            };
+
+            var result = await _userManager.CreateAsync(user, userCreateDto.Password);
+
+            var resultDto = new AppUserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                EmailConfirmed = user.EmailConfirmed,
+                PhoneNumberConfirmed = user.PhoneNumberConfirmed
+            };
+
+
+            if (result.Succeeded)
+            {
+                response.IsSuccess = true;
+                response.Data = resultDto;
+                response.Message.Messages.Add("Kullanıcı başarıyla oluşturuldu.");
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message.Messages.Add(string.Join(" | ", result.Errors.Select(e => e.Description)));
+            }
+
+            return response;
+
+
         }
 
         public async Task<ResponseModel<Token>> LoginAsync(SignIn signIn)

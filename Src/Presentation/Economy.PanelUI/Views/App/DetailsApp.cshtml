@@ -38,13 +38,12 @@
                             <div>
                             </div>
                             <div>
+                                <form id="antiForgeryForm">
+                                    @Html.AntiForgeryToken()
+                                </form>
+
                                 <div class="app-btn-list">
                                     <button id="deleteBtn" class="btn btn-danger">Sil</button>
-
-                                    <form id="antiForgeryForm">
-                                        @Html.AntiForgeryToken()
-                                    </form>
-
                                     @Html.ActionLink("Güncelle", "EditApp", new { id = Model.Id }, new { @class = "btn btn-primary" })
                                     <a class="btn btn-primary" asp-action="AppList">Kayıtlar</a>
                                 </div>
@@ -127,30 +126,7 @@
 @section Scripts {
     <script>
          $('#deleteBtn').click(function () {
-
-         confirmAndPostDelete('@Url.Action("DeleteApp", "App")',{ id: @Model.Id })
-
-        
-             // if (!confirm("Silmek istediğinize emin misiniz?")) return;
-
-             // var token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
-
-             // $.ajax({
-             //     type: 'POST',
-             //     url: '@Url.Action("DeleteApp", "App")',
-             //     data: {
-             //         id: '@Model.Id',
-             //         __RequestVerificationToken: token
-             //     },
-             //     success: function (response) {
-             //         alert("Başarıyla silindi!");
-             //         // Örneğin: yönlendirme
-             //         window.location.href = '@Url.Action("Index", "App")';
-             //     },
-             //     error: function (xhr) {
-             //         alert("Silme işlemi sırasında hata oluştu: " + xhr.statusText);
-             //     }
-             // });
+             postResponseModelDelete('@Url.Action("DeleteApp", "App")',{ id: @Model.Id })
          });
     </script>
 }

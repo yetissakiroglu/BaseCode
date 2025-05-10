@@ -132,7 +132,7 @@ function showToastNotification(msgContent, msgHeader, boolNotification, msgType)
 }
 
 
-function confirmAndPostDelete(actionURL, actionData, successCallback, errorCallback) {
+function postResponseModelDelete(actionURL, actionData, successCallback, errorCallback) {
     if (!wsLib.isNullOrEmpty(actionURL)) {
         Swal.fire({
             title: 'Emin misiniz?',
@@ -176,9 +176,9 @@ function confirmAndPostDelete(actionURL, actionData, successCallback, errorCallb
                         } else {
                             // Hata mesajı varsa
                             if (response.message?.messages?.length > 0) {
-                                showErrorNotification("1 İşlem sırasında hata oluştu. <br> Mesaj: " + response.message.messages.join("<br>"), "Hata");
+                                showErrorNotification("İşlem sırasında hata oluştu. <br> Mesaj: " + response.message.messages.join("<br>"), "Hata");
                             } else {
-                                showErrorNotification("2 İşlem sırasında bir hata oluştu.", "Hata");
+                                showErrorNotification("İşlem sırasında bir hata oluştu.", "Hata");
                             }
 
                             if (errorCallback && typeof errorCallback === "function") {
