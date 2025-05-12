@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Economy.Base.Application.Dtos.BaseModels
 {
-    public class AppUserCreateDto : IdentityUser<int>
+    public class AppUserEditDto : IdentityUser<int>
     {
         [Required]
         [DisplayName("Adı")]

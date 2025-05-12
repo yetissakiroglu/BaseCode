@@ -1,6 +1,6 @@
 using Economy.Application.BaseRepositories;
-using Economy.Application.Interfaces.AppUserServices;
 using Economy.Base.Application.BaseRepositories;
+using Economy.Base.Application.Interfaces;
 using Economy.Base.Persistence.BaseRepositories;
 using Economy.Base.Persistence.Providers;
 using Economy.Core.Business;
@@ -36,6 +36,16 @@ builder.Services.AddDbContext<DefaultDbContext>(options =>
         configure.MigrationsAssembly("Economy.Panel.UI");
     });
 });
+
+builder.Services.AddDbContext<HotelDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultHotelConnection"), configure =>
+    {
+        configure.MigrationsAssembly("Economy.Base.Persistence");
+    });
+});
+
+
 
 // TokenOption ayarlarýný oku ve DI container'a ekle
 builder.Services.Configure<TokenOption>(

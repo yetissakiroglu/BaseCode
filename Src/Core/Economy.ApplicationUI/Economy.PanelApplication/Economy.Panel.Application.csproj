@@ -11,4 +11,8 @@
     <ProjectReference Include="..\..\Economy.Application\Economy.Base.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dtos\UserDtos\" />
+  </ItemGroup>
+
 </Project>

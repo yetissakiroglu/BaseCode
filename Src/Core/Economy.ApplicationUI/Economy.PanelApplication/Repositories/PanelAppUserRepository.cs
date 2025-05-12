@@ -1,5 +1,5 @@
-﻿using Economy.Application.Interfaces.AppUserServices;
-using Economy.Base.Application.BaseRepositories;
+﻿using Economy.Base.Application.BaseRepositories;
+using Economy.Base.Application.Interfaces;
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.Identities;
 using Economy.Persistence.BaseRepositories;

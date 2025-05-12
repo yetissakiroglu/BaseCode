@@ -9,7 +9,6 @@ namespace Economy.Application.BaseRepositories
     public interface IAppUserBaseRepository : IEntityRepository<AppUser, int>
     {
         Task<ResponseModel<AppUserDto>> CreateUser(AppUserCreateDto userCreateDto); 
-
         Task<ResponseModel<Token>> LoginAsync(SignIn signIn);       
 
     }

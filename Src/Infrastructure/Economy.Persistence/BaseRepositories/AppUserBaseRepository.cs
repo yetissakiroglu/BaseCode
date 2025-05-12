@@ -1,10 +1,11 @@
 ﻿using Economy.Application.BaseRepositories;
-using Economy.Application.Interfaces.AppUserServices;
 using Economy.Base.Application.BaseRepositories;
 using Economy.Base.Application.Dtos.BaseModels;
+using Economy.Base.Application.Interfaces;
 using Economy.Core.Dtos;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools;
+using Economy.Core.Tools.Models;
 using Economy.Domain.Entites.Identities;
 using Economy.Domain.Entities.Identity;
 using Economy.Persistence.Contexts;
@@ -33,6 +34,9 @@ namespace Economy.Persistence.BaseRepositories
 
             var user = new AppUser
             {
+                FirstName = userCreateDto.FirstName,
+                LastName = userCreateDto.LastName,
+                TenantId = userCreateDto.TenantId,
                 UserName = userCreateDto.UserName,
                 Email = userCreateDto.Email,
                 PhoneNumber = userCreateDto.PhoneNumber,
@@ -46,6 +50,10 @@ namespace Economy.Persistence.BaseRepositories
             {
                 Id = user.Id,
                 UserName = user.UserName,
+                IsDefaultAdmin =user.IsDefaultAdmin,
+                FirstName = user.FirstName,
+                LastName = user.FirstName,
+                TenantId = user.TenantId,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 EmailConfirmed = user.EmailConfirmed,
@@ -57,12 +65,13 @@ namespace Economy.Persistence.BaseRepositories
             {
                 response.IsSuccess = true;
                 response.Data = resultDto;
-                response.Message.Messages.Add("Kullanıcı başarıyla oluşturuldu.");
+                response.Message  = new ResultMessage("Kullanıcı başarıyla oluşturuldu.");
             }
             else
             {
                 response.IsSuccess = false;
-                response.Message.Messages.Add(string.Join(" | ", result.Errors.Select(e => e.Description)));
+                response.Message = new ResultMessage(string.Join(" | ", result.Errors.Select(e => e.Description)));
+
             }
 
             return response;

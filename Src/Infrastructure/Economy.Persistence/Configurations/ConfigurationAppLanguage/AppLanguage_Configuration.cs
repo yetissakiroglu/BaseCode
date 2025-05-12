@@ -30,27 +30,27 @@ namespace Economy.Persistence.Configurations.ConfigurationAppLanguage
                                    IsDeleted  = false
                                },
                                new AppLanguage
-    {
-        Id         = 2,
-        Code       = "en",
-        Name       = "English",
-        IsRTL      = false,
-        Icon       = "🇬🇧",
-        IsActive   = true,
-        IsDefault  = false,
-        IsDeleted  = false
-    },
-                               new AppLanguage
-    {
-        Id         = 3,
-        Code       = "ar",
-        Name       = "العربية",
-        IsRTL      = true,
-        Icon       = "🇸🇦",
-        IsActive   = true,
-        IsDefault  = false,
-        IsDeleted  = false
-    }
+                                {
+                                    Id         = 2,
+                                    Code       = "en",
+                                    Name       = "English",
+                                    IsRTL      = false,
+                                    Icon       = "🇬🇧",
+                                    IsActive   = true,
+                                    IsDefault  = false,
+                                    IsDeleted  = false
+                                },
+                                                           new AppLanguage
+                                {
+                                    Id         = 3,
+                                    Code       = "ar",
+                                    Name       = "العربية",
+                                    IsRTL      = true,
+                                    Icon       = "🇸🇦",
+                                    IsActive   = true,
+                                    IsDefault  = false,
+                                    IsDeleted  = false
+                                }
                            };
 
             // 🚀 Seed Data

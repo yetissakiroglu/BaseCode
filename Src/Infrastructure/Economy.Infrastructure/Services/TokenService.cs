@@ -1,4 +1,4 @@
-﻿using Economy.Application.Interfaces.AppUserServices;
+﻿using Economy.Base.Application.Interfaces;
 using Economy.Core.Business;
 using Economy.Core.Dtos;
 using Economy.Core.Services;

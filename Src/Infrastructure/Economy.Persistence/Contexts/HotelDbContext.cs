@@ -1,4 +1,5 @@
 ﻿using Economy.Domain.Entites.EntityAppSettings;
+using Economy.Persistence.Configurations.ConfigurationAppLanguage;
 using Microsoft.EntityFrameworkCore;
 namespace Economy.Persistence.Contexts
 {
@@ -21,6 +22,8 @@ namespace Economy.Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.ApplyConfiguration(new AppLanguage_Configuration()); // ← Burası önemli
+
             base.OnModelCreating(builder);
         }
     }

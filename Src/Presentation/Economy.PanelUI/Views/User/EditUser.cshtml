@@ -1,9 +1,8 @@
-﻿@model Economy.Base.Application.Dtos.BaseModels.AppUserCreateDto
+﻿@model Economy.Base.Application.Dtos.BaseModels.AppUserEditDto
 
 @{
-    ViewData["Title"] = "Kullanıcı Ekle";
+    ViewData["Title"] = "Kullanıcı Güncelleme";
 }
-
 
 
 
@@ -60,8 +59,12 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4">
-                                <form asp-action="CreateUser">
+                                <form asp-action="EditUser">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+                                    <input asp-for="Id" type="hidden" class="form-control" />
+
                                     <div class="form-group">
                                         <label asp-for="FirstName" class="control-label"></label>
                                         <input asp-for="FirstName" class="form-control" />
@@ -107,10 +110,9 @@
                                             <input class="form-check-input" asp-for="PhoneNumberConfirmed" /> @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
                                         </label>
                                     </div>
-
-
+                                  
                                     <div class="form-group">
-                                        <input type="submit" value="Ekle" class="btn btn-primary" />
+                                        <input type="submit" value="Kaydet" class="btn btn-primary" />
                                     </div>
                                 </form>
                             </div>

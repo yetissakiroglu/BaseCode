@@ -1,9 +1,10 @@
 ﻿using Economy.Core.Tools;
 using Economy.Panel.Application.Dtos.AppDtos;
+using Economy.Panel.Application.Repositories;
 
 namespace Economy.Panel.Application.Interfaces
 {
-    public interface IPanelAppService
+    public interface IPanelAppService 
     {
         ResponseModel<IEnumerable<AppDto>> Apps(bool isDeleted);
         Task<ResponseModel<AppDto>> CreateApp(AppCreateDto user);
