@@ -1,4 +1,5 @@
-﻿using Economy.Domain.Entites.EntityAppSettings;
+﻿using Economy.Base.Persistence.Configurations.ConfigurationAppSettings;
+using Economy.Domain.Entites.EntityAppSettings;
 using Economy.Persistence.Configurations.ConfigurationAppLanguage;
 using Microsoft.EntityFrameworkCore;
 namespace Economy.Persistence.Contexts
@@ -16,6 +17,7 @@ namespace Economy.Persistence.Contexts
         }
 
         public DbSet<AppSetting> AppSettings { get; set; }
+
         public DbSet<AppTechnicalSetting> AppTechnicalSettings { get; set; }
 
         // diğer otel tabloları...
@@ -23,6 +25,8 @@ namespace Economy.Persistence.Contexts
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new AppLanguage_Configuration()); // ← Burası önemli
+            builder.ApplyConfiguration(new AppSetting_Configuration()); // ← Burası önemli
+            builder.ApplyConfiguration(new AppSettingTranslation_Configuration()); // ← Burası önemli
 
             base.OnModelCreating(builder);
         }

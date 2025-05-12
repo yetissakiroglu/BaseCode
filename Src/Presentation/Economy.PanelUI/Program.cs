@@ -128,6 +128,10 @@ builder.Services.AddScoped<PanelAppRepository, ConcretePanelAppRepository>(); //
 builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sýnýfý kaydediliyor.
 
 
+builder.Services.AddScoped<IAppSettingBaseRepository, AppSettingBaseRepository>();
+builder.Services.AddScoped<PanelAppSettingRepository, ConcretePanelAppSettingRepository>(); // Concrete sýnýfý kullanýyoruz.
+builder.Services.AddScoped<IPanelAppSettingService, PanelAppSettingService>(); // Service sýnýfý kaydediliyor.
+
 
 
 

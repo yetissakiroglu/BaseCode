@@ -12,19 +12,15 @@ namespace Economy.Domain.Entites.EntityAppSettings
 
         // Çeviri alanları
         [MaxLength(200)]
-        public string SiteTitle { get; set; } = string.Empty;
+        public string SiteTitle { get; set; }
 
         [MaxLength(300)]
-        public string Description { get; set; } = string.Empty;
+        public string Description { get; set; }
 
         [MaxLength(200)]
-        public string MetaTitle { get; set; } = string.Empty;
+        public string MetaTitle { get; set; }
 
         [MaxLength(300)]
-        public string MetaDescription { get; set; } = string.Empty;
-
-        // Navigasyonlar
-        public virtual AppSetting AppSetting { get; set; } = null!;
-        public virtual AppLanguage AppLanguage { get; set; } = null!;
+        public string MetaDescription { get; set; }
     }
 }
