@@ -6,6 +6,8 @@ using Economy.Base.Persistence.Providers;
 using Economy.Core.Business;
 using Economy.Core.ContextFactory;
 using Economy.Core.Interfaces;
+using Economy.Core.Interfaces.Economy.Panel.Application.Repositories;
+using Economy.Core.Interfaces.Economy.Panel.Persistence.Services;
 using Economy.Core.Services.Providers;
 using Economy.Domain.Entites.Identities;
 using Economy.Infrastructure.Services;
@@ -14,6 +16,7 @@ using Economy.Panel.Application.Repositories;
 using Economy.Panel.Persistence.Repositories;
 using Economy.Panel.Persistence.Services;
 using Economy.Panel.UI;
+using Economy.Panel.UI.Middlewares;
 using Economy.Persistence.BaseRepositories;
 using Economy.Persistence.Contexts;
 using Economy.Persistence.UnitOfWorks;
@@ -128,10 +131,8 @@ builder.Services.AddScoped<PanelAppRepository, ConcretePanelAppRepository>(); //
 builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sýnýfý kaydediliyor.
 
 
-builder.Services.AddScoped<IAppSettingBaseRepository, AppSettingBaseRepository>();
-builder.Services.AddScoped<PanelAppSettingRepository, ConcretePanelAppSettingRepository>(); // Concrete sýnýfý kullanýyoruz.
 builder.Services.AddScoped<IPanelAppSettingService, PanelAppSettingService>(); // Service sýnýfý kaydediliyor.
-
+builder.Services.AddScoped<IPanelAppLanguageService, PanelAppLanguageService>(); // Service sýnýfý kaydediliyor.
 
 
 
@@ -185,6 +186,8 @@ app.MapControllerRoute(
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Custom middleware
+app.UseMiddleware<HotelConnectionMiddleware>();
 // Uygulamayý çalýþtýr
 app.Run();
 //// Https yönlendirmesi ve routing iþlemleri

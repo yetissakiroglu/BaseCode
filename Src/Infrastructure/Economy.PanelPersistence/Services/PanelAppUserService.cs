@@ -1,11 +1,11 @@
 ﻿using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Core.Dtos;
 using Economy.Core.Interfaces;
+using Economy.Core.Interfaces.Economy.Panel.Application.Repositories;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Models;
 using Economy.Domain.Entites.Identities;
 using Economy.Panel.Application.Interfaces;
-using Economy.Panel.Application.Repositories;
 using System.Net;
 
 namespace Economy.Panel.Persistence.Services
@@ -40,7 +40,7 @@ namespace Economy.Panel.Persistence.Services
             }
             result.IsDeleted = true;
             _panelAppUserRepository.Update(result);
-            _unitOfWork.SaveChanges();
+            _unitOfWork.SaveDefaultChanges();
             return new ResponseModel<AppUserDto>
             {
                 IsSuccess = true,
@@ -75,7 +75,7 @@ namespace Economy.Panel.Persistence.Services
             };
 
             _panelAppUserRepository.Update(userUpdateModel);
-            _unitOfWork.SaveChanges();
+            _unitOfWork.SaveDefaultChanges();
             return new ResponseModel<AppUserDto>
             {
                 IsSuccess = false,

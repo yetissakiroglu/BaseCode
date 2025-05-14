@@ -20,7 +20,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationAppSettings
 
             // Seed
             builder.HasData(
-                new AppSetting { Id = 1 }  // Sadece ID yeterli, diğerleri çeviri tablosunda
+                new AppSetting { Id = 1 }  // Sadece ID, diğerleri çeviri tablosunda olacak
             );
         }
     }

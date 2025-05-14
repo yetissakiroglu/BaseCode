@@ -1,6 +1,7 @@
 ﻿using Economy.Persistence.Contexts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Economy.Core.Services.Providers
 {
@@ -8,7 +9,7 @@ namespace Economy.Core.Services.Providers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly DefaultDbContext _masterDbContext;
-        private readonly int defultUserId = 2;
+        //private readonly int defultUserId = 2;
         public TenantProvider(IHttpContextAccessor httpContextAccessor, DefaultDbContext masterDbContext)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -18,12 +19,12 @@ namespace Economy.Core.Services.Providers
         public async Task<string> GetConnectionStringAsync()
         {
             //TODO burası sonra açılacak
-            //var userIdStr = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //if (userIdStr == null) throw new UnauthorizedAccessException("User not logged in.");
+            var userIdStr = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdStr == null) throw new UnauthorizedAccessException("User not logged in.");
 
-            //int userId = int.Parse(userIdStr);
+            int userId = int.Parse(userIdStr);
 
-            var user = await _masterDbContext.Users.FindAsync(defultUserId);
+            var user = await _masterDbContext.Users.FindAsync(userId);
             if (user == null) throw new Exception("User not found.");
 
             var tenant = await _masterDbContext.Apps.FindAsync(user.TenantId);
@@ -34,12 +35,12 @@ namespace Economy.Core.Services.Providers
 
         public async Task<List<string>> GetAllConnectionStringsAsync()
         {
-            //var userIdStr = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //if (userIdStr == null) throw new UnauthorizedAccessException("User not logged in.");
+            var userIdStr = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdStr == null) throw new UnauthorizedAccessException("User not logged in.");
 
-            //int userId = int.Parse(userIdStr);
+            int userId = int.Parse(userIdStr);
 
-            var user = await _masterDbContext.Users.FindAsync(defultUserId);
+            var user = await _masterDbContext.Users.FindAsync(userId);
             if (user == null) throw new Exception("User not found.");
 
             var tenant = await _masterDbContext.Apps.Where(w=>!w.IsDeleted).Select(t => t.ConnectionString).ToListAsync();

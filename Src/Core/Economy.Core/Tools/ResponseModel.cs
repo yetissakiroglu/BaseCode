@@ -97,6 +97,18 @@ namespace Economy.Core.Tools
             };
         }
 
+        public static ResponseModel<T> Success(HttpStatusCode code)
+        {
+            return new ResponseModel<T>
+            {
+                IsSuccess = true,
+                Data = default(T),
+                Notification = NotificationType.Success,
+                Message = new ResultMessage("İşlem Başarılı"),
+                Status = code
+            };
+        }
+
         public static ResponseModel<T> Success(T data, string message, HttpStatusCode code)
         {
             return new ResponseModel<T>

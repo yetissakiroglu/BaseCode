@@ -153,13 +153,10 @@ function postResponseModelDelete(actionURL, actionData, successCallback, errorCa
                     data: actionData,
                     type: "POST",
                     success: function (response) {
-
-                        debugger;
-
                         if (response.isSuccess) {
                             // Mesaj varsa göster
                             if (response.message?.messages?.length > 0) {
-                                showSuccessNotification(response.message.messages.join("<br>"), "Başarılı");
+                                showSuccessNotification(response.message.messages.join("</br>"), "Başarılı");
                             } else {
                                 showSuccessNotification("İşlem başarılı.", "Başarılı");
                             }
@@ -176,7 +173,7 @@ function postResponseModelDelete(actionURL, actionData, successCallback, errorCa
                         } else {
                             // Hata mesajı varsa
                             if (response.message?.messages?.length > 0) {
-                                showErrorNotification("İşlem sırasında hata oluştu. <br> Mesaj: " + response.message.messages.join("<br>"), "Hata");
+                                showErrorNotification("İşlem sırasında hata oluştu. <br> Mesaj: " + response.message.messages.join("</br>"), "Hata");
                             } else {
                                 showErrorNotification("İşlem sırasında bir hata oluştu.", "Hata");
                             }

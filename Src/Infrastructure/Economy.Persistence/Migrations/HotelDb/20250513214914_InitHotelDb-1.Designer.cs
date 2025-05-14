@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Economy.Base.Persistence.Migrations.HotelDb
 {
     [DbContext(typeof(HotelDbContext))]
-    [Migration("20250512174721_InitHotelDbSetting")]
-    partial class InitHotelDbSetting
+    [Migration("20250513214914_InitHotelDb-1")]
+    partial class InitHotelDb1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,8 +39,8 @@ namespace Economy.Base.Persistence.Migrations.HotelDb
 
                     b.Property<string>("Icon")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -68,7 +68,7 @@ namespace Economy.Base.Persistence.Migrations.HotelDb
                         {
                             Id = 1,
                             Code = "tr",
-                            Icon = "🇹🇷",
+                            Icon = "flag-icon flag-icon-tur",
                             IsActive = true,
                             IsDefault = true,
                             IsDeleted = false,
@@ -79,7 +79,7 @@ namespace Economy.Base.Persistence.Migrations.HotelDb
                         {
                             Id = 2,
                             Code = "en",
-                            Icon = "🇬🇧",
+                            Icon = "flag-icon flag-icon-gbr",
                             IsActive = true,
                             IsDefault = false,
                             IsDeleted = false,
@@ -90,7 +90,7 @@ namespace Economy.Base.Persistence.Migrations.HotelDb
                         {
                             Id = 3,
                             Code = "ar",
-                            Icon = "🇸🇦",
+                            Icon = "flag-icon flag-icon-sau",
                             IsActive = true,
                             IsDefault = false,
                             IsDeleted = false,

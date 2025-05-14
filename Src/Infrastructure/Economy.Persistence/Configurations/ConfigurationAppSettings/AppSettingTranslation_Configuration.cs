@@ -1,11 +1,6 @@
 ﻿using Economy.Domain.Entites.EntityAppSettings;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Economy.Base.Persistence.Configurations.ConfigurationAppSettings
 {
@@ -24,7 +19,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationAppSettings
 
             builder.HasIndex(x => new { x.AppSettingId, x.AppLanguageId }).IsUnique();
 
-            // Seed
+            // Seed verilerini doğru şekilde ekleyin
             builder.HasData(
                 new AppSettingTranslation
                 {

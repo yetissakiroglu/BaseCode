@@ -14,7 +14,7 @@ namespace Economy.Persistence.Configurations.ConfigurationAppLanguage
             // 📌 Property Configurations (Opsiyonel - istersen burada property'leri özelleştirebilirsin)
             entity.Property(x => x.Code).IsRequired().HasMaxLength(10);
             entity.Property(x => x.Name).IsRequired().HasMaxLength(100);
-            entity.Property(x => x.Icon).HasMaxLength(10);
+            entity.Property(x => x.Icon).HasMaxLength(50);
 
             var languages = new List<AppLanguage>
                            {
@@ -24,7 +24,7 @@ namespace Economy.Persistence.Configurations.ConfigurationAppLanguage
                                    Code       = "tr",
                                    Name       = "Türkçe",
                                    IsRTL      = false,
-                                   Icon       = "🇹🇷",
+                                   Icon       = "flag-icon flag-icon-tur",
                                    IsActive   = true,
                                    IsDefault  = true,
                                    IsDeleted  = false
@@ -35,7 +35,7 @@ namespace Economy.Persistence.Configurations.ConfigurationAppLanguage
                                     Code       = "en",
                                     Name       = "English",
                                     IsRTL      = false,
-                                    Icon       = "🇬🇧",
+                                    Icon       = "flag-icon flag-icon-gbr",
                                     IsActive   = true,
                                     IsDefault  = false,
                                     IsDeleted  = false
@@ -46,7 +46,7 @@ namespace Economy.Persistence.Configurations.ConfigurationAppLanguage
                                     Code       = "ar",
                                     Name       = "العربية",
                                     IsRTL      = true,
-                                    Icon       = "🇸🇦",
+                                    Icon       = "flag-icon flag-icon-sau",
                                     IsActive   = true,
                                     IsDefault  = false,
                                     IsDeleted  = false

@@ -1,4 +1,4 @@
-﻿@model Economy.Panel.Application.Dtos.AppSettingDtos.AppSettingDto
+﻿@model SettingViewModel
 
 @{
     ViewData["Title"] = "Site Ayarları";
@@ -29,7 +29,6 @@
         <!-- Breadcrumb end -->
         <!-- tables start  -->
         <div class="row">
-
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
@@ -51,36 +50,86 @@
 
                 </div>
             </div>
-            <!-- Hoverable Table start -->
-            <div class="col-xl-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5> Kayıtlar </h5>
-                        <p>
-                            Aşağıda kayıtlı bilgiler bulunmaktadır.
-                        </p>
+            <div class="col-lg-12">
+                @if(Model is not null && Model.Translations.Count > 0)
+                {
+                <form asp-action="SaveSetting" method="post">
+                    <input type="hidden" asp-for="@Model.Id" />
+                    <div class="card equal-card">
+                        <div class="card-header">
+                            <h5> Kayıtlar </h5>
+                            <p>
+                                Aşağıda kayıtlı bilgiler bulunmaktadır.
+                            </p>
+                        </div>
+                        <div class="card-body">
+                            <ul class="nav nav-tabs tab-light-secondary" id="lang-Light" role="tablist">
+                                @for (int i = 0; i < Model.Translations.Count; i++)
+                                {
+                                    var t = Model.Translations[i];
+                                    var isActive = i == 0 ? "active" : "";
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link gap-2 @isActive"
+                                                id="lang-tab-@i"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#lang-tab-pane-@i"
+                                                type="button"
+                                                role="tab"
+                                                aria-selected="@(i == 0 ? "true" : "false")">
+                                            <i class="@t.Icon?.ToLower()"></i>
+                                            @t.Name
+                                        </button>
+                                    </li>
+                                }
+                            </ul>
+
+                            <div class="tab-content" id="lang-LightContent">
+                                @for (int i = 0; i < Model.Translations.Count; i++)
+                                {
+                                    var t = Model.Translations[i];
+                                    var isActive = i == 0 ? "show active" : "";
+                                    <div class="tab-pane fade @isActive" id="lang-tab-pane-@i" role="tabpanel" aria-labelledby="lang-tab-@i">
+                                        <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
+                                        <input type="hidden" name="Translations[@i].AppSettingId" value="@Model.Id" />
+                                        <input type="hidden" name="Translations[@i].AppLanguageId" value="@t.AppLanguageId" />
+
+                                        <div class="form-group mb-3">
+                                            <label>Site Title</label>
+                                            <input class="form-control" name="Translations[@i].SiteTitle" value="@t.SiteTitle" />
+                                        </div>
+
+                                        <div class="form-group mb-3">
+                                            <label>Description</label>
+                                            <textarea class="form-control" name="Translations[@i].Description">@t.Description</textarea>
+                                        </div>
+
+                                        <div class="form-group mb-3">
+                                            <label>Meta Title</label>
+                                            <input class="form-control" name="Translations[@i].MetaTitle" value="@t.MetaTitle" />
+                                        </div>
+
+                                        <div class="form-group mb-3">
+                                            <label>Meta Description</label>
+                                            <textarea class="form-control" name="Translations[@i].MetaDescription">@t.MetaDescription</textarea>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <hr />
+                            <div class="mt-3 text-end">
+                                <button type="submit" class="btn btn-success">Kaydet</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <dl class="row">
-                            <dt class="col-sm-2">
-                                @Html.DisplayNameFor(model => model.Id)
-                            </dt>
-                            <dd class="col-sm-10">
-                                @Html.DisplayFor(model => model.Id)
-                            </dd>
-                        </dl>
-
-
-
-
-                    </div>
-                </div>
+                </form>
+                }
+                else
+                {
+                    <p>Bir dil aktif etmeniz gerekmektedir. </p>
+                }
             </div>
-            <!-- Hoverable Table end -->
-
-
         </div>
-        <!-- tables-end  -->
     </div>
 </main>
 

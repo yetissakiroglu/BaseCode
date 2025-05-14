@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Economy.Panel.Application.Dtos.AppLanguageDtos
+﻿namespace Economy.Panel.Application.Dtos.AppLanguageDtos
 {
     public class AppLanguageDto
     {

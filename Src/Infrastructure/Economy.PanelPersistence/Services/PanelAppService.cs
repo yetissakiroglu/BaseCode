@@ -1,11 +1,10 @@
-﻿using Economy.Core.Interfaces;
-using Economy.Core.Tools;
+﻿using Economy.Core.Tools;
 using Economy.Domain.Entites.AppEntities;
 using Economy.Panel.Application.Dtos.AppDtos;
 using Economy.Panel.Application.Interfaces;
 using Economy.Panel.Application.Repositories;
 
-namespace Economy.Panel.Persistence.Services
+namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
 {
     public class PanelAppService : IPanelAppService
     {
@@ -50,7 +49,7 @@ namespace Economy.Panel.Persistence.Services
             };
 
             _panelAppRepository.Add(app);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveDefaultChangesAsync();
             return ResponseModel<AppDto>.Success(new AppDto
             {
                 Id = app.Id,
@@ -71,7 +70,7 @@ namespace Economy.Panel.Persistence.Services
             { return ResponseModel<AppDto>.Fail("App not found", System.Net.HttpStatusCode.NotFound); }
             result.IsDeleted = true;
             _panelAppRepository.Update(result);
-            _unitOfWork.SaveChanges();
+            _unitOfWork.SaveDefaultChanges();
             return ResponseModel<AppDto>.Success(new AppDto
             {
                 Id = result.Id,
@@ -100,7 +99,7 @@ namespace Economy.Panel.Persistence.Services
             result.Password = user.Password;
             result.Domain = user.Domain;
             _panelAppRepository.Update(result);
-            _unitOfWork.SaveChanges();
+            _unitOfWork.SaveDefaultChanges();
             var appDto = new AppDto
             {
                 Id = result.Id,

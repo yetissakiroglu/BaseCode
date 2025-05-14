@@ -117,7 +117,7 @@ namespace Economy.Persistence.BaseRepositories
 
             //Veritabanına kaydet
             _appUserTokenBaseRepository.Add(userToken);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveDefaultChangesAsync();
 
             return ResponseModel<Token>.Success(token, HttpStatusCode.OK);
         }

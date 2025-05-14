@@ -39,13 +39,17 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
    
         public T? GetForEdit(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
         {
-            var query = filters == null ? _entities : _entities.Where(filters);
+            var query = _entities.AsQueryable();
+
+            if (filters != null)
+            {
+                query = query.Where(filters);
+            }
 
             query = includes.Aggregate(query, (current, include) => current.Include(include));
 
-            return  query.FirstOrDefault();
+            return query.FirstOrDefault();
         }
-     
         public T? GetForRead(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes)
         {
             var query = filters == null ? _entities : _entities.AsNoTracking().Where(filters);

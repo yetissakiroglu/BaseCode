@@ -1,8 +1,8 @@
 ﻿using Economy.Base.Application.BaseRepositories;
 using Economy.Base.Application.Interfaces;
 using Economy.Core.Interfaces;
+using Economy.Core.Interfaces.Economy.Panel.Application.Repositories;
 using Economy.Domain.Entites.Identities;
-using Economy.Panel.Application.Repositories;
 using Economy.Persistence.Contexts;
 using Microsoft.AspNetCore.Identity;
 

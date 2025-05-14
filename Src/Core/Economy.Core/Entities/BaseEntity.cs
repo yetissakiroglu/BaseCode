@@ -1,7 +1,10 @@
-﻿namespace Economy.Domain.BaseEntities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Economy.Domain.BaseEntities
 {
     public abstract class BaseEntity<TId> : ISoftDelete, IHasId<TId>
     {
+		[Key]
         public TId Id { get; set; } = default!;
 		public bool IsDeleted { get; set; } =default!;
         protected BaseEntity()
