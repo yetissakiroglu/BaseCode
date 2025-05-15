@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Economy.Panel.Application.Dtos.AppSettingReservationLinkDtos
+﻿namespace Economy.Panel.Application.Dtos.AppSettingReservationLinkDtos
 {
-    class AppSettingReservationLinkCreateDto
+   public class AppSettingReservationLinkCreateDto
     {
+        public string Url { get; set; }
     }
 }
