@@ -22,66 +22,117 @@ namespace Economy.Panel.Persistence.Services
 
         public ResponseModel<AppSettingDto> DeleteAppSetting(int Id)
         {
-            throw new NotImplementedException();
+            var result = _appSettingRepository.GetForEdit(x => x.Id == Id, x => x.Translations);
+            if (result == null)
+            {
+                return ResponseModel<AppSettingDto>.Fail("Kayıt bulunamadı.", HttpStatusCode.NotFound);
+            }
+            result.IsDeleted = true;
+            _appSettingRepository.Update(result);
+            _unitOfWork.SaveHotelChanges();
+
+            var appSettingDto = new AppSettingDto
+            {
+                Id = result.Id,
+                Translations = result.Translations.Select(x => new AppSettingTranslationDto
+                {
+                    Id = x.Id,
+                    AppSettingId = x.AppSettingId,
+                    AppLanguageId = x.AppLanguageId,
+                    SiteTitle = x.SiteTitle,
+                    Description = x.Description,
+                    MetaTitle = x.MetaTitle,
+                    MetaDescription = x.MetaDescription,
+                }).ToList()
+            };
+
+            return ResponseModel<AppSettingDto>.Success(appSettingDto, HttpStatusCode.OK);
         }
 
         public ResponseModel<AppSettingDto> GetAppSetting(bool isDeleted)
         {
-            try
+
+            var result = _appSettingRepository.GetForReadFunc(
+                x => x.IsDeleted == isDeleted,
+                x => x.Include(y => y.Translations)
+            );
+
+            if (result == null)
             {
-                var result = _appSettingRepository.GetForReadFunc(
-                    x => x.IsDeleted == isDeleted,
-                    x => x.Include(y => y.Translations)
-                );
-
-                if (result == null)
-                {
-                    return ResponseModel<AppSettingDto>.Fail("Kayıt bulunamadı.", HttpStatusCode.NotFound);
-                }
-
-                var appSettingDto = new AppSettingDto
-                {
-                    Id = result.Id,
-                    Translations = result.Translations.Select(x => new AppSettingTranslationDto
-                    {
-                        Id = x.Id,
-                        AppSettingId = x.AppSettingId,
-                        AppLanguageId = x.AppLanguageId,
-                        SiteTitle = x.SiteTitle,
-                        Description = x.Description,
-                        MetaTitle = x.MetaTitle,
-                        MetaDescription = x.MetaDescription,
-                    }).ToList()
-                };
-
-                return ResponseModel<AppSettingDto>.Success(appSettingDto, HttpStatusCode.OK);
+                return ResponseModel<AppSettingDto>.Fail("Kayıt bulunamadı.", HttpStatusCode.NotFound);
             }
-            catch (Exception ex)
+
+            var appSettingDto = new AppSettingDto
             {
-                return ResponseModel<AppSettingDto>.Fail($"Bir hata oluştu: {ex.Message}", HttpStatusCode.InternalServerError);
-            }
+                Id = result.Id,
+                Translations = result.Translations.Select(x => new AppSettingTranslationDto
+                {
+                    Id = x.Id,
+                    AppSettingId = x.AppSettingId,
+                    AppLanguageId = x.AppLanguageId,
+                    SiteTitle = x.SiteTitle,
+                    Description = x.Description,
+                    MetaTitle = x.MetaTitle,
+                    MetaDescription = x.MetaDescription,
+                }).ToList()
+            };
+
+            return ResponseModel<AppSettingDto>.Success(appSettingDto, HttpStatusCode.OK);
+
         }
 
         public ResponseModel<AppSettingDto> SaveAppSetting(AppSettingCreateEditDto appSettingDto)
         {
-            try
+            // Var olan modeli al
+            var controlModel = _appSettingRepository.GetForEdit(w => w.Id == appSettingDto.Id, x => x.Translations);
+
+            if (controlModel == null)
             {
-                // Var olan modeli al
-                var controlModel = _appSettingRepository.GetForEdit(w => w.Id == appSettingDto.Id, x => x.Translations);
-
-                if (controlModel == null)
+                // Yeni model ekleme
+                var newModel = new AppSetting
                 {
-                    // Yeni model ekleme
-                    var newModel = new AppSetting
-                    {
-                        Id = appSettingDto.Id,
-                        Translations = new List<AppSettingTranslation>()
-                    };
+                    Id = appSettingDto.Id,
+                    Translations = new List<AppSettingTranslation>()
+                };
 
-                    // Yeni çevirileri ekle
-                    foreach (var item in appSettingDto.Translations)
+                // Yeni çevirileri ekle
+                foreach (var item in appSettingDto.Translations)
+                {
+                    newModel.Translations.Add(new AppSettingTranslation
                     {
-                        newModel.Translations.Add(new AppSettingTranslation
+                        Description = item.Description,
+                        MetaDescription = item.MetaDescription,
+                        AppLanguageId = (int)item.AppLanguageId,
+                        AppSettingId = (int)item.AppSettingId,
+                        SiteTitle = item.SiteTitle,
+                        MetaTitle = item.MetaTitle
+                    });
+                }
+
+                // Yeni modeli ekle
+                _appSettingRepository.Add(newModel);
+            }
+            else
+            {
+                // Çeviriler güncelleniyor veya ekleniyor
+                foreach (var item in appSettingDto.Translations)
+                {
+                    // Mevcut çeviriyi bul
+                    var existingTranslation = controlModel.Translations
+                        .FirstOrDefault(t => t.AppLanguageId == item.AppLanguageId);
+
+                    if (existingTranslation != null)
+                    {
+                        // Var olan çeviriyi güncelle
+                        existingTranslation.Description = item.Description;
+                        existingTranslation.MetaDescription = item.MetaDescription;
+                        existingTranslation.SiteTitle = item.SiteTitle;
+                        existingTranslation.MetaTitle = item.MetaTitle;
+                    }
+                    else
+                    {
+                        // Yeni çeviri ekle
+                        controlModel.Translations.Add(new AppSettingTranslation
                         {
                             Description = item.Description,
                             MetaDescription = item.MetaDescription,
@@ -91,181 +142,20 @@ namespace Economy.Panel.Persistence.Services
                             MetaTitle = item.MetaTitle
                         });
                     }
-
-                    // Yeni modeli ekle
-                    _appSettingRepository.Add(newModel);
-                }
-                else
-                {
-                    // Çeviriler güncelleniyor veya ekleniyor
-                    foreach (var item in appSettingDto.Translations)
-                    {
-                        // Mevcut çeviriyi bul
-                        var existingTranslation = controlModel.Translations
-                            .FirstOrDefault(t => t.AppLanguageId == item.AppLanguageId);
-
-                        if (existingTranslation != null)
-                        {
-                            // Var olan çeviriyi güncelle
-                            existingTranslation.Description = item.Description;
-                            existingTranslation.MetaDescription = item.MetaDescription;
-                            existingTranslation.SiteTitle = item.SiteTitle;
-                            existingTranslation.MetaTitle = item.MetaTitle;
-                        }
-                        else
-                        {
-                            // Yeni çeviri ekle
-                            controlModel.Translations.Add(new AppSettingTranslation
-                            {
-                                Description = item.Description,
-                                MetaDescription = item.MetaDescription,
-                                AppLanguageId = (int)item.AppLanguageId,
-                                AppSettingId = (int)item.AppSettingId,
-                                SiteTitle = item.SiteTitle,
-                                MetaTitle = item.MetaTitle
-                            });
-                        }
-                    }
-
-                    // Mevcut modeli güncelle
-                    _appSettingRepository.Update(controlModel);
                 }
 
-                // Değişiklikleri kaydet
-                _unitOfWork.SaveHotelChanges();
+                // Mevcut modeli güncelle
+                _appSettingRepository.Update(controlModel);
+            }
 
-                return ResponseModel<AppSettingDto>.Success(new AppSettingDto { Id = appSettingDto.Id }, HttpStatusCode.OK);
-            }
-            catch (Exception ex)
-            {
-                return ResponseModel<AppSettingDto>.Fail($"Bir hata oluştu: {ex.Message}", HttpStatusCode.InternalServerError);
-            }
+            // Değişiklikleri kaydet
+            _unitOfWork.SaveHotelChanges();
+
+            return ResponseModel<AppSettingDto>.Success(new AppSettingDto { Id = appSettingDto.Id }, HttpStatusCode.OK);
+
         }
 
 
-
-
-
-        //private readonly PanelAppSettingRepository _panelAppSettingRepository;
-        //private readonly IUnitOfWork _unitOfWork;
-
-        //public PanelAppSettingService(PanelAppSettingRepository panelAppSettingRepository, IUnitOfWork unitOfWork)
-        //{
-        //    _panelAppSettingRepository = panelAppSettingRepository;
-        //    _unitOfWork = unitOfWork;
-        //}
-
-        //public ResponseModel<AppSettingDto> DeleteAppSetting(int Id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public ResponseModel<AppSettingDto> GetAppSetting(bool isDeleted)
-        //{
-
-        //    // AppSetting + Translations + AppLanguage birlikte çekilir
-        //    var result = _panelAppSettingRepository.GetForReadFunc(
-        //         x => x.IsDeleted == isDeleted,
-        //         x => x.Include(y => y.Translations)
-        //    );
-
-        //    if (result == null)
-        //    {
-        //        return ResponseModel<AppSettingDto>.Fail("Kayıt bulunamadı.", HttpStatusCode.NotFound);
-        //    }
-
-        //    var appSettingDto = new AppSettingDto
-        //    {
-        //        Id = result.Id,
-        //        Translations = result.Translations.Select(x => new AppSettingTranslationDto
-        //        {
-        //            Id = x.Id,
-        //            AppSettingId = x.AppSettingId,
-        //            AppLanguageId = x.AppLanguageId,
-        //            SiteTitle = x.SiteTitle,
-        //            Description = x.Description,
-        //            MetaTitle = x.MetaTitle,
-        //            MetaDescription = x.MetaDescription,
-
-        //        }).ToList()
-        //    };
-
-        //    return ResponseModel<AppSettingDto>.Success(appSettingDto, HttpStatusCode.OK);
-
-
-        //}
-
-        //public ResponseModel<AppSettingDto> SaveAppSetting(AppSettingCreateEditDto appSettingDto)
-        //{
-        //    var controlModel = _panelAppSettingRepository.GetForEdit(w => w.Id == appSettingDto.Id,x=>x.Translations);
-
-        //    if (controlModel is null)
-        //    {
-        //        // Yeni model ekle
-        //        var newModel = new AppSetting
-        //        {
-        //            Id = appSettingDto.Id
-        //        };
-
-        //        // Yeni çeviriler ekleniyor
-        //        foreach (var item in appSettingDto.Translations)
-        //        {
-        //            newModel.Translations.Add(new AppSettingTranslation
-        //            {
-        //                Description = item.Description,
-        //                MetaDescription = item.MetaDescription,
-        //                AppLanguageId = (int)item.AppLanguageId,
-        //                AppSettingId = (int)item.AppSettingId,
-        //                SiteTitle = item.SiteTitle,
-        //                MetaTitle = item.MetaTitle,
-        //                Id = item.Id
-        //            });
-        //        }
-
-        //        // Yeni model ekleniyor
-        //        _panelAppSettingRepository.Add(newModel);
-        //    }
-        //    else
-        //    {
-        //        // Mevcut modelin çevirileri güncelleniyor
-        //        foreach (var item in appSettingDto.Translations)
-        //        {
-        //            var existingTranslation = controlModel.Translations
-        //                .FirstOrDefault(t => t.AppLanguageId == item.AppLanguageId);
-
-        //            if (existingTranslation != null)
-        //            {
-        //                // Var olan çeviri güncelleniyor
-        //                existingTranslation.Description = item.Description;
-        //                existingTranslation.MetaDescription = item.MetaDescription;
-        //                existingTranslation.SiteTitle = item.SiteTitle;
-        //                existingTranslation.MetaTitle = item.MetaTitle;
-        //            }
-        //            else
-        //            {
-        //                // Yeni bir çeviri ekleniyor
-        //                controlModel.Translations.Add(new AppSettingTranslation
-        //                {
-        //                    Description = item.Description,
-        //                    MetaDescription = item.MetaDescription,
-        //                    AppLanguageId = (int)item.AppLanguageId,
-        //                    AppSettingId = (int)item.AppSettingId,
-        //                    SiteTitle = item.SiteTitle,
-        //                    MetaTitle = item.MetaTitle,
-        //                    Id = item.Id
-        //                });
-        //            }
-        //        }
-
-        //        // Güncelleme işlemi yapılıyor
-        //        _panelAppSettingRepository.Update(controlModel);
-        //    }
-
-        //    // Değişiklikler kaydediliyor
-        //    _unitOfWork.SaveHotelChanges();
-
-        //    return ResponseModel<AppSettingDto>.Success(null, HttpStatusCode.OK);
-        //}
     }
 
 }

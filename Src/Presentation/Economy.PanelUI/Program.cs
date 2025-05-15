@@ -133,6 +133,7 @@ builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sýný
 
 builder.Services.AddScoped<IPanelAppSettingService, PanelAppSettingService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppLanguageService, PanelAppLanguageService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IPanelAppSettingLogoService, PanelAppSettingLogoService>(); // Service sýnýfý kaydediliyor.
 
 
 

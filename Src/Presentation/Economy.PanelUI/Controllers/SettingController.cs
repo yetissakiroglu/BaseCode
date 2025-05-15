@@ -20,12 +20,7 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult Index()
         {
             var allLanguages = _panelAppLanguageService.GetAllLanguage(false, true);
-            if(allLanguages.IsSuccess)
-            {
-                return View(new SettingViewModel());
-            }
-
-
+      
             var appSetting = _panelAppSettingService.GetAppSetting(false);
             var translations = allLanguages.Data.Select(lang =>
             {

@@ -17,7 +17,8 @@ namespace Economy.Persistence.Contexts
         }
 
         public DbSet<AppSetting> AppSettings { get; set; }
-
+        public DbSet<AppSettingLogo> AppSettingLogos { get; set; }
+        
         public DbSet<AppTechnicalSetting> AppTechnicalSettings { get; set; }
 
         // diğer otel tabloları...
@@ -27,7 +28,10 @@ namespace Economy.Persistence.Contexts
             builder.ApplyConfiguration(new AppLanguage_Configuration()); // ← Burası önemli
             builder.ApplyConfiguration(new AppSetting_Configuration()); // ← Burası önemli
             builder.ApplyConfiguration(new AppSettingTranslation_Configuration()); // ← Burası önemli
+            builder.ApplyConfiguration(new AppSettingLogoConfiguration()); // ← Burası önemli
 
+
+            
             base.OnModelCreating(builder);
         }
     }

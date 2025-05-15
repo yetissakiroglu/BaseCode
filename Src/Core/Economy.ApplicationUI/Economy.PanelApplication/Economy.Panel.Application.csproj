@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Infrastructure\Economy.Persistence\Economy.Base.Persistence.csproj" />
-    <ProjectReference Include="..\..\Economy.Application\Economy.Base.Application.csproj" />
+    <Compile Remove="Dtos\UserDtos\**" />
+    <EmbeddedResource Remove="Dtos\UserDtos\**" />
+    <None Remove="Dtos\UserDtos\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\UserDtos\" />
+    <ProjectReference Include="..\..\..\Infrastructure\Economy.Persistence\Economy.Base.Persistence.csproj" />
+    <ProjectReference Include="..\..\Economy.Application\Economy.Base.Application.csproj" />
   </ItemGroup>
 
 </Project>

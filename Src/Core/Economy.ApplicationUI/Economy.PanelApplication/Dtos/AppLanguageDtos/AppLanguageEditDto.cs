@@ -1,6 +1,6 @@
 ﻿namespace Economy.Panel.Application.Dtos.AppLanguageDtos
 {
-    public class AppLanguageDto
+    public class AppLanguageEditDto
     {
         public int Id { get; set; }
         public string Code { get; set; }

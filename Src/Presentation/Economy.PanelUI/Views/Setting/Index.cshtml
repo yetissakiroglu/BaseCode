@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="col-lg-12">
-                @if(Model is not null && Model.Translations.Count > 0)
+                @if(Model.Translations is not null)
                 {
                 <form asp-action="SaveSetting" method="post">
                     <input type="hidden" asp-for="@Model.Id" />

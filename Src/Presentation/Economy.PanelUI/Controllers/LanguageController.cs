@@ -1,4 +1,5 @@
-﻿using Economy.Panel.Application.Interfaces;
+﻿using Economy.Panel.Application.Dtos.AppLanguageDtos;
+using Economy.Panel.Application.Interfaces;
 using Economy.Panel.UI.Models.LanguageViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,7 @@ namespace Economy.Panel.UI.Controllers
             _panelAppLanguageService = panelAppLanguageService;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             var result = _panelAppLanguageService.GetAllLanguage(false);
@@ -35,6 +37,12 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult Edit(int id)
         {
             var result = _panelAppLanguageService.GetLanguage(id, false);
+            if (!result.IsSuccess || result.Data == null)
+            {
+                AddMessage(result); // varsa hata mesajı göster
+                return RedirectToAction("Index");
+            }
+
             var lang = result.Data;
 
             var resultModel = new AppLanguageEditViewModel
@@ -52,32 +60,82 @@ namespace Economy.Panel.UI.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(AppLanguageEditViewModel viewModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
 
-            return View();
+            var editModel = new AppLanguageEditDto
+            {
+                Id = viewModel.Id,
+                Name = viewModel.Name,
+                Code = viewModel.Code,
+                Icon = viewModel.Icon,
+                IsActive = viewModel.IsActive,
+                IsDefault = viewModel.IsDefault,
+                IsRTL = viewModel.IsRTL
+            };
+
+            var editResult = _panelAppLanguageService.EditLanguage(editModel);
+            AddMessage(editResult);
+
+            if (!editResult.IsSuccess)
+            {
+                return View(viewModel); // Hatalıysa form tekrar gösterilsin
+            }
+
+            return RedirectToAction("Index"); // Başarılıysa listeye dön
         }
-
         [HttpGet]
         public IActionResult Create()
         {
-
-
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(AppLanguageCreateViewModel viewModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel); // Hatalıysa tekrar form gösterilir
+            }
 
+            var createDto = new AppLanguageCreateDto
+            {
+                Name = viewModel.Name,
+                Code = viewModel.Code,
+                Icon = viewModel.Icon,
+                IsActive = viewModel.IsActive,
+                IsDefault = viewModel.IsDefault,
+                IsRTL = viewModel.IsRTL
+            };
 
-            return View();
+            var result = _panelAppLanguageService.CreateLanguage(createDto);
+            AddMessage(result);
+
+            if (!result.IsSuccess)
+            {
+                return View(viewModel); // Hata varsa tekrar göster
+            }
+
+            return RedirectToAction("Index"); // Başarılıysa listeye dön
         }
 
         [HttpGet]
         public IActionResult Details(int id)
         {
             var result = _panelAppLanguageService.GetLanguage(id, false);
+
+            if (!result.IsSuccess || result.Data == null)
+            {
+                AddMessage(result); // Hata mesajı göster
+                return RedirectToAction("Index");
+            }
+
             var lang = result.Data;
 
             var resultModel = new AppLanguageViewModel
@@ -91,17 +149,22 @@ namespace Economy.Panel.UI.Controllers
                 IsRTL = lang.IsRTL
             };
 
-            return View(resultModel); 
+            return View(resultModel);
         }
-
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
+            var result = _panelAppLanguageService.DeleteLanguage(id);
+            if (result.IsSuccess)
+            {
+                result.Message.RedirectUrl = "/Language/" + nameof(Index);
+            }
+            AddMessage(result);
 
-            return View();
+            return Json(result);
         }
-        
 
 
 
