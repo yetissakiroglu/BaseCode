@@ -6,8 +6,7 @@ namespace Economy.Panel.Application.Interfaces
     public interface IPanelAppSettingLogoService
     {
         ResponseModel<AppSettingLogoDto> GetAppSettingLogo(bool isDeleted);
-        ResponseModel<AppSettingLogoDto> EditAppSettingLogo(AppSettingLogoEditDto model);
-        ResponseModel<AppSettingLogoDto> CreateAppSettingLogo(AppSettingLogoCreateDto model);
+        ResponseModel<AppSettingLogoDto> CreateEditAppSettingLogo(AppSettingLogoCreateEditDto model);
         ResponseModel<AppSettingLogoDto> DeleteAppSettingLogo(int id);
 
     }

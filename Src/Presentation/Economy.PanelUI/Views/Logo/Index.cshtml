@@ -4,120 +4,198 @@
     ViewData["Title"] = "Index";
 }
 
+<!-- ✅ Cropper.js CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
 
 
+        <!-- tables start  -->
+        <div class="row table-section">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                                <div class="app-btn-list">
+                                    <a class="btn btn-primary" asp-action="Create">Yeni Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-
-
-
-
-<h2>Resim Seç ve Kırp</h2>
-<input type="file" id="fileInput" accept="image/*" />
-<br>
-<br>
-<img id="image" />
-
-<br>
-<button id="cropButton">Kırp</button>
-
-<h3>Kırpılmış Sonuç:</h3>
-<img id="croppedResult" />
-
-<!-- Cropper.js JS -->
-<script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
-
-<script>
-    let cropper;
-    const image = document.getElementById('image');
-    const fileInput = document.getElementById('fileInput');
-    const croppedResult = document.getElementById('croppedResult');
-    const cropButton = document.getElementById('cropButton');
-
-    fileInput.addEventListener('change', function (e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                image.src = event.target.result;
-
-                // Önceki cropper varsa kaldır
-                if (cropper) cropper.destroy();
-
-                // Yeni cropper başlat
-                cropper = new Cropper(image, {
-                    aspectRatio: 1, // Kare kırpma
-                    viewMode: 1
-                });
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    cropButton.addEventListener('click', function () {
-        if (!cropper) {
-            alert("Önce bir resim seçin!");
-            return;
-        }
-
-        const canvas = cropper.getCroppedCanvas({
-            width: 300,
-            height: 300
-        });
-
-        // Kırpılan resmi göster
-        croppedResult.src = canvas.toDataURL('image/png');
-    });
-</script>
-
-
-
-
-
-
-
-<h1>Index</h1>
-
-<h4>AppSettingLogoCreateEditViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Index">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="LogoPath" class="control-label"></label>
-                <input asp-for="LogoPath" class="form-control" />
-                <span asp-validation-for="LogoPath" class="text-danger"></span>
+            <!-- Hoverable Table start -->
+            <div class="col-xl-12">
+                <div class="card my-5">
+                    <div class="card-header">
+                        <h4>Kayıtlar</h4>
+                        <small>Aşağıda kayıtlı bilgiler bulunmaktadır.</small>
+                    </div>
+                    <div class="card-body p-4">
+
+
+                        <form asp-action="CreateEditLogo" method="post" enctype="multipart/form-data" novalidate>
+                            <input type="hidden" asp-for="Id" />
+
+                            <!-- MASAÜSTÜ LOGO -->
+                            <section class="mb-5">
+                                <h5 class="fw-bold text-secondary mb-3">Masaüstü Logo</h5>
+                                <p class="text-muted mb-3">Lütfen masaüstü için kullanılacak logo dosyasını yükleyin.</p>
+
+                                <div class="row gy-3 align-items-center">
+                                    <div class="col-md-6 text-center">
+                                        <p class="fw-semibold mb-1">Kırpılmış Görüntü</p>
+                                        <img id="croppedLogoResult" class="img-fluid rounded border border-2 border-primary shadow" style="max-height: 150px;" alt="Kırpılmış Logo"
+                                             src="@(Model.LogoPath ?? "")" />
+                                        <input type="hidden" name="CroppedLogoBase64" id="CroppedLogoBase64" value="@Model.CroppedLogoBase64" />
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <input class="form-control mb-3" type="file" id="logoInput" accept="image/*" />
+
+                                        <p class="fw-semibold mb-1">Orijinal Önizleme</p>
+                                        <img id="logoPreview" class="img-fluid rounded border border-2 border-secondary shadow-sm" style="max-height: 300px;" alt="Logo Önizleme"
+                                             src="@(Model.LogoPath ?? "")" />
+                                        <button type="button" id="cropLogoBtn" class="btn btn-primary btn-lg mb-3 px-5 shadow-sm">Kırp</button>
+
+                                    </div>
+                                 
+                                </div>
+                            </section>
+
+                            <hr />
+
+                            <!-- MOBİL LOGO -->
+                            <section class="mb-5">
+                                <h5 class="fw-bold text-secondary mb-3">Mobil Logo</h5>
+                                <p class="text-muted mb-3">Mobil cihazlarda kullanılacak logo dosyasını yükleyin.</p>
+                                <input class="form-control form-control-lg mb-3" type="file" id="mobileLogoInput" accept="image/*" />
+
+                                <div class="row gy-3 align-items-center">
+                                    <div class="col-md-6 text-center">
+                                        <p class="fw-semibold mb-1">Orijinal Önizleme</p>
+                                        <img id="mobileLogoPreview" class="img-fluid rounded border border-2 border-secondary shadow-sm" style="max-height: 300px;" alt="Mobil Logo Önizleme"
+                                             src="@(Model.CroppedMobileLogoBase64 ?? "")" />
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <button type="button" id="cropMobileLogoBtn" class="btn btn-primary btn-lg mb-3 px-5 shadow-sm">Kırp</button>
+                                        <p class="fw-semibold mb-1">Kırpılmış Görüntü</p>
+                                        <img id="croppedMobileLogoResult" class="img-fluid rounded border border-2 border-primary shadow" style="max-height: 150px;" alt="Kırpılmış Mobil Logo"
+                                             src="@(Model.CroppedMobileLogoBase64 ?? "")" />
+                                        <input type="hidden" name="CroppedMobileLogoBase64" id="CroppedMobileLogoBase64" value="@Model.CroppedMobileLogoBase64" />
+                                    </div>
+                                </div>
+                            </section>
+
+                            <hr />
+
+                            <!-- FAVICON -->
+                            <section class="mb-5">
+                                <h5 class="fw-bold text-secondary mb-3">Favicon</h5>
+                                <p class="text-muted mb-3">Site favicon dosyasını yükleyin (64x64 px önerilir).</p>
+                                <input class="form-control form-control-lg mb-3" type="file" id="faviconInput" accept="image/*" />
+
+                                <div class="row gy-3 align-items-center">
+                                    <div class="col-md-6 text-center">
+                                        <p class="fw-semibold mb-1">Orijinal Önizleme</p>
+                                        <img id="faviconPreview" class="img-fluid rounded border border-2 border-secondary shadow-sm" style="max-height: 150px;" alt="Favicon Önizleme"
+                                             src="@(Model.CroppedFaviconBase64 ?? "")" />
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <button type="button" id="cropFaviconBtn" class="btn btn-primary btn-lg mb-3 px-5 shadow-sm">Kırp</button>
+                                        <p class="fw-semibold mb-1">Kırpılmış Görüntü</p>
+                                        <img id="croppedFaviconResult" class="img-fluid rounded border border-2 border-primary shadow" style="max-height: 64px;" alt="Kırpılmış Favicon"
+                                             src="@(Model.CroppedFaviconBase64 ?? "")" />
+                                        <input type="hidden" name="CroppedFaviconBase64" id="CroppedFaviconBase64" value="@Model.CroppedFaviconBase64" />
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success btn-lg px-5 shadow">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="MobileLogoPath" class="control-label"></label>
-                <input asp-for="MobileLogoPath" class="form-control" />
-                <span asp-validation-for="MobileLogoPath" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FaviconPath" class="control-label"></label>
-                <input asp-for="FaviconPath" class="form-control" />
-                <span asp-validation-for="FaviconPath" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+            <!-- Hoverable Table end -->
+
+
+        </div>
+        <!-- tables-end  -->
     </div>
-</div>
+</main>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
 
 @section Scripts {
 
 
+    <!-- ✅ Cropper.js JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
+    <script>
+        let cropperLogo, cropperMobile, cropperFavicon;
+
+        function handleCropper(inputId, imgId, cropperRef, width, height) {
+            const input = document.getElementById(inputId);
+            const image = document.getElementById(imgId);
+            input.addEventListener('change', function () {
+                const file = input.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    image.src = e.target.result;
+
+                    // Cropper varsa temizle
+                    if (cropperRef.obj) cropperRef.obj.destroy();
+
+                    // Yeni cropper oluştur, kırpma kutusu sabit
+                    cropperRef.obj = new Cropper(image, {
+                        aspectRatio: width / height,
+                        viewMode: 1,
+                        dragMode: 'move',
+                        cropBoxResizable: false,
+                        cropBoxMovable: false,
+                        toggleDragModeOnDblclick: false
+                    });
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function cropAndSet(cropper, targetImgId, hiddenInputId, width, height) {
+            if (!cropper) return alert('Cropper henüz hazır değil!');
+            const canvas = cropper.getCroppedCanvas({ width, height });
+            const base64 = canvas.toDataURL("image/png");
+            document.getElementById(targetImgId).src = base64;
+            document.getElementById(hiddenInputId).value = base64;
+        }
+
+        // Initialize croppers
+        cropperLogo = { obj: null };
+        cropperMobile = { obj: null };
+        cropperFavicon = { obj: null };
+
+        handleCropper('logoInput', 'logoPreview', cropperLogo, 300, 300);
+        handleCropper('mobileLogoInput', 'mobileLogoPreview', cropperMobile, 200, 100);
+        handleCropper('faviconInput', 'faviconPreview', cropperFavicon, 64, 64);
+
+        // Crop buttons
+        document.getElementById('cropLogoBtn').addEventListener('click', () =>
+            cropAndSet(cropperLogo.obj, 'croppedLogoResult', 'CroppedLogoBase64', 300, 300));
+
+        document.getElementById('cropMobileLogoBtn').addEventListener('click', () =>
+            cropAndSet(cropperMobile.obj, 'croppedMobileLogoResult', 'CroppedMobileLogoBase64', 200, 100));
+
+        document.getElementById('cropFaviconBtn').addEventListener('click', () =>
+            cropAndSet(cropperFavicon.obj, 'croppedFaviconResult', 'CroppedFaviconBase64', 64, 64));
+    </script>
 
 
 }

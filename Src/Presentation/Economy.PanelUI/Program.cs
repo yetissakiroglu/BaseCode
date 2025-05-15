@@ -1,3 +1,4 @@
+using Autofac.Core;
 using Economy.Application.BaseRepositories;
 using Economy.Base.Application.BaseRepositories;
 using Economy.Base.Application.Interfaces;
@@ -21,6 +22,7 @@ using Economy.Persistence.BaseRepositories;
 using Economy.Persistence.Contexts;
 using Economy.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -151,6 +153,10 @@ builder.Services.AddScoped<TenantProvider>();
 builder.Services.AddScoped<MigrationService>();
 
 
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 104857600; // 100 MB gibi büyük bir limit
+});
 
 var app = builder.Build();
 
