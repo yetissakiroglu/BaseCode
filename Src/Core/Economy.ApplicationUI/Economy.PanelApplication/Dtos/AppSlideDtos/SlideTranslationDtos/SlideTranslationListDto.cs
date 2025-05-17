@@ -1,10 +1,14 @@
-﻿using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityAppLanguage;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Economy.Domain.Entites.EntitySlides
+namespace Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos
 {
-	public class AppSlideTranslation : BaseEntity<int>
+    public class SlideTranslationListDto
     {
+        public int Id { get; set; }
         public int AppSlideId { get; set; }
         public int AppLanguageId { get; set; }
         public string Title { get; set; }
@@ -13,5 +17,7 @@ namespace Economy.Domain.Entites.EntitySlides
         public string? ButtonText { get; set; }
         public string? ButtonUrl { get; set; }
         public string? ButtonIcon { get; set; }
+
+
     }
 }

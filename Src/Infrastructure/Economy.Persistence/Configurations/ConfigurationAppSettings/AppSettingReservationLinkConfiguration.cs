@@ -17,7 +17,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationAppSettings
                 .HasMaxLength(500);
 
             builder.Property(x => x.IsDeleted)
-                .HasDefaultValue(true);
+                .HasDefaultValue(false);
 
             builder.HasData(
                 new AppSettingReservationLink

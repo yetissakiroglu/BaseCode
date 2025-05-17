@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Economy.Panel.UI.Models.ReservationLinkViewModels.AppSettingReservationLinkListViewModel>
+﻿@model IEnumerable<Economy.Panel.UI.Models.SlideViewModels.AppSlideListViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -16,7 +16,13 @@
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Url)
+                @Html.DisplayNameFor(model => model.Sequence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ThumbnailBase64)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ThumbnailMobilBase64)
             </th>
             <th></th>
         </tr>
@@ -28,7 +34,13 @@
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Url)
+                @Html.DisplayFor(modelItem => item.Sequence)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ThumbnailBase64)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ThumbnailMobilBase64)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |

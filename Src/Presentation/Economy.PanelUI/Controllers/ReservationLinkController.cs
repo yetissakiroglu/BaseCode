@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Economy.Panel.UI.Controllers
 {
-    public class AppSettingReservationLinkController : BaseController
+    public class ReservationLinkController : BaseController
     {
         private readonly IPanelAppSettingReservationLinkService _panelAppSettingReservationLinkService;
 
-        public AppSettingReservationLinkController(IPanelAppSettingReservationLinkService panelAppSettingReservationLinkService)
+        public ReservationLinkController(IPanelAppSettingReservationLinkService panelAppSettingReservationLinkService)
         {
             _panelAppSettingReservationLinkService = panelAppSettingReservationLinkService;
         }

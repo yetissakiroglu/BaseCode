@@ -139,6 +139,7 @@ builder.Services.AddScoped<IPanelAppSettingLogoService, PanelAppSettingLogoServi
 builder.Services.AddScoped<IPanelAppSettingReservationLinkService, PanelAppSettingReservationLinkService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSettingReservationNumberService, PanelAppSettingReservationNumberService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSettingWhatsappLineService, PanelAppSettingWhatsappLineService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IPanelAppSlideService, PanelAppSlideService>(); // Service sýnýfý kaydediliyor.
 
 
 // Token service kaydýný yapalým.

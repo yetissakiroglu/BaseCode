@@ -1,7 +1,7 @@
-﻿@model IEnumerable<Economy.Panel.UI.Models.ReservationNumberViewModels.AppSettingReservationNumberListViewModel>
+﻿@model IEnumerable<Economy.Panel.UI.Models.ReservationLinkViewModels.AppSettingReservationLinkListViewModel>
 
 @{
-    ViewData["Title"] = "Rezervasyon Telefonları";
+    ViewData["Title"] = "Rezervasyon Linkleri";
 }
 
 
@@ -47,13 +47,7 @@
                                             @Html.DisplayNameFor(model => model.Id)
                                         </th>
                                         <th>
-                                            @Html.DisplayNameFor(model => model.CountryCode)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Number)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.IsPrimary)
+                                            @Html.DisplayNameFor(model => model.Url)
                                         </th>
                                         <th></th>
                                     </tr>
@@ -66,17 +60,11 @@
                                                 @Html.DisplayFor(modelItem => item.Id)
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.CountryCode)
+                                                @Html.DisplayFor(modelItem => item.Url)
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.Number)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.IsPrimary)
-                                            </td>
-                                            <td>
-                                                @Html.ActionLink("Güncelleme", "Edit", new { id=item.Id  }) |
-                                                @Html.ActionLink("İncele", "Details", new { id=item.Id }) |
+                                                @Html.ActionLink("Güncelleme", "Edit", new { id=item.Id }) |
+                                                @Html.ActionLink("İncele", "Details", new { id=item.Id }) 
                                             </td>
                                         </tr>
                                     }
@@ -93,5 +81,6 @@
         <!-- tables-end  -->
     </div>
 </main>
+
 
 

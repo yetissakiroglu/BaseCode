@@ -1,8 +1,7 @@
-﻿@model Economy.Panel.UI.Models.ReservationNumberViewModels.AppSettingReservationNumberViewModel
-
+﻿@model Economy.Panel.UI.Models.ReservationLinkViewModels.AppSettingReservationLinkViewModel
 
 @{
-    ViewData["Title"] = "Rezervasyon Numarası Detayı";
+    ViewData["Title"] = "Rezervasyon Linki Detayı";
 }
 <main>
     <div class="container-fluid">
@@ -52,25 +51,12 @@
                                         @Html.DisplayFor(model => model.Id)
                                     </dd>
                                     <dt class="col-sm-2">
-                                        @Html.DisplayNameFor(model => model.CountryCode)
+                                        @Html.DisplayNameFor(model => model.Url)
                                     </dt>
                                     <dd class="col-sm-10">
-                                        @Html.DisplayFor(model => model.CountryCode)
-                                    </dd>
-                                    <dt class="col-sm-2">
-                                        @Html.DisplayNameFor(model => model.Number)
-                                    </dt>
-                                    <dd class="col-sm-10">
-                                        @Html.DisplayFor(model => model.Number)
-                                    </dd>
-                                    <dt class="col-sm-2">
-                                        @Html.DisplayNameFor(model => model.IsPrimary)
-                                    </dt>
-                                    <dd class="col-sm-10">
-                                        @Html.DisplayFor(model => model.IsPrimary)
+                                        @Html.DisplayFor(model => model.Url)
                                     </dd>
                                 </dl>
-
 
                             </div>
                         </div>
