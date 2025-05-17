@@ -17,22 +17,27 @@ namespace Economy.Persistence.Contexts
         }
 
         public DbSet<AppSetting> AppSettings { get; set; }
-        public DbSet<AppSettingLogo> AppSettingLogos { get; set; }
-        
+        public DbSet<AppSettingLogo> AppSettingLogos { get; set; }      
         public DbSet<AppTechnicalSetting> AppTechnicalSettings { get; set; }
+        public DbSet<AppSettingReservationLink> AppSettingReservationLinks { get; set; }
+        public DbSet<AppSettingReservationNumber> AppSettingReservationNumbers { get; set; }
+        public DbSet<AppSettingWhatsappLine> AppSettingWhatsappLines { get; set; }
+
 
         // diğer otel tabloları...
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            builder.ApplyConfiguration(new AppLanguage_Configuration()); // ← Burası önemli
-            builder.ApplyConfiguration(new AppSetting_Configuration()); // ← Burası önemli
-            builder.ApplyConfiguration(new AppSettingTranslation_Configuration()); // ← Burası önemli
-            builder.ApplyConfiguration(new AppSettingLogoConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new AppLanguage_Configuration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new AppSetting_Configuration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new AppSettingTranslation_Configuration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new AppSettingLogoConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new AppSettingReservationNumberConfiguration());
+            modelBuilder.ApplyConfiguration(new AppSettingReservationLinkConfiguration());
+            modelBuilder.ApplyConfiguration(new AppSettingWhatsappLineConfiguration());
 
 
-            
-            base.OnModelCreating(builder);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

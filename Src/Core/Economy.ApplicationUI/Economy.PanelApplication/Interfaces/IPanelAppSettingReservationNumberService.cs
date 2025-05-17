@@ -5,7 +5,7 @@ namespace Economy.Panel.Application.Interfaces
 {
     public interface IPanelAppSettingReservationNumberService
     {
-        ResponseModel<IEnumerable<AppSettingReservationNumberDto>> GetAllReservationLink(bool isDeleted);
+        ResponseModel<IEnumerable<AppSettingReservationNumberDto>> GetAllReservationNumber(bool isDeleted);
         ResponseModel<AppSettingReservationNumberDto> GetReservationNumber(int id, bool isDeleted);
         ResponseModel<AppSettingReservationNumberDto> EditReservationNumber(AppSettingReservationNumberEditDto model);
         ResponseModel<AppSettingReservationNumberDto> CreateReservationNumber(AppSettingReservationNumberCreateDto model);

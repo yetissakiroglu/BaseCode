@@ -107,7 +107,7 @@ namespace Economy.Panel.Persistence.Services
             return ResponseModel<AppSettingReservationNumberDto>.Success(reservationNumberDto, HttpStatusCode.OK);
         }
 
-        public ResponseModel<IEnumerable<AppSettingReservationNumberDto>> GetAllReservationLink(bool isDeleted)
+        public ResponseModel<IEnumerable<AppSettingReservationNumberDto>> GetAllReservationNumber(bool isDeleted)
         {
             var result = _entityRepository.WhereForRead(x => x.IsDeleted == isDeleted)
                             .Select(x => new AppSettingReservationNumberDto
