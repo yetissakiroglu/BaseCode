@@ -1,9 +1,10 @@
-﻿namespace Economy.Panel.UI.Models.SlideViewModels
+﻿namespace Economy.Panel.UI.Models.SlideViewModels.AppSlideLanguageViewModels
 {
-    public class AppSlideLanguageCreateViewModel
+    public class AppSlideLanguageEditViewModel
     {
+        public int Id { get; set; }
         public int AppSlideId { get; set; }
-        public string? Title { get; set; }
+        public string Title { get; set; }
         public string? Content { get; set; }
         public bool IsExternal { get; set; }
         public string? ButtonText { get; set; }
@@ -14,6 +15,7 @@
         public int AppLanguageId { get; set; }
         public string? Code { get; set; }
         public string? Name { get; set; }
+        public bool? IsRTL { get; set; }
         public string? Icon { get; set; }
     }
 }

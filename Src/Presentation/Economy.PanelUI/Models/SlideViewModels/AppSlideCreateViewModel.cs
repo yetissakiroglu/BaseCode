@@ -1,4 +1,6 @@
-﻿namespace Economy.Panel.UI.Models.SlideViewModels
+﻿using Economy.Panel.UI.Models.SlideViewModels.AppSlideLanguageViewModels;
+
+namespace Economy.Panel.UI.Models.SlideViewModels
 {
     public class AppSlideCreateViewModel
     {

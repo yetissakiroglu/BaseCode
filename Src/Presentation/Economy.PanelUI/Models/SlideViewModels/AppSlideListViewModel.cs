@@ -1,4 +1,5 @@
 ﻿using Economy.Panel.UI.Models.SettingViewModels;
+using Economy.Panel.UI.Models.SlideViewModels.AppSlideLanguageViewModels;
 
 namespace Economy.Panel.UI.Models.SlideViewModels
 {
