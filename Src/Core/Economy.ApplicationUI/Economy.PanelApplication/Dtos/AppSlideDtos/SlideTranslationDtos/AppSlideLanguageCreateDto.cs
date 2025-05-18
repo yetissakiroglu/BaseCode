@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos
 {
-    public class SlideTranslationCreateDto
+    public class AppSlideLanguageCreateDto
     {
         public int AppSlideId { get; set; }
         public int AppLanguageId { get; set; }

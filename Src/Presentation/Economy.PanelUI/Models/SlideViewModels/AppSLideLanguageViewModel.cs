@@ -1,6 +1,6 @@
 ﻿namespace Economy.Panel.UI.Models.SlideViewModels
 {
-    public class AppSLideLanguageViewModel
+    public class AppSlideLanguageViewModel
     {
         public int Id { get; set; }
         public int AppSlideId { get; set; }

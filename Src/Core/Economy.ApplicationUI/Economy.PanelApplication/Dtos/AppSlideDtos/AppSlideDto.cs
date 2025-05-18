@@ -8,7 +8,7 @@ namespace Economy.Panel.Application.Dtos.AppSlideDtos
         public int Sequence { get; set; }
         public string? ThumbnailBase64 { get; set; }
         public string? ThumbnailMobilBase64 { get; set; }
-        public List<SlideTranslationDto> Translations { get; set; }
+        public List<AppSlideLanguageDto> Translations { get; set; } = new();
 
     }
 }

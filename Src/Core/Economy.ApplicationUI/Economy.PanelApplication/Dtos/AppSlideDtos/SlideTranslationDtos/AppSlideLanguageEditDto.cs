@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos
+﻿namespace Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos
 {
-    public class SlideTranslationListDto
+    public class AppSlideLanguageEditDto
     {
-        public int Id { get; set; }
+        public int Id { get; set; } 
         public int AppSlideId { get; set; }
         public int AppLanguageId { get; set; }
         public string Title { get; set; }
@@ -17,7 +11,5 @@ namespace Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos
         public string? ButtonText { get; set; }
         public string? ButtonUrl { get; set; }
         public string? ButtonIcon { get; set; }
-
-
     }
 }

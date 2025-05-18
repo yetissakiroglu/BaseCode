@@ -1,0 +1,100 @@
+﻿@model Economy.Panel.UI.Models.SlideViewModels.AppSlideViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- tables start  -->
+        <div class="row">
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                                <form id="antiForgeryForm">
+                                    @Html.AntiForgeryToken()
+                                </form>
+                                <div class="app-btn-list">
+                                    <button id="deleteBtn" class="btn btn-danger">Sil</button>
+                                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Güncelleme</a>
+                                    <a class="btn btn-primary" asp-action="Index">Tüm Kayıtlar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- Hoverable Table start -->
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5> Kayıtlar </h5>
+                        <p>
+                            Aşağıda kayıtlı bilgiler bulunmaktadır.
+                        </p>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row p-2">
+                            <div class="col-md-6 offset-md-3">
+                                <dl class="row">
+                                    <dt class="col-sm-2">
+                                        @Html.DisplayNameFor(model => model.Id)
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.Id)
+                                    </dd>
+                                    <dt class="col-sm-2">
+                                        @Html.DisplayNameFor(model => model.Sequence)
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        @Html.DisplayFor(model => model.Sequence)
+                                    </dd>
+                                    <dt class="col-sm-2">
+                                        @Html.DisplayNameFor(model => model.ThumbnailBase64)
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        <img width="100" src="@Html.DisplayFor(model => model.ThumbnailBase64)" />
+                                    </dd>
+                                    <dt class="col-sm-2">
+                                        @Html.DisplayNameFor(model => model.ThumbnailMobilBase64)
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        <img width="100" src="@Html.DisplayFor(model => model.ThumbnailMobilBase64)" />
+                                        
+                                    </dd>
+                                </dl>
+
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- Hoverable Table end -->
+
+
+        </div>
+        <!-- tables-end  -->
+    </div>
+</main>
+
+
+@section Scripts {
+    <script>
+        $('#deleteBtn').click(function () {
+            postResponseModelDelete('@Url.Action("Delete", "Slide")',{ id: @Model.Id })
+        });
+    </script>
+}
+

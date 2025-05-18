@@ -40,6 +40,8 @@ namespace Economy.Panel.UI.Controllers
                     SiteTitle = existing?.SiteTitle,
                 };
             }).ToList();
+
+
             var vm = new SettingViewModel
             {
                 Id = appSetting.Data.Id,
