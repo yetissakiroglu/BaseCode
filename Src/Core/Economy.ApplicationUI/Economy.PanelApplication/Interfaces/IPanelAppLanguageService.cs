@@ -1,16 +1,15 @@
-﻿using Economy.Core.Tools;
+﻿using Economy.Core.Tools.Result;
 using Economy.Panel.Application.Dtos.AppLanguageDtos;
 
 namespace Economy.Panel.Application.Interfaces
 {
     public interface IPanelAppLanguageService
     {
-        ResponseModel<IEnumerable<AppLanguageDto>> GetAllLanguage(bool isDeleted, bool isActive);
-        ResponseModel<IEnumerable<AppLanguageDto>> GetAllLanguage(bool isDeleted);
-        ResponseModel<AppLanguageDto> GetLanguage(int id,bool isDeleted);
-        ResponseModel<AppLanguageDto> EditLanguage(AppLanguageEditDto model);
-        ResponseModel<AppLanguageDto> CreateLanguage(AppLanguageCreateDto model);
-        ResponseModel<AppLanguageDto> DeleteLanguage(int id);
-
+        ServiceResult<List<AppLanguageDto>> GetAllLanguage(bool isDeleted, bool isActive);
+        ServiceResult<List<AppLanguageDto>> GetAllLanguage(bool isDeleted);
+        ServiceResult<AppLanguageDto> GetLanguage(int id,bool isDeleted);
+        ServiceResult<AppLanguageDto> EditLanguage(AppLanguageEditDto model);
+        ServiceResult<AppLanguageDto> CreateLanguage(AppLanguageCreateDto model);
+        ServiceResult<AppLanguageDto> DeleteLanguage(int id);
     }
 }

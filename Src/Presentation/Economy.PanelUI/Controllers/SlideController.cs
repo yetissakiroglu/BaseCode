@@ -1,6 +1,7 @@
 ﻿using Economy.Panel.Application.Interfaces;
 using Economy.Panel.UI.Extensions;
 using Economy.Panel.UI.Models.SlideViewModels;
+using Economy.Panel.UI.Models.SlideViewModels.AppSlideLanguageViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Economy.Panel.UI.Controllers
@@ -36,12 +37,9 @@ namespace Economy.Panel.UI.Controllers
                 Translations = allLanguages.Data.Select(lang =>
                 {
                     var translation = slide.Translations.FirstOrDefault(t => t.AppLanguageId == lang.Id);
-
                     return new AppSlideLanguageViewModel
                     {
-                        Code = lang.Code,
                         Icon = lang.Icon,
-                        IsRTL = lang.IsRTL,
                         Name = lang.Name,
                         Id = translation?.Id ?? 0,
                         AppSlideId = translation?.AppSlideId ?? slide.Id,
@@ -188,9 +186,7 @@ namespace Economy.Panel.UI.Controllers
 
                 return new AppSlideLanguageViewModel
                 {
-                    Code = lang.Code,
                     Icon = lang.Icon,
-                    IsRTL = lang.IsRTL,
                     Name = lang.Name,
                     Id = translation?.Id ?? 0,
                     AppSlideId = slide.Id,

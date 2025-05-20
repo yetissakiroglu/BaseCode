@@ -139,9 +139,9 @@
     <script src="~/assets/js/customizer.js"></script>
     <script>
         $(document).ready(function () {
-        @if (TempData["NotificationType"] != null)
+        @if (TempData["TypeNotification"] != null)
         {
-            @Html.Notification((NotificationType)TempData["NotificationType"], (string)TempData["MessageTitle"], (string)TempData["MessageNotification"])
+            @Html.Notification((NotificationType)TempData["TypeNotification"], (string)TempData["TitleNotification"], (string)TempData["MessageNotification"])
         }
         });
     </script>

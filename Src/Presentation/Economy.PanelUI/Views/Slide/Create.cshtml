@@ -1,7 +1,7 @@
 ﻿@model Economy.Panel.UI.Models.SlideViewModels.AppSlideCreateViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Slide Güncelleme";
 }
 
 <!-- ✅ Cropper.js CSS -->
@@ -9,23 +9,8 @@
 
 <main>
     <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
         <div class="row m-1">
-            <div class="col-12">
-                <h4 class="main-title">@ViewData["Title"]</h4>
-                <ul class="app-line-breadcrumbs mb-3">
-                    <li>
-                        <a class="f-s-14 f-w-500" href="#">
-                            <span><i class="ph-duotone ph-table f-s-16"></i> Anasayfa</span>
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a class="f-s-14 f-w-500" href="#">@ViewData["Title"]</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="row m-1">
-
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
@@ -43,7 +28,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-12">
                 <form asp-action="Create" method="post">

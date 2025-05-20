@@ -6,7 +6,7 @@ namespace Economy.Domain.BaseEntities
     {
 		[Key]
         public TId Id { get; set; } = default!;
-		public bool IsDeleted { get; set; } =default!;
+		public bool IsDeleted { get; set; } = default!;
         protected BaseEntity()
 		{
             IsDeleted = false;

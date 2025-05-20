@@ -17,7 +17,13 @@ namespace Economy.Panel.UI.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var result = _panelAppLanguageService.GetAllLanguage(false);
+            var result = _panelAppLanguageService.GetAllLanguage(isDeleted: false);
+
+            if (!result.HasData)
+            {
+                AddMessage(result);
+                return View(new List<AppLanguageListViewModel>());
+            }
 
             var resultModel = result.Data.Select(lang => new AppLanguageListViewModel
             {
@@ -28,7 +34,7 @@ namespace Economy.Panel.UI.Controllers
                 IsActive = lang.IsActive,
                 IsDefault = lang.IsDefault,
                 IsRTL = lang.IsRTL
-            });
+            }).ToList();
 
             return View(resultModel);
         }
@@ -159,7 +165,7 @@ namespace Economy.Panel.UI.Controllers
             var result = _panelAppLanguageService.DeleteLanguage(id);
             if (result.IsSuccess)
             {
-                result.Message.RedirectUrl = "/Language/" + nameof(Index);
+                //result.Message.RedirectUrl = "/Language/" + nameof(Index);
             }
             AddMessage(result);
 
