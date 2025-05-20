@@ -32,7 +32,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // MVC ve Razor Pages'ý ekleyin
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddRazorRuntimeCompilation();
 
 builder.Services.AddDbContext<DefaultDbContext>(options =>
 {

@@ -154,31 +154,48 @@ function postResponseModelDelete(actionURL, actionData, successCallback, errorCa
                     type: "POST",
                     success: function (response) {
                         if (response.isSuccess) {
-                            // Mesaj varsa göster
-                            if (response.message?.messages?.length > 0) {
-                                showSuccessNotification(response.message.messages.join("</br>"), "Başarılı");
+                            // Başarılı mesajı varsa göster
+                            if (response.message) {
+                                showSuccessNotification(response.message, "Başarılı");
                             } else {
                                 showSuccessNotification("İşlem başarılı.", "Başarılı");
                             }
 
-                            if (successCallback && typeof successCallback === "function") {
+                            if (typeof successCallback === "function") {
                                 successCallback(response);
                             }
 
-                            // Redirect işlemi varsa
-                            if (response.message?.redirectUrl) {
-                                window.location.href = response.message.redirectUrl;
+                            // Yönlendirme
+                            if (response.redirectUrl) {
+                                window.location.href = response.redirectUrl;
                             }
 
                         } else {
-                            // Hata mesajı varsa
-                            if (response.message?.messages?.length > 0) {
-                                showErrorNotification("İşlem sırasında hata oluştu. <br> Mesaj: " + response.message.messages.join("</br>"), "Hata");
-                            } else {
-                                showErrorNotification("İşlem sırasında bir hata oluştu.", "Hata");
+                            let errorMessages = [];
+
+                            // ValidationErrors varsa detaylı göster
+                            if (response.validationErrors) {
+                                for (const field in response.validationErrors) {
+                                    const messages = response.validationErrors[field];
+                                    if (Array.isArray(messages)) {
+                                        errorMessages.push(`<b>${field}</b>: ${messages.join(", ")}`);
+                                    }
+                                }
                             }
 
-                            if (errorCallback && typeof errorCallback === "function") {
+                            // Genel Errors varsa
+                            if (response.errors && response.errors.length > 0) {
+                                errorMessages = errorMessages.concat(response.errors);
+                            }
+
+                            // Hiçbir mesaj yoksa default
+                            if (errorMessages.length === 0) {
+                                errorMessages.push("İşlem sırasında bir hata oluştu.");
+                            }
+
+                            showErrorNotification(errorMessages.join("<br>"), "Hata");
+
+                            if (typeof errorCallback === "function") {
                                 errorCallback(response);
                             }
                         }
@@ -191,7 +208,6 @@ function postResponseModelDelete(actionURL, actionData, successCallback, errorCa
         });
     }
 }
-
 
 
 

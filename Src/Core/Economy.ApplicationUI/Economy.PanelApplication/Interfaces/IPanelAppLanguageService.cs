@@ -8,8 +8,8 @@ namespace Economy.Panel.Application.Interfaces
         ServiceResult<List<AppLanguageDto>> GetAllLanguage(bool isDeleted, bool isActive);
         ServiceResult<List<AppLanguageDto>> GetAllLanguage(bool isDeleted);
         ServiceResult<AppLanguageDto> GetLanguage(int id,bool isDeleted);
-        ServiceResult<AppLanguageDto> EditLanguage(AppLanguageEditDto model);
-        ServiceResult<AppLanguageDto> CreateLanguage(AppLanguageCreateDto model);
+        ServiceResult<AppLanguageDto> EditLanguage(AppLanguageCreateEditDto model);
+        ServiceResult<AppLanguageDto> CreateLanguage(AppLanguageCreateEditDto model);
         ServiceResult<AppLanguageDto> DeleteLanguage(int id);
     }
 }

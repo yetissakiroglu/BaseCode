@@ -22,10 +22,9 @@ namespace Economy.Panel.UI.Controllers
             if (!result.HasData)
             {
                 AddMessage(result);
-                return View(new List<AppLanguageListViewModel>());
+                return View(result.Data);
             }
-
-            var resultModel = result.Data.Select(lang => new AppLanguageListViewModel
+            var resultModel = result.Data?.Select(lang => new AppLanguageListViewModel
             {
                 Id = lang.Id,
                 Name = lang.Name,
@@ -40,12 +39,45 @@ namespace Economy.Panel.UI.Controllers
         }
 
         [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(AppLanguageCreateViewModel viewModel)
+        {
+            var createDto = new AppLanguageCreateEditDto
+            {
+                Name = viewModel.Name,
+                Code = viewModel.Code,
+                Icon = viewModel.Icon,
+                IsActive = viewModel.IsActive,
+                IsDefault = viewModel.IsDefault,
+                IsRTL = viewModel.IsRTL
+            };
+
+            var result = _panelAppLanguageService.CreateLanguage(createDto);
+
+            AddValidationErrorsToModelState(result.ValidationErrors);
+            AddMessage(result);
+
+            if (!result.IsSuccess)
+            {
+                return View(viewModel);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             var result = _panelAppLanguageService.GetLanguage(id, false);
-            if (!result.IsSuccess || result.Data == null)
+            if (!result.HasData)
             {
-                AddMessage(result); // varsa hata mesajı göster
+                AddMessage(result);
                 return RedirectToAction("Index");
             }
 
@@ -65,18 +97,14 @@ namespace Economy.Panel.UI.Controllers
             return View(resultModel);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(AppLanguageEditViewModel viewModel)
         {
-            if (!ModelState.IsValid)
+            var crudDto = new AppLanguageCreateEditDto
             {
-                return View(viewModel);
-            }
-
-            var editModel = new AppLanguageEditDto
-            {
-                Id = viewModel.Id,
+                Id=viewModel.Id,
                 Name = viewModel.Name,
                 Code = viewModel.Code,
                 Icon = viewModel.Icon,
@@ -85,60 +113,27 @@ namespace Economy.Panel.UI.Controllers
                 IsRTL = viewModel.IsRTL
             };
 
-            var editResult = _panelAppLanguageService.EditLanguage(editModel);
-            AddMessage(editResult);
+            var result = _panelAppLanguageService.EditLanguage(crudDto);
 
-            if (!editResult.IsSuccess)
-            {
-                return View(viewModel); // Hatalıysa form tekrar gösterilsin
-            }
-
-            return RedirectToAction("Index"); // Başarılıysa listeye dön
-        }
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(AppLanguageCreateViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(viewModel); // Hatalıysa tekrar form gösterilir
-            }
-
-            var createDto = new AppLanguageCreateDto
-            {
-                Name = viewModel.Name,
-                Code = viewModel.Code,
-                Icon = viewModel.Icon,
-                IsActive = viewModel.IsActive,
-                IsDefault = viewModel.IsDefault,
-                IsRTL = viewModel.IsRTL
-            };
-
-            var result = _panelAppLanguageService.CreateLanguage(createDto);
+            AddValidationErrorsToModelState(result.ValidationErrors);
             AddMessage(result);
 
             if (!result.IsSuccess)
             {
-                return View(viewModel); // Hata varsa tekrar göster
+                return View(viewModel);
             }
 
-            return RedirectToAction("Index"); // Başarılıysa listeye dön
+            return RedirectToAction("Index");
         }
+
 
         [HttpGet]
         public IActionResult Details(int id)
         {
             var result = _panelAppLanguageService.GetLanguage(id, false);
-
-            if (!result.IsSuccess || result.Data == null)
+            if (!result.HasData)
             {
-                AddMessage(result); // Hata mesajı göster
+                AddMessage(result);
                 return RedirectToAction("Index");
             }
 
@@ -163,12 +158,12 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult Delete(int id)
         {
             var result = _panelAppLanguageService.DeleteLanguage(id);
-            if (result.IsSuccess)
+            if (!result.HasData)
             {
-                //result.Message.RedirectUrl = "/Language/" + nameof(Index);
+                return Json(result);
             }
-            AddMessage(result);
 
+            result.RedirectUrl = "/Language";
             return Json(result);
         }
 

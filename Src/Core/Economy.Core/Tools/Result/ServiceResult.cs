@@ -26,6 +26,9 @@
         public PaginationInfo? Pagination { get; }
         public IReadOnlyDictionary<string, object>? Metadata { get; }
 
+        // ✅ Yeni eklenen özellik
+        public string? RedirectUrl { get; set; }
+
         private ServiceResult(
             bool isSuccess,
             T? data,

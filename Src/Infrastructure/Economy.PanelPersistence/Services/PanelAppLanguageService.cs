@@ -18,18 +18,17 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
             _unitOfWork = unitOfWork;
             _appLanguageRepository = unitOfWork.EntityRepository<AppLanguage>();
         }
-        public ServiceResult<AppLanguageDto> CreateLanguage(AppLanguageCreateDto model)
+        public ServiceResult<AppLanguageDto> CreateLanguage(AppLanguageCreateEditDto model)
         {
-            var validator = new AppLanguageCreateDtoValidator();
+            var validator = new AppLanguageCreateEditDtoValidator();
             var validationResult = validator.Validate(model);
 
             if (!validationResult.IsValid)
             {
                 return ServiceResult<AppLanguageDto>.Failure(
-              message: "Geçersiz giriş verisi.",
-              statusCode: (int)HttpStatusCode.BadRequest,
-              validationErrors: validationResult.ToValidationDictionary()
-          );
+                           message: "Geçersiz giriş verisi.",
+                           statusCode: (int)HttpStatusCode.BadRequest,
+                           validationErrors: validationResult.ToValidationDictionary());
             }
 
             var entity = new AppLanguage
@@ -40,7 +39,6 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 Icon = model.Icon,
                 IsActive = model.IsActive,
                 IsDefault = model.IsDefault,
-                IsDeleted = false
             };
 
             _appLanguageRepository.Add(entity);
@@ -100,9 +98,9 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 statusCode: (int)HttpStatusCode.OK
             );
         }
-        public ServiceResult<AppLanguageDto> EditLanguage(AppLanguageEditDto model)
+        public ServiceResult<AppLanguageDto> EditLanguage(AppLanguageCreateEditDto model)
         {
-            var validator = new AppLanguageEditDtoValidator();
+            var validator = new AppLanguageCreateEditDtoValidator();
             ValidationResult validationResult = validator.Validate(model);
 
             if (!validationResult.IsValid)
@@ -121,7 +119,7 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                     message: "Dil bulunamadı.",
                     statusCode: (int)HttpStatusCode.NotFound
                 );
-
+            result.Id = model.Id;
             result.Name = model.Name;
             result.IsRTL = model.IsRTL;
             result.IsDefault = model.IsDefault;
@@ -211,9 +209,7 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
         }
         public ServiceResult<AppLanguageDto> GetLanguage(int id, bool isDeleted)
         {
-
             var entity = _appLanguageRepository.GetForRead(w => w.IsDeleted == isDeleted && w.Id == id);
-
             if (entity is null)
             {
                 return ServiceResult<AppLanguageDto>.Empty(
@@ -238,7 +234,6 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 message: "Dil kaydı başarıyla getirildi.",
                 statusCode: (int)HttpStatusCode.OK
             );
-
         }
     }
 }

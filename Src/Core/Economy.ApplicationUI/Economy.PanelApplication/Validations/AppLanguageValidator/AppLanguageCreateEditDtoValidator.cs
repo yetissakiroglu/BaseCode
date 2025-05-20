@@ -1,16 +1,11 @@
 ﻿using Economy.Panel.Application.Dtos.AppLanguageDtos;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Economy.Panel.Application.Validations.AppLanguageValidator
 {
-    public class AppLanguageCreateDtoValidator : AbstractValidator<AppLanguageCreateDto>
+    public class AppLanguageCreateEditDtoValidator : AbstractValidator<AppLanguageCreateEditDto>
     {
-        public AppLanguageCreateDtoValidator()
+        public AppLanguageCreateEditDtoValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Dil adı boş olamaz.")
@@ -21,7 +16,18 @@ namespace Economy.Panel.Application.Validations.AppLanguageValidator
                 .MaximumLength(10).WithMessage("Dil kodu en fazla 10 karakter olabilir.");
 
             RuleFor(x => x.Icon)
+                .NotEmpty().WithMessage("Dil ikon boş olamaz.")
                 .MaximumLength(250).WithMessage("İkon yolu en fazla 250 karakter olabilir.");
+
+            RuleFor(x => x.IsDefault)
+                .NotNull().WithMessage("Varsayılan dil bilgisi belirtilmelidir.");
+
+            RuleFor(x => x.IsActive)
+                .NotNull().WithMessage("Aktiflik durumu belirtilmelidir.");
+
+            RuleFor(x => x.IsRTL)
+                .NotNull().WithMessage("RTL (sağdan sola) durumu belirtilmelidir.");
+
         }
     }
 }

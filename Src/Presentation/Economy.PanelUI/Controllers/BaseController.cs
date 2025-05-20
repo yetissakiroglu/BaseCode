@@ -60,7 +60,7 @@ namespace Economy.Panel.UI.Controllers
                 messageBuilder.AppendLine(msg);
 
             TempData["MessageNotification"] = messageBuilder.ToString().TrimEnd();
-            TempData["TypeNotification"] =  response.StatusCode switch
+            TempData["TypeNotification"] = response.StatusCode switch
             {
                 >= 200 and < 300 => response.HasData ? NotificationType.Success : NotificationType.Warning,
                 >= 400 and < 500 => NotificationType.Warning,
@@ -70,11 +70,24 @@ namespace Economy.Panel.UI.Controllers
 
             TempData["TitleNotification"] = response.StatusCode switch
             {
-                >= 200 and < 300 => response.HasData ?  "Başarılı" : "Uyarı",
+                >= 200 and < 300 => response.HasData ? "Başarılı" : "Uyarı",
                 >= 400 and < 500 => "Uyarı",
                 >= 500 => "Hata",
                 _ => "Bildirim"
             };
+        }
+
+        protected void AddValidationErrorsToModelState(IReadOnlyDictionary<string, string[]>? validationErrors)
+        {
+            if (validationErrors == null) return;
+
+            foreach (var (key, messages) in validationErrors)
+            {
+                foreach (var message in messages)
+                {
+                    ModelState.AddModelError(key, message);
+                }
+            }
         }
     }
 }
