@@ -29,9 +29,9 @@ namespace Economy.Panel.UI.Extensions
             };
         }
 
-        public static AppSlideCreateDto ToDto(this AppSlideCreateViewModel model)
+        public static AppSlideCreateEditDto ToDto(this AppSlideCreateViewModel model)
         {
-            return new AppSlideCreateDto
+            return new AppSlideCreateEditDto
             {
                 Sequence = model.Sequence,
                 ThumbnailBase64 = model.ThumbnailBase64,

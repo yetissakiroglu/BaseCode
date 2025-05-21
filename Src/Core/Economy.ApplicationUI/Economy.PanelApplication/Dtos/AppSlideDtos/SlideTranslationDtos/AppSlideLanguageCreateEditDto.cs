@@ -1,8 +1,8 @@
 ﻿namespace Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos
 {
-    public class AppSlideLanguageEditDto
+    public class AppSlideLanguageCreateEditDto
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public int AppSlideId { get; set; }
         public int AppLanguageId { get; set; }
         public string Title { get; set; }

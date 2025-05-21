@@ -20,7 +20,7 @@ namespace Economy.Panel.Persistence.Services
             _entityRepository = unitOfWork.EntityRepository<AppSlide>();
         }
 
-        public ResponseModel<AppSlideDto> CreateSlide(AppSlideCreateDto model)
+        public ResponseModel<AppSlideDto> CreateSlide(AppSlideCreateEditDto model)
         {
             var entity = new AppSlide
             {

@@ -8,7 +8,7 @@ namespace Economy.Panel.Application.Interfaces
         ResponseModel<IEnumerable<AppSlideDto>> GetAllSlide(bool isDeleted);
         ResponseModel<AppSlideDto> GetSlide(int id, bool isDeleted);
         ResponseModel<AppSlideDto> EditSlide(AppSlideEditDto model);
-        ResponseModel<AppSlideDto> CreateSlide(AppSlideCreateDto model);
+        ResponseModel<AppSlideDto> CreateSlide(AppSlideCreateEditDto model);
         ResponseModel<AppSlideDto> DeleteSlide(int id);
     }
 }
