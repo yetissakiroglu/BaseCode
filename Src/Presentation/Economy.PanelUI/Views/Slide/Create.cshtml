@@ -1,4 +1,4 @@
-﻿@model Economy.Panel.UI.Models.SlideViewModels.AppSlideCreateViewModel
+﻿@model Economy.Panel.UI.Models.SlideViewModels.AppSlideCreateEditViewModel
 
 @{
     ViewData["Title"] = "Slide Güncelleme";
@@ -30,10 +30,13 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <form asp-action="Create" method="post">
+                <form asp-action="Create" method="post" class="app-form rounded-control needs-validation" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="ThumbnailBase64" />
                     <input type="hidden" asp-for="ThumbnailMobilBase64" />
+                    <input type="hidden" asp-for="Id" />
 
                     <div class="card equal-card">
                         <div class="card-header">
@@ -115,31 +118,42 @@
                                     var t = Model.Translations[i];
                                     var isActive = i == 0 ? "show active" : "";
                                     <div class="tab-pane fade @isActive" id="lang-tab-pane-@i" role="tabpanel" aria-labelledby="lang-tab-@i">
+                                        <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
                                         <input type="hidden" name="Translations[@i].AppLanguageId" value="@t.AppLanguageId" />
+                                        <input type="hidden" name="Translations[@i].Name" value="@t.Name" />
+                                        <input type="hidden" name="Translations[@i].Icon" value="@t.Icon" />
+                                        <input type="hidden" name="Translations[@i].AppSlideId" value="@t.AppSlideId" />
+
 
                                         <div class="form-group mb-3">
                                             <label>Başlık</label>
                                             <input class="form-control" name="Translations[@i].Title" value="@t.Title" />
+                                            <span asp-validation-for="Translations[@i].Title" class="text-danger"></span>
                                         </div>
 
                                         <div class="form-group mb-3">
                                             <label>İçerik</label>
                                             <textarea class="form-control" name="Translations[@i].Content">@t.Content</textarea>
+                                            <span asp-validation-for="Translations[@i].Content" class="text-danger"></span>
+
                                         </div>
 
                                         <div class="form-group mb-3">
                                             <label>Buton Metni</label>
                                             <input class="form-control" name="Translations[@i].ButtonText" value="@t.ButtonText" />
+                                            <span asp-validation-for="Translations[@i].ButtonText" class="text-danger"></span>
                                         </div>
 
                                         <div class="form-group mb-3">
                                             <label>Buton URL</label>
                                             <input class="form-control" name="Translations[@i].ButtonUrl" value="@t.ButtonUrl" />
+                                            <span asp-validation-for="Translations[@i].ButtonUrl" class="text-danger"></span>
                                         </div>
 
                                         <div class="form-group mb-3">
                                             <label>Buton İkon</label>
                                             <input class="form-control" name="Translations[@i].ButtonIcon" value="@t.ButtonIcon" />
+                                            <span asp-validation-for="Translations[@i].ButtonIcon" class="text-danger"></span>
                                         </div>
 
                                         <div class="form-check form-switch mb-3">

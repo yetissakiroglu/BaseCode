@@ -124,5 +124,23 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
             }              
 
         }
+
+        public T? GetForEditFunc(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes)
+        {
+            var query = _entities.AsTracking(); // Performans için AsNoTracking kullan
+
+            if (filters != null)
+            {
+                query = query.Where(filters);
+            }
+
+            // Include işlemlerini uygula (Include + ThenInclude desteği)
+            foreach (var include in includes)
+            {
+                query = include(query);
+            }
+
+            return query.FirstOrDefault();
+        }
     }
 }

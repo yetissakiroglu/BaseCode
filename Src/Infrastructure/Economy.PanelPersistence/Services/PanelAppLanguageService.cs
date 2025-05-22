@@ -166,7 +166,7 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
             if (languages.Count == 0)
             {
                 return ServiceResult<List<AppLanguageDto>>.Empty(
-                    message: "Kayıt bulunamadı.",
+                    message: "Dil Kayıtı bulunamadı.",
                     statusCode: (int)HttpStatusCode.NoContent
                 );
             }

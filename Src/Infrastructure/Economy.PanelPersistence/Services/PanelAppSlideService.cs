@@ -1,10 +1,14 @@
 ﻿using Economy.Core.Interfaces;
-using Economy.Core.Tools;
+using Economy.Core.Tools.Result;
+using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Domain.Entites.EntitySlides;
+using Economy.Panel.Application.Dtos.AppLanguageDtos;
 using Economy.Panel.Application.Dtos.AppSlideDtos;
 using Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos;
+using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using Economy.Panel.Application.Validations.AppLanguageValidator;
+using Economy.Panel.Application.Validations.AppSlideValidator;
 using System.Net;
 
 namespace Economy.Panel.Persistence.Services
@@ -20,113 +24,155 @@ namespace Economy.Panel.Persistence.Services
             _entityRepository = unitOfWork.EntityRepository<AppSlide>();
         }
 
-        public ResponseModel<AppSlideDto> CreateSlide(AppSlideCreateEditDto model)
+        public ServiceResult<AppSlideDto> CreateSlide(AppSlideCreateEditDto model)
         {
-            var entity = new AppSlide
+            if (model == null)
+                return ServiceResult<AppSlideDto>.Failure(message: "Geçersiz veri gönderildi.");
+
+            if (model.Translations == null || model.Translations.Count == 0)
+                return ServiceResult<AppSlideDto>.Failure(
+                    message: "En az bir dil içeriği eklenmelidir.",
+                    statusCode: (int)HttpStatusCode.BadRequest);
+
+            var validator = new AppSlideCreateEditDtoValidator();
+            var validationResult = validator.Validate(model);
+            if (!validationResult.IsValid)
+                return ServiceResult<AppSlideDto>.Failure(
+                    message: "Geçersiz giriş verisi.",
+                    statusCode: (int)HttpStatusCode.BadRequest,
+                    validationErrors: validationResult.ToValidationDictionary());
+
+            var entity = MapToEntity(model);
+            _entityRepository.Add(entity);
+            _unitOfWork.SaveHotelChanges();
+
+            return ServiceResult<AppSlideDto>.Success(
+                data: MapToDto(entity),
+                message: "Slide başarıyla oluşturuldu.",
+                statusCode: (int)HttpStatusCode.Created);
+
+        }
+        public ServiceResult<AppSlideDto> DeleteSlide(int id)
+        {
+            var slide = _entityRepository.GetForEdit(w => w.Id == id && !w.IsDeleted);
+            if (slide == null)
             {
+                return ServiceResult<AppSlideDto>.Failure(message: "Slide bulunamadı.", statusCode: (int)HttpStatusCode.NotFound);
+            }
+
+            slide.IsDeleted = true;
+            _entityRepository.Update(slide);
+            _unitOfWork.SaveHotelChanges();
+
+            return ServiceResult<AppSlideDto>.Success(MapToDto(slide), "Slide başarıyla silindi.");
+        }
+        public ServiceResult<AppSlideDto> EditSlide(AppSlideCreateEditDto model)
+        {
+            if (model == null || model.Id == null)
+                return ServiceResult<AppSlideDto>.Failure(
+                    message: "Geçersiz veri.",
+                    statusCode: (int)HttpStatusCode.BadRequest);
+
+            if (model.Translations == null || !model.Translations.Any())
+                return ServiceResult<AppSlideDto>.Failure(
+                    message: "Geçersiz slide dil verisi.",
+                    statusCode: (int)HttpStatusCode.BadRequest);
+
+
+            var validator = new AppSlideCreateEditDtoValidator();
+            var validationResult = validator.Validate(model);
+            if (!validationResult.IsValid)
+                return ServiceResult<AppSlideDto>.Failure(
+                    message: "Geçersiz giriş verisi.",
+                    statusCode: (int)HttpStatusCode.BadRequest,
+                    validationErrors: validationResult.ToValidationDictionary());
+
+            var entity = _entityRepository.GetForEdit(w => w.Id == model.Id && !w.IsDeleted, w => w.Translations);
+            if (entity == null)
+                return ServiceResult<AppSlideDto>.Failure(
+                    message: "Slide bulunamadı.",
+                    statusCode: (int)HttpStatusCode.BadRequest);
+
+
+             MapToEntity(entity,model);
+            _entityRepository.Update(entity);
+            _unitOfWork.SaveHotelChanges();
+
+            return ServiceResult<AppSlideDto>.Success(
+                   data: MapToDto(entity),
+                   message: "Slide başarıyla güncellendi.");
+        }
+        public ServiceResult<List<AppSlideDto>> GetAllSlide(bool isDeleted)
+        {
+            var slides = _entityRepository.WhereForRead(x => x.IsDeleted == isDeleted).Select(MapToDto).ToList();
+            if (!slides.Any())
+            {
+                return ServiceResult<List<AppSlideDto>>.Empty(
+                    message: "Kayıt bulunamadı.",
+                    statusCode: (int)HttpStatusCode.NoContent);
+            }
+
+            return ServiceResult<List<AppSlideDto>>.Success(
+                data: slides,
+                message: "Slaytlar başarıyla getirildi.");
+        }
+        public ServiceResult<AppSlideDto> GetSlide(int id, bool isDeleted)
+        {
+
+            var slide = _entityRepository.GetForRead(x => x.Id == id && x.IsDeleted == isDeleted, x => x.Translations);
+            if (slide == null)
+            {
+                return ServiceResult<AppSlideDto>.Empty(
+                   message: $"ID si {id} olan dil kaydı bulunamadı.",
+                   statusCode: (int)HttpStatusCode.NotFound
+               );
+            }
+
+            return ServiceResult<AppSlideDto>.Success(data: MapToDto(slide), message: "Slide başarıyla getirildi.", statusCode: (int)HttpStatusCode.OK);
+        }
+
+        private void MapToEntity(AppSlide entity, AppSlideCreateEditDto model)
+        {
+            entity.Id = model.Id;
+            entity.Sequence = model.Sequence;
+            entity.ThumbnailBase64 = model.ThumbnailBase64;
+            entity.ThumbnailMobilBase64 = model.ThumbnailMobilBase64;
+
+            entity.Translations = model.Translations?.Select(t => new AppSlideTranslation
+            {
+                Id = t.Id,
+                AppSlideId = t.AppSlideId,
+                AppLanguageId = t.AppLanguageId,
+                Title = t.Title,
+                Content = t.Content,
+                ButtonText = t.ButtonText,
+                ButtonUrl = t.ButtonUrl,
+                ButtonIcon = t.ButtonIcon,
+                IsExternal = t.IsExternal
+            }).ToList() ?? new List<AppSlideTranslation>();
+        }
+        private AppSlide MapToEntity(AppSlideCreateEditDto model)
+        {
+            return new AppSlide
+            {
+                Id = model.Id,
                 Sequence = model.Sequence,
                 ThumbnailBase64 = model.ThumbnailBase64,
                 ThumbnailMobilBase64 = model.ThumbnailMobilBase64,
                 Translations = model.Translations.Select(t => new AppSlideTranslation
                 {
+                    Id = t.Id,
+                    AppSlideId = t.AppSlideId,
                     AppLanguageId = t.AppLanguageId,
                     Title = t.Title,
                     Content = t.Content,
-                    IsExternal = t.IsExternal,
                     ButtonText = t.ButtonText,
                     ButtonUrl = t.ButtonUrl,
-                    ButtonIcon = t.ButtonIcon
+                    ButtonIcon = t.ButtonIcon,
+                    IsExternal = t.IsExternal
                 }).ToList()
             };
-
-            _entityRepository.Add(entity);
-            _unitOfWork.SaveHotelChanges();
-
-            var dto = MapToDto(entity);
-            return ResponseModel<AppSlideDto>.Success(dto, HttpStatusCode.Created);
         }
-
-        public ResponseModel<AppSlideDto> EditSlide(AppSlideEditDto model)
-        {
-            var entity = _entityRepository.GetForReadFunc(x => x.Id == model.Id, x => x.Include(y => y.Translations));
-            if (entity == null)
-                return ResponseModel<AppSlideDto>.Fail("Kayıt bulunamadı", HttpStatusCode.NotFound);
-
-            entity.Sequence = model.Sequence;
-            entity.ThumbnailBase64 = model.ThumbnailBase64;
-            entity.ThumbnailMobilBase64 = model.ThumbnailMobilBase64;
-
-            foreach (var transDto in model.Translations)
-            {
-                var translation = entity.Translations.FirstOrDefault(t => t.AppLanguageId == transDto.AppLanguageId);
-                if (translation != null)
-                {
-                    translation.Title = transDto.Title;
-                    translation.Content = transDto.Content;
-                    translation.IsExternal = transDto.IsExternal;
-                    translation.ButtonText = transDto.ButtonText;
-                    translation.ButtonUrl = transDto.ButtonUrl;
-                    translation.ButtonIcon = transDto.ButtonIcon;
-                }
-                else
-                {
-                    entity.Translations.Add(new AppSlideTranslation
-                    {
-                        AppLanguageId = transDto.AppLanguageId,
-                        Title = transDto.Title,
-                        Content = transDto.Content,
-                        IsExternal = transDto.IsExternal,
-                        ButtonText = transDto.ButtonText,
-                        ButtonUrl = transDto.ButtonUrl,
-                        ButtonIcon = transDto.ButtonIcon
-                    });
-                }
-            }
-
-            _entityRepository.Update(entity);
-            _unitOfWork.SaveHotelChanges();
-
-            var dto = MapToDto(entity);
-            return ResponseModel<AppSlideDto>.Success(dto, HttpStatusCode.OK);
-        }
-
-        public ResponseModel<AppSlideDto> DeleteSlide(int id)
-        {
-            var entity = _entityRepository.GetForEdit(x=>x.Id== id);
-            if (entity == null)
-                return ResponseModel<AppSlideDto>.Fail("Kayıt bulunamadı", HttpStatusCode.NotFound);
-
-            entity.IsDeleted = true;
-            _entityRepository.Update(entity);
-            _unitOfWork.SaveHotelChanges();
-
-            var dto = MapToDto(entity);
-            return ResponseModel<AppSlideDto>.Success(dto, HttpStatusCode.OK);
-        }
-
-        public ResponseModel<IEnumerable<AppSlideDto>> GetAllSlide(bool isDeleted)
-        {
-            var slides = _entityRepository
-                .WhereForReadFunc(w => w.IsDeleted == isDeleted, x => x.Include(y => y.Translations))
-                .ToList();
-
-            var slideDtos = slides.Select(MapToDto).ToList();
-
-            return ResponseModel<IEnumerable<AppSlideDto>>.Success(slideDtos, HttpStatusCode.OK);
-        }
-
-        public ResponseModel<AppSlideDto> GetSlide(int id, bool isDeleted)
-        {
-            var slide = _entityRepository
-                .GetForReadFunc(x => x.Id == id && x.IsDeleted == isDeleted, x => x.Include(y => y.Translations));
-
-            if (slide == null)
-                return ResponseModel<AppSlideDto>.Fail("Kayıt bulunamadı", HttpStatusCode.NotFound);
-
-            var dto = MapToDto(slide);
-            return ResponseModel<AppSlideDto>.Success(dto, HttpStatusCode.OK);
-        }
-
         private AppSlideDto MapToDto(AppSlide slide)
         {
             return new AppSlideDto
@@ -135,19 +181,21 @@ namespace Economy.Panel.Persistence.Services
                 Sequence = slide.Sequence,
                 ThumbnailBase64 = slide.ThumbnailBase64,
                 ThumbnailMobilBase64 = slide.ThumbnailMobilBase64,
-                Translations = slide.Translations?.Select(t => new AppSlideLanguageDto
+                Translations = slide.Translations?.Select(t => new AppSlideTranslationDto
                 {
                     Id = t.Id,
                     AppSlideId = t.AppSlideId,
                     AppLanguageId = t.AppLanguageId,
                     Title = t.Title,
                     Content = t.Content,
-                    IsExternal = t.IsExternal,
                     ButtonText = t.ButtonText,
                     ButtonUrl = t.ButtonUrl,
-                    ButtonIcon = t.ButtonIcon
-                }).ToList()
+                    ButtonIcon = t.ButtonIcon,
+                    IsExternal = t.IsExternal
+                }).ToList() ?? new List<AppSlideTranslationDto>()
             };
         }
     }
+
+
 }

@@ -1,14 +1,14 @@
-﻿using Economy.Core.Tools;
+﻿using Economy.Core.Tools.Result;
 using Economy.Panel.Application.Dtos.AppSlideDtos;
 
 namespace Economy.Panel.Application.Interfaces
 {
     public interface IPanelAppSlideService
     {
-        ResponseModel<IEnumerable<AppSlideDto>> GetAllSlide(bool isDeleted);
-        ResponseModel<AppSlideDto> GetSlide(int id, bool isDeleted);
-        ResponseModel<AppSlideDto> EditSlide(AppSlideEditDto model);
-        ResponseModel<AppSlideDto> CreateSlide(AppSlideCreateEditDto model);
-        ResponseModel<AppSlideDto> DeleteSlide(int id);
+        ServiceResult<List<AppSlideDto>> GetAllSlide(bool isDeleted);
+        ServiceResult<AppSlideDto> GetSlide(int id, bool isDeleted);
+        ServiceResult<AppSlideDto> EditSlide(AppSlideCreateEditDto model);
+        ServiceResult<AppSlideDto> CreateSlide(AppSlideCreateEditDto model);
+        ServiceResult<AppSlideDto> DeleteSlide(int id);
     }
 }

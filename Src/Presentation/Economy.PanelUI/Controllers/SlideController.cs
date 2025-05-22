@@ -21,38 +21,19 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult Index()
         {
             var allLanguages = _panelAppLanguageService.GetAllLanguage(false, true);
-            var result = _panelAppSlideService.GetAllSlide(false);
-
-            if (!result.IsSuccess || result.Data == null || allLanguages.Data == null)
+            if (!allLanguages.HasData)
             {
+                AddMessage(allLanguages);
                 return View(new List<AppSlideListViewModel>());
             }
 
-            var resultModel = result.Data.Select(slide => new AppSlideListViewModel
+            var result = _panelAppSlideService.GetAllSlide(false);
+            if (!result.HasData)
             {
-                Id = slide.Id,
-                Sequence = slide.Sequence,
-                ThumbnailBase64 = slide.ThumbnailBase64,
-                ThumbnailMobilBase64 = slide.ThumbnailMobilBase64,
-                Translations = allLanguages.Data.Select(lang =>
-                {
-                    var translation = slide.Translations.FirstOrDefault(t => t.AppLanguageId == lang.Id);
-                    return new AppSlideLanguageViewModel
-                    {
-                        Icon = lang.Icon,
-                        Name = lang.Name,
-                        Id = translation?.Id ?? 0,
-                        AppSlideId = translation?.AppSlideId ?? slide.Id,
-                        AppLanguageId = lang.Id,
-                        Title = translation?.Title ?? string.Empty,
-                        Content = translation?.Content,
-                        IsExternal = translation?.IsExternal ?? false,
-                        ButtonText = translation?.ButtonText,
-                        ButtonUrl = translation?.ButtonUrl,
-                        ButtonIcon = translation?.ButtonIcon
-                    };
-                }).ToList()
-            }).ToList();
+                AddMessage(result);
+                return View(result.Data);
+            }
+            var resultModel = result.Data.ToListViewModel(allLanguages.Data);
 
             return View(resultModel);
         }
@@ -61,64 +42,39 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult Edit(int Id)
         {
             var allLanguages = _panelAppLanguageService.GetAllLanguage(false, true);
-            var result = _panelAppSlideService.GetSlide(Id, false);
-
-            if (!result.IsSuccess || result.Data == null || allLanguages.Data == null)
+            if (!allLanguages.HasData)
             {
-                return View(new AppSlideEditViewModel());
+                AddMessage(allLanguages);
+                return RedirectToAction(nameof(Index));
             }
 
-            var slide = result.Data;
-
-            var translations = allLanguages.Data.Select(lang =>
+            var result = _panelAppSlideService.GetSlide(Id, false);
+            if (!result.HasData)
             {
-                var translation = slide.Translations.FirstOrDefault(t => t.AppLanguageId == lang.Id);
+                AddMessage(result);
+                return RedirectToAction(nameof(Index));
+            }
 
-                return new AppSlideLanguageEditViewModel
-                {
-                    Code = lang.Code,
-                    Icon = lang.Icon,
-                    IsRTL = lang.IsRTL,
-                    Name = lang.Name,
-                    Id = translation?.Id ?? 0,
-                    AppSlideId = slide.Id,
-                    AppLanguageId = lang.Id,
-                    Title = translation?.Title ?? string.Empty,
-                    Content = translation?.Content ?? string.Empty,
-                    IsExternal = translation?.IsExternal ?? false,
-                    ButtonText = translation?.ButtonText ?? string.Empty,
-                    ButtonUrl = translation?.ButtonUrl ?? string.Empty,
-                    ButtonIcon = translation?.ButtonIcon ?? string.Empty
-                };
-            }).ToList();
-
-            var resultModel = new AppSlideEditViewModel
-            {
-                Id = slide.Id,
-                Sequence = slide.Sequence,
-                ThumbnailBase64 = slide.ThumbnailBase64,
-                ThumbnailMobilBase64 = slide.ThumbnailMobilBase64,
-                Translations = translations
-            };
+          var resultModel = allLanguages.Data.ToCreateEditViewModel(result.Data);
 
             return View(resultModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(AppSlideEditViewModel model)
+        public IActionResult Edit(AppSlideCreateEditViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            var dto = model.ToDto();
+            var dto = viewModel.ToDto();
             var result = _panelAppSlideService.EditSlide(dto);
+
+            AddValidationErrorsToModelState(result.ValidationErrors);
+            AddMessage(result);
 
             if (!result.IsSuccess)
             {
-                return View(model);
+                return View(viewModel);
             }
-            AddMessage(result);
+
             return RedirectToAction("Index");
         }
 
@@ -126,34 +82,30 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult Create()
         {
             var allLanguages = _panelAppLanguageService.GetAllLanguage(false, true);
-
-            var model = new AppSlideCreateViewModel
+            if (!allLanguages.HasData)
             {
-                Translations = allLanguages.Data.Select(lang => new AppSlideLanguageCreateViewModel
-                {
-                    AppLanguageId = lang.Id,
-                    Code = lang.Code,
-                    Name = lang.Name,
-                    Icon = lang.Icon,
-                }).ToList()
-            };
+                AddMessage(allLanguages);
+                return RedirectToAction(nameof(Index));
+            }
+          
+            var viewModel = allLanguages.Data.ToEmptyCreateEditViewModel();
 
-            return View(model);
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(AppSlideCreateViewModel model)
+        public IActionResult Create(AppSlideCreateEditViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            var dto = model.ToDto();
+            var dto = viewModel.ToDto();
             var result = _panelAppSlideService.CreateSlide(dto);
+
+            AddValidationErrorsToModelState(result.ValidationErrors);
+            AddMessage(result);
 
             if (!result.IsSuccess)
             {
-                return View(model);
+                return View(viewModel);
             }
 
             return RedirectToAction("Index");
@@ -164,6 +116,11 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult Delete(int id)
         {
             var result = _panelAppSlideService.DeleteSlide(id);
+            if(result.IsSuccess)
+            {
+                result.RedirectUrl = "/Slide";
+            }
+
             return Json(result);
         }
 
@@ -171,45 +128,21 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult Details(int id)
         {
             var allLanguages = _panelAppLanguageService.GetAllLanguage(false, true);
+            if (!allLanguages.HasData)
+            {
+                AddMessage(allLanguages);
+                return RedirectToAction(nameof(Index));
+            }
 
             var result = _panelAppSlideService.GetSlide(id, false);
-
-            if (!result.IsSuccess || result.Data == null)
-                return NotFound();
-
-            var slide = result.Data;
-
-
-            var translations = allLanguages.Data.Select(lang =>
+            if (!result.HasData)
             {
-                var translation = slide.Translations.FirstOrDefault(t => t.AppLanguageId == lang.Id);
+                AddMessage(result);
+                return RedirectToAction(nameof(Index));
+            }
 
-                return new AppSlideLanguageViewModel
-                {
-                    Icon = lang.Icon,
-                    Name = lang.Name,
-                    Id = translation?.Id ?? 0,
-                    AppSlideId = slide.Id,
-                    AppLanguageId = lang.Id,
-                    Title = translation?.Title ?? string.Empty,
-                    Content = translation?.Content ?? string.Empty,
-                    IsExternal = translation?.IsExternal ?? false,
-                    ButtonText = translation?.ButtonText ?? string.Empty,
-                    ButtonUrl = translation?.ButtonUrl ?? string.Empty,
-                    ButtonIcon = translation?.ButtonIcon ?? string.Empty
-                };
-            }).ToList();
+            var resultModel = result.Data.ToViewModel();
 
-            var resultModel = new AppSlideViewModel
-            {
-                Id = slide.Id,
-                Sequence = slide.Sequence,
-                ThumbnailBase64 = slide.ThumbnailBase64,
-                ThumbnailMobilBase64 = slide.ThumbnailMobilBase64,
-                Translations = translations
-            };
-
-  
             return View(resultModel);
         }
     }

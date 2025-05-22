@@ -10,6 +10,8 @@ namespace Economy.Core.Interfaces
         List<T> WhereForRead(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
         List<T> WhereForEdit(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
         T? GetForReadFunc(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
+        T? GetForEditFunc(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
+
         List<T> WhereForReadFunc(Expression<Func<T, bool>>? filters = null, params Func<IQueryable<T>, IQueryable<T>>[] includes);
         IPagedList<T> PagedListForRead(Expression<Func<T, bool>>? filters = null, int page = 0, int pageSize = 0);
         bool Any(Expression<Func<T, bool>>? filters = null);

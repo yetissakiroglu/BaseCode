@@ -47,6 +47,9 @@
                                             @Html.DisplayNameFor(model => model.Id)
                                         </th>
                                         <th>
+                                            @Html.DisplayNameFor(model => model.Translations.FirstOrDefault().Title)
+                                        </th>
+                                        <th>
                                             @Html.DisplayNameFor(model => model.Sequence)
                                         </th>
                                         <th>
@@ -64,6 +67,9 @@
                                         <tr>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.Id)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Translations.FirstOrDefault().Title)
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.Sequence)
