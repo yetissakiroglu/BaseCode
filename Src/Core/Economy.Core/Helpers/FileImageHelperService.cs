@@ -15,6 +15,80 @@ namespace Economy.Core.Helpers
         {
             _fileUploadSettings = options.Value; // Tüm ayarları al
         }
+        public async Task<ResponseModel<UploadFile>> UploadBase64(string? base64String, List<string> folderPaths)
+        {
+            var response = new ResponseModel<UploadFile>();
+
+            if (string.IsNullOrWhiteSpace(base64String))
+            {
+                response.IsSuccess = false;
+                //response.Message = "Base64 string is null or empty.";
+                return response;
+            }
+
+            try
+            {
+                // base64'ü ayrıştır
+                var base64Parts = base64String.Split(',');
+
+                string base64Data = base64Parts.Length > 1 ? base64Parts[1] : base64Parts[0];
+                string mimeType = base64Parts.Length > 1 && base64Parts[0].Contains("data:")
+                    ? base64Parts[0].Split(';')[0].Replace("data:", "")
+                    : "application/octet-stream";
+
+                byte[] fileBytes = Convert.FromBase64String(base64Data);
+
+                // Klasör oluştur
+                var combinedFolderPath = Path.Combine(folderPaths.ToArray());
+                var folder = Path.Combine("Files", combinedFolderPath);
+                var fullPath = Path.Combine(Directory.GetCurrentDirectory(), folder);
+
+                if (!Directory.Exists(fullPath))
+                {
+                    Directory.CreateDirectory(fullPath);
+                }
+
+                // Dosya adı oluştur
+                var fileExtension = GetFileExtensionFromMimeType(mimeType);
+                var fileName = "uploaded-file"; // istersen farklı isimlendirme stratejisi uygulanabilir
+                var randomString = Path.GetRandomFileName().Replace(".", "");
+                var randomFileName = $"{fileName.SanitizeString()}-{randomString}-{DateTime.Now.Ticks}{fileExtension}";
+
+                var filePath = Path.Combine(folder, randomFileName);
+                var fullFilePath = Path.Combine(fullPath, randomFileName);
+
+                // Dosyayı diske yaz
+                await File.WriteAllBytesAsync(fullFilePath, fileBytes);
+
+                var fileInfo = new FileInfo(fullFilePath);
+
+                var uploadModel = new UploadFile
+                {
+                    MediaURL = randomFileName.ToLower(),
+                    MediaName = fileName,
+                    MediaFullURL = "/" + filePath.ToLower().Replace("\\", "/"),
+                    CombinedFolderPath = folder.ToLower().Replace("\\", "/"),
+                    FileSize = fileInfo.Length,
+                    IsByteArray = true,
+                    ByteArrayMedia = fileBytes,
+                    AltAttribute = fileName,
+                    TitleAttribute = fileName,
+                    MimeType = mimeType,
+                    Guid = Guid.NewGuid().ToString()
+                };
+
+                response.Data = uploadModel;
+                response.IsSuccess = true;
+                //response.Message = "Dosya başarıyla yüklendi.";
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                //response.Message = "Dosya yüklenirken hata oluştu: " + ex.Message;
+            }
+
+            return response;
+        }
 
         public async Task<ResponseModel<UploadFile>> UploadFile(IFormFile file, List<string> folderPaths)
         {
@@ -176,6 +250,20 @@ namespace Economy.Core.Helpers
             };
 
             return uploadModel;
+        }
+
+        private string GetFileExtensionFromMimeType(string mimeType)
+        {
+            return mimeType switch
+            {
+                "image/jpeg" => ".jpg",
+                "image/png" => ".png",
+                "image/gif" => ".gif",
+                "application/pdf" => ".pdf",
+                "text/plain" => ".txt",
+                "application/zip" => ".zip",
+                _ => ".bin" // bilinmeyen dosya tipi
+            };
         }
     }
 

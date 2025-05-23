@@ -1,13 +1,11 @@
-﻿using Economy.Core.Interfaces;
+﻿using Economy.Core.Helpers;
+using Economy.Core.Interfaces;
 using Economy.Core.Tools.Result;
-using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Domain.Entites.EntitySlides;
-using Economy.Panel.Application.Dtos.AppLanguageDtos;
 using Economy.Panel.Application.Dtos.AppSlideDtos;
 using Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos;
 using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
-using Economy.Panel.Application.Validations.AppLanguageValidator;
 using Economy.Panel.Application.Validations.AppSlideValidator;
 using System.Net;
 
@@ -17,11 +15,12 @@ namespace Economy.Panel.Persistence.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEntityRepository<AppSlide, int> _entityRepository;
-
-        public PanelAppSlideService(IUnitOfWork unitOfWork)
+        private readonly IFileImageHelperService _fileImageHelperService;
+        public PanelAppSlideService(IUnitOfWork unitOfWork, IFileImageHelperService fileImageHelperService)
         {
             _unitOfWork = unitOfWork;
             _entityRepository = unitOfWork.EntityRepository<AppSlide>();
+            _fileImageHelperService = fileImageHelperService;
         }
 
         public ServiceResult<AppSlideDto> CreateSlide(AppSlideCreateEditDto model)
@@ -42,7 +41,19 @@ namespace Economy.Panel.Persistence.Services
                     statusCode: (int)HttpStatusCode.BadRequest,
                     validationErrors: validationResult.ToValidationDictionary());
 
+
+
             var entity = MapToEntity(model);
+
+
+            entity.ThumbnailBase64 = _fileImageHelperService.UploadBase64(model.ThumbnailBase64, new List<string> { "updates", "slider" }).Result.Data.MediaFullURL;
+
+
+            entity.ThumbnailMobilBase64 = _fileImageHelperService.UploadBase64(model.ThumbnailMobilBase64, new List<string> { "updates", "slider" }).Result.Data.MediaFullURL;
+
+
+
+
             _entityRepository.Add(entity);
             _unitOfWork.SaveHotelChanges();
 
@@ -94,7 +105,7 @@ namespace Economy.Panel.Persistence.Services
                     statusCode: (int)HttpStatusCode.BadRequest);
 
 
-             MapToEntity(entity,model);
+            MapToEntity(entity, model);
             _entityRepository.Update(entity);
             _unitOfWork.SaveHotelChanges();
 

@@ -6,6 +6,8 @@ using Economy.Base.Persistence.BaseRepositories;
 using Economy.Base.Persistence.Providers;
 using Economy.Core.Business;
 using Economy.Core.ContextFactory;
+using Economy.Core.Helpers;
+using Economy.Core.Helpers.Dtos;
 using Economy.Core.Interfaces;
 using Economy.Core.Interfaces.Economy.Panel.Application.Repositories;
 using Economy.Core.Interfaces.Economy.Panel.Persistence.Services;
@@ -60,6 +62,14 @@ builder.Services.Configure<TokenOption>(
 // TokenOption doðrudan kullanýlacaksa (örneðin TokenService içinde ctor ile)
 var tokenOptions = builder.Configuration.GetSection("TokenOption").Get<TokenOption>();
 builder.Services.AddSingleton(tokenOptions);
+
+//  ayarlarýný oku ve DI container'a ekle
+builder.Services.Configure<FileUploadConfiguration>(
+    builder.Configuration.GetSection("FileUploadConfiguration"));
+
+//  doðrudan kullanýlacaksa (örneðin TokenService içinde ctor ile)
+var fileUploadOptions = builder.Configuration.GetSection("FileUploadConfiguration").Get<FileUploadConfiguration>();
+builder.Services.AddSingleton(fileUploadOptions);
 
 
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
@@ -145,6 +155,10 @@ builder.Services.AddScoped<IPanelAppSlideService, PanelAppSlideService>(); // Se
 
 // Token service kaydýný yapalým.
 builder.Services.AddScoped<ITokenService, TokenService>(); // Token service kaydý
+
+builder.Services.AddScoped<IFileImageHelperService, FileImageHelperService>(); // Token service kaydý
+
+
 // Diðer servisler (örneðin AutoMapper)
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
