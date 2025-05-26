@@ -12,39 +12,44 @@ namespace Economy.Panel.UI.Extensions
     /// </summary>
     public static class SlideMapper
     {
-        public static List<AppSlideListViewModel> MapToListViewModel(this IEnumerable<AppSlideDto> slides, IEnumerable<AppLanguageDto> languages)
+        public static List<AppSlideListViewModel> MapToListViewModel(this IEnumerable<AppSlideDto> slides,IEnumerable<AppLanguageDto> languages)
         {
             return slides.Select(slide => new AppSlideListViewModel
             {
                 Id = slide.Id,
                 Sequence = slide.Sequence,
-                ThumbnailBase64 = slide.WebImageFile,
-                ThumbnailMobilBase64 = slide.MobileImageFile,
-                Translations = languages.Select(lang => MapTranslation(lang, slide.Translations)).ToList()
+                WebImageFile = slide.WebImageFile,
+                MobileImageFile = slide.MobileImageFile,
+                Translations = languages.Select(lang => MapToTranslationViewModel(lang, slide.Translations)).ToList()
             }).ToList();
         }
-        public static AppSlideCreateEditViewModel MapToEditViewModel(this AppSlideDto dto, IEnumerable<AppLanguageDto> languages)
+
+        public static AppSlideCreateEditViewModel MapToEditViewModel(this AppSlideDto dto,IEnumerable<AppLanguageDto> languages)
         {
             return new AppSlideCreateEditViewModel
             {
                 Id = dto.Id,
                 Sequence = dto.Sequence,
-                ThumbnailBase64 = dto.WebImageFile,
-                ThumbnailMobilBase64 = dto.MobileImageFile,
-                Translations = languages.Select(lang => MapTranslationList(lang, dto.Translations)).ToList()
+                WebImageFile = dto.WebImageFile,
+                MobileImageFile = dto.MobileImageFile,
+                Translations = languages.Select(lang => MapToCreateEditTranslationViewModel(lang, dto.Translations)).ToList()
             };
         }
+
         public static AppSlideCreateEditDto MapToDto(this AppSlideCreateEditViewModel viewModel)
         {
             return new AppSlideCreateEditDto
             {
                 Id = viewModel.Id,
                 Sequence = viewModel.Sequence,
-                WebImageFile = viewModel.ThumbnailBase64,
-                MobileImageFile = viewModel.ThumbnailMobilBase64,
-                Translations = viewModel.Translations.Select(MapTranslationVmToDto).ToList()
+                WebImageFile = viewModel.WebImageFile,
+                MobileImageFile = viewModel.MobileImageFile,
+                ThumbnailBase64 = viewModel.ThumbnailBase64,
+                ThumbnailMobilBase64 =viewModel.ThumbnailMobilBase64,
+                Translations = viewModel.Translations.Select(MapToCreateEditDto).ToList()
             };
         }
+
         public static AppSlideCreateEditViewModel ToEmptyCreateEditViewModel(this IEnumerable<AppLanguageDto> languages)
         {
             return new AppSlideCreateEditViewModel
@@ -58,6 +63,7 @@ namespace Economy.Panel.UI.Extensions
                 }).ToList()
             };
         }
+
         public static AppSlideViewModel ToViewModel(this AppSlideDto slide)
         {
             return new AppSlideViewModel
@@ -81,11 +87,9 @@ namespace Economy.Panel.UI.Extensions
             };
         }
 
-        // ------------------------
-        // Özel Yardımcı Metotlar
-        // ------------------------
+        #region Private Helpers
 
-        private static AppSlideTranslationViewModel MapTranslation(AppLanguageDto lang, IEnumerable<AppSlideTranslationDto> translations)
+        private static AppSlideTranslationViewModel MapToTranslationViewModel(AppLanguageDto lang, IEnumerable<AppSlideTranslationDto> translations)
         {
             var t = translations.FirstOrDefault(x => x.AppLanguageId == lang.Id);
             return new AppSlideTranslationViewModel
@@ -104,7 +108,8 @@ namespace Economy.Panel.UI.Extensions
                 LanguageIsDefault = lang.IsDefault
             };
         }
-        private static AppSlideTranslationCreateEditViewModel MapTranslationList(AppLanguageDto lang, IEnumerable<AppSlideTranslationDto> translations)
+
+        private static AppSlideTranslationCreateEditViewModel MapToCreateEditTranslationViewModel(AppLanguageDto lang, IEnumerable<AppSlideTranslationDto> translations)
         {
             var t = translations.FirstOrDefault(x => x.AppLanguageId == lang.Id);
             return new AppSlideTranslationCreateEditViewModel
@@ -123,13 +128,14 @@ namespace Economy.Panel.UI.Extensions
                 LanguageIsDefault = lang.IsDefault
             };
         }
-        private static AppSlideTranslationCreateEditDto MapTranslationVmToDto(AppSlideTranslationCreateEditViewModel vm)
+
+        private static AppSlideTranslationCreateEditDto MapToCreateEditDto(AppSlideTranslationCreateEditViewModel vm)
         {
             return new AppSlideTranslationCreateEditDto
             {
                 Id = vm.Id,
-                AppLanguageId = vm.AppLanguageId,
                 AppSlideId = vm.AppSlideId,
+                AppLanguageId = vm.AppLanguageId,
                 Title = vm.Title,
                 Content = vm.Content,
                 ButtonText = vm.ButtonText,
@@ -139,6 +145,8 @@ namespace Economy.Panel.UI.Extensions
             };
         }
 
+        #endregion
     }
+
 
 }

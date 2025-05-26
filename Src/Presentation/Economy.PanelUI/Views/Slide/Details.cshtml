@@ -1,15 +1,13 @@
 ﻿@model Economy.Panel.UI.Models.SlideViewModels.AppSlideViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Slide Detay";
 }
 
 <main>
     <div class="container-fluid">
         @await Html.PartialAsync("_breadcrumbs")
-        <!-- tables start  -->
         <div class="row">
-
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
@@ -31,7 +29,6 @@
 
                 </div>
             </div>
-            <!-- Hoverable Table start -->
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
@@ -81,11 +78,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Hoverable Table end -->
-
-
         </div>
-        <!-- tables-end  -->
     </div>
 </main>
 

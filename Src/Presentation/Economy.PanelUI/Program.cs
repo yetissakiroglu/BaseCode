@@ -14,8 +14,10 @@ using Economy.Core.Interfaces.Economy.Panel.Persistence.Services;
 using Economy.Core.Services.Providers;
 using Economy.Domain.Entites.Identities;
 using Economy.Infrastructure.Services;
+using Economy.Panel.Application.Dtos.AppSlideDtos;
 using Economy.Panel.Application.Interfaces;
 using Economy.Panel.Application.Repositories;
+using Economy.Panel.Application.Validations.AppSlideValidator;
 using Economy.Panel.Persistence.Repositories;
 using Economy.Panel.Persistence.Services;
 using Economy.Panel.UI;
@@ -23,6 +25,7 @@ using Economy.Panel.UI.Middlewares;
 using Economy.Persistence.BaseRepositories;
 using Economy.Persistence.Contexts;
 using Economy.Persistence.UnitOfWorks;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
@@ -139,12 +142,12 @@ builder.Services.AddScoped<PanelAppUserTokenRepository, ConcretePanelAppUserToke
 builder.Services.AddScoped<IPanelAppUserService, PanelAppUserService>(); // Service sýnýfý kaydediliyor.
 
 
+builder.Services.AddScoped<IValidator<AppSlideCreateEditDto>, AppSlideCreateEditDtoValidator>();
+
 
 builder.Services.AddScoped<IAppBaseRepository, AppBaseRepository>();
 builder.Services.AddScoped<PanelAppRepository, ConcretePanelAppRepository>(); // Concrete sýnýfý kullanýyoruz.
 builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sýnýfý kaydediliyor.
-
-
 builder.Services.AddScoped<IPanelAppSettingService, PanelAppSettingService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppLanguageService, PanelAppLanguageService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSettingLogoService, PanelAppSettingLogoService>(); // Service sýnýfý kaydediliyor.

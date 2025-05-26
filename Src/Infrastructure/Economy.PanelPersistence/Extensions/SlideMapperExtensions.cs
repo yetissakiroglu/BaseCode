@@ -9,17 +9,26 @@ namespace Economy.Panel.Persistence.Extensions
     /// </summary>
     public static class SlideMapper
     {
-    
-        public static AppSlide MapToEntity(this AppSlideCreateEditDto dto)
+        public static void MapToEntity(AppSlide entity, AppSlideCreateEditDto model)
         {
-            return new AppSlide
+            entity.Id = model.Id;
+            entity.Sequence = model.Sequence;
+            //entity.ThumbnailBase64 = model.ThumbnailBase64;
+            //entity.ThumbnailMobilBase64 = model.ThumbnailMobilBase64;
+
+            entity.Translations = model.Translations?.Select(t => new AppSlideTranslation
             {
-                Id = dto.Id,
-                Sequence = dto.Sequence,
-                ThumbnailBase64 = dto.WebImageFile,
-                ThumbnailMobilBase64 = dto.MobileImageFile,
-                Translations = dto.Translations.Select(MapTranslationDtoToEntity).ToList()
-            };
+                Id = t.Id,
+                AppSlideId = t.AppSlideId,
+                AppLanguageId = t.AppLanguageId,
+                Title = t.Title,
+                Content = t.Content,
+                ButtonText = t.ButtonText,
+                ButtonUrl = t.ButtonUrl,
+                ButtonIcon = t.ButtonIcon,
+                IsExternal = t.IsExternal
+            }).ToList() ?? new List<AppSlideTranslation>();
+
         }
         public static AppSlideDto MapToDto(this AppSlide entity)
         {

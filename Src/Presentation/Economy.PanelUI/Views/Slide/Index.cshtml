@@ -4,13 +4,9 @@
     ViewData["Title"] = "Slide Listesi";
 }
 
-
-
 <main>
     <div class="container-fluid">
         @await Html.PartialAsync("_breadcrumbs")
-
-
         <!-- tables start  -->
         <div class="row table-section">
             <div class="col-12">
@@ -26,7 +22,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <!-- Hoverable Table start -->
@@ -53,10 +48,10 @@
                                             @Html.DisplayNameFor(model => model.Sequence)
                                         </th>
                                         <th>
-                                            @Html.DisplayNameFor(model => model.ThumbnailBase64)
+                                            @Html.DisplayNameFor(model => model.WebImageFile)
                                         </th>
                                         <th>
-                                            @Html.DisplayNameFor(model => model.ThumbnailMobilBase64)
+                                            @Html.DisplayNameFor(model => model.MobileImageFile)
                                         </th>
                                         <th></th>
                                     </tr>
@@ -75,10 +70,10 @@
                                                 @Html.DisplayFor(modelItem => item.Sequence)
                                             </td>
                                             <td>
-                                                <img width="25" src="@Html.DisplayFor(modelItem => item.ThumbnailBase64)" alt="Base64" />
+                                                <img width="25" src="@Html.DisplayFor(modelItem => item.WebImageFile)" alt="Base64" />
                                             </td>
                                             <td>
-                                                <img width="25" src="@Html.DisplayFor(modelItem => item.ThumbnailMobilBase64)" alt="Base64" />
+                                                <img width="25" src="@Html.DisplayFor(modelItem => item.MobileImageFile)" alt="Base64" />
                                             </td>
                                             <td>
                                                 @Html.ActionLink("Güncelle", "Edit", new { id=item.Id }) |
@@ -93,8 +88,6 @@
                 </div>
             </div>
             <!-- Hoverable Table end -->
-
-
         </div>
         <!-- tables-end  -->
     </div>

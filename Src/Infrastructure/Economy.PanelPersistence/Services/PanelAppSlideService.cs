@@ -5,8 +5,8 @@ using Economy.Domain.Entites.EntitySlides;
 using Economy.Panel.Application.Dtos.AppSlideDtos;
 using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
-using Economy.Panel.Application.Validations.AppSlideValidator;
 using Economy.Panel.Persistence.Extensions;
+using FluentValidation;
 using System.Net;
 
 namespace Economy.Panel.Persistence.Services
@@ -16,13 +16,14 @@ namespace Economy.Panel.Persistence.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEntityRepository<AppSlide, int> _entityRepository;
         private readonly IFileImageHelperService _fileImageHelperService;
-        public PanelAppSlideService(IUnitOfWork unitOfWork, IFileImageHelperService fileImageHelperService)
+        private readonly IValidator<AppSlideCreateEditDto> _validator;
+        public PanelAppSlideService(IUnitOfWork unitOfWork, IFileImageHelperService fileImageHelperService, IValidator<AppSlideCreateEditDto> validator)
         {
             _unitOfWork = unitOfWork;
             _entityRepository = unitOfWork.EntityRepository<AppSlide>();
             _fileImageHelperService = fileImageHelperService;
+            _validator = validator;
         }
-
         public ServiceResult<AppSlideDto> CreateSlide(AppSlideCreateEditDto model)
         {
             if (model == null)
@@ -33,8 +34,7 @@ namespace Economy.Panel.Persistence.Services
                     message: "En az bir dil içeriği eklenmelidir.",
                     statusCode: (int)HttpStatusCode.BadRequest);
 
-            var validator = new AppSlideCreateEditDtoValidator();
-            var validationResult = validator.Validate(model);
+            var validationResult = _validator.Validate(model);
             if (!validationResult.IsValid)
                 return ServiceResult<AppSlideDto>.Failure(
                     message: "Geçersiz giriş verisi.",
@@ -42,7 +42,9 @@ namespace Economy.Panel.Persistence.Services
                     validationErrors: validationResult.ToValidationDictionary());
 
 
-            var entity = model.MapToEntity();
+            var entity = new AppSlide();
+            SlideMapper.MapToEntity(entity, model);
+
             if (model.ThumbnailBase64 is not null)
             {
                 var webImage = _fileImageHelperService.UploadBase64(model.ThumbnailBase64, new List<string> { "updates", "slider" });
@@ -64,7 +66,6 @@ namespace Economy.Panel.Persistence.Services
                 statusCode: (int)HttpStatusCode.Created);
 
         }
-
         public ServiceResult<AppSlideDto> DeleteSlide(int id)
         {
             var slide = _entityRepository.GetForEdit(w => w.Id == id && !w.IsDeleted);
@@ -79,7 +80,6 @@ namespace Economy.Panel.Persistence.Services
 
             return ServiceResult<AppSlideDto>.Success(slide.MapToDto(), "Slide başarıyla silindi.");
         }
-
         public ServiceResult<AppSlideDto> EditSlide(AppSlideCreateEditDto model)
         {
             if (model == null || model.Id == null)
@@ -93,37 +93,37 @@ namespace Economy.Panel.Persistence.Services
                     statusCode: (int)HttpStatusCode.BadRequest);
 
 
-            var validator = new AppSlideCreateEditDtoValidator();
-            var validationResult = validator.Validate(model);
+            var validationResult = _validator.Validate(model);
             if (!validationResult.IsValid)
+                if (!validationResult.IsValid)
                 return ServiceResult<AppSlideDto>.Failure(
                     message: "Geçersiz giriş verisi.",
                     statusCode: (int)HttpStatusCode.BadRequest,
                     validationErrors: validationResult.ToValidationDictionary());
 
-            var entity = _entityRepository.GetForEdit(w => w.Id == model.Id && !w.IsDeleted, w => w.Translations);
+            var entity = _entityRepository.GetForRead(w => w.Id == model.Id && !w.IsDeleted, w => w.Translations);
             if (entity == null)
                 return ServiceResult<AppSlideDto>.Failure(
                     message: "Slide bulunamadı.",
                     statusCode: (int)HttpStatusCode.BadRequest);
 
 
-            var entityNew = model.MapToEntity();
+           SlideMapper.MapToEntity(entity, model);
 
             if (model.ThumbnailBase64 is not null)
             {
                 var webImage = _fileImageHelperService.UploadBase64(model.ThumbnailBase64, new List<string> { "updates", "slider" });
-                entityNew.ThumbnailBase64 = webImage.Data.MediaFullURL;
+                entity.ThumbnailBase64 = webImage.Data.MediaFullURL;
             }
 
             if (model.ThumbnailMobilBase64 is not null)
             {
                 var mobilImage = _fileImageHelperService.UploadBase64(model.ThumbnailMobilBase64, new List<string> { "updates", "slider" });
-                entityNew.ThumbnailMobilBase64 = mobilImage.Data.MediaFullURL;
+                entity.ThumbnailMobilBase64 = mobilImage.Data.MediaFullURL;
             }
           
 
-            _entityRepository.Update(entityNew);
+            _entityRepository.Update(entity);
             _unitOfWork.SaveHotelChanges();
 
             return ServiceResult<AppSlideDto>.Success(
@@ -158,9 +158,5 @@ namespace Economy.Panel.Persistence.Services
 
             return ServiceResult<AppSlideDto>.Success(data: slide.MapToDto(), message: "Slide başarıyla getirildi.", statusCode: (int)HttpStatusCode.OK);
         }
-
-
     }
-
-
 }

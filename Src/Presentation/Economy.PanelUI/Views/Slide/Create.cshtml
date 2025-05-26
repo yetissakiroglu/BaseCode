@@ -1,7 +1,7 @@
 ﻿@model Economy.Panel.UI.Models.SlideViewModels.AppSlideCreateEditViewModel
 
 @{
-    ViewData["Title"] = "Slide Güncelleme";
+    ViewData["Title"] = "Slide Ekle";
 }
 
 <!-- ✅ Cropper.js CSS -->
@@ -32,10 +32,7 @@
             <div class="col-12">
                 <form asp-action="Create" method="post" class="app-form rounded-control needs-validation" novalidate>
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
                     @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="ThumbnailBase64" />
-                    <input type="hidden" asp-for="ThumbnailMobilBase64" />
                     <input type="hidden" asp-for="Id" />
 
                     <div class="card equal-card">
@@ -74,22 +71,21 @@
                                         <div class="col-md-6 text-center">
                                             <p class="fw-semibold mb-1">Kırpılmış Görüntü</p>
                                             <img id="croppedLogoResult" class="img-fluid rounded border border-2 border-primary shadow" style="max-height: 150px;" alt="Kırpılmış Logo"
-                                                 src="@(Model.ThumbnailBase64 ?? "")" />
-                                            <input type="hidden" name="ThumbnailBase64" id="ThumbnailBase64" value="@Model.ThumbnailBase64" />
+                                                 src="@(Model.WebImageFile ?? "/images/onizleme.jpg")" />
+                                            <input type="hidden" name="ThumbnailBase64" id="ThumbnailBase64" value="@Model.WebImageFile" />
                                         </div>
                                         <div class="col-md-6 text-center">
                                             <input class="form-control mb-3" type="file" id="logoInput" accept="image/*" />
 
                                             <p class="fw-semibold mb-1">Orijinal Önizleme</p>
                                             <img id="logoPreview" class="img-fluid rounded border border-2 border-secondary shadow-sm" style="max-height: 300px;" alt="Logo Önizleme"
-                                                 src="@(Model.ThumbnailBase64 ?? "")" />
-                                            <button type="button" id="cropLogoBtn" class="btn btn-primary btn-lg mb-3 px-5 shadow-sm">Kırp</button>
+                                                 src="@(Model.WebImageFile ?? "/images/onizleme.jpg")" />
+                                             <button type="button" id="cropLogoBtn" class="btn btn-primary btn-lg mb-3 px-5 shadow-sm">Kırp</button>
 
                                         </div>
 
                                     </div>
                                 </section>
-
                                 <hr />
                                 <!-- MOBİL LOGO -->
                                 <section class="mb-5">
@@ -101,14 +97,14 @@
                                         <div class="col-md-6 text-center">
                                             <p class="fw-semibold mb-1">Orijinal Önizleme</p>
                                             <img id="mobileLogoPreview" class="img-fluid rounded border border-2 border-secondary shadow-sm" style="max-height: 300px;" alt="Mobil Logo Önizleme"
-                                                 src="@(Model.ThumbnailMobilBase64 ?? "")" />
+                                                 src="@(Model.MobileImageFile ?? "/images/onizleme.jpg")" />
                                         </div>
                                         <div class="col-md-6 text-center">
                                             <button type="button" id="cropMobileLogoBtn" class="btn btn-primary btn-lg mb-3 px-5 shadow-sm">Kırp</button>
                                             <p class="fw-semibold mb-1">Kırpılmış Görüntü</p>
                                             <img id="croppedMobileLogoResult" class="img-fluid rounded border border-2 border-primary shadow" style="max-height: 150px;" alt="Kırpılmış Mobil Logo"
-                                                 src="@(Model.ThumbnailMobilBase64 ?? "")" />
-                                            <input type="hidden" name="ThumbnailMobilBase64" id="ThumbnailMobilBase64" value="@Model.ThumbnailMobilBase64" />
+                                                 src="@(Model.MobileImageFile ?? "/images/onizleme.jpg")" />
+                                            <input type="hidden" name="ThumbnailMobilBase64" id="ThumbnailMobilBase64" value="@Model.MobileImageFile" />
                                         </div>
                                     </div>
                                 </section>
@@ -120,8 +116,8 @@
                                     <div class="tab-pane fade @isActive" id="lang-tab-pane-@i" role="tabpanel" aria-labelledby="lang-tab-@i">
                                         <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
                                         <input type="hidden" name="Translations[@i].AppLanguageId" value="@t.AppLanguageId" />
-                                        <input type="hidden" name="Translations[@i].Name" value="@t.LanguageName" />
-                                        <input type="hidden" name="Translations[@i].Icon" value="@t.LanguageIcon" />
+                                        <input type="hidden" name="Translations[@i].LanguageName" value="@t.LanguageName" />
+                                        <input type="hidden" name="Translations[@i].LanguageIcon" value="@t.LanguageIcon" />
                                         <input type="hidden" name="Translations[@i].AppSlideId" value="@t.AppSlideId" />
 
 
@@ -170,6 +166,7 @@
                                     <input asp-for="Sequence" class="form-control" />
                                     <span asp-validation-for="Sequence" class="text-danger"></span>
                                 </div>
+
                             </div>
 
                             <hr />
@@ -188,7 +185,6 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
 
     <!-- ✅ Cropper.js JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
@@ -252,9 +248,5 @@
         // document.getElementById('cropFaviconBtn').addEventListener('click', () =>
         //     cropAndSet(cropperFavicon.obj, 'croppedFaviconResult', 'CroppedFaviconBase64', 64, 64));
     </script>
-
-
-
-
 
 }

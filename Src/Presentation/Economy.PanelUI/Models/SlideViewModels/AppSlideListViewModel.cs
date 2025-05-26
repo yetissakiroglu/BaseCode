@@ -11,11 +11,11 @@ namespace Economy.Panel.UI.Models.SlideViewModels
         [DisplayName("Sıra")]
         public int Sequence { get; set; }
 
-        [DisplayName("Küçük Görsel (Base64)")]
-        public string? ThumbnailBase64 { get; set; }
+        [DisplayName("Küçük Görsel")]
+        public string? WebImageFile { get; set; }
 
-        [DisplayName("Mobil Küçük Görsel (Base64)")]
-        public string? ThumbnailMobilBase64 { get; set; }
+        [DisplayName("Mobil Küçük Görsel")]
+        public string? MobileImageFile { get; set; }
 
         [DisplayName("Dil Çevirileri")]
         public List<AppSlideTranslationViewModel> Translations { get; set; } = new();
