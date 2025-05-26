@@ -47,7 +47,7 @@
                                             @Html.DisplayNameFor(model => model.Id)
                                         </th>
                                         <th>
-                                            @Html.DisplayNameFor(model => model.Translations.FirstOrDefault().Title)
+                                            @Html.DisplayNameFor(model => model.Translations.FirstOrDefault(w => w.LanguageIsDefault).Title)
                                         </th>
                                         <th>
                                             @Html.DisplayNameFor(model => model.Sequence)
@@ -69,7 +69,7 @@
                                                 @Html.DisplayFor(modelItem => item.Id)
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.Translations.FirstOrDefault().Title)
+                                                @Html.DisplayFor(modelItem => item.Translations.FirstOrDefault(w => w.LanguageIsDefault).Title)
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.Sequence)

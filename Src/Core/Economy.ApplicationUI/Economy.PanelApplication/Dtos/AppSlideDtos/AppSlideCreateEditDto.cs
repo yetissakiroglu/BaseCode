@@ -1,5 +1,4 @@
 ﻿using Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos;
-using Microsoft.AspNetCore.Http;
 
 namespace Economy.Panel.Application.Dtos.AppSlideDtos
 {
@@ -9,9 +8,9 @@ namespace Economy.Panel.Application.Dtos.AppSlideDtos
         public int Sequence { get; set; }
         public string? ThumbnailBase64 { get; set; }
         public string? ThumbnailMobilBase64 { get; set; }
-        public IFormFile WebCoverImageFile { get; set; }
-        public IFormFile MobileCoverImageFile { get; set; }
+        public string? WebImageFile { get; set; }
+        public string? MobileImageFile { get; set; }
 
-        public List<AppSlideLanguageCreateEditDto> Translations { get; set; }
+        public List<AppSlideTranslationCreateEditDto> Translations { get; set; }
     }
 }

@@ -10,6 +10,6 @@ namespace Economy.Panel.UI.Models.SlideViewModels
         public string? ThumbnailMobilBase64 { get; set; }
         public IFormFile WebCoverImageFile { get; set; }
         public IFormFile MobileCoverImageFile { get; set; }
-        public List<AppSlideLanguageCreateEditViewModel> Translations { get; set; } = new();
+        public List<AppSlideTranslationCreateEditViewModel> Translations { get; set; } = new();
     }
 }

@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using System.Net;
 using System.Reflection;
 
@@ -176,7 +177,20 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 104857600; // 100 MB gibi büyük bir limit
 });
 
+
+
+
 var app = builder.Build();
+
+
+var fileProvider = new PhysicalFileProvider(
+    Path.Combine(Directory.GetCurrentDirectory(), "Files"));
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = fileProvider,
+    RequestPath = "/Files"
+});
 
 // Uygulama baþlatýldýðýnda migrasyonlarý çalýþtýrmak için örneðin þöyle bir iþlev ekleyebilirsiniz:
 using (var scope = app.Services.CreateScope())

@@ -3,10 +3,10 @@ using Economy.Core.Interfaces;
 using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.EntitySlides;
 using Economy.Panel.Application.Dtos.AppSlideDtos;
-using Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos;
 using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
 using Economy.Panel.Application.Validations.AppSlideValidator;
+using Economy.Panel.Persistence.Extensions;
 using System.Net;
 
 namespace Economy.Panel.Persistence.Services
@@ -42,27 +42,29 @@ namespace Economy.Panel.Persistence.Services
                     validationErrors: validationResult.ToValidationDictionary());
 
 
+            var entity = model.MapToEntity();
+            if (model.ThumbnailBase64 is not null)
+            {
+                var webImage = _fileImageHelperService.UploadBase64(model.ThumbnailBase64, new List<string> { "updates", "slider" });
+                entity.ThumbnailBase64 = webImage.Data.MediaFullURL;
+            }
 
-            var entity = MapToEntity(model);
-
-
-            entity.ThumbnailBase64 = _fileImageHelperService.UploadBase64(model.ThumbnailBase64, new List<string> { "updates", "slider" }).Result.Data.MediaFullURL;
-
-
-            entity.ThumbnailMobilBase64 = _fileImageHelperService.UploadBase64(model.ThumbnailMobilBase64, new List<string> { "updates", "slider" }).Result.Data.MediaFullURL;
-
-
-
+            if (model.ThumbnailMobilBase64 is not null)
+            {
+                var mobilImage = _fileImageHelperService.UploadBase64(model.ThumbnailMobilBase64, new List<string> { "updates", "slider" });
+                entity.ThumbnailMobilBase64 = mobilImage.Data.MediaFullURL;
+            }
 
             _entityRepository.Add(entity);
             _unitOfWork.SaveHotelChanges();
 
             return ServiceResult<AppSlideDto>.Success(
-                data: MapToDto(entity),
+                data: entity.MapToDto(),
                 message: "Slide başarıyla oluşturuldu.",
                 statusCode: (int)HttpStatusCode.Created);
 
         }
+
         public ServiceResult<AppSlideDto> DeleteSlide(int id)
         {
             var slide = _entityRepository.GetForEdit(w => w.Id == id && !w.IsDeleted);
@@ -75,8 +77,9 @@ namespace Economy.Panel.Persistence.Services
             _entityRepository.Update(slide);
             _unitOfWork.SaveHotelChanges();
 
-            return ServiceResult<AppSlideDto>.Success(MapToDto(slide), "Slide başarıyla silindi.");
+            return ServiceResult<AppSlideDto>.Success(slide.MapToDto(), "Slide başarıyla silindi.");
         }
+
         public ServiceResult<AppSlideDto> EditSlide(AppSlideCreateEditDto model)
         {
             if (model == null || model.Id == null)
@@ -105,17 +108,31 @@ namespace Economy.Panel.Persistence.Services
                     statusCode: (int)HttpStatusCode.BadRequest);
 
 
-            MapToEntity(entity, model);
-            _entityRepository.Update(entity);
+            var entityNew = model.MapToEntity();
+
+            if (model.ThumbnailBase64 is not null)
+            {
+                var webImage = _fileImageHelperService.UploadBase64(model.ThumbnailBase64, new List<string> { "updates", "slider" });
+                entityNew.ThumbnailBase64 = webImage.Data.MediaFullURL;
+            }
+
+            if (model.ThumbnailMobilBase64 is not null)
+            {
+                var mobilImage = _fileImageHelperService.UploadBase64(model.ThumbnailMobilBase64, new List<string> { "updates", "slider" });
+                entityNew.ThumbnailMobilBase64 = mobilImage.Data.MediaFullURL;
+            }
+          
+
+            _entityRepository.Update(entityNew);
             _unitOfWork.SaveHotelChanges();
 
             return ServiceResult<AppSlideDto>.Success(
-                   data: MapToDto(entity),
+                   data: entity.MapToDto(),
                    message: "Slide başarıyla güncellendi.");
         }
         public ServiceResult<List<AppSlideDto>> GetAllSlide(bool isDeleted)
         {
-            var slides = _entityRepository.WhereForRead(x => x.IsDeleted == isDeleted).Select(MapToDto).ToList();
+            var slides = _entityRepository.WhereForRead(x => x.IsDeleted == isDeleted, x => x.Translations).Select(SlideMapper.MapSelectToDto).ToList();
             if (!slides.Any())
             {
                 return ServiceResult<List<AppSlideDto>>.Empty(
@@ -139,73 +156,10 @@ namespace Economy.Panel.Persistence.Services
                );
             }
 
-            return ServiceResult<AppSlideDto>.Success(data: MapToDto(slide), message: "Slide başarıyla getirildi.", statusCode: (int)HttpStatusCode.OK);
+            return ServiceResult<AppSlideDto>.Success(data: slide.MapToDto(), message: "Slide başarıyla getirildi.", statusCode: (int)HttpStatusCode.OK);
         }
 
-        private void MapToEntity(AppSlide entity, AppSlideCreateEditDto model)
-        {
-            entity.Id = model.Id;
-            entity.Sequence = model.Sequence;
-            entity.ThumbnailBase64 = model.ThumbnailBase64;
-            entity.ThumbnailMobilBase64 = model.ThumbnailMobilBase64;
 
-            entity.Translations = model.Translations?.Select(t => new AppSlideTranslation
-            {
-                Id = t.Id,
-                AppSlideId = t.AppSlideId,
-                AppLanguageId = t.AppLanguageId,
-                Title = t.Title,
-                Content = t.Content,
-                ButtonText = t.ButtonText,
-                ButtonUrl = t.ButtonUrl,
-                ButtonIcon = t.ButtonIcon,
-                IsExternal = t.IsExternal
-            }).ToList() ?? new List<AppSlideTranslation>();
-        }
-        private AppSlide MapToEntity(AppSlideCreateEditDto model)
-        {
-            return new AppSlide
-            {
-                Id = model.Id,
-                Sequence = model.Sequence,
-                ThumbnailBase64 = model.ThumbnailBase64,
-                ThumbnailMobilBase64 = model.ThumbnailMobilBase64,
-                Translations = model.Translations.Select(t => new AppSlideTranslation
-                {
-                    Id = t.Id,
-                    AppSlideId = t.AppSlideId,
-                    AppLanguageId = t.AppLanguageId,
-                    Title = t.Title,
-                    Content = t.Content,
-                    ButtonText = t.ButtonText,
-                    ButtonUrl = t.ButtonUrl,
-                    ButtonIcon = t.ButtonIcon,
-                    IsExternal = t.IsExternal
-                }).ToList()
-            };
-        }
-        private AppSlideDto MapToDto(AppSlide slide)
-        {
-            return new AppSlideDto
-            {
-                Id = slide.Id,
-                Sequence = slide.Sequence,
-                ThumbnailBase64 = slide.ThumbnailBase64,
-                ThumbnailMobilBase64 = slide.ThumbnailMobilBase64,
-                Translations = slide.Translations?.Select(t => new AppSlideTranslationDto
-                {
-                    Id = t.Id,
-                    AppSlideId = t.AppSlideId,
-                    AppLanguageId = t.AppLanguageId,
-                    Title = t.Title,
-                    Content = t.Content,
-                    ButtonText = t.ButtonText,
-                    ButtonUrl = t.ButtonUrl,
-                    ButtonIcon = t.ButtonIcon,
-                    IsExternal = t.IsExternal
-                }).ToList() ?? new List<AppSlideTranslationDto>()
-            };
-        }
     }
 
 

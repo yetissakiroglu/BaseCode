@@ -18,6 +18,6 @@ namespace Economy.Panel.UI.Models.SlideViewModels
         public string? ThumbnailMobilBase64 { get; set; }
 
         [DisplayName("Dil Çevirileri")]
-        public List<AppSlideLanguageViewModel> Translations { get; set; } = new();
+        public List<AppSlideTranslationViewModel> Translations { get; set; } = new();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Economy.Panel.Application.Interfaces;
 using Economy.Panel.UI.Extensions;
 using Economy.Panel.UI.Models.SlideViewModels;
-using Economy.Panel.UI.Models.SlideViewModels.AppSlideLanguageViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Economy.Panel.UI.Controllers
@@ -33,7 +32,7 @@ namespace Economy.Panel.UI.Controllers
                 AddMessage(result);
                 return View(result.Data);
             }
-            var resultModel = result.Data.ToListViewModel(allLanguages.Data);
+            var resultModel = result.Data.MapToListViewModel(allLanguages.Data);
 
             return View(resultModel);
         }
@@ -55,7 +54,7 @@ namespace Economy.Panel.UI.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-          var resultModel = allLanguages.Data.ToCreateEditViewModel(result.Data);
+          var resultModel = result.Data.MapToEditViewModel(allLanguages.Data);
 
             return View(resultModel);
         }
@@ -64,7 +63,7 @@ namespace Economy.Panel.UI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(AppSlideCreateEditViewModel viewModel)
         {
-            var dto = viewModel.ToDto();
+            var dto = viewModel.MapToDto();
             var result = _panelAppSlideService.EditSlide(dto);
 
             AddValidationErrorsToModelState(result.ValidationErrors);
@@ -97,7 +96,7 @@ namespace Economy.Panel.UI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(AppSlideCreateEditViewModel viewModel)
         {
-            var dto = viewModel.ToDto();
+            var dto = viewModel.MapToDto();
             var result = _panelAppSlideService.CreateSlide(dto);
 
             AddValidationErrorsToModelState(result.ValidationErrors);

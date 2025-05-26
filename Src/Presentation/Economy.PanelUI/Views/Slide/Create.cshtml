@@ -57,7 +57,7 @@
                                                 type="button"
                                                 role="tab"
                                                 aria-selected="@(i == 0 ? "true" : "false")">
-                                            <i class="@t.Icon?.ToLower()"></i> @t.Name
+                                            <i class="@t.LanguageIcon?.ToLower()"></i> @t.LanguageName
                                         </button>
                                     </li>
                                 }
@@ -120,8 +120,8 @@
                                     <div class="tab-pane fade @isActive" id="lang-tab-pane-@i" role="tabpanel" aria-labelledby="lang-tab-@i">
                                         <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
                                         <input type="hidden" name="Translations[@i].AppLanguageId" value="@t.AppLanguageId" />
-                                        <input type="hidden" name="Translations[@i].Name" value="@t.Name" />
-                                        <input type="hidden" name="Translations[@i].Icon" value="@t.Icon" />
+                                        <input type="hidden" name="Translations[@i].Name" value="@t.LanguageName" />
+                                        <input type="hidden" name="Translations[@i].Icon" value="@t.LanguageIcon" />
                                         <input type="hidden" name="Translations[@i].AppSlideId" value="@t.AppSlideId" />
 
 

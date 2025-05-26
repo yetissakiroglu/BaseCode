@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Economy.Panel.Application.Validations.AppSlideValidator
 {
-    public class AppSlideLanguageCreateEditDtoValidator : AbstractValidator<AppSlideLanguageCreateEditDto>
+    public class AppSlideLanguageCreateEditDtoValidator : AbstractValidator<AppSlideTranslationCreateEditDto>
     {
         public AppSlideLanguageCreateEditDtoValidator()
         {

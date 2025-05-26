@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos
+﻿namespace Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos
 {
     public class AppSlideTranslationDto
     {

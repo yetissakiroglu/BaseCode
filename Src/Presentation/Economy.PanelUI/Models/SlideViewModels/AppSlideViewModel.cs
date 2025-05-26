@@ -6,8 +6,10 @@ namespace Economy.Panel.UI.Models.SlideViewModels
     {
         public int Id { get; set; }
         public int Sequence { get; set; }
-        public string? ThumbnailBase64 { get; set; }
-        public string? ThumbnailMobilBase64 { get; set; }
-        public List<AppSlideLanguageViewModel> Translations { get; set; } = new();
+        public string? WebImageFile { get; set; }
+        public string? MobilImageFile { get; set; }
+
+
+        public List<AppSlideTranslationViewModel> Translations { get; set; } = new();
     }
 }

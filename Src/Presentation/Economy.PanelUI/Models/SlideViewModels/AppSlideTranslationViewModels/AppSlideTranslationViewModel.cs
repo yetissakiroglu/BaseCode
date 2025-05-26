@@ -2,7 +2,7 @@
 
 namespace Economy.Panel.UI.Models.SlideViewModels.AppSlideLanguageViewModels
 {
-    public class AppSlideLanguageViewModel
+    public class AppSlideTranslationViewModel
     {
         [DisplayName("ID")]
         public int Id { get; set; }
@@ -30,12 +30,12 @@ namespace Economy.Panel.UI.Models.SlideViewModels.AppSlideLanguageViewModels
         [DisplayName("Buton İkonu")]
         public string? ButtonIcon { get; set; }
 
-
         [DisplayName("Dil Adı")]
-        public string? Name { get; set; }
+        public string? LanguageName { get; set; }
 
         [DisplayName("Dil İkonu")]
-        public string? Icon { get; set; }
+        public string? LanguageIcon { get; set; }
+        public bool LanguageIsDefault { get; set; }
 
     }
 }
