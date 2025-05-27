@@ -66,6 +66,14 @@
                                 <section class="mb-5">
                                     <h5 class="fw-bold text-secondary mb-3">Masaüstü Logo</h5>
                                     <p class="text-muted mb-3">Lütfen masaüstü için kullanılacak logo dosyasını yükleyin.</p>
+                                    <div class="row gy-3 align-items-center">
+                                        <p>Sistemdeki Web Resim </p>
+
+                                        <div class="col-md-6 text-center">
+                                            <img src="@Model.WebImageFile" class="responsive" />
+                                        </div>
+                                    </div>
+
 
                                     <div class="row gy-3 align-items-center">
                                         <div class="col-md-6 text-center">
@@ -92,7 +100,12 @@
                                     <h5 class="fw-bold text-secondary mb-3">Mobil Logo</h5>
                                     <p class="text-muted mb-3">Mobil cihazlarda kullanılacak logo dosyasını yükleyin.</p>
                                     <input class="form-control form-control-lg mb-3" type="file" id="mobileLogoInput" accept="image/*" />
-
+                                    <div class="row gy-3 align-items-center">
+                                        <p>Sistemdeki Mobil Resim </p>
+                                        <div class="col-md-6 text-center">
+                                            <img src="@Model.MobileImageFile" class="responsive" />
+                                        </div>
+                                    </div>
                                     <div class="row gy-3 align-items-center">
                                         <div class="col-md-6 text-center">
                                             <p class="fw-semibold mb-1">Orijinal Önizleme</p>
