@@ -14,9 +14,12 @@ using Economy.Core.Interfaces.Economy.Panel.Persistence.Services;
 using Economy.Core.Services.Providers;
 using Economy.Domain.Entites.Identities;
 using Economy.Infrastructure.Services;
+using Economy.Panel.Application.Dtos.AppCategoryDtos.CategoryTranslationDtos;
+using Economy.Panel.Application.Dtos.AppCategoryDtos;
 using Economy.Panel.Application.Dtos.AppSlideDtos;
 using Economy.Panel.Application.Interfaces;
 using Economy.Panel.Application.Repositories;
+using Economy.Panel.Application.Validations.AppCategoryValidator;
 using Economy.Panel.Application.Validations.AppSlideValidator;
 using Economy.Panel.Persistence.Repositories;
 using Economy.Panel.Persistence.Services;
@@ -143,6 +146,8 @@ builder.Services.AddScoped<IPanelAppUserService, PanelAppUserService>(); // Serv
 
 
 builder.Services.AddScoped<IValidator<AppSlideCreateEditDto>, AppSlideCreateEditDtoValidator>();
+builder.Services.AddTransient<IValidator<AppCategoryCreateEditDto>, AppCategoryCreateEditDtoValidator>();
+builder.Services.AddTransient<IValidator<AppCategoryTranslationCreateEditDto>, AppCategoryTranslationCreateEditDtoValidator>();
 
 
 builder.Services.AddScoped<IAppBaseRepository, AppBaseRepository>();
@@ -155,6 +160,8 @@ builder.Services.AddScoped<IPanelAppSettingReservationLinkService, PanelAppSetti
 builder.Services.AddScoped<IPanelAppSettingReservationNumberService, PanelAppSettingReservationNumberService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSettingWhatsappLineService, PanelAppSettingWhatsappLineService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSlideService, PanelAppSlideService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IPanelAppCategoryService, PanelAppCategoryService>(); // Service sýnýfý kaydediliyor.
+
 
 
 // Token service kaydýný yapalým.

@@ -1,5 +1,4 @@
-﻿using Economy.Domain.Entites.EntitySlides;
-using Economy.Panel.Application.Dtos.AppLanguageDtos;
+﻿using Economy.Panel.Application.Dtos.AppLanguageDtos;
 using Economy.Panel.Application.Dtos.AppSlideDtos;
 using Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos;
 using Economy.Panel.UI.Models.SlideViewModels;
@@ -10,7 +9,7 @@ namespace Economy.Panel.UI.Extensions
     /// <summary>
     /// Extension methods for mapping and creating ViewModel and DTO objects related to AppSlide.
     /// </summary>
-    public static class SlideMapper
+    public static class SlideMapperExtensions
     {
         public static List<AppSlideListViewModel> MapToListViewModel(this IEnumerable<AppSlideDto> slides,IEnumerable<AppLanguageDto> languages)
         {

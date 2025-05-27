@@ -7,14 +7,18 @@ namespace Economy.Domain.Entites.EntityAppCategories
     public class AppCategoryTranslation : BaseEntity<int>
     {
         public int AppCategoryId { get; set; }
-        public string Title { get; set; }
+        public AppCategory AppCategory { get; set; } = null!;
+
+        public int AppLanguageId { get; set; }
+
+        public string Title { get; set; } = string.Empty;
         public string? ShortDescription { get; set; }
         public string? Content { get; set; }
 
         public string? MetaTitle { get; set; }
         public string? MetaDescription { get; set; }
 
-        public int AppLanguageId { get; set; }
-        public AppLanguage AppLanguage { get; set; } = null!;
+        // URL artık sadece çeviri içinde
+        public string Url { get; set; } = string.Empty;
     }
 }

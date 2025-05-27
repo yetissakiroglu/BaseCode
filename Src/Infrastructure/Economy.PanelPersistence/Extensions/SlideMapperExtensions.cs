@@ -13,9 +13,6 @@ namespace Economy.Panel.Persistence.Extensions
         {
             entity.Id = model.Id;
             entity.Sequence = model.Sequence;
-            //entity.ThumbnailBase64 = model.ThumbnailBase64;
-            //entity.ThumbnailMobilBase64 = model.ThumbnailMobilBase64;
-
             entity.Translations = model.Translations?.Select(t => new AppSlideTranslation
             {
                 Id = t.Id,
@@ -52,7 +49,7 @@ namespace Economy.Panel.Persistence.Extensions
                 Translations = entity.Translations.Select(MapTranslationEntityToDto).ToList()
             };
         }
-     
+
         // ------------------------
         // Özel Yardımcı Metotlar
         // ------------------------
@@ -72,22 +69,8 @@ namespace Economy.Panel.Persistence.Extensions
                 IsExternal = entity.IsExternal
             };
         }
-        private static AppSlideTranslation MapTranslationDtoToEntity(AppSlideTranslationCreateEditDto dto)
-        {
-            return new AppSlideTranslation
-            {
-                Id = dto.Id,
-                AppSlideId = dto.AppSlideId,
-                AppLanguageId = dto.AppLanguageId,
-                Title = dto.Title,
-                Content = dto.Content,
-                ButtonText = dto.ButtonText,
-                ButtonUrl = dto.ButtonUrl,
-                ButtonIcon = dto.ButtonIcon,
-                IsExternal = dto.IsExternal
-            };
-        }
-      
+
+
     }
 
 }
