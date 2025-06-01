@@ -60,5 +60,56 @@ namespace Economy.Panel.UI.Controllers
             return View(resultModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(AppCategoryCreateEditViewModel viewModel)
+        {
+            var dto = viewModel.MapToDto();
+            var result = _panelAppCategoryService.EditCategory(dto);
+
+            AddValidationErrorsToModelState(result.ValidationErrors);
+            AddMessage(result);
+
+            if (!result.IsSuccess)
+            {
+                return View(viewModel);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var allLanguages = _panelAppLanguageService.GetAllLanguage(false, true);
+            if (!allLanguages.HasData)
+            {
+                AddMessage(allLanguages);
+                return RedirectToAction(nameof(Index));
+            }
+            var viewModel = new AppCategoryCreateEditViewModel();
+            viewModel.ToEmptyCreateEditViewModel(allLanguages.Data);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(AppCategoryCreateEditViewModel viewModel)
+        {
+            var dto = viewModel.MapToDto();
+            var result = _panelAppCategoryService.CreateCategory(dto);
+
+            AddValidationErrorsToModelState(result.ValidationErrors);
+            AddMessage(result);
+
+            if (!result.IsSuccess)
+            {
+                return View(viewModel);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
     }
 }

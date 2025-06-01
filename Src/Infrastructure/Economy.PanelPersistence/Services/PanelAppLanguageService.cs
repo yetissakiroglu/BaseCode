@@ -119,6 +119,7 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                     message: "Dil bulunamadı.",
                     statusCode: (int)HttpStatusCode.NotFound
                 );
+
             result.Id = model.Id;
             result.Name = model.Name;
             result.IsRTL = model.IsRTL;

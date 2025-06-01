@@ -16,6 +16,8 @@ namespace Economy.Panel.UI.Extensions
             return slides.Select(slide => new AppCategoryListViewModel
             {
                 Id = slide.Id,
+                ContentType =slide.ContentType,
+                ParentCategoryId = slide.ParentCategoryId,
                 Translations = languages.Select(lang => MapToTranslationViewModel(lang, slide.Translations)).ToList()
             }).ToList();
         }
@@ -25,6 +27,8 @@ namespace Economy.Panel.UI.Extensions
             return new AppCategoryCreateEditViewModel
             {
                 Id = dto.Id,
+                ContentType = dto.ContentType,
+                ParentCategoryId = dto.ParentCategoryId,
                 Translations = languages.Select(lang => MapToCreateEditTranslationViewModel(lang, dto.Translations)).ToList()
             };
         }
@@ -34,23 +38,22 @@ namespace Economy.Panel.UI.Extensions
             return new AppCategoryCreateEditDto
             {
                 Id = viewModel.Id,
+                ContentType = viewModel.ContentType,
+                ParentCategoryId = viewModel.ParentCategoryId,
                 Translations = viewModel.Translations.Select(MapToCreateEditDto).ToList()
             };
         }
 
-        //public static AppCategoryCreateEditViewModel ToEmptyCreateEditViewModel(this IEnumerable<AppLanguageDto> languages)
-        //{
-        //    return new AppCategoryCreateEditViewModel
-        //    {
-        //        Translations = languages.Select(lang => new AppCategoryTranslationCreateEditViewModel
-        //        {
-        //            AppLanguageId = lang.Id,
-        //            LanguageName = lang.Name,
-        //            LanguageIcon = lang.Icon,
-        //            LanguageIsDefault = lang.IsDefault
-        //        }).ToList()
-        //    };
-        //}
+        public static void ToEmptyCreateEditViewModel(this AppCategoryCreateEditViewModel model, IEnumerable<AppLanguageDto> languages)
+        {
+            model.Translations = languages.Select(lang => new AppCategoryTranslationCreateEditViewModel
+            {
+                AppLanguageId = lang.Id,
+                LanguageName = lang.Name,
+                LanguageIcon = lang.Icon,
+                LanguageIsDefault = lang.IsDefault
+            }).ToList();
+        }
 
         public static AppCategoryViewModel ToViewModel(this AppCategoryDto slide)
         {
@@ -108,6 +111,10 @@ namespace Economy.Panel.UI.Extensions
                 LanguageIcon = lang.Icon,
                 Title = t?.Title ?? string.Empty,
                 Content = t?.Content ?? string.Empty,
+                MetaDescription = t.MetaDescription,
+                ShortDescription = t.ShortDescription,
+                MetaTitle = t.MetaTitle,
+                Url =t.Url,
                 LanguageIsDefault = lang.IsDefault
             };
         }

@@ -1,18 +1,19 @@
-﻿using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityCategories;
+﻿using Economy.Domain.Entites.EntityCategories;
 using Economy.Domain.Enums;
+using Economy.Panel.Application.Dtos.AppContentDtos.AppContentTranslationDtos;
 
-namespace Economy.Domain.Entites.EntityAppContents.AppContents
+namespace Economy.Panel.Application.Dtos.AppContentDtos
 {
-    public class AppContent :BaseEntity<int>
+    public class AppContentCreateEditDto
     {
+        public int Id { get; set; }
         public string? WebThumbnailUrl { get; set; }
         public string? MobilThumbnailUrl { get; set; }
         public ContentType ContentType { get; set; } = ContentType.Odalar; // Onay durumu 
         // İlişkiler
         public int AppCategoryId { get; set; } // Kategori ID'si     
         public virtual AppCategory AppCategory { get; set; }
-        public virtual ICollection<AppContentTranslation> Translations { get; set; } = new List<AppContentTranslation>();
 
+        public List<AppContentTranslationCreateEditDto> Translations { get; set; } = new();
     }
 }
