@@ -3,9 +3,11 @@ using Economy.Base.Persistence.Configurations.ConfigurationAppSettings;
 using Economy.Domain.Entites.EntityAppSettings;
 using Economy.Domain.Entites.EntityCategories;
 using Economy.Domain.Entites.EntitySlides;
+using Economy.Persistence.Configurations.ConfigurationAppContent;
 using Economy.Persistence.Configurations.ConfigurationAppLanguage;
 using Economy.Persistence.Configurations.ConfigurationAppSlide;
 using Microsoft.EntityFrameworkCore;
+
 namespace Economy.Persistence.Contexts
 {
     public class HotelDbContext : DbContext
@@ -28,6 +30,7 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppSettingWhatsappLine> AppSettingWhatsappLines { get; set; }
         public DbSet<AppSlide> AppSlides { get; set; }
         public DbSet<AppCategory> AppCategorys { get; set; }
+        public DbSet<Economy.Domain.Entites.EntityAppContents.AppContents.AppContent> AppContentss { get; set; }
 
 
         // diğer otel tabloları...
@@ -45,8 +48,10 @@ namespace Economy.Persistence.Contexts
             modelBuilder.ApplyConfiguration(new AppSlideTranslationConfiguration());
             modelBuilder.ApplyConfiguration(new AppCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new AppCategoryTranslationConfiguration());
+            modelBuilder.ApplyConfiguration(new AppContentConfiguration());
+            modelBuilder.ApplyConfiguration(new AppContentTranslationConfiguration());
 
-            
+
             base.OnModelCreating(modelBuilder);
         }
     }

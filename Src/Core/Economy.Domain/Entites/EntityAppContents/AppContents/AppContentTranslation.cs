@@ -1,7 +1,4 @@
-﻿using Economy.Core.Extensions;
-using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityCategories;
-using Economy.Domain.Models;
+﻿using Economy.Domain.BaseEntities;
 
 namespace Economy.Domain.Entites.EntityAppContents.AppContents
 {

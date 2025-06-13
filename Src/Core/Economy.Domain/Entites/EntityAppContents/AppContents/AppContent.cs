@@ -9,9 +9,9 @@ namespace Economy.Domain.Entites.EntityAppContents.AppContents
         public string? WebThumbnailUrl { get; set; }
         public string? MobilThumbnailUrl { get; set; }
         public ContentType ContentType { get; set; } = ContentType.Odalar; // Onay durumu 
-        // İlişkiler
-        public int AppCategoryId { get; set; } // Kategori ID'si     
-        public virtual AppCategory AppCategory { get; set; }
+                                                                           // İlişkiler
+        public int? AppCategoryId { get; set; } // Nullable hale getirildi
+        public virtual AppCategory? AppCategory { get; set; } // Optional navigation property
         public virtual ICollection<AppContentTranslation> Translations { get; set; } = new List<AppContentTranslation>();
 
     }

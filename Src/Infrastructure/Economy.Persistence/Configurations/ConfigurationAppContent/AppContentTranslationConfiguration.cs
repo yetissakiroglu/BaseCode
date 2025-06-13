@@ -12,33 +12,43 @@ namespace Economy.Persistence.Configurations.ConfigurationAppContent
 
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Title)
-                .IsRequired()
-                .HasMaxLength(250);
+            builder.Property(x => x.Title).IsRequired().HasMaxLength(250);
+            builder.Property(x => x.Url).IsRequired().HasMaxLength(500);
 
-            builder.Property(x => x.ShortDescription)
-                .HasMaxLength(500);
+            builder.HasOne<AppContent>()
+                   .WithMany(x => x.Translations)
+                   .HasForeignKey(x => x.AppContentId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Property(x => x.Url)
-                .IsRequired()
-                .HasMaxLength(300);
-
-            builder.Property(x => x.MetaTitle)
-                .HasMaxLength(150);
-
-            builder.Property(x => x.MetaDescription)
-                .HasMaxLength(300);
-
-            builder.Property(x => x.Content)
-                .HasColumnType("nvarchar(max)"); // Büyük içerikler için
-
-            builder.Property(x => x.IsExternal)
-                .IsRequired();
-
-            builder.HasOne(x => x.AppLanguage)
-                .WithMany()
-                .HasForeignKey(x => x.AppLanguageId)
-                .OnDelete(DeleteBehavior.Restrict); // Dile ait içerikler silinmesin
+            // Seed data
+            builder.HasData(
+                new AppContentTranslation
+                {
+                    Id = 1,
+                    AppContentId = 1,
+                    AppLanguageId = 1,
+                    Title = "Oda 1",
+                    ShortDescription = "Kısa açıklama 1",
+                    Content = "Detaylı içerik 1",
+                    IsExternal = false,
+                    Url = "/oda-1",
+                    MetaTitle = "Oda 1 SEO",
+                    MetaDescription = "Oda 1 açıklaması"
+                },
+                new AppContentTranslation
+                {
+                    Id = 2,
+                    AppContentId = 2,
+                    AppLanguageId = 1,
+                    Title = "Hakkımızda",
+                    ShortDescription = "Kurumsal kısa açıklama",
+                    Content = "Şirket hakkında detaylı bilgi",
+                    IsExternal = false,
+                    Url = "/hakkimizda",
+                    MetaTitle = "Hakkımızda SEO",
+                    MetaDescription = "Hakkımızda açıklaması"
+                }
+            );
         }
     }
 }

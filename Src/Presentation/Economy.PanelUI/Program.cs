@@ -36,6 +36,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Net;
 using System.Reflection;
+using Economy.Panel.Application.Dtos.AppContentDtos;
+using Economy.Panel.Application.Dtos.AppContentDtos.AppContentTranslationDtos;
+using Economy.Panel.Application.Validations.AppContentValidator;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -149,6 +152,10 @@ builder.Services.AddScoped<IValidator<AppSlideCreateEditDto>, AppSlideCreateEdit
 builder.Services.AddTransient<IValidator<AppCategoryCreateEditDto>, AppCategoryCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppCategoryTranslationCreateEditDto>, AppCategoryTranslationCreateEditDtoValidator>();
 
+builder.Services.AddTransient<IValidator<AppContentCreateEditDto>, AppContentCreateEditDtoValidator>();
+builder.Services.AddTransient<IValidator<AppContentTranslationCreateEditDto>, AppContentTranslationCreateEditDtoValidator>();
+
+
 
 builder.Services.AddScoped<IAppBaseRepository, AppBaseRepository>();
 builder.Services.AddScoped<PanelAppRepository, ConcretePanelAppRepository>(); // Concrete sýnýfý kullanýyoruz.
@@ -161,6 +168,7 @@ builder.Services.AddScoped<IPanelAppSettingReservationNumberService, PanelAppSet
 builder.Services.AddScoped<IPanelAppSettingWhatsappLineService, PanelAppSettingWhatsappLineService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSlideService, PanelAppSlideService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppCategoryService, PanelAppCategoryService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IPanelAppContentService, PanelAppContentService>(); // Service sýnýfý kaydediliyor.
 
 
 

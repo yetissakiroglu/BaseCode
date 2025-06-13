@@ -11,9 +11,9 @@ namespace Economy.Panel.Application.Dtos.AppContentDtos
         public string? MobilThumbnailUrl { get; set; }
         public ContentType ContentType { get; set; } = ContentType.Odalar; // Onay durumu 
         // İlişkiler
-        public int AppCategoryId { get; set; } // Kategori ID'si     
-        public virtual AppCategory AppCategory { get; set; }
+        public int? AppCategoryId { get; set; } // Kategori ID'si     
+        public virtual AppCategory? AppCategory { get; set; }
 
-        public List<AppContentTranslationCreateEditDto> Translations { get; set; } = new();
+        public List<AppContentTranslationDto> Translations { get; set; } = new();
     }
 }

@@ -3,10 +3,13 @@ using Economy.Core.Interfaces;
 using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.EntityAppContents.AppContents;
 using Economy.Domain.Entites.EntitySlides;
+using Economy.Panel.Application.Dtos.AppCategoryDtos;
 using Economy.Panel.Application.Dtos.AppContentDtos;
 using Economy.Panel.Application.Dtos.AppSlideDtos;
 using Economy.Panel.Application.Interfaces;
+using Economy.Panel.Persistence.Extensions;
 using FluentValidation;
+using System.Net;
 
 namespace Economy.Panel.Persistence.Services
 {
@@ -41,7 +44,17 @@ namespace Economy.Panel.Persistence.Services
 
         public ServiceResult<List<AppContentDto>> GetAllContent(bool isDeleted)
         {
-            throw new NotImplementedException();
+            var entity = _entityRepository.WhereForRead(x => x.IsDeleted == isDeleted, x => x.Translations).Select(ContentMapper.MapSelectToDto).ToList();
+            if (!entity.Any())
+            {
+                return ServiceResult<List<AppContentDto>>.Empty(
+                    message: "Kayıt bulunamadı.",
+                    statusCode: (int)HttpStatusCode.NoContent);
+            }
+
+            return ServiceResult<List<AppContentDto>>.Success(
+                data: entity,
+                message: "başarıyla getirildi.");
         }
 
         public ServiceResult<AppContentDto> GetContent(int id, bool isDeleted)
