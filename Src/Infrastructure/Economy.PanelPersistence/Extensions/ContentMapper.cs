@@ -43,7 +43,6 @@ namespace Economy.Panel.Persistence.Extensions
             return new AppContentDto
             {
                 Id = entity.Id,
-                AppCategory = entity.AppCategory,
                 AppCategoryId = entity.AppCategoryId,
                 MobilThumbnailUrl = entity.MobilThumbnailUrl,
                 WebThumbnailUrl = entity.WebThumbnailUrl,

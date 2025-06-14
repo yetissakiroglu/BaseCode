@@ -1,6 +1,4 @@
-﻿using Economy.Domain.Entites.EntityCategories;
-using Economy.Domain.Enums;
-using Economy.Panel.Application.Dtos.AppContentDtos.AppContentTranslationDtos;
+﻿using Economy.Domain.Enums;
 
 namespace Economy.Panel.Application.Dtos.AppContentDtos
 {
