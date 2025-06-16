@@ -1,6 +1,5 @@
 ﻿using Economy.Core.Tools;
 using Economy.Panel.Application.Dtos.AppDtos;
-using Economy.Panel.Application.Repositories;
 
 namespace Economy.Panel.Application.Interfaces
 {
@@ -10,6 +9,6 @@ namespace Economy.Panel.Application.Interfaces
         Task<ResponseModel<AppDto>> CreateApp(AppCreateDto user);
         Task<ResponseModel<AppDto>> EditApp(AppEditDto user);
         ResponseModel<AppDto> DeleteApp(int Id);
-        ResponseModel<AppDto> GetApp(int Id,bool isDeleted);
+        ResponseModel<AppDto> GetApp(int Id, bool isDeleted);
     }
 }

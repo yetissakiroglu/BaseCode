@@ -1,8 +1,8 @@
-﻿using Economy.Base.Application.Interfaces;
-using Economy.Core.Business;
+﻿using Economy.Core.Business;
 using Economy.Core.Dtos;
 using Economy.Core.Services;
 using Economy.Domain.Entites.Identities;
+using Economy.Panel.Application.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

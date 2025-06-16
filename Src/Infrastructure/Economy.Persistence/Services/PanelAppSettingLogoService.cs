@@ -1,8 +1,6 @@
 ﻿using Economy.Core.Interfaces;
 using Economy.Core.Tools;
-using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Domain.Entites.EntityAppSettings;
-using Economy.Panel.Application.Dtos.AppSettingDtos;
 using Economy.Panel.Application.Dtos.AppSettingLogoDtos;
 using Economy.Panel.Application.Interfaces;
 using System.Net;

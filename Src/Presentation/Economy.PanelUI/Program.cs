@@ -1,31 +1,25 @@
-using Autofac.Core;
-using Economy.Application.BaseRepositories;
-using Economy.Base.Application.BaseRepositories;
-using Economy.Base.Application.Interfaces;
-using Economy.Base.Persistence.BaseRepositories;
 using Economy.Base.Persistence.Providers;
 using Economy.Core.Business;
 using Economy.Core.ContextFactory;
 using Economy.Core.Helpers;
 using Economy.Core.Helpers.Dtos;
 using Economy.Core.Interfaces;
-using Economy.Core.Interfaces.Economy.Panel.Application.Repositories;
 using Economy.Core.Interfaces.Economy.Panel.Persistence.Services;
 using Economy.Core.Services.Providers;
 using Economy.Domain.Entites.Identities;
 using Economy.Infrastructure.Services;
-using Economy.Panel.Application.Dtos.AppCategoryDtos.CategoryTranslationDtos;
 using Economy.Panel.Application.Dtos.AppCategoryDtos;
+using Economy.Panel.Application.Dtos.AppCategoryDtos.CategoryTranslationDtos;
+using Economy.Panel.Application.Dtos.AppContentDtos;
+using Economy.Panel.Application.Dtos.AppContentDtos.AppContentTranslationDtos;
 using Economy.Panel.Application.Dtos.AppSlideDtos;
 using Economy.Panel.Application.Interfaces;
-using Economy.Panel.Application.Repositories;
 using Economy.Panel.Application.Validations.AppCategoryValidator;
+using Economy.Panel.Application.Validations.AppContentValidator;
 using Economy.Panel.Application.Validations.AppSlideValidator;
-using Economy.Panel.Persistence.Repositories;
 using Economy.Panel.Persistence.Services;
 using Economy.Panel.UI;
 using Economy.Panel.UI.Middlewares;
-using Economy.Persistence.BaseRepositories;
 using Economy.Persistence.Contexts;
 using Economy.Persistence.UnitOfWorks;
 using FluentValidation;
@@ -36,9 +30,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Net;
 using System.Reflection;
-using Economy.Panel.Application.Dtos.AppContentDtos;
-using Economy.Panel.Application.Dtos.AppContentDtos.AppContentTranslationDtos;
-using Economy.Panel.Application.Validations.AppContentValidator;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -135,15 +126,6 @@ builder.Services.AddRepositories(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<IHotelDbContextFactory, HotelDbContextFactory>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// IAppUserTokenBaseRepository ve AppUserTokenBaseRepository kaydýný yapalým.
-builder.Services.AddScoped<IAppUserTokenBaseRepository, AppUserTokenBaseRepository>();
-builder.Services.AddScoped<IAppUserBaseRepository, AppUserBaseRepository>();
-
-
-// PanelAppUserRepository ve ConcretePanelAppUserRepository kaydýný yapalým.
-builder.Services.AddScoped<PanelAppUserRepository, ConcretePanelAppUserRepository>(); // Concrete sýnýfý kullanýyoruz.
-builder.Services.AddScoped<PanelAppUserTokenRepository, ConcretePanelAppUserTokenRepository>(); // Token repository'si.
-
 // Service kaydýný yapalým.
 builder.Services.AddScoped<IPanelAppUserService, PanelAppUserService>(); // Service sýnýfý kaydediliyor.
 
@@ -156,9 +138,6 @@ builder.Services.AddTransient<IValidator<AppContentCreateEditDto>, AppContentCre
 builder.Services.AddTransient<IValidator<AppContentTranslationCreateEditDto>, AppContentTranslationCreateEditDtoValidator>();
 
 
-
-builder.Services.AddScoped<IAppBaseRepository, AppBaseRepository>();
-builder.Services.AddScoped<PanelAppRepository, ConcretePanelAppRepository>(); // Concrete sýnýfý kullanýyoruz.
 builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSettingService, PanelAppSettingService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppLanguageService, PanelAppLanguageService>(); // Service sýnýfý kaydediliyor.

@@ -2,7 +2,7 @@
 using Economy.Core.Dtos;
 using Economy.Domain.Entites.Identities;
 
-namespace Economy.Base.Application.Interfaces
+namespace Economy.Panel.Application.Interfaces
 {
     public interface ITokenService
     {

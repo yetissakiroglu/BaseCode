@@ -1,6 +1,4 @@
-﻿using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityAppMenus;
-using Economy.Domain.Entites.EntityMenuItems;
+﻿using Economy.Domain.Entites.EntityMenuItems;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

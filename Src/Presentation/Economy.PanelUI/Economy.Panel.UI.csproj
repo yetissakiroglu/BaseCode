@@ -17,8 +17,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Economy.Domain\Economy.Domain.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Economy.PanelPersistence\Economy.Panel.Persistence.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Economy.Persistence\Economy.Base.Persistence.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Economy.Infrastructure\Economy.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Economy.Persistence\Economy.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

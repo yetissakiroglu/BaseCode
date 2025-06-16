@@ -1,7 +1,6 @@
 ﻿using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Core.Dtos;
 using Economy.Core.Tools;
-using Economy.Panel.Application.Dtos.AppDtos;
 
 namespace Economy.Panel.Application.Interfaces
 {
@@ -15,7 +14,8 @@ namespace Economy.Panel.Application.Interfaces
         ResponseModel<AppUserDto> DeleteUser(int Id);
 
 
-
+        //Task<ResponseModel<AppUserDto>> CreateUser(AppUserCreateDto userCreateDto);
+        //Task<ResponseModel<Token>> LoginAsync(SignIn signIn);
 
     }
 }
