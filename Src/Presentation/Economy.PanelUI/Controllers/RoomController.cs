@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Economy.Panel.UI.Controllers
 {
-    public class PageController : BaseController
+    public class RoomController : BaseController
     {
         private readonly IPanelAppContentService _panelAppContentService;
         private readonly IPanelAppLanguageService _panelAppLanguageService;
 
-        public PageController(IPanelAppContentService panelAppContentService, IPanelAppLanguageService panelAppLanguageService)
+        public RoomController(IPanelAppContentService panelAppContentService, IPanelAppLanguageService panelAppLanguageService)
         {
             _panelAppContentService = panelAppContentService;
             _panelAppLanguageService = panelAppLanguageService;
