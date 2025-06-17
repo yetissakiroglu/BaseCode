@@ -20,7 +20,7 @@ namespace Economy.Panel.Persistence.Services
         public PanelAppContentService(IUnitOfWork unitOfWork, IFileImageHelperService fileImageHelperService, IValidator<AppContentCreateEditDto> validator)
         {
             _unitOfWork = unitOfWork;
-            _entityRepository = unitOfWork.EntityRepository<AppContent>();
+            _entityRepository = unitOfWork.HotelEntityRepository<AppContent>();
             _fileImageHelperService = fileImageHelperService;
             _validator = validator;
         }

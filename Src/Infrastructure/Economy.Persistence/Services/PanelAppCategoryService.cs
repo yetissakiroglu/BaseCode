@@ -21,7 +21,7 @@ namespace Economy.Panel.Persistence.Services
         public PanelAppCategoryService(IUnitOfWork unitOfWork, IFileImageHelperService fileImageHelperService, IValidator<AppCategoryCreateEditDto> validator)
         {
             _unitOfWork = unitOfWork;
-            _entityRepository = unitOfWork.EntityRepository<AppCategory>();
+            _entityRepository = unitOfWork.HotelEntityRepository<AppCategory>();
             _fileImageHelperService = fileImageHelperService;
             _validator = validator;
         }

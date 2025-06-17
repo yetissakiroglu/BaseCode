@@ -15,7 +15,7 @@ namespace Economy.Panel.Persistence.Services
         public PanelAppSettingLogoService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _appSettingLogoRepository = unitOfWork.EntityRepository<AppSettingLogo>();
+            _appSettingLogoRepository = unitOfWork.HotelEntityRepository<AppSettingLogo>();
         }
 
         public ResponseModel<AppSettingLogoDto> CreateEditAppSettingLogo(AppSettingLogoCreateEditDto model)

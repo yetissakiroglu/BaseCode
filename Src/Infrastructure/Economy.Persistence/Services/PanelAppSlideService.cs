@@ -20,7 +20,7 @@ namespace Economy.Panel.Persistence.Services
         public PanelAppSlideService(IUnitOfWork unitOfWork, IFileImageHelperService fileImageHelperService, IValidator<AppSlideCreateEditDto> validator)
         {
             _unitOfWork = unitOfWork;
-            _entityRepository = unitOfWork.EntityRepository<AppSlide>();
+            _entityRepository = unitOfWork.HotelEntityRepository<AppSlide>();
             _fileImageHelperService = fileImageHelperService;
             _validator = validator;
         }

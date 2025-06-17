@@ -16,7 +16,7 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
         public PanelAppLanguageService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _appLanguageRepository = unitOfWork.EntityRepository<AppLanguage>();
+            _appLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
         }
         public ServiceResult<AppLanguageDto> CreateLanguage(AppLanguageCreateEditDto model)
         {

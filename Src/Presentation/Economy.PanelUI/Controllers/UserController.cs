@@ -1,6 +1,5 @@
 ﻿using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Panel.Application.Interfaces;
-using Economy.Panel.Persistence.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 

@@ -17,7 +17,7 @@ namespace Economy.Panel.Persistence.Services
         public PanelAppSettingService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _appSettingRepository = unitOfWork.EntityRepository<AppSetting>();
+            _appSettingRepository = unitOfWork.HotelEntityRepository<AppSetting>();
         }
 
         public ResponseModel<AppSettingDto> DeleteAppSetting(int Id)

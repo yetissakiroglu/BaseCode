@@ -15,7 +15,7 @@ namespace Economy.Panel.Persistence.Services
         public PanelAppSettingReservationNumberService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _entityRepository = unitOfWork.EntityRepository<AppSettingReservationNumber>();
+            _entityRepository = unitOfWork.HotelEntityRepository<AppSettingReservationNumber>();
         }
         public ResponseModel<AppSettingReservationNumberDto> CreateReservationNumber(AppSettingReservationNumberCreateDto model)
         {

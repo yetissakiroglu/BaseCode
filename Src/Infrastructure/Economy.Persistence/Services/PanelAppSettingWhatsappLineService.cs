@@ -15,7 +15,7 @@ namespace Economy.Panel.Persistence.Services
         public PanelAppSettingWhatsappLineService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _entityRepository = unitOfWork.EntityRepository<AppSettingWhatsappLine>();
+            _entityRepository = unitOfWork.HotelEntityRepository<AppSettingWhatsappLine>();
         }
 
         public ResponseModel<AppSettingWhatsappLineDto> CreateAppSettingWhatsappLine(AppSettingWhatsappLineCreateDto model)

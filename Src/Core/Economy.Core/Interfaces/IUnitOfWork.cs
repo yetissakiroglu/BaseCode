@@ -25,12 +25,33 @@ namespace Economy.Core.Interfaces
         /// <param name="connectionString">Otele özel bağlantı cümlesi</param>
         void SetHotelConnectionString(string connectionString);
 
+        ///// <summary>
+        ///// Belirtilen varlık türü için otel veritabanında çalışan repository döner.
+        ///// </summary>
+        ///// <typeparam name="T">Varlık türü</typeparam>
+        ///// <returns>IEntityRepository</returns>
+        //IEntityRepository<T, int> EntityRepository<T>() where T : class, ISoftDelete, IHasId<int>;
+
+
+        /// <summary>
+        /// Belirtilen varlık türü için default (sabit) veritabanında çalışan repository döner.
+        /// </summary>
+        /// <typeparam name="T">Varlık türü</typeparam>
+        /// <returns>IEntityRepository</returns>
+        IEntityRepository<T, int> DefaultEntityRepository<T>()
+            where T : class, ISoftDelete, IHasId<int>;
+
         /// <summary>
         /// Belirtilen varlık türü için otel veritabanında çalışan repository döner.
         /// </summary>
         /// <typeparam name="T">Varlık türü</typeparam>
         /// <returns>IEntityRepository</returns>
-        IEntityRepository<T, int> EntityRepository<T>() where T : class, ISoftDelete, IHasId<int>;
+        IEntityRepository<T, int> HotelEntityRepository<T>()
+            where T : class, ISoftDelete, IHasId<int>;
+
+
+
+
     }
 }
 

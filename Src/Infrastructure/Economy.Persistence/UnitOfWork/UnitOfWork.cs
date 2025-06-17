@@ -39,20 +39,49 @@ namespace Economy.Persistence.UnitOfWorks
             }
         }
 
-        public IEntityRepository<T, int> EntityRepository<T>() where T : class, ISoftDelete, IHasId<int>
+        private IEntityRepository<T, int> GetRepository<T>(DbContext context, string contextKey)
+            where T : class, ISoftDelete, IHasId<int>
         {
-            if (_hotelDbContext == null)
-                throw new InvalidOperationException("HotelDbContext has not been initialized. Call SetHotelConnectionString first.");
-
             if (_repositories.TryGetValue(typeof(T), out var existingRepo))
             {
                 return (IEntityRepository<T, int>)existingRepo;
             }
 
-            var newRepo = new EfEntityRepositoryBase<T>(_hotelDbContext);
+            var newRepo = new EfEntityRepositoryBase<T>(context);
             _repositories[typeof(T)] = newRepo;
             return newRepo;
         }
+
+        public IEntityRepository<T, int> DefaultEntityRepository<T>()
+            where T : class, ISoftDelete, IHasId<int>
+        {
+            return GetRepository<T>(_defaultDbContext, nameof(DefaultDbContext));
+        }
+
+        public IEntityRepository<T, int> HotelEntityRepository<T>()
+            where T : class, ISoftDelete, IHasId<int>
+        {
+            if (_hotelDbContext == null)
+                throw new InvalidOperationException("HotelDbContext has not been initialized. Call SetHotelConnectionString first.");
+
+            return GetRepository<T>(_hotelDbContext, nameof(_hotelDbContext));
+        }
+
+
+        //public IEntityRepository<T, int> EntityRepository<T>() where T : class, ISoftDelete, IHasId<int>
+        //{
+        //    if (_hotelDbContext == null)
+        //        throw new InvalidOperationException("HotelDbContext has not been initialized. Call SetHotelConnectionString first.");
+
+        //    if (_repositories.TryGetValue(typeof(T), out var existingRepo))
+        //    {
+        //        return (IEntityRepository<T, int>)existingRepo;
+        //    }
+
+        //    var newRepo = new EfEntityRepositoryBase<T>(_hotelDbContext);
+        //    _repositories[typeof(T)] = newRepo;
+        //    return newRepo;
+        //}
 
         public async Task<int> SaveDefaultChangesAsync()
         {
