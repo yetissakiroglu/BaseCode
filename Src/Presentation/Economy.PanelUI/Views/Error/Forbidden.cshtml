@@ -1,0 +1,22 @@
+﻿@inherits Economy.Panel.UI.Helpers.MyBaseViewPage<dynamic>
+
+@{
+    ViewData["Title"] = "Erişim Engellendi";
+    string returnUrl = ViewBag.ReturnUrl as string ?? "/";
+}
+
+
+
+
+<div class="text-center mt-5">
+    <h1 class="display-4 text-danger">403 - Erişim Engellendi</h1>
+    <p class="lead">Bu sayfaya erişim yetkiniz bulunmamaktadır.</p>
+    <p>Yetkili biri değilseniz, <a href="/">ana sayfaya dönün</a>.</p>
+
+    @if (!string.IsNullOrEmpty(returnUrl))
+    {
+        <p>
+            <a class="btn btn-primary" href="@returnUrl">Geri Dön</a>
+        </p>
+    }
+</div>

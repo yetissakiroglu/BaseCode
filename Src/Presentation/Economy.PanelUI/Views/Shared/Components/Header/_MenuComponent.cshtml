@@ -1,4 +1,4 @@
-﻿<!-- Menu Navigation starts -->
+﻿@inherits Economy.Panel.UI.Helpers.MyBaseViewPage<dynamic>
 <nav>
     <div class="app-logo">
         <a class="logo d-inline-block" href="index.html">
@@ -11,102 +11,115 @@
     </div>
     <div class="app-nav" id="app-simple-bar">
         <ul class="main-nav p-0 mt-2">
-            <li class="menu-title">
-                <span>Uygulama Yönetimi</span>
-            </li>
-            <li>
-                <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#uygulamalar">
-                    <i class="iconoir-home-alt"></i>
-                    Uygulama Yönetimi
-                </a>
-                <ul class="collapse" id="uygulamalar">
-                    <li><a href="/App/AppList">Uygulama Listesi</a></li>
-                    <li><a href="/App/CreateApp">Uygulama Ekle</a></li>
 
-                </ul>
-            </li>
+            @if (IsAdmin())
+            {
+                <li class="menu-title">
+                    <span>Uygulama Yönetimi</span>
+                </li>
 
-            <li>
-                <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#kullaniciYonetimi">
-                    <i class="iconoir-view-grid"></i>
-                    Kullanıcı Yönetimi
-                </a>
-                <ul class="collapse" id="kullaniciYonetimi">
-                    <li><a href="/User/UserList">Kullanıcı Listesi</a></li>
-                    <li><a href="/User/CreateUser">Kullanıcı Ekle</a></li>
-                </ul>
-            </li>
+                <li>
+                    <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#uygulamalar">
+                        <i class="iconoir-home-alt"></i>
+                        Uygulama Yönetimi
+                    </a>
+                    <ul class="collapse" id="uygulamalar">
+                        <li><a href="/App/AppList">Uygulama Listesi</a></li>
+                        <li><a href="/App/CreateApp">Uygulama Ekle</a></li>
+
+                    </ul>
+                </li>
+
+                <li>
+                    <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#kullaniciYonetimi">
+                        <i class="iconoir-view-grid"></i>
+                        Kullanıcı Yönetimi
+                    </a>
+                    <ul class="collapse" id="kullaniciYonetimi">
+                        <li><a href="/User/UserList">Kullanıcı Listesi</a></li>
+                        <li><a href="/User/CreateUser">Kullanıcı Ekle</a></li>
+                    </ul>
+                </li>
+
+            }
+
+            @if (IsEditor())
+            {
+                <li class="menu-title"><span>Site Yönetimi</span></li>
+                <li class="no-sub">
+                    <a class="" href="/TechnicalSetting">
+                        <i class="iconoir-view-grid"></i>
+                        Teknik Ayarlar
+                    </a>
+                </li>
+
+                <li>
+                    <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#SiteYonetimi">
+                        <i class="iconoir-keyframes-couple"></i> Site Ayarları
+                    </a>
+                    <ul class="collapse" id="SiteYonetimi">
+                        <li><a href="/Setting">Genel Ayarlar</a></li>
+                        <li><a href="/Logo">Logolar</a></li>
+                        <li><a href="/ReservationNumber">Rezervasyon Telefonları</a></li>
+                        <li><a href="/ReservationLink">Rezervasyon Linki</a></li>
+                        <li><a href="/WhatsappLine">Whatsapp Hattı</a></li>
+                    </ul>
+                </li>
+
+
+
+                <li>
+                    <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#MenuYonetimi">
+                        <i class="iconoir-keyframes-couple"></i>Menü Yönetimi
+                    </a>
+                    <ul class="collapse" id="MenuYonetimi">
+                        <li><a href="/Menu/TopMenu">Üst Menüler</a></li>
+                        <li><a href="/Menu/SubMenu">Alt Menüler</a></li>
+                    </ul>
+                </li>
+                <li class="no-sub">
+                    <a class="" href="/Slide">
+                        <i class="iconoir-view-grid"></i>
+                        Slidelar
+                    </a>
+                </li>
+
+                <li>
+                    <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#PageYonetimi">
+                        <i class="iconoir-keyframes-couple"></i>Sayfa Yönetimi
+                    </a>
+                    <ul class="collapse" id="PageYonetimi">
+                        <li><a href="/Page">Sayfalar</a></li>
+                        <li><a href="/Category">Kategoriler</a></li>
+                    </ul>
+                </li>
+
+
+                <li class="no-sub">
+                    <a class="" href="/Room">
+                        <i class="iconoir-view-grid"></i>
+                        Odalar
+                    </a>
+                </li>
+
+                <li>
+                    <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#DilYonetimi">
+                        <i class="iconoir-keyframes-couple"></i> Dil Yönetimi
+                    </a>
+                    <ul class="collapse" id="DilYonetimi">
+                        <li><a href="/Language">Diller</a></li>
+                    </ul>
+                </li>
+
+            }
 
 
 
 
-            <li class="menu-title"><span>Site Yönetimi</span></li>
-            <li class="no-sub">
-                <a class="" href="/TechnicalSetting">
-                    <i class="iconoir-view-grid"></i>
-                    Teknik Ayarlar
-                </a>
-            </li>
-
-            <li>
-                <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#SiteYonetimi">
-                    <i class="iconoir-keyframes-couple"></i> Site Ayarları
-                </a>
-                <ul class="collapse" id="SiteYonetimi">
-                    <li><a href="/Setting">Genel Ayarlar</a></li>
-                    <li><a href="/Logo">Logolar</a></li>
-                    <li><a href="/ReservationNumber">Rezervasyon Telefonları</a></li>
-                    <li><a href="/ReservationLink">Rezervasyon Linki</a></li>
-                    <li><a href="/WhatsappLine">Whatsapp Hattı</a></li>
-                </ul>
-            </li>
 
 
 
-            <li>
-                <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#MenuYonetimi">
-                    <i class="iconoir-keyframes-couple"></i>Menü Yönetimi
-                </a>
-                <ul class="collapse" id="MenuYonetimi">
-                    <li><a href="/Menu/TopMenu">Üst Menüler</a></li>
-                    <li><a href="/Menu/SubMenu">Alt Menüler</a></li>
-                </ul>
-            </li>
-            <li class="no-sub">
-                <a class="" href="/Slide">
-                    <i class="iconoir-view-grid"></i>
-                    Slidelar
-                </a>
-            </li>
 
-            <li>
-                <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#PageYonetimi">
-                    <i class="iconoir-keyframes-couple"></i>Sayfa Yönetimi
-                </a>
-                <ul class="collapse" id="PageYonetimi">
-                    <li><a href="/Page">Sayfalar</a></li>
-                    <li><a href="/Category">Kategoriler</a></li>
-                </ul>
-            </li>
-
-        
-            <li class="no-sub">
-                <a class="" href="/Room">
-                    <i class="iconoir-view-grid"></i>
-                    Odalar
-                </a>
-            </li>
-
-            <li>
-                <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#DilYonetimi">
-                    <i class="iconoir-keyframes-couple"></i> Dil Yönetimi
-                </a>
-                <ul class="collapse" id="DilYonetimi">
-                    <li><a href="/Language">Diller</a></li>
-                </ul>
-            </li>
-
-           
         </ul>
     </div>
 

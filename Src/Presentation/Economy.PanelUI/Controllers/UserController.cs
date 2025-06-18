@@ -1,10 +1,12 @@
 ﻿using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Panel.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace Economy.Panel.UI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : BaseController
     {
         private readonly IPanelAppUserService _panelAppUserService;
