@@ -85,7 +85,14 @@ namespace Economy.Panel.UI.Controllers
             {
                 foreach (var message in messages)
                 {
-                    ModelState.AddModelError(key, message);
+                    if(key== "DuplicateEmail")
+                    {
+                        ModelState.AddModelError("Email", message);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(key, message);
+                    }
                 }
             }
         }

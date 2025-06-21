@@ -1,5 +1,6 @@
 ﻿using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Panel.Application.Interfaces;
+using Economy.Panel.UI.Models.UserViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -10,10 +11,11 @@ namespace Economy.Panel.UI.Controllers
     public class UserController : BaseController
     {
         private readonly IPanelAppUserService _panelAppUserService;
-
-        public UserController(IPanelAppUserService panelAppUserService)
+        private readonly IPanelAppService _panelAppService;
+        public UserController(IPanelAppUserService panelAppUserService, IPanelAppService panelAppService)
         {
             _panelAppUserService = panelAppUserService;
+            _panelAppService = panelAppService;
         }
 
         public IActionResult UserList()
@@ -23,16 +25,56 @@ namespace Economy.Panel.UI.Controllers
         }
         public IActionResult CreateUser()
         {
-            var result = new AppUserCreateDto();
+            var result = new AppUserCreateViewModel();
+
+            var tenants = _panelAppService.Apps(false).Data.Select(x => new UserAppListViewModel
+            {
+                Id = x.Id,
+                Name = x.HotelName
+            }).ToList();
+
+            result.Tenants = tenants;
+
             return View(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(AppUserCreateDto model)
+        public async Task<IActionResult> CreateUser(AppUserCreateViewModel viewModel)
         {
-            var result = await _panelAppUserService.CreateUser(model);
+            var createModel = new AppUserCreateDto
+            {
+                FirstName = viewModel.FirstName,
+                LastName = viewModel.LastName,
+                TenantId = viewModel.TenantId,
+                UserName = viewModel.UserName,
+                Email = viewModel.Email,
+                Password = viewModel.Password,
+                PhoneNumber = viewModel.PhoneNumber,
+                EmailConfirmed = viewModel.EmailConfirmed,
+                PhoneNumberConfirmed = viewModel.PhoneNumberConfirmed
+            };
+
+            var result = await _panelAppUserService.CreateUser(createModel);
+            AddValidationErrorsToModelState(result.ValidationErrors);
             AddMessage(result);
-            return RedirectToAction(nameof(UserList));
+
+            if (!result.IsSuccess)
+            {
+                var userApps = _panelAppService.Apps(false);
+
+                var tenants = _panelAppService.Apps(false).Data.Select(x => new UserAppListViewModel
+                {
+                    Id = x.Id,
+                    Name = x.HotelName
+                }).ToList();
+
+                viewModel.Tenants = tenants;
+
+                return View(viewModel);
+            }
+
+            return RedirectToAction("UserList");
+
         }
 
         [HttpGet]

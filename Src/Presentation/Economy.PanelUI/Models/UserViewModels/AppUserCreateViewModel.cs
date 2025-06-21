@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
-namespace Economy.Base.Application.Dtos.BaseModels
+namespace Economy.Panel.UI.Models.UserViewModels
 {
-    public class AppUserCreateDto : IdentityUser<int>
+    public class AppUserCreateViewModel
     {
         [Required]
         [DisplayName("Adı")]
@@ -15,6 +14,7 @@ namespace Economy.Base.Application.Dtos.BaseModels
         [Required]
         [DisplayName("Bağlı Uygulama")]
         public int TenantId { get; set; }
+        public List<UserAppListViewModel> Tenants { get; set; }
 
         [Required]
         [DisplayName("Kullanıcı Adı")]
@@ -37,7 +37,5 @@ namespace Economy.Base.Application.Dtos.BaseModels
 
         [DisplayName("Telefon Onaylandı mı?")]
         public bool PhoneNumberConfirmed { get; set; }
-
     }
 }
-

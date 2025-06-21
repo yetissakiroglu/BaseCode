@@ -1,10 +1,9 @@
-﻿@model Economy.Base.Application.Dtos.BaseModels.AppUserCreateDto
+﻿@using Economy.Panel.UI.Models.UserViewModels
+@model AppUserCreateViewModel
 
 @{
     ViewData["Title"] = "Kullanıcı Ekle";
 }
-
-
 
 
 <main>
@@ -58,8 +57,11 @@
                         </p>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
+
+
+                        <div class="row p-2">
+                            <div class="col-md-6 offset-md-3">
+
                                 <form asp-action="CreateUser">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="form-group">
@@ -72,11 +74,15 @@
                                         <input asp-for="LastName" class="form-control" />
                                         <span asp-validation-for="LastName" class="text-danger"></span>
                                     </div>
+
                                     <div class="form-group">
-                                        <label asp-for="TenantId" class="control-label"></label>
-                                        <input asp-for="TenantId" class="form-control" />
+                                        <label asp-for="TenantId"></label>
+                                        <select asp-for="TenantId" asp-items="@(new SelectList(Model.Tenants, "Id", "Name"))" class="form-control">
+                                            <option value="">-- Seçiniz --</option>
+                                        </select>
                                         <span asp-validation-for="TenantId" class="text-danger"></span>
                                     </div>
+                                    
                                     <div class="form-group">
                                         <label asp-for="UserName" class="control-label"></label>
                                         <input asp-for="UserName" class="form-control" />
@@ -133,5 +139,7 @@
 
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

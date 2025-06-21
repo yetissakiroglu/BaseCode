@@ -3,9 +3,12 @@ using Economy.Core.Dtos;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Models;
+using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.Identities;
 using Economy.Domain.Entities.Identity;
+using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
 
@@ -16,42 +19,70 @@ namespace Economy.Panel.Persistence.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEntityRepository<AppUserToken, int> _appUserTokenRepository;
         private readonly IEntityRepository<AppUser, int> _appUserRepository;
+        private readonly IValidator<AppUserCreateDto> _validator;
 
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
-        public PanelAppUserService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ITokenService tokenService)
+        public PanelAppUserService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ITokenService tokenService, IValidator<AppUserCreateDto> validator)
         {
             _unitOfWork = unitOfWork;
             _appUserTokenRepository = unitOfWork.DefaultEntityRepository<AppUserToken>();
             _appUserRepository = unitOfWork.DefaultEntityRepository<AppUser>();
             _userManager = userManager;
             _tokenService = tokenService;
+            _validator = validator;
         }
-        public async Task<ResponseModel<AppUserDto>> CreateUser(AppUserCreateDto userCreateDto)
+        public async Task<ServiceResult<AppUserDto>> CreateUser(AppUserCreateDto model)
         {
-            var response = new ResponseModel<AppUserDto>();
+            if (model == null)
+            {
+                return ServiceResult<AppUserDto>.Failure(
+                    message: "Geçersiz veri gönderildi.",
+                    statusCode: (int)HttpStatusCode.BadRequest);
+            }
 
+            // FluentValidation kontrolü
+            var validationResult = _validator.Validate(model);
+            if (!validationResult.IsValid)
+            {
+                return ServiceResult<AppUserDto>.Failure(
+                    message: "Geçersiz giriş verisi.",
+                    statusCode: (int)HttpStatusCode.BadRequest,
+                    validationErrors: validationResult.ToValidationDictionary());
+            }
+
+            // Kullanıcı oluştur
             var user = new AppUser
             {
-                FirstName = userCreateDto.FirstName,
-                LastName = userCreateDto.LastName,
-                TenantId = userCreateDto.TenantId,
-                UserName = userCreateDto.UserName,
-                Email = userCreateDto.Email,
-                PhoneNumber = userCreateDto.PhoneNumber,
-                EmailConfirmed = userCreateDto.EmailConfirmed,
-                PhoneNumberConfirmed = userCreateDto.PhoneNumberConfirmed
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                TenantId = model.TenantId,
+                UserName = model.UserName,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                EmailConfirmed = model.EmailConfirmed,
+                PhoneNumberConfirmed = model.PhoneNumberConfirmed
             };
 
-            var result = await _userManager.CreateAsync(user, userCreateDto.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
 
+            if (!result.Succeeded)
+            {
+ 
+                return ServiceResult<AppUserDto>.Failure(
+                    message: "Kullanıcı oluşturulamadı.",
+                    statusCode: (int)HttpStatusCode.BadRequest,
+                    validationErrors: result.Errors.ToValidationDictionary());
+            }
+
+            // Mapping - DTO oluştur
             var resultDto = new AppUserDto
             {
                 Id = user.Id,
                 UserName = user.UserName,
                 IsDefaultAdmin = user.IsDefaultAdmin,
                 FirstName = user.FirstName,
-                LastName = user.FirstName,
+                LastName = user.LastName,
                 TenantId = user.TenantId,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
@@ -59,22 +90,10 @@ namespace Economy.Panel.Persistence.Services
                 PhoneNumberConfirmed = user.PhoneNumberConfirmed
             };
 
-
-            if (result.Succeeded)
-            {
-                response.IsSuccess = true;
-                response.Data = resultDto;
-                response.Message = new ResultMessage("Kullanıcı başarıyla oluşturuldu.");
-            }
-            else
-            {
-                response.IsSuccess = false;
-                response.Message = new ResultMessage(string.Join(" | ", result.Errors.Select(e => e.Description)));
-
-            }
-
-            return response;
-
+            return ServiceResult<AppUserDto>.Success(
+                data: resultDto,
+                message: "Kullanıcı başarıyla oluşturuldu.",
+                statusCode: (int)HttpStatusCode.Created);
         }
 
         public ResponseModel<AppUserDto> DeleteUser(int Id)

@@ -1,3 +1,5 @@
+using Economy.Application.Validations.AppUserValidator;
+using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Base.Persistence.Providers;
 using Economy.Core.Business;
 using Economy.Core.ContextFactory;
@@ -128,6 +130,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Service kaydýný yapalým.
 builder.Services.AddScoped<IPanelAppUserService, PanelAppUserService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IValidator<AppUserCreateDto>, AppUserCreateDtoValidator>();
 
 
 builder.Services.AddScoped<IValidator<AppSlideCreateEditDto>, AppSlideCreateEditDtoValidator>();
