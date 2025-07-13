@@ -1,8 +1,8 @@
-﻿using Azure;
-using Economy.Core.Enums;
+﻿using Economy.Core.Enums;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Text;
 
 namespace Economy.Panel.UI.Controllers
@@ -76,7 +76,6 @@ namespace Economy.Panel.UI.Controllers
                 _ => "Bildirim"
             };
         }
-
         protected void AddValidationErrorsToModelState(IReadOnlyDictionary<string, string[]>? validationErrors)
         {
             if (validationErrors == null) return;
@@ -85,7 +84,12 @@ namespace Economy.Panel.UI.Controllers
             {
                 foreach (var message in messages)
                 {
-                    if(key== "DuplicateEmail")
+                    if (key == "DuplicateUserName")
+                    {
+                        ModelState.AddModelError("UserName", message);
+                    }
+                
+                    if (key== "DuplicateEmail")
                     {
                         ModelState.AddModelError("Email", message);
                     }
@@ -94,6 +98,34 @@ namespace Economy.Panel.UI.Controllers
                         ModelState.AddModelError(key, message);
                     }
                 }
+            }
+        }
+        protected int CurrentUserId
+        {
+            get
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                    return 0;
+
+                return int.TryParse(userIdClaim.Value, out int id) ? id : 0;
+            }
+        }
+        protected string CurrentUserName
+        {
+            get => User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
+        }
+        protected string CurrentUserEmail
+        {
+            get => User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
+        }
+        protected string CurrentUserFullName
+        {
+            get
+            {
+                var firstName = User.FindFirst("FirstName")?.Value ?? "";
+                var lastName = User.FindFirst("LastName")?.Value ?? "";
+                return $"{firstName} {lastName}".Trim();
             }
         }
     }

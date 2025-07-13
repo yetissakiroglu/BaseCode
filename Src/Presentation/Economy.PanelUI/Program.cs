@@ -93,33 +93,50 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
 }).AddEntityFrameworkStores<DefaultDbContext>()
     .AddRoles<AppRole>().AddDefaultTokenProviders();
 
-// Add Authentication and Cookie Configuration
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = new PathString("/Account/Login");
-        options.LogoutPath = new PathString("/Account/Logout");
-        options.Cookie.Name = "DijitalPanel";
-        options.SlidingExpiration = true;
-        options.ExpireTimeSpan = TimeSpan.FromDays(7);
-    });
-
-
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = new PathString("/Account/Login");
-    options.LogoutPath = new PathString("/Account/Logout");
+    options.LoginPath = "/Account/Login";
+    options.LogoutPath = "/Account/Logout";
+    options.AccessDeniedPath = "/Error/403";
     options.Cookie = new CookieBuilder
     {
         Name = "DijitalPanel",
         HttpOnly = true,
         SameSite = SameSiteMode.Strict,
-        SecurePolicy = CookieSecurePolicy.SameAsRequest // Always
+        SecurePolicy = CookieSecurePolicy.SameAsRequest
     };
     options.SlidingExpiration = true;
-    options.ExpireTimeSpan = System.TimeSpan.FromDays(7);
+    options.ExpireTimeSpan = TimeSpan.FromDays(7);
     options.AccessDeniedPath = new PathString($"/Error/{HttpStatusCode.Forbidden}");
+
 });
+
+//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+//    .AddCookie(options =>
+//    {
+//        options.LoginPath = new PathString("/Account/Login");
+//options.LogoutPath = new PathString("/Account/Logout");
+//options.Cookie.Name = "DijitalPanel";
+//options.SlidingExpiration = true;
+//options.ExpireTimeSpan = TimeSpan.FromDays(7);
+//    });
+
+
+//builder.Services.ConfigureApplicationCookie(options =>
+//{
+//    options.LoginPath = new PathString("/Account/Login");
+//    options.LogoutPath = new PathString("/Account/Logout");
+//    options.Cookie = new CookieBuilder
+//    {
+//        Name = "DijitalPanel",
+//        HttpOnly = true,
+//        SameSite = SameSiteMode.Strict,
+//        SecurePolicy = CookieSecurePolicy.SameAsRequest // Always
+//    };
+//    options.SlidingExpiration = true;
+//    options.ExpireTimeSpan = System.TimeSpan.FromDays(7);
+//    options.AccessDeniedPath = new PathString($"/Error/{HttpStatusCode.Forbidden}");
+//});
 
 // Repository'leri otomatik olarak ekle
 builder.Services.AddRepositories(Assembly.GetExecutingAssembly());

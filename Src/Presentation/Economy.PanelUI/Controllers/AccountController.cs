@@ -1,8 +1,12 @@
 ﻿using Economy.Core.Dtos;
 using Economy.Domain.Entites.Identities;
 using Economy.Panel.Application.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace Economy.Panel.UI.Controllers
 {
@@ -11,12 +15,13 @@ namespace Economy.Panel.UI.Controllers
         private readonly IPanelAppUserService _panelAppUserService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly SignInManager<AppUser> _signInManager;
-
-        public AccountController(IPanelAppUserService panelAppUserService, IHttpContextAccessor httpContextAccessor, SignInManager<AppUser> signInManager)
+        private readonly UserManager<AppUser> _userManager;
+        public AccountController(IPanelAppUserService panelAppUserService, IHttpContextAccessor httpContextAccessor, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
         {
             _panelAppUserService = panelAppUserService;
             _httpContextAccessor = httpContextAccessor;
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -24,45 +29,66 @@ namespace Economy.Panel.UI.Controllers
         {
             return View();
         }
-
+        public IActionResult Test()
+        {
+            return Content("Oturum açık: " + User.Identity.Name);
+        }
         [HttpPost]
         public async Task<IActionResult> Login(SignIn model, string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            // Kullanıcıyı doğrula
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-
-            if (result.Succeeded)
+            var user = await _userManager.FindByNameAsync(model.Email);
+            if (user == null)
             {
-                // Yönlendirme yapılacak URL
-                return RedirectToLocal(returnUrl);
+                ModelState.AddModelError("", "Kullanıcı bulunamadı");
+                return View();
             }
 
-            // Hata mesajını loglayın
-            if (result.IsLockedOut)
+            // Şifreyi kontrol et (isteğe bağlı)
+            var passwordValid = await _userManager.CheckPasswordAsync(user, model.Password);
+            if (!passwordValid)
             {
-                // Kullanıcı hesabı kilitliyse
-                ModelState.AddModelError(string.Empty, "Hesabınız kilitlenmiş.");
-            }
-            else if (result.RequiresTwoFactor)
-            {
-                // İki faktörlü kimlik doğrulama gerekiyorsa
-                ModelState.AddModelError(string.Empty, "İki faktörlü kimlik doğrulama gerekiyor.");
-            }
-            else
-            {
-                // Diğer tüm hatalar için genel bir mesaj
-                ModelState.AddModelError(string.Empty, "Geçersiz giriş denemesi.");
+                ModelState.AddModelError("", "Şifre hatalı");
+                return View();
             }
 
-            return View(model);
+            // Roller çekiliyor
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.UserName ?? ""),
+        new Claim(ClaimTypes.Email, user.Email ?? ""),
+        new Claim("FirstName", user.FirstName ?? ""),
+        new Claim("LastName", user.LastName ?? "")
+    };
+
+            // Roller claim olarak ekleniyor
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(
+                IdentityConstants.ApplicationScheme,
+                principal,
+                new AuthenticationProperties
+                {
+                    IsPersistent = model.RememberMe,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+                });
+
+            return RedirectToLocal(returnUrl);
         }
 
         // POST: Account/Logout
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Logout()
         {
             // Kullanıcıyı oturumdan çıkartıyoruz

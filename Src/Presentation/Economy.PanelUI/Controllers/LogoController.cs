@@ -34,43 +34,18 @@ namespace Economy.Panel.UI.Controllers
 
         public IActionResult CreateEditLogo(AppSettingLogoCreateEditViewModel model)
         {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            string wwwRootPath = _environment.WebRootPath;
-            string uploadFolder = Path.Combine(wwwRootPath, "uploads");
-
-            if (!Directory.Exists(uploadFolder))
-                Directory.CreateDirectory(uploadFolder);
-
-            string SaveBase64Image(string? base64String, string fileNamePrefix)
-            {
-                if (string.IsNullOrEmpty(base64String) || !base64String.StartsWith("data:image"))
-                    return null;
-
-                var base64Data = base64String.Substring(base64String.IndexOf(",") + 1);
-                byte[] imageBytes = Convert.FromBase64String(base64Data);
-
-                string fileName = $"{fileNamePrefix}_{Guid.NewGuid()}.png";
-                string filePath = Path.Combine(uploadFolder, fileName);
-
-                System.IO.File.WriteAllBytes(filePath, imageBytes);
-
-                return $"/uploads/{fileName}";
-            }
-
-            model.LogoPath = SaveBase64Image(model.CroppedLogoBase64, "logo") ?? model.LogoPath;
-            model.MobileLogoPath = SaveBase64Image(model.CroppedMobileLogoBase64, "mobilelogo") ?? model.MobileLogoPath;
-            model.FaviconPath = SaveBase64Image(model.CroppedFaviconBase64, "favicon") ?? model.FaviconPath;
-
-
-           var result = _panelAppSettingLogoService.CreateEditAppSettingLogo(new AppSettingLogoCreateEditDto
+            var result = _panelAppSettingLogoService.CreateEditAppSettingLogo(new AppSettingLogoCreateEditDto
             {
                 Id = model.Id,
                 LogoPath = model.LogoPath,
                 MobileLogoPath = model.MobileLogoPath,
-                FaviconPath = model.FaviconPath
+                FaviconPath = model.FaviconPath,
+                FaviconBase64 = model.CroppedFaviconBase64,
+                LogoBase64 = model.CroppedLogoBase64,
+                MobileLogoBase64 = model.CroppedMobileLogoBase64
             });
+
+            AddValidationErrorsToModelState(result.ValidationErrors);
             AddMessage(result);
 
             return RedirectToAction("Index");

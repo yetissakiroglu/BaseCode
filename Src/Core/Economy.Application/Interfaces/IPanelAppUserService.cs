@@ -7,14 +7,17 @@ namespace Economy.Panel.Application.Interfaces
 {
     public interface IPanelAppUserService
     {
+        ServiceResult<AppUserDto> GetUser(int id, bool isDeleted);
+
+
+
         Task<ServiceResult<AppUserDto>> CreateUser(AppUserCreateDto model);
 
 
 
         Task<ResponseModel<Token>> LoginAsync(SignIn signIn);
-        ResponseModel<List<AppUserListDto>> UserList(bool IsDeleted);
+        ServiceResult<List<AppUserListDto>> UserList(bool IsDeleted);
         ResponseModel<AppUserDto> EditUser(AppUserEditDto userEditDto);
-        ResponseModel<AppUserDto> GetUser(int id, bool isDeleted);
         ResponseModel<AppUserDto> DeleteUser(int Id);
 
 

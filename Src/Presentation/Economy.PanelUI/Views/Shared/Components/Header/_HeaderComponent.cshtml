@@ -1,4 +1,7 @@
-﻿<header class="header-main">
+﻿@using Economy.Panel.UI.Models.ProfileViewModels
+@model HeaderUserViewModel
+
+<header class="header-main">
     <div class="container-fluid">
         <div class="row">
             <div class="col-6 col-sm-4 d-flex align-items-center header-left p-0">
@@ -6,23 +9,18 @@
                     <i class="iconoir-view-grid"></i>
                 </span>
             </div>
-
             <div class="col-6 col-sm-8 d-flex align-items-center justify-content-end header-right p-0">
                 <ul class="d-flex align-items-center">
                     <li class="header-dark">
-                        <div class="sun-logo head-icon">
-                            <i class="iconoir-sun-light"></i>
-                        </div>
-                        <div class="moon-logo head-icon">
-                            <i class="iconoir-half-moon"></i>
-                        </div>
+                        <div class="sun-logo head-icon"><i class="iconoir-sun-light"></i></div>
+                        <div class="moon-logo head-icon"><i class="iconoir-half-moon"></i></div>
                     </li>
                     <li class="header-profile">
                         <a aria-controls="profilecanvasRight" class="d-block head-icon"
                            data-bs-target="#profilecanvasRight" data-bs-toggle="offcanvas"
                            href="#" role="button">
-                            <img alt="avtar" class="b-r-50 h-35 w-35 bg-dark"
-                                 src="../assets/images/avtar/woman.jpg">
+                            <img alt="avatar" class="b-r-50 h-35 w-35 bg-dark"
+                                 src="@Model.PhotoUrl">
                         </a>
 
                         <div aria-labelledby="profilecanvasRight"
@@ -30,117 +28,28 @@
                              id="profilecanvasRight"
                              tabindex="-1">
                             <div class="offcanvas-body app-scroll">
-                                <ul class="">
+                                <ul>
                                     <li class="d-flex gap-3 mb-3">
                                         <div class="d-flex-center">
                                             <span class="h-45 w-45 d-flex-center b-r-10 position-relative">
-                                                <img alt="" class="img-fluid b-r-10"
-                                                     src="../assets/images/avtar/woman.jpg">
+                                                <img alt="" class="img-fluid b-r-10" src="@Model.PhotoUrl">
                                             </span>
                                         </div>
                                         <div class="text-center mt-2">
                                             <h6 class="mb-0">
-                                                Laura Monaldo <img alt="instagram-check-mark"
-                                                                   class="w-20 h-20"
-                                                                   src="../assets/images/profile-app/01.png">
+                                                @Model.FullName <img alt="instagram-check-mark"
+                                                                     class="w-20 h-20" src="/assets/images/profile-app/01.png">
                                             </h6>
-                                            <p class="f-s-12 mb-0 text-secondary">lauradesign@gmail.com</p>
+                                            <p class="f-s-12 mb-0 text-secondary">@Model.Email</p>
                                         </div>
                                     </li>
 
-                                    <li>
-                                        <a class="f-w-500" href="./profile.html" target="_blank">
-                                            <i class="iconoir-user-love pe-1 f-s-20"></i> Profile
-                                            Details
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="f-w-500" href="./setting.html" target="_blank">
-                                            <i class="iconoir-settings pe-1 f-s-20"></i> Settings
-                                        </a>
-                                    </li>
+                                    <li><a class="f-w-500" href="/Profile" target="_blank"><i class="iconoir-user-love pe-1 f-s-20"></i> Profil Bilgilerim</a></li>
+                                    <li><a class="f-w-500" href="/Profile/ChangePassword" target="_blank"><i class="iconoir-user-love pe-1 f-s-20"></i> Şifre Değiştir</a></li>
+                                    <li><a class="f-w-500" href="/Profile/Settings" target="_blank"><i class="iconoir-settings pe-1 f-s-20"></i> Ayarlar</a></li>
                                     <li class="app-divider-v dotted py-1"></li>
-                                    <li>
-                                        <div class="app-dropdown dropstart">
-                                            <a aria-expanded="false" class="f-w-500"
-                                               data-bs-toggle="dropdown"
-                                               href="./setting.html"
-                                               role="button" target="_blank">
-                                                <i class="iconoir-eye-closed pe-1 f-s-20"></i> Hide
-                                                Settings
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item">Hide Comments</a></li>
-                                                <li>
-                                                    <a class="dropdown-item">Advanced comment filtering</a>
-                                                </li>
-                                                <li><a class="dropdown-item">Hide mssage request</a></li>
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
-                                                <li><a class="dropdown-item">Separated link</a></li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <a class="f-w-500" href="#">
-                                                <i class="iconoir-bell-notification pe-1 f-s-20"></i>
-                                                Notification
-                                            </a>
-                                            <div class="flex-shrink-0">
-                                                <div class="form-check form-switch">
-                                                    <input checked
-                                                           class="form-check-input form-check-primary"
-                                                           id="basicSwitch"
-                                                           type="checkbox">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <a class="f-w-500" href="#">
-                                                    <i class="ph-duotone  ph-detective pe-1 f-s-20"></i>
-                                                    Incognito
-                                                </a>
-                                            </div>
-                                            <div class="flex-shrink-0">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input form-check-primary"
-                                                           id="incognitoSwitch"
-                                                           type="checkbox">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="app-divider-v dotted py-1"></li>
-                                    <li>
-                                        <a class="f-w-500" href="./faq.html" target="_blank">
-                                            <i class="iconoir-help-circle pe-1 f-s-20"></i> Help
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="f-w-500" href="./pricing.html" target="_blank">
-                                            <i class="iconoir-dollar pe-1 f-s-20"></i>
-                                            Pricing
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="mb-0 text-secondary f-w-500" href="./sign_up.html"
-                                           target="_blank">
-                                            <i class="iconoir-plus pe-1 f-s-20"></i> Add account
-                                        </a>
-                                    </li>
-                                    <li>
-
-                                        <form method="post" asp-controller="Account" asp-action="Logout">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="mb-0 btn btn-light-danger btn-sm justify-content-center"> <i class="ph-duotone  ph-sign-out pe-1 f-s-20"></i> Çıkış Yap</button>
-                                        </form>
-
-                                    </li>
+                                    <li><a class="f-w-500" href="/faq" target="_blank"><i class="iconoir-help-circle pe-1 f-s-20"></i> Yardım</a></li>
+                                    <li><a class="mb-0 btn btn-light-danger btn-sm justify-content-center" href="/Account/Logout"><i class="ph-duotone ph-sign-out pe-1 f-s-20"></i> Çıkış Yap</a></li>
                                 </ul>
                             </div>
                         </div>

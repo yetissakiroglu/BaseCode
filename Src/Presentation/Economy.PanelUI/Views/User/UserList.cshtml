@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Economy.Base.Application.Dtos.BaseModels.AppUserListDto>
+﻿@using Economy.Base.Application.Dtos.BaseModels
+@model IEnumerable<AppUserListDto>
 
 @{
     ViewData["Title"] = "Kullanıcı Listesi";
@@ -70,7 +71,7 @@
                                         @Html.DisplayNameFor(model => model.LastName)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.TenantId)
+                                        @Html.DisplayNameFor(model => model.TenantName)
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.UserName)
@@ -102,20 +103,20 @@
                                             @Html.DisplayFor(modelItem => item.LastName)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.TenantId)
+                                            @Html.DisplayFor(modelItem => item.TenantName)
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.UserName)
                                         </td>
                                      
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.EmailConfirmed)
+                                            @item.EmailConfirmed.ToTurkishYesNo()
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.PhoneNumberConfirmed)
+                                            @item.PhoneNumberConfirmed.ToTurkishYesNo()
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.IsDefaultAdmin)
+                                            @item.IsDefaultAdmin.ToTurkishYesNo()
                                         </td>
                                         <td>
                                             @Html.ActionLink("Güncelle", "EditUser", new { id=item.Id }) |

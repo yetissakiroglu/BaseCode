@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel;
 
-namespace Economy.Base.Application.Dtos.BaseModels
+namespace Economy.Panel.UI.Models.UserViewModels
 {
-    public class AppUserListDto
+    public class UserListViewModel
     {
-
         public int Id { get; set; }
 
         [DisplayName("Kullanıcı Adı")]
@@ -34,6 +33,6 @@ namespace Economy.Base.Application.Dtos.BaseModels
         [DisplayName("Telefon Onaylandı mı?")]
         public bool PhoneNumberConfirmed { get; set; }
         [DisplayName("Varsayılan Admin mi?")]
-        public bool IsDefaultAdmin { get; set; } 
+        public bool IsDefaultAdmin { get; set; }
     }
 }

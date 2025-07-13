@@ -4,8 +4,10 @@ using Economy.Core.Interfaces;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Models;
 using Economy.Core.Tools.Result;
+using Economy.Domain.Entites.AppEntities;
 using Economy.Domain.Entites.Identities;
 using Economy.Domain.Entities.Identity;
+using Economy.Panel.Application.Dtos.AppLanguageDtos;
 using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
 using FluentValidation;
@@ -20,6 +22,7 @@ namespace Economy.Panel.Persistence.Services
         private readonly IEntityRepository<AppUserToken, int> _appUserTokenRepository;
         private readonly IEntityRepository<AppUser, int> _appUserRepository;
         private readonly IValidator<AppUserCreateDto> _validator;
+        private readonly IEntityRepository<App, int> _appRepository;
 
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
@@ -28,6 +31,7 @@ namespace Economy.Panel.Persistence.Services
             _unitOfWork = unitOfWork;
             _appUserTokenRepository = unitOfWork.DefaultEntityRepository<AppUserToken>();
             _appUserRepository = unitOfWork.DefaultEntityRepository<AppUser>();
+            _appRepository = unitOfWork.DefaultEntityRepository<App>();
             _userManager = userManager;
             _tokenService = tokenService;
             _validator = validator;
@@ -68,7 +72,7 @@ namespace Economy.Panel.Persistence.Services
 
             if (!result.Succeeded)
             {
- 
+
                 return ServiceResult<AppUserDto>.Failure(
                     message: "Kullanıcı oluşturulamadı.",
                     statusCode: (int)HttpStatusCode.BadRequest,
@@ -164,27 +168,44 @@ namespace Economy.Panel.Persistence.Services
             };
         }
 
-        public ResponseModel<AppUserDto> GetUser(int id, bool isDeleted)
+        public ServiceResult<AppUserDto> GetUser(int id, bool isDeleted)
         {
-            var result = _appUserRepository.GetForRead(w => w.Id == id && w.IsDeleted == isDeleted);
-            var resultModel = new ResponseModel<AppUserDto>();
-            return new ResponseModel<AppUserDto>()
+            var entity = _appUserRepository.GetForRead(w => w.Id == id && w.IsDeleted == isDeleted);
+            if (entity is null)
             {
-                IsSuccess = true,
-                Data = new AppUserDto
-                {
-                    Id = result.Id,
-                    FirstName = result.FirstName,
-                    LastName = result.LastName,
-                    Email = result.Email,
-                    PhoneNumber = result.PhoneNumber,
-                    UserName = result.UserName,
-                    TenantId = result.TenantId
-                },
-                Message = new ResultMessage("Kullanıcı Başarıyla Getirildi"),
-                Notification = Core.Enums.NotificationType.Success,
-                Status = HttpStatusCode.OK
+                return ServiceResult<AppUserDto>.Empty(
+                    message: $"ID'si {id} olan kayıt bulunamadı.",
+                    statusCode: (int)HttpStatusCode.NotFound
+                );
+            }
+
+            var dto = new AppUserDto
+            {
+                Id = entity.Id,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
+                Email = entity.Email,
+                PhoneNumber = entity.PhoneNumber,
+                UserName = entity.UserName,
+                TenantId = entity.TenantId,
+                IsDefaultAdmin = entity.IsDefaultAdmin,
+                JobTitle = entity.JobTitle,
+                PhotoUrl = entity.PhotoUrl,
             };
+
+            return ServiceResult<AppUserDto>.Success(
+                data: dto,
+                message: "Kaydı başarıyla getirildi.",
+                statusCode: (int)HttpStatusCode.OK
+            );
+
+
+
+
+
+
+
+
         }
 
         public async Task<ResponseModel<Token>> LoginAsync(SignIn signIn)
@@ -230,28 +251,40 @@ namespace Economy.Panel.Persistence.Services
             return ResponseModel<Token>.Success(token, HttpStatusCode.OK);
         }
 
-        public ResponseModel<List<AppUserListDto>> UserList(bool IsDeleted)
+        public ServiceResult<List<AppUserListDto>> UserList(bool IsDeleted)
         {
             var result = _appUserRepository.WhereForRead(w => w.IsDeleted == IsDeleted);
 
-            return new ResponseModel<List<AppUserListDto>>()
+            if (!result.Any())
             {
-                IsSuccess = true,
-                Data = result.Select(s => new AppUserListDto
-                {
-                    Id = s.Id,
-                    FirstName = s.FirstName,
-                    LastName = s.LastName,
-                    Email = s.Email,
-                    PhoneNumber = s.PhoneNumber,
-                    IsDefaultAdmin = s.IsDefaultAdmin,
-                    TenantId = s.TenantId,
-                    UserName = s.UserName
-                }).ToList(),
-                Message = new ResultMessage("Kullanıcı Listesi Başarıyla Getirildi"),
-                Notification = Core.Enums.NotificationType.Success,
-                Status = HttpStatusCode.OK
-            };
+                return ServiceResult<List<AppUserListDto>>.Empty(
+                    message: "Kayıt bulunamadı.",
+                    statusCode: (int)HttpStatusCode.NoContent);
+            }
+
+            var entity = result.Select(s => new AppUserListDto
+            {
+                Id = s.Id,
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                Email = s.Email,
+                PhoneNumber = s.PhoneNumber,
+                IsDefaultAdmin = s.IsDefaultAdmin,
+                TenantId = s.TenantId,
+                UserName = s.UserName
+            }).ToList();
+
+            // Uygulama bilgilerini doldur
+            foreach (var item in entity)
+            {
+                item.TenantName = _appRepository.GetForRead(x => x.Id == item.TenantId && x.IsDeleted == false).HotelName;
+            }
+
+
+            return ServiceResult<List<AppUserListDto>>.Success(
+             data: entity,
+             message: "başarıyla getirildi.");
+
 
         }
     }

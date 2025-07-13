@@ -21,6 +21,24 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult UserList()
         {
             var result = _panelAppUserService.UserList(false);
+            if (!result.HasData)
+            {
+                AddMessage(result);
+                return View(result.Data);
+            }
+
+            var entity = result.Data.Select(s => new AppUserListDto
+            {
+                Id = s.Id,
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                Email = s.Email,
+                PhoneNumber = s.PhoneNumber,
+                IsDefaultAdmin = s.IsDefaultAdmin,
+                TenantId = s.TenantId,
+                UserName = s.UserName
+            }).ToList();
+
             return View(result.Data);
         }
         public IActionResult CreateUser()

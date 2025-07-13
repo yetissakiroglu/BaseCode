@@ -73,20 +73,20 @@
                             <section class="mb-5">
                                 <h5 class="fw-bold text-secondary mb-3">Mobil Logo</h5>
                                 <p class="text-muted mb-3">Mobil cihazlarda kullanılacak logo dosyasını yükleyin.</p>
-                                <input class="form-control form-control-lg mb-3" type="file" id="mobileLogoInput" accept="image/*" />
 
                                 <div class="row gy-3 align-items-center">
                                     <div class="col-md-6 text-center">
                                         <p class="fw-semibold mb-1">Orijinal Önizleme</p>
-                                        <img id="mobileLogoPreview" class="img-fluid rounded border border-2 border-secondary shadow-sm" style="max-height: 300px;" alt="Mobil Logo Önizleme"
-                                             src="@(Model.CroppedMobileLogoBase64 ?? "")" />
+                                        <img id="croppedMobileLogoResult" class="img-fluid rounded border border-2 border-primary shadow" style="max-height: 150px;" alt="Kırpılmış Logo"
+                                             src="@(Model.MobileLogoPath ?? "")" />
+                                        <input type="hidden" name="CroppedMobileLogoBase64" id="CroppedMobileLogoBase64" value="@Model.CroppedMobileLogoBase64" />
                                     </div>
                                     <div class="col-md-6 text-center">
+                                        <input class="form-control mb-3" type="file" id="mobileLogoInput" accept="image/*" />
+                                        <p class="fw-semibold mb-1">Orijinal Önizleme</p>
+                                        <img id="mobilLogoPreview" class="img-fluid rounded border border-2 border-secondary shadow-sm" style="max-height: 300px;" alt="Logo Önizleme"
+                                             src="@(Model.MobileLogoPath ?? "")" />
                                         <button type="button" id="cropMobileLogoBtn" class="btn btn-primary btn-lg mb-3 px-5 shadow-sm">Kırp</button>
-                                        <p class="fw-semibold mb-1">Kırpılmış Görüntü</p>
-                                        <img id="croppedMobileLogoResult" class="img-fluid rounded border border-2 border-primary shadow" style="max-height: 150px;" alt="Kırpılmış Mobil Logo"
-                                             src="@(Model.CroppedMobileLogoBase64 ?? "")" />
-                                        <input type="hidden" name="CroppedMobileLogoBase64" id="CroppedMobileLogoBase64" value="@Model.CroppedMobileLogoBase64" />
                                     </div>
                                 </div>
                             </section>
@@ -95,25 +95,27 @@
 
                             <!-- FAVICON -->
                             <section class="mb-5">
-                                <h5 class="fw-bold text-secondary mb-3">Favicon</h5>
-                                <p class="text-muted mb-3">Site favicon dosyasını yükleyin (64x64 px önerilir).</p>
-                                <input class="form-control form-control-lg mb-3" type="file" id="faviconInput" accept="image/*" />
+                                <h5 class="fw-bold text-secondary mb-3">Mobil Logo</h5>
+                                <p class="text-muted mb-3">Mobil cihazlarda kullanılacak logo dosyasını yükleyin.</p>
 
                                 <div class="row gy-3 align-items-center">
                                     <div class="col-md-6 text-center">
                                         <p class="fw-semibold mb-1">Orijinal Önizleme</p>
-                                        <img id="faviconPreview" class="img-fluid rounded border border-2 border-secondary shadow-sm" style="max-height: 150px;" alt="Favicon Önizleme"
-                                             src="@(Model.CroppedFaviconBase64 ?? "")" />
+                                        <img id="croppedFaviconResult" class="img-fluid rounded border border-2 border-primary shadow" style="max-height: 150px;" alt="Kırpılmış Logo"
+                                             src="@(Model.FaviconPath ?? "")" />
+                                        <input type="hidden" name="CroppedFaviconBase64" id="CroppedFaviconBase64" value="@Model.CroppedFaviconBase64" />
                                     </div>
                                     <div class="col-md-6 text-center">
+                                        <input class="form-control mb-3" type="file" id="faviconInput" accept="image/*" />
+                                        <p class="fw-semibold mb-1">Orijinal Önizleme</p>
+                                        <img id="faviconPreview" class="img-fluid rounded border border-2 border-secondary shadow-sm" style="max-height: 300px;" alt="Logo Önizleme"
+                                             src="@(Model.FaviconPath ?? "")" />
                                         <button type="button" id="cropFaviconBtn" class="btn btn-primary btn-lg mb-3 px-5 shadow-sm">Kırp</button>
-                                        <p class="fw-semibold mb-1">Kırpılmış Görüntü</p>
-                                        <img id="croppedFaviconResult" class="img-fluid rounded border border-2 border-primary shadow" style="max-height: 64px;" alt="Kırpılmış Favicon"
-                                             src="@(Model.CroppedFaviconBase64 ?? "")" />
-                                        <input type="hidden" name="CroppedFaviconBase64" id="CroppedFaviconBase64" value="@Model.CroppedFaviconBase64" />
                                     </div>
                                 </div>
                             </section>
+
+
 
                             <div class="text-center">
                                 <button type="submit" class="btn btn-success btn-lg px-5 shadow">Kaydet</button>

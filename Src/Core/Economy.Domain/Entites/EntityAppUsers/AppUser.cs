@@ -10,5 +10,7 @@ namespace Economy.Domain.Entites.Identities
         public bool IsDefaultAdmin { get; set; } = false;
         public bool IsDeleted { get; set; }
         public int TenantId { get; set; }
+        public string? PhotoUrl { get; set; }
+        public string? JobTitle { get; set; }
     }
 }
