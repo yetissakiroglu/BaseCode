@@ -2,6 +2,7 @@
 @model UserProfileViewModel
 
 @{
+    ViewData["Title"] = "Profil";
 }
 <main>
     <div class="container-fluid">
@@ -34,24 +35,29 @@
                                     @Model.FullName
                                     <img alt="instagram-check-mark" class="w-20 h-20" src="../assets/images/profile-app/01.png">
                                 </h5>
-                                <p>@Model.JobTitle</p>
+                                <p>@Model.JobTitle </p>
                             </div>
                         </div>
 
                         <div class="about-list mt-4">
                             <div>
-                                <span class="fw-medium"><i class="ti ti-briefcase"></i> Work passion</span>
-                                <span class="float-end f-s-13 text-secondary">IT Section</span>
+                                <span class="fw-medium"><i class="ti ti-briefcase"></i> Yetki </span>
+                                <span class="float-end f-s-13 text-secondary">
+                                    @foreach (var item in Model.Roles)
+                                    {
+                                        <text>@item</text>
+                                    }
+                                </span>
                             </div>
                             <div>
-                                <span class="fw-medium"><i class="ti ti-mail"></i> Email</span>
+                                <span class="fw-medium"><i class="ti ti-mail"></i> E-Posta </span>
                                 <span class="float-end f-s-13 text-secondary">@Model.Email</span>
                             </div>
                             <div>
-                                <span class="fw-medium"><i class="ti ti-phone"></i> Contact</span>
+                                <span class="fw-medium"><i class="ti ti-phone"></i> Telefon </span>
                                 <span class="float-end f-s-13 text-secondary">@Model.Phone</span>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>

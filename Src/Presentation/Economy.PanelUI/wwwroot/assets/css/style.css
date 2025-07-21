@@ -17538,7 +17538,7 @@ header.header-main .container-fluid .header-right .header-profile a {
 header.header-main .container-fluid .header-right .header-profile .header-profile-canvas {
   width: 300px;
   height: calc(100vh - 274px);
-  max-height: 446px;
+  max-height: 230px;
   top: 64px;
   right: 10px;
   border: 0;

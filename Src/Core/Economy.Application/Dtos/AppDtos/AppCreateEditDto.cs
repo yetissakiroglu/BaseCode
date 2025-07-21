@@ -1,9 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Economy.Panel.Application.Dtos.AppDtos
+namespace Economy.Application.Dtos.AppDtos
 {
-    public class AppCreateDto
+    public class AppCreateEditDto
     {
+        public int Id { get; set; }
 
         [Required]
         [MaxLength(200)]
@@ -30,6 +36,5 @@ namespace Economy.Panel.Application.Dtos.AppDtos
 
         [MaxLength(250)]
         public string Domain { get; set; }
-
     }
 }

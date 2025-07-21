@@ -1,4 +1,5 @@
-﻿using Economy.Base.Application.Dtos.BaseModels;
+﻿using Economy.Application.Dtos.AppUserDtos;
+using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Core.Dtos;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools;
@@ -7,12 +8,12 @@ using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.AppEntities;
 using Economy.Domain.Entites.Identities;
 using Economy.Domain.Entities.Identity;
-using Economy.Panel.Application.Dtos.AppLanguageDtos;
 using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Economy.Panel.Persistence.Services
 {
@@ -21,6 +22,7 @@ namespace Economy.Panel.Persistence.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEntityRepository<AppUserToken, int> _appUserTokenRepository;
         private readonly IEntityRepository<AppUser, int> _appUserRepository;
+
         private readonly IValidator<AppUserCreateDto> _validator;
         private readonly IEntityRepository<App, int> _appRepository;
 
@@ -168,7 +170,7 @@ namespace Economy.Panel.Persistence.Services
             };
         }
 
-        public ServiceResult<AppUserDto> GetUser(int id, bool isDeleted)
+        public async Task<ServiceResult<AppUserDto>> GetUser(int id, bool isDeleted)
         {
             var entity = _appUserRepository.GetForRead(w => w.Id == id && w.IsDeleted == isDeleted);
             if (entity is null)
@@ -178,6 +180,9 @@ namespace Economy.Panel.Persistence.Services
                     statusCode: (int)HttpStatusCode.NotFound
                 );
             }
+
+            var role =await _userManager.GetRolesAsync(entity);
+
 
             var dto = new AppUserDto
             {
@@ -191,6 +196,7 @@ namespace Economy.Panel.Persistence.Services
                 IsDefaultAdmin = entity.IsDefaultAdmin,
                 JobTitle = entity.JobTitle,
                 PhotoUrl = entity.PhotoUrl,
+                Roles = role?.ToList() ?? new List<string>()
             };
 
             return ServiceResult<AppUserDto>.Success(
@@ -198,13 +204,6 @@ namespace Economy.Panel.Persistence.Services
                 message: "Kaydı başarıyla getirildi.",
                 statusCode: (int)HttpStatusCode.OK
             );
-
-
-
-
-
-
-
 
         }
 
@@ -277,7 +276,7 @@ namespace Economy.Panel.Persistence.Services
             // Uygulama bilgilerini doldur
             foreach (var item in entity)
             {
-                item.TenantName = _appRepository.GetForRead(x => x.Id == item.TenantId && x.IsDeleted == false).HotelName;
+                item.TenantName = _appRepository.GetForRead(x => x.Id == item.TenantId && x.IsDeleted == false)?.HotelName;
             }
 
 

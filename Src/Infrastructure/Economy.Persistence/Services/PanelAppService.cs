@@ -1,7 +1,14 @@
-﻿using Economy.Core.Tools;
+﻿using Economy.Application.Dtos.AppDtos;
+using Economy.Application.Validations.AppValidator;
+using Economy.Core.Tools;
+using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.AppEntities;
+using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Panel.Application.Dtos.AppDtos;
+using Economy.Panel.Application.Dtos.AppLanguageDtos;
+using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
+using System.Net;
 
 namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
 {
@@ -32,33 +39,50 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
             return ResponseModel<IEnumerable<AppDto>>.Success(result, System.Net.HttpStatusCode.OK);
         }
 
-        public async Task<ResponseModel<AppDto>> CreateApp(AppCreateDto createApp)
+        public async Task<ServiceResult<AppDto>> CreateApp(AppCreateEditDto model)
         {
-            var app = new App
+            var validator = new AppCreateEditDtoValidator();
+            var validationResult = validator.Validate(model);
+
+            if (!validationResult.IsValid)
             {
-                Id = createApp.Id,
-                HotelName = createApp.HotelName,
-                ServerName = createApp.ServerName,
-                DatabaseName = createApp.DatabaseName,
-                UserName = createApp.UserName,
-                IsPassword = createApp.IsPassword,
-                Password = createApp.Password,
-                Domain = createApp.Domain,
+                return ServiceResult<AppDto>.Failure(
+                           message: "Geçersiz giriş verisi.",
+                           statusCode: (int)HttpStatusCode.BadRequest,
+                           validationErrors: validationResult.ToValidationDictionary());
+            }
+
+            var entity = new App
+            {
+                HotelName = model.HotelName,
+                ServerName = model.ServerName,
+                DatabaseName = model.DatabaseName,
+                UserName = model.UserName,
+                IsPassword = model.IsPassword,
+                Password = model.Password,
+                Domain = model.Domain,
             };
 
-            _panelAppRepository.Add(app);
-            await _unitOfWork.SaveDefaultChangesAsync();
-            return ResponseModel<AppDto>.Success(new AppDto
+            _panelAppRepository.Add(entity);
+            _unitOfWork.SaveDefaultChanges();
+
+            var dto = new AppDto
             {
-                Id = app.Id,
-                HotelName = app.HotelName,
-                ServerName = app.ServerName,
-                DatabaseName = app.DatabaseName,
-                UserName = app.UserName,
-                IsPassword = app.IsPassword,
-                Password = app.Password,
-                Domain = app.Domain,
-            }, System.Net.HttpStatusCode.Created);
+                Id = entity.Id,
+                HotelName = entity.HotelName,
+                ServerName = entity.ServerName,
+                DatabaseName = entity.DatabaseName,
+                UserName = entity.UserName,
+                IsPassword = entity.IsPassword,
+                Password = entity.Password,
+                Domain = entity.Domain
+            };
+
+            return ServiceResult<AppDto>.Success(
+                dto,
+                message: "Başarıyla oluşturuldu.",
+                statusCode: (int)HttpStatusCode.Created
+            );
         }
 
         public ResponseModel<AppDto> DeleteApp(int Id)

@@ -1,4 +1,6 @@
-﻿using Economy.Core.Tools;
+﻿using Economy.Application.Dtos.AppDtos;
+using Economy.Core.Tools;
+using Economy.Core.Tools.Result;
 using Economy.Panel.Application.Dtos.AppDtos;
 
 namespace Economy.Panel.Application.Interfaces
@@ -6,7 +8,7 @@ namespace Economy.Panel.Application.Interfaces
     public interface IPanelAppService 
     {
         ResponseModel<IEnumerable<AppDto>> Apps(bool isDeleted);
-        Task<ResponseModel<AppDto>> CreateApp(AppCreateDto user);
+        Task<ServiceResult<AppDto>> CreateApp(AppCreateEditDto model);
         Task<ResponseModel<AppDto>> EditApp(AppEditDto user);
         ResponseModel<AppDto> DeleteApp(int Id);
         ResponseModel<AppDto> GetApp(int Id, bool isDeleted);

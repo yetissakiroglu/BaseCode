@@ -4,6 +4,7 @@ using Economy.Panel.UI.Models.UserViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.Controllers
 {
@@ -96,9 +97,9 @@ namespace Economy.Panel.UI.Controllers
         }
 
         [HttpGet]
-        public IActionResult EditUser(int id)
+        public async Task<IActionResult> EditUser(int id)
         {
-            var result = _panelAppUserService.GetUser(id, false);
+            var result = await _panelAppUserService.GetUser(id, false);
             var resultModel = new AppUserEditDto
             {
                 Id = result.Data.Id,
@@ -121,9 +122,9 @@ namespace Economy.Panel.UI.Controllers
         }
 
         [HttpGet]
-        public IActionResult DetailsUser(int id)
+        public async Task<IActionResult> DetailsUser(int id)
         {
-            var result = _panelAppUserService.GetUser(id, false);
+            var result =await _panelAppUserService.GetUser(id, false);
             return View(result.Data);
         }
 

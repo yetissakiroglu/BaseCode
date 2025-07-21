@@ -1,6 +1,10 @@
-﻿using Economy.Panel.Application.Dtos.AppDtos;
+﻿using Economy.Application.Dtos.AppDtos;
+using Economy.Core.Interfaces.Economy.Panel.Persistence.Services;
+using Economy.Panel.Application.Dtos.AppDtos;
 using Economy.Panel.Application.Interfaces;
+using Economy.Panel.UI.Models.AppViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -25,14 +29,32 @@ namespace Economy.Panel.UI.Controllers
         [HttpGet]
         public IActionResult CreateApp()
         {
-            return View(new AppCreateDto());
+            return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateApp(AppCreateDto model)
+        public async Task<IActionResult> CreateApp(AppCreateViewModel viewModel)
         {
-            var result = await _panelAppService.CreateApp(model);
+            var appCreate = new AppCreateEditDto()
+            {
+                DatabaseName = viewModel.DatabaseName,
+                Domain = viewModel.Domain,
+                HotelName = viewModel.HotelName,
+                IsPassword = viewModel.IsPassword,
+                Password = viewModel.Password,
+                ServerName = viewModel.ServerName,
+                UserName = viewModel.UserName
+            };
+
+
+            var result = await _panelAppService.CreateApp(appCreate);
+            AddValidationErrorsToModelState(result.ValidationErrors);
             AddMessage(result);
+            if (!result.IsSuccess)
+            {
+                return View(viewModel);
+            }
+
             return RedirectToAction(nameof(AppList));
         }
 

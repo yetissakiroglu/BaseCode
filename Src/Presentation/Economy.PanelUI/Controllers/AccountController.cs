@@ -1,12 +1,10 @@
 ﻿using Economy.Core.Dtos;
 using Economy.Domain.Entites.Identities;
 using Economy.Panel.Application.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace Economy.Panel.UI.Controllers
 {

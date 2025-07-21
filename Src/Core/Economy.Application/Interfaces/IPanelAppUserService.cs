@@ -7,7 +7,7 @@ namespace Economy.Panel.Application.Interfaces
 {
     public interface IPanelAppUserService
     {
-        ServiceResult<AppUserDto> GetUser(int id, bool isDeleted);
+        Task<ServiceResult<AppUserDto>> GetUser(int id, bool isDeleted);
 
 
 

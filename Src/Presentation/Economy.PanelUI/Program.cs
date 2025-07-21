@@ -1,4 +1,6 @@
+using Economy.Application.Dtos.AppDtos;
 using Economy.Application.Validations.AppUserValidator;
+using Economy.Application.Validations.AppValidator;
 using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Base.Persistence.Providers;
 using Economy.Core.Business;
@@ -157,6 +159,7 @@ builder.Services.AddTransient<IValidator<AppCategoryTranslationCreateEditDto>, A
 builder.Services.AddTransient<IValidator<AppContentCreateEditDto>, AppContentCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppContentTranslationCreateEditDto>, AppContentTranslationCreateEditDtoValidator>();
 
+builder.Services.AddTransient<IValidator<AppCreateEditDto>, AppCreateEditDtoValidator>();
 
 builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSettingService, PanelAppSettingService>(); // Service sýnýfý kaydediliyor.

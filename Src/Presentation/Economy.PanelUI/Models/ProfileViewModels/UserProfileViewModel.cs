@@ -7,5 +7,6 @@
         public string Email { get; set; }
         public string Phone { get; set; }
         public string PhotoUrl { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

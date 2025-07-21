@@ -34,6 +34,8 @@ namespace Economy.Domain.Entites.AppEntities
         [MaxLength(250)]
         public string Domain { get; set; }
 
+        public int? TenantId { get; set; }
+
         [NotMapped]
         public string ConnectionString
         {

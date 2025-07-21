@@ -28,7 +28,10 @@ namespace Economy.Core.Services.Providers
             if (user == null) throw new Exception("User not found.");
 
             var tenant = await _masterDbContext.Apps.FindAsync(user.TenantId);
-            if (tenant == null) throw new Exception("Tenant not found.");
+            if (tenant == null)
+                return null;
+                
+                //throw new Exception("Tenant not found.");
 
             return tenant.ConnectionString;
         }
