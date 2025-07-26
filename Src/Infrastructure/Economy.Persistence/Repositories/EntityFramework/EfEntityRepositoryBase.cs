@@ -16,6 +16,7 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
             _context = context;
             _entities = _context.Set<T>();
         }
+        public DbSet<T> DataSet => _entities; // ← burası önemli!
 
         public void Add(T entity)
         {
@@ -142,5 +143,7 @@ namespace Economy.Persistence.Repositories.AppBase.EntityFramework
 
             return query.FirstOrDefault();
         }
+
+
     }
 }

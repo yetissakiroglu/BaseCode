@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Uygulama Seç";
+    var apps = ViewBag.AppList as List<SelectListItem>;
+}
+
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
+        <div class="row">
+             <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <p>
+                            Aşağıda formu doldurarak bir uygulama oluşturabilirsiniz.
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row p-2">
+                            <div class="col-md-6 offset-md-3">
+                                @if (apps == null || !apps.Any())
+                                {
+                                    <div class="alert alert-warning">
+                                        Henüz tanımlı bir uygulama bulunmamaktadır.
+                                    </div>
+                                }
+                                else
+                                {
+                                    <form asp-action="SelectForManagerAssign" method="post">
+                                        <div class="form-group">
+                                            <label for="selectedAppId">Uygulama</label>
+                                            <select class="form-control" name="selectedAppId" required>
+                                                <option value="">Seçiniz</option>
+                                                @foreach (var item in apps)
+                                                {
+                                                    <option value="@item.Value">@item.Text</option>
+                                                }
+                                            </select>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary mt-3">Yöneticileri Ata</button>
+                                    </form>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+

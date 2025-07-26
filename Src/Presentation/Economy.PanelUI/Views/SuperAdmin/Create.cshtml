@@ -1,8 +1,8 @@
-﻿@using Economy.Panel.UI.Models.UserViewModels
-@model AppUserCreateViewModel
+﻿@using Economy.Panel.UI.Models.SuperAdminViewModels
+@model SuperAdminCreateEditViewModel
 
 @{
-    ViewData["Title"] = "Kullanıcı Ekle";
+    ViewData["Title"] = "Süper Admin Ekle";
 }
 
 <main>
@@ -29,8 +29,10 @@
                         <div class="row mb-2">
                             <div class="col-xl-6 offset-xl-3">
 
-                                <form asp-action="CreateUser">
+                                <form asp-action="Create" method="post">
                                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                                    <input type="hidden" asp-for="UserId" />
 
                                     <div class="form-group mb-3">
                                         <label asp-for="FirstName" class="form-label"></label>
@@ -58,7 +60,7 @@
 
                                     <div class="form-group mb-3">
                                         <label asp-for="Password" class="form-label"></label>
-                                        <input asp-for="Password" class="form-control" type="password" />
+                                        <input asp-for="Password" type="password" class="form-control" />
                                         <span asp-validation-for="Password" class="text-danger"></span>
                                     </div>
 
@@ -68,20 +70,56 @@
                                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                     </div>
 
-                                    <div class="form-check mb-3">
-                                        <input class="form-check-input" asp-for="EmailConfirmed" />
-                                        <label class="form-check-label" asp-for="EmailConfirmed"></label>
+                                    <div class="form-check mb-2">
+                                        <input asp-for="EmailConfirmed" class="form-check-input" />
+                                        <label asp-for="EmailConfirmed" class="form-check-label"></label>
                                     </div>
 
-                                    <div class="form-check mb-4">
-                                        <input class="form-check-input" asp-for="PhoneNumberConfirmed" />
-                                        <label class="form-check-label" asp-for="PhoneNumberConfirmed"></label>
+                                    <div class="form-check mb-3">
+                                        <input asp-for="PhoneNumberConfirmed" class="form-check-input" />
+                                        <label asp-for="PhoneNumberConfirmed" class="form-check-label"></label>
+                                    </div>
+
+                                    <div class="form-check mb-3">
+                                        <input asp-for="IsDefaultAdmin" class="form-check-input" />
+                                        <label asp-for="IsDefaultAdmin" class="form-check-label"></label>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label asp-for="PhotoUrl" class="form-label"></label>
+                                        <input asp-for="PhotoUrl" class="form-control" />
+                                        <span asp-validation-for="PhotoUrl" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label asp-for="JobTitle" class="form-label"></label>
+                                        <input asp-for="JobTitle" class="form-control" />
+                                        <span asp-validation-for="JobTitle" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-check mb-2">
+                                        <input asp-for="TwoFactorEnabled" class="form-check-input" />
+                                        <label asp-for="TwoFactorEnabled" class="form-check-label"></label>
+                                    </div>
+
+                                    <div class="form-check mb-3">
+                                        <input asp-for="LockoutEnabled" class="form-check-input" />
+                                        <label asp-for="LockoutEnabled" class="form-check-label"></label>
+                                    </div>
+
+                                    <div class="form-group mb-4">
+                                        <label asp-for="RoleName" class="form-label"></label>
+                                        <select asp-for="RoleName" asp-items="Model.RoleList" class="form-select">
+                                            <option value="">Rol Seçiniz</option>
+                                        </select>
+                                        <span asp-validation-for="RoleName" class="text-danger"></span>
                                     </div>
 
                                     <div class="text-end">
                                         <button type="submit" class="btn btn-success">Kaydet</button>
                                     </div>
                                 </form>
+
                             </div>
                         </div>
                     </div>

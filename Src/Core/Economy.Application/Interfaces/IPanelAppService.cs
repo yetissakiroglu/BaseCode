@@ -8,6 +8,10 @@ namespace Economy.Panel.Application.Interfaces
     public interface IPanelAppService 
     {
         ResponseModel<IEnumerable<AppDto>> Apps(bool isDeleted);
+        Task<ServiceResult<AppDto>> GetAppById(int id);
+
+
+
         Task<ServiceResult<AppDto>> CreateApp(AppCreateEditDto model);
         Task<ResponseModel<AppDto>> EditApp(AppEditDto user);
         ResponseModel<AppDto> DeleteApp(int Id);

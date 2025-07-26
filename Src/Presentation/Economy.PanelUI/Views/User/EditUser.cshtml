@@ -4,136 +4,90 @@
     ViewData["Title"] = "Kullanıcı Güncelleme";
 }
 
-
-
 <main>
     <div class="container-fluid">
-        <!-- Breadcrumb start -->
-        <div class="row m-1">
-            <div class="col-12 ">
-                <h4 class="main-title">@ViewData["Title"]</h4>
-                <ul class="app-line-breadcrumbs mb-3">
-                    <li class="">
-                        <a class="f-s-14 f-w-500" href="#">
-                            <span>
-                                <i class="ph-duotone  ph-table f-s-16"></i> Anasayfa
-                            </span>
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a class="f-s-14 f-w-500" href="#"> @ViewData["Title"] </a>
-                    </li>
-                </ul>
+        <!-- Başlık & Breadcrumb -->
+        @await Html.PartialAsync("_breadcrumbs")
+
+        <!-- Geri Dön Butonu -->
+        <div class="row mb-2">
+            <div class="col-12 text-end">
+                <a class="btn btn-info" asp-action="UserList">Tüm Kayıtlar</a>
             </div>
         </div>
 
-        <!-- Breadcrumb end -->
-        <!-- tables start  -->
+        <!-- Form Kartı -->
         <div class="row">
-
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                            </div>
-                            <div>
-                                <div class="app-btn-list">
-                                    <a class="btn btn-info" asp-action="UserList">Tüm Kayıtlar</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- Hoverable Table start -->
-            <div class="col-xl-12">
+            <div class="col-xl-6 offset-xl-3">
                 <div class="card">
                     <div class="card-header">
-                        <h5> Kayıtlar </h5>
-                        <p>
-                            Aşağıda kayıtlı bilgiler bulunmaktadır.
-                        </p>
+                        <h5>Kullanıcı Bilgilerini Güncelle</h5>
+                        <p>Aşağıdaki alanları düzenleyerek kaydı güncelleyebilirsiniz.</p>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <form asp-action="EditUser">
-                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <form asp-action="EditUser">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
+                            <input asp-for="Id" type="hidden" />
 
-                                    <input asp-for="Id" type="hidden" class="form-control" />
-
-                                    <div class="form-group">
-                                        <label asp-for="FirstName" class="control-label"></label>
-                                        <input asp-for="FirstName" class="form-control" />
-                                        <span asp-validation-for="FirstName" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="LastName" class="control-label"></label>
-                                        <input asp-for="LastName" class="form-control" />
-                                        <span asp-validation-for="LastName" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="TenantId" class="control-label"></label>
-                                        <input asp-for="TenantId" class="form-control" />
-                                        <span asp-validation-for="TenantId" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="UserName" class="control-label"></label>
-                                        <input asp-for="UserName" class="form-control" />
-                                        <span asp-validation-for="UserName" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Email" class="control-label"></label>
-                                        <input asp-for="Email" class="form-control" />
-                                        <span asp-validation-for="Email" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Password" class="control-label"></label>
-                                        <input asp-for="Password" class="form-control" />
-                                        <span asp-validation-for="Password" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="PhoneNumber" class="control-label"></label>
-                                        <input asp-for="PhoneNumber" class="form-control" />
-                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group form-check">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="EmailConfirmed" /> @Html.DisplayNameFor(model => model.EmailConfirmed)
-                                        </label>
-                                    </div>
-                                    <div class="form-group form-check">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="PhoneNumberConfirmed" /> @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
-                                        </label>
-                                    </div>
-                                  
-                                    <div class="form-group">
-                                        <input type="submit" value="Kaydet" class="btn btn-primary" />
-                                    </div>
-                                </form>
+                            <div class="form-group mb-3">
+                                <label asp-for="FirstName" class="form-label"></label>
+                                <input asp-for="FirstName" class="form-control" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
                             </div>
-                        </div>
 
+                            <div class="form-group mb-3">
+                                <label asp-for="LastName" class="form-label"></label>
+                                <input asp-for="LastName" class="form-control" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
 
+                            <div class="form-group mb-3">
+                                <label asp-for="UserName" class="form-label"></label>
+                                <input asp-for="UserName" class="form-control" />
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="Email" class="form-label"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="Password" class="form-label"></label>
+                                <input asp-for="Password" class="form-control" type="password" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="PhoneNumber" class="form-label"></label>
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" asp-for="EmailConfirmed" />
+                                <label class="form-check-label" asp-for="EmailConfirmed"></label>
+                            </div>
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" asp-for="PhoneNumberConfirmed" />
+                                <label class="form-check-label" asp-for="PhoneNumberConfirmed"></label>
+                            </div>
+
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-success">Kaydet</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-            <!-- Hoverable Table end -->
-
-
         </div>
-        <!-- tables-end  -->
+
     </div>
 </main>
 
-
-
-
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

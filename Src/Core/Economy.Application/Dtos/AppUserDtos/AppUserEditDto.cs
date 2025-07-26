@@ -12,10 +12,7 @@ namespace Economy.Base.Application.Dtos.BaseModels
         [Required]
         [DisplayName("Soyadı")]
         public string LastName { get; set; }
-        [Required]
-        [DisplayName("Bağlı Uygulama")]
-        public int TenantId { get; set; }
-
+  
         [Required]
         [DisplayName("Kullanıcı Adı")]
         public string UserName { get; set; }

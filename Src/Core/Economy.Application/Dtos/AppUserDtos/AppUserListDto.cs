@@ -11,10 +11,10 @@ namespace Economy.Base.Application.Dtos.BaseModels
         public string FirstName { get; set; }
         [DisplayName("Kullanıcı Soyadı")]
         public string LastName { get; set; }
-        [DisplayName("Bağlı Uygulama")]
-        public string TenantName { get; set; }
-        [DisplayName("Bağlı Uygulama")]
-        public int TenantId { get; set; }
+        //[DisplayName("Bağlı Uygulama")]
+        //public string TenantName { get; set; }
+        //[DisplayName("Bağlı Uygulama")]
+        //public int TenantId { get; set; }
 
         [DisplayName("Kullanıcı Adı")]
         public string UserName { get; set; }

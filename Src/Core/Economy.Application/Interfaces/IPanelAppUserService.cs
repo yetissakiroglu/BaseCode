@@ -7,10 +7,19 @@ namespace Economy.Panel.Application.Interfaces
 {
     public interface IPanelAppUserService
     {
+
+
+
+
+
+
+
         Task<ServiceResult<AppUserDto>> GetUser(int id, bool isDeleted);
+        Task<ServiceResult<List<AppUserDto>>> GetAllManagers();
 
 
 
+        
         Task<ServiceResult<AppUserDto>> CreateUser(AppUserCreateDto model);
 
 

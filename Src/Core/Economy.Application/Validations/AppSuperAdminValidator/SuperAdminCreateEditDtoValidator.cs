@@ -1,12 +1,11 @@
-﻿using Economy.Base.Application.Dtos.BaseModels;
+﻿using Economy.Application.Dtos.AppSuperAdminUserDtos;
+using FluentValidation;
 
-namespace Economy.Application.Validations.AppUserValidator
+namespace Economy.Application.Validations.AppSuperAdminValidator
 {
-    using FluentValidation;
-
-    public class AppUserCreateDtoValidator : AbstractValidator<AppUserCreateDto>
+    public class SuperAdminCreateEditDtoValidator : AbstractValidator<AppSuperAdminUserCreateEditDto>
     {
-        public AppUserCreateDtoValidator()
+        public SuperAdminCreateEditDtoValidator()
         {
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("Adı alanı boş olamaz.")
@@ -15,10 +14,6 @@ namespace Economy.Application.Validations.AppUserValidator
             RuleFor(x => x.LastName)
                 .NotEmpty().WithMessage("Soyadı alanı boş olamaz.")
                 .MaximumLength(50).WithMessage("Soyadı en fazla 50 karakter olabilir.");
-
-            //RuleFor(x => x.TenantId)
-            //    .NotEmpty().WithMessage("Bağlı Uygulama seçilmelidir.")
-            //    .GreaterThan(0).WithMessage("Geçerli bir uygulama seçilmelidir.");
 
             RuleFor(x => x.UserName)
                 .NotEmpty().WithMessage("Kullanıcı Adı alanı boş olamaz.")

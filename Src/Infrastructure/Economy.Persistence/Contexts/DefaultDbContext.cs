@@ -2,9 +2,11 @@
 using Economy.Domain.Entites.AppEntities;
 using Economy.Domain.Entites.Identities;
 using Economy.Domain.Entities.Identity;
+using Economy.Persistence.Configurations.ConfigurationApps;
 using Economy.Persistence.Configurations.ConfigurationAppSlide;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace Economy.Persistence.Contexts
 {
@@ -24,25 +26,54 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppUserLogin> UserLogins { get; set; }
         public DbSet<AppUserToken> UserTokens { get; set; }
         public DbSet<App> Apps { get; set; }
+        public DbSet<AppManager> AppManagers { get; set; }
 
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
             optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            builder.ApplyConfiguration(new App_Configuration()); // ← Burası önemli
-            builder.ApplyConfiguration(new AppRoleConfiguration()); // ← Burası önemli
-            builder.ApplyConfiguration(new AppUserConfiguration()); // ← Burası önemli
-            builder.ApplyConfiguration(new RoleClaimConfiguration()); // ← Burası önemli
-            builder.ApplyConfiguration(new UserClaimConfiguration()); // ← Burası önemli
-            builder.ApplyConfiguration(new UserLoginConfiguration()); // ← Burası önemli
-            builder.ApplyConfiguration(new UserRoleConfiguration()); // ← Burası önemli
-            builder.ApplyConfiguration(new UserTokenConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new App_Configuration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new AppManager_Configuration()); // ← Burası önemli
 
-            base.OnModelCreating(builder);
+
+
+            modelBuilder.ApplyConfiguration(new AppRoleConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new AppUserConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new RoleClaimConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new UserClaimConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new UserLoginConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new UserRoleConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new UserTokenConfiguration()); // ← Burası önemli
+
+
+            modelBuilder.Entity<AppManager>()
+    .HasKey(am => am.Id); // Primary key
+
+            modelBuilder.Entity<AppManager>()
+                .HasOne(am => am.App)
+                .WithMany()
+                .HasForeignKey(am => am.AppId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AppManager>()
+                .HasOne(am => am.User)
+                .WithMany()
+                .HasForeignKey(am => am.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
+
+
+
+
+
+            base.OnModelCreating(modelBuilder);
 		}
 
 	}

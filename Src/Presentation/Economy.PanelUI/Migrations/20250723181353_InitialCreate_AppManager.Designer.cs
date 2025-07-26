@@ -4,6 +4,7 @@ using Economy.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Economy.Panel.UI.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250723181353_InitialCreate_AppManager")]
+    partial class InitialCreate_AppManager
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,7 +126,7 @@ namespace Economy.Panel.UI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AppManagers", (string)null);
+                    b.ToTable("AppManagers");
                 });
 
             modelBuilder.Entity("Economy.Domain.Entites.Identities.AppRole", b =>
@@ -158,24 +161,17 @@ namespace Economy.Panel.UI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 4,
+                            Id = 1,
                             ConcurrencyStamp = "a1111111-b222-c333-d444-e55555555555",
-                            Name = "Süper Admin",
-                            NormalizedName = "SUPER ADMIN"
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = 5,
+                            Id = 2,
                             ConcurrencyStamp = "f6666666-g777-h888-i999-j00000000000",
-                            Name = "Tenant Admin",
-                            NormalizedName = "TENANT ADMIN"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ConcurrencyStamp = "f6666666-g777-h888-i999-j00000000321",
-                            Name = "Content Manager",
-                            NormalizedName = "CONTENT MANAGER"
+                            Name = "Otel Editör",
+                            NormalizedName = "OTEL EDİTÖR"
                         });
                 });
 
@@ -377,7 +373,7 @@ namespace Economy.Panel.UI.Migrations
                         new
                         {
                             UserId = 1,
-                            RoleId = 4
+                            RoleId = 1
                         });
                 });
 

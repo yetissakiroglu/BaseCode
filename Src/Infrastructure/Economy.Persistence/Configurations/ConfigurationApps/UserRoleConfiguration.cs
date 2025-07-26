@@ -13,7 +13,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationApps
             builder.HasData(new IdentityUserRole<int>
             {
                 UserId = 1,
-                RoleId = 1
+                RoleId = 4
             });
             //builder.HasNoKey(); // Bu bir view veya key'siz bir yapı
 

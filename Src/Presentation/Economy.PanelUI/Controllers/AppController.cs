@@ -1,23 +1,28 @@
 ﻿using Economy.Application.Dtos.AppDtos;
-using Economy.Core.Interfaces.Economy.Panel.Persistence.Services;
+using Economy.Application.Interfaces;
 using Economy.Panel.Application.Dtos.AppDtos;
 using Economy.Panel.Application.Interfaces;
 using Economy.Panel.UI.Models.AppViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class AppController : BaseController
     {
         private readonly IPanelAppService _panelAppService;
+        private readonly IPanelAppUserService _panelAppUserService;
+        private readonly IPanelAppManagerService _panelAppManagerService;
 
-        public AppController(IPanelAppService panelAppService)
+        public AppController(IPanelAppService panelAppService, IPanelAppUserService panelAppUserService, IPanelAppManagerService panelAppManagerService)
         {
             _panelAppService = panelAppService;
+            _panelAppUserService = panelAppUserService;
+            _panelAppManagerService = panelAppManagerService;
         }
 
         public IActionResult AppList()
@@ -61,7 +66,7 @@ namespace Economy.Panel.UI.Controllers
         [HttpGet]
         public IActionResult EditApp(int Id)
         {
-            var result = _panelAppService.GetApp(Id, false);   
+            var result = _panelAppService.GetApp(Id, false);
             var editDto = new AppEditDto
             {
                 Id = result.Data.Id,
@@ -79,7 +84,7 @@ namespace Economy.Panel.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> EditApp(AppEditDto modelDto)
         {
-              var editModel = await _panelAppService.EditApp(modelDto);
+            var editModel = await _panelAppService.EditApp(modelDto);
             AddMessage(editModel);
             return RedirectToAction(nameof(AppList));
         }
@@ -97,14 +102,73 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult DeleteApp(int Id)
         {
             var result = _panelAppService.DeleteApp(Id);
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
-                result.Message.RedirectUrl = "/App/"+ nameof(AppList);
+                result.Message.RedirectUrl = "/App/" + nameof(AppList);
             }
             string json = JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true });
 
             return Json(result);
         }
+
+
+        #region App Yönetici Atama
+        [HttpGet]
+        public IActionResult SelectForManagerAssign()
+        {
+            var apps = _panelAppService.Apps(false).Data
+                .Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.HotelName
+                }).ToList();
+
+            ViewBag.AppList = apps;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult SelectForManagerAssign(int selectedAppId)
+        {
+            return RedirectToAction("AssignManagers", new { id = selectedAppId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AssignManagers(int id)
+        {
+            var app = _panelAppService.GetAppById(id).Result;
+            if (app == null) return NotFound();
+
+            var allManagers = _panelAppUserService.GetAllManagers().Result.Data
+                .Select(u => new ManagerItem
+                {
+                    Id = u.Id,
+                    FullName = u.FirstName + " " + u.LastName
+                }).ToList();
+
+            var selectedManagerIds = await _panelAppManagerService.GetManagerIdsByAppIdAsync(id);
+
+            var model = new AssignManagersViewModel
+            {
+                AppId = app.Data.Id,
+                AppName = app.Data.HotelName,
+                AllManagers = allManagers,
+                SelectedManagerIds = selectedManagerIds
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AssignManagers(AssignManagersViewModel model)
+        {
+            if (model.SelectedManagerIds == null)
+                model.SelectedManagerIds = new List<int>();
+
+            var updateData = await _panelAppManagerService.UpdateManagersForAppAsync(model.AppId, model.SelectedManagerIds);
+            AddMessage(updateData);
+            return RedirectToAction("AssignManagers", new { id = model.AppId });
+        }
+        #endregion
 
 
     }

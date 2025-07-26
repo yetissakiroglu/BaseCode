@@ -19,6 +19,5 @@ namespace Economy.Core.Interfaces
         void Update(T entity);
         void Delete(T entity);
         void Delete(int Id);
-
     }
 }

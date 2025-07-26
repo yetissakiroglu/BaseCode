@@ -37,48 +37,54 @@
                     <div class="card-body">
                         <div class="row p-2">
                             <div class="col-md-6 offset-md-3">
-                                <form asp-action="CreateApp" method="post">
-                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                                    <div class="mb-3">
-                                        <label asp-for="HotelName" class="control-label"></label>
-                                        <input asp-for="HotelName" class="form-control" />
-                                        <span asp-validation-for="HotelName" class="text-danger"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label asp-for="ServerName" class="control-label"></label>
-                                        <input asp-for="ServerName" class="form-control" />
-                                        <span asp-validation-for="ServerName" class="text-danger"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label asp-for="DatabaseName" class="control-label"></label>
-                                        <input asp-for="DatabaseName" class="form-control" />
-                                        <span asp-validation-for="DatabaseName" class="text-danger"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label asp-for="UserName" class="control-label"></label>
-                                        <input asp-for="UserName" class="form-control" />
-                                        <span asp-validation-for="UserName" class="text-danger"></span>
-                                    </div>
-                                    <div class="mb-3 form-check">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="IsPassword" /> @Html.DisplayNameFor(model => model.IsPassword)
-                                        </label>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label asp-for="Password" class="control-label"></label>
-                                        <input asp-for="Password" class="form-control" />
-                                        <span asp-validation-for="Password" class="text-danger"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label asp-for="Domain" class="control-label"></label>
-                                        <input asp-for="Domain" class="form-control" />
-                                        <span asp-validation-for="Domain" class="text-danger"></span>
+                                <form asp-action="CreateApp" method="post" class="needs-validation" novalidate>
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="HotelName"></label>
+                                            <input asp-for="HotelName" class="form-control" />
+                                            <span asp-validation-for="HotelName" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="ServerName"></label>
+                                            <input asp-for="ServerName" class="form-control" />
+                                            <span asp-validation-for="ServerName" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="DatabaseName"></label>
+                                            <input asp-for="DatabaseName" class="form-control" />
+                                            <span asp-validation-for="DatabaseName" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="UserName"></label>
+                                            <input asp-for="UserName" class="form-control" />
+                                            <span asp-validation-for="UserName" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <div class="form-check mt-4">
+                                                <input asp-for="IsPassword" class="form-check-input" id="isPasswordCheck" />
+                                                <label asp-for="IsPassword" class="form-check-label"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-md-6" id="passwordContainer">
+                                            <label asp-for="Password"></label>
+                                            <input asp-for="Password" type="password" class="form-control" />
+                                            <span asp-validation-for="Password" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-12">
+                                            <label asp-for="Domain"></label>
+                                            <input asp-for="Domain" class="form-control" />
+                                            <span asp-validation-for="Domain" class="text-danger"></span>
+                                        </div>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <input type="submit" value="Oluştur" class="btn btn-primary" />
-                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-3 float-end">Oluştur</button>
                                 </form>
                             </div>
                         </div>
@@ -91,4 +97,24 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        const isPasswordCheckbox = document.getElementById('isPasswordCheck');
+        const passwordInput = document.querySelector('input[name="Password"]');
+        const passwordContainer = document.getElementById('passwordContainer');
+
+        function togglePassword() {
+            const showPassword = isPasswordCheckbox.checked;
+            passwordContainer.style.display = showPassword ? 'block' : 'none';
+
+            if (showPassword) {
+                passwordInput.setAttribute('required', 'required');
+            } else {
+                passwordInput.removeAttribute('required');
+                passwordInput.value = '';
+            }
+        }
+
+        togglePassword();
+        isPasswordCheckbox.addEventListener('change', togglePassword);
+    </script>
 }

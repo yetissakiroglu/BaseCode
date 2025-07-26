@@ -1,5 +1,4 @@
-﻿using Economy.Application.Dtos.AppUserDtos;
-using Economy.Base.Application.Dtos.BaseModels;
+﻿using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Core.Dtos;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools;
@@ -10,10 +9,11 @@ using Economy.Domain.Entites.Identities;
 using Economy.Domain.Entities.Identity;
 using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
+using Economy.Persistence.Repositories.AppBase.EntityFramework;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Economy.Panel.Persistence.Services
 {
@@ -38,6 +38,64 @@ namespace Economy.Panel.Persistence.Services
             _tokenService = tokenService;
             _validator = validator;
         }
+
+        public async Task<ServiceResult<List<AppUserDto>>> GetAllManagers()
+        {
+            if (_appUserRepository is not EfEntityRepositoryBase<AppUser> efRepo)
+            {
+                return ServiceResult<List<AppUserDto>>.Failure(
+                    message: "Kullanıcı veri kaynağına erişilemedi.",
+                    statusCode: (int)HttpStatusCode.InternalServerError
+                );
+            }
+
+            var users = await efRepo.DataSet
+                .AsNoTracking()
+                .Where(x=>!x.IsDeleted)
+                .Select(x => new AppUserDto
+                {
+                    Id = x.Id,
+                    IsDefaultAdmin = x.IsDefaultAdmin,
+                    Email = x.Email,
+                    IsDeleted = x.IsDeleted,    
+                    FirstName = x.FirstName,
+                    JobTitle = x.JobTitle,
+                    EmailConfirmed = x.EmailConfirmed,
+                    LastName= x.LastName,
+                    AccessFailedCount = x.AccessFailedCount,
+                    ConcurrencyStamp = x.ConcurrencyStamp,
+                    LockoutEnabled=x.LockoutEnabled,
+                    LockoutEnd = x.LockoutEnd,
+                    NormalizedEmail = x.NormalizedEmail,
+                    NormalizedUserName = x.NormalizedUserName,
+                    PasswordHash = x.PasswordHash,
+                    PhoneNumber = x.PhoneNumber,
+                    PhoneNumberConfirmed = x.PhoneNumberConfirmed,
+                    PhotoUrl = x.PhotoUrl,
+                    Roles = new List<string>(),
+                    SecurityStamp = x.SecurityStamp,
+                    TwoFactorEnabled = x.TwoFactorEnabled,
+                    UserName = x.UserName
+                  
+                })
+                .ToListAsync();
+
+            if (!users.Any())
+            {
+                return ServiceResult<List<AppUserDto>>.Empty(
+                    message: "Yönetici bulunamadı.",
+                    statusCode: (int)HttpStatusCode.NoContent
+                );
+            }
+
+            return ServiceResult<List<AppUserDto>>.Success(
+                data: users,
+                message: "Yöneticiler başarıyla getirildi.",
+                statusCode: (int)HttpStatusCode.OK
+            );
+        }
+
+
         public async Task<ServiceResult<AppUserDto>> CreateUser(AppUserCreateDto model)
         {
             if (model == null)
@@ -62,7 +120,7 @@ namespace Economy.Panel.Persistence.Services
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                TenantId = model.TenantId,
+                //TenantId = model.TenantId,
                 UserName = model.UserName,
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
@@ -89,7 +147,7 @@ namespace Economy.Panel.Persistence.Services
                 IsDefaultAdmin = user.IsDefaultAdmin,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                TenantId = user.TenantId,
+                //TenantId = user.TenantId,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 EmailConfirmed = user.EmailConfirmed,
@@ -147,7 +205,7 @@ namespace Economy.Panel.Persistence.Services
                 Email = userEditDto.Email,
                 PhoneNumber = userEditDto.PhoneNumber,
                 UserName = user.UserName, // Değişmemesi isteniyor
-                TenantId = user.TenantId  // Değişmemesi isteniyor
+                //TenantId = user.TenantId  // Değişmemesi isteniyor
             };
 
             _appUserRepository.Update(userUpdateModel);
@@ -165,7 +223,7 @@ namespace Economy.Panel.Persistence.Services
                     Email = userUpdateModel.Email,
                     PhoneNumber = userUpdateModel.PhoneNumber,
                     UserName = user.UserName, // Değişmemesi isteniyor
-                    TenantId = user.TenantId  // Değişmemesi isteniyor
+                    //TenantId = user.TenantId  // Değişmemesi isteniyor
                 },
             };
         }
@@ -192,7 +250,7 @@ namespace Economy.Panel.Persistence.Services
                 Email = entity.Email,
                 PhoneNumber = entity.PhoneNumber,
                 UserName = entity.UserName,
-                TenantId = entity.TenantId,
+                //TenantId = entity.TenantId,
                 IsDefaultAdmin = entity.IsDefaultAdmin,
                 JobTitle = entity.JobTitle,
                 PhotoUrl = entity.PhotoUrl,
@@ -228,7 +286,8 @@ namespace Economy.Panel.Persistence.Services
 
             //Token oluşturma işlemi
             var token = _tokenService.CreateToken(user);
-            var loginProvider = $"MyApp_{user.TenantId}";
+            //Todo bakılacak, login provider boş geçilebilir mi?
+            var loginProvider = $"MyApp_{user.Id}";
 
             //Refresh token'ı veritabanında saklama
             var userToken = new AppUserToken
@@ -269,15 +328,15 @@ namespace Economy.Panel.Persistence.Services
                 Email = s.Email,
                 PhoneNumber = s.PhoneNumber,
                 IsDefaultAdmin = s.IsDefaultAdmin,
-                TenantId = s.TenantId,
+                //TenantId = s.TenantId,
                 UserName = s.UserName
             }).ToList();
 
-            // Uygulama bilgilerini doldur
-            foreach (var item in entity)
-            {
-                item.TenantName = _appRepository.GetForRead(x => x.Id == item.TenantId && x.IsDeleted == false)?.HotelName;
-            }
+            //// Uygulama bilgilerini doldur
+            //foreach (var item in entity)
+            //{
+            //    item.TenantName = _appRepository.GetForRead(x => x.Id == item.TenantId && x.IsDeleted == false)?.HotelName;
+            //}
 
 
             return ServiceResult<List<AppUserListDto>>.Success(

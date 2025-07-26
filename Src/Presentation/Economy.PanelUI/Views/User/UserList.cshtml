@@ -7,85 +7,34 @@
 
 <main>
     <div class="container-fluid">
-        <!-- Breadcrumb start -->
-        <div class="row m-1">
-            <div class="col-12 ">
-                <h4 class="main-title">@ViewData["Title"] </h4>
-                <ul class="app-line-breadcrumbs mb-3">
-                    <li class="">
-                        <a class="f-s-14 f-w-500" href="#">
-                            <span>
-                                <i class="ph-duotone  ph-table f-s-16"></i> Anasayfa
-                            </span>
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a class="f-s-14 f-w-500" href="#">@ViewData["Title"]</a>
-                    </li>
-                </ul>
+        <!-- Başlık ve Breadcrumb -->
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- Yeni Ekle Butonu -->
+        <div class="row mb-3">
+            <div class="col-12 d-flex justify-content-end">
+                <a class="btn btn-primary" asp-action="CreateUser">Yeni Ekle</a>
             </div>
         </div>
-
-        <!-- Breadcrumb end -->
-        <!-- tables start  -->
-        <div class="row table-section">
-
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                            </div>
-                            <div>
-                                <div class="app-btn-list">
-                                    <a class="btn btn-primary" asp-action="CreateUser">Yeni Ekle</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- Hoverable Table start -->
+        <!-- Kullanıcı Tablosu -->
+        <div class="row">
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5> Kayıtlar </h5>
-                        <p>
-                            Aşağıda kayıtlı bilgiler bulunmaktadır.
-                        </p>
+                        <h5>Kayıtlar</h5>
+                        <p>Aşağıda kayıtlı kullanıcı bilgileri yer almaktadır.</p>
                     </div>
                     <div class="card-body">
-
-
-                        <table class="table">
-                            <thead>
+                        <div class="table-responsive">
+                            <table class="table table-bottom-border table-hover align-middle mb-0">
+                            <thead class="table-light">
                                 <tr>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.Id)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.FirstName)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.LastName)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.TenantName)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.UserName)
-                                    </th>
-                                   
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.EmailConfirmed)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.IsDefaultAdmin)
-                                    </th>
+                                    <th>@Html.DisplayNameFor(model => model.Id)</th>
+                                    <th>@Html.DisplayNameFor(model => model.FirstName)</th>
+                                    <th>@Html.DisplayNameFor(model => model.LastName)</th>
+                                    <th>@Html.DisplayNameFor(model => model.UserName)</th>
+                                    <th>@Html.DisplayNameFor(model => model.EmailConfirmed)</th>
+                                    <th>@Html.DisplayNameFor(model => model.PhoneNumberConfirmed)</th>
+                                    <th>@Html.DisplayNameFor(model => model.IsDefaultAdmin)</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -93,49 +42,25 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
+                                        <td>@item.Id</td>
+                                        <td>@item.FirstName</td>
+                                        <td>@item.LastName</td>
+                                        <td>@item.UserName</td>
+                                        <td>@item.EmailConfirmed.ToTurkishYesNo()</td>
+                                        <td>@item.PhoneNumberConfirmed.ToTurkishYesNo()</td>
+                                        <td>@item.IsDefaultAdmin.ToTurkishYesNo()</td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Id)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.FirstName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.LastName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.TenantName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.UserName)
-                                        </td>
-                                     
-                                        <td>
-                                            @item.EmailConfirmed.ToTurkishYesNo()
-                                        </td>
-                                        <td>
-                                            @item.PhoneNumberConfirmed.ToTurkishYesNo()
-                                        </td>
-                                        <td>
-                                            @item.IsDefaultAdmin.ToTurkishYesNo()
-                                        </td>
-                                        <td>
-                                            @Html.ActionLink("Güncelle", "EditUser", new { id=item.Id }) |
-                                            @Html.ActionLink("İncele", "DetailsUser", new { id = item.Id }) 
+                                            <a asp-action="EditUser" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Güncelle</a>
+                                            <a asp-action="DetailsUser" asp-route-id="@item.Id" class="btn btn-sm btn-info ms-1">İncele</a>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
-                        </table>
-
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!-- Hoverable Table end -->
-
-
         </div>
-        <!-- tables-end  -->
     </div>
 </main>
-
-

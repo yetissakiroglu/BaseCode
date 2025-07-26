@@ -1,0 +1,66 @@
+﻿@using Economy.Panel.UI.Models.SuperAdminViewModels
+@model IEnumerable<SuperAdminViewModel>
+
+@{
+    ViewData["Title"] = "Süper Admin Listesi";
+}
+
+<main>
+    <div class="container-fluid">
+        <!-- Başlık ve Breadcrumb -->
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- Yeni Ekle Butonu -->
+        <div class="row mb-3">
+            <div class="col-12 d-flex justify-content-end">
+                <a class="btn btn-primary" asp-action="Create">Yeni Ekle</a>
+            </div>
+        </div>
+        <!-- Kullanıcı Tablosu -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Kayıtlar</h5>
+                        <p>Aşağıda kayıtlı kullanıcı bilgileri yer almaktadır.</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bottom-border table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.UserId)</th>
+                                        <th>@Html.DisplayNameFor(model => model.FirstName)</th>
+                                        <th>@Html.DisplayNameFor(model => model.LastName)</th>
+                                        <th>@Html.DisplayNameFor(model => model.UserName)</th>
+                                        <th>@Html.DisplayNameFor(model => model.EmailConfirmed)</th>
+                                        <th>@Html.DisplayNameFor(model => model.PhoneNumberConfirmed)</th>
+                                        <th>@Html.DisplayNameFor(model => model.IsDefaultAdmin)</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.UserId</td>
+                                            <td>@item.FirstName</td>
+                                            <td>@item.LastName</td>
+                                            <td>@item.UserName</td>
+                                            <td>@item.EmailConfirmed.ToTurkishYesNo()</td>
+                                            <td>@item.PhoneNumberConfirmed.ToTurkishYesNo()</td>
+                                            <td>@item.IsDefaultAdmin.ToTurkishYesNo()</td>
+                                            <td>
+                                                <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-sm btn-warning">Güncelle</a>
+                                                <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-sm btn-info ms-1">İncele</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

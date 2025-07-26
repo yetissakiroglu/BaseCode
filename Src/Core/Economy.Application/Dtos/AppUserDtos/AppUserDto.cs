@@ -14,10 +14,8 @@ namespace Economy.Base.Application.Dtos.BaseModels
         public string LastName { get; set; }
         public bool IsDefaultAdmin { get; set; }
         public bool IsDeleted { get; set; }
-        public int TenantId { get; set; }
         public string? PhotoUrl { get; set; }
         public string? JobTitle { get; set; }
-
         public List<string> Roles { get; set; }
     }
 }

@@ -58,74 +58,35 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bottom-border table-hover align-middle mb-0">
-                                <thead>
+                                <thead class="table-light">
                                     <tr>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Id)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.HotelName)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.ServerName)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.DatabaseName)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.UserName)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.PasswordStatus)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Password)
-                                        </th>
-                                        <th>
-                                            @Html.DisplayNameFor(model => model.Domain)
-                                        </th>
-
-                                        <th></th>
+                                        <th>@Html.DisplayNameFor(model => model.Id)</th>
+                                        <th>@Html.DisplayNameFor(model => model.HotelName)</th>
+                                        <th>@Html.DisplayNameFor(model => model.ServerName)</th>
+                                        <th>@Html.DisplayNameFor(model => model.DatabaseName)</th>
+                                        <th>@Html.DisplayNameFor(model => model.UserName)</th>
+                                        <th>@Html.DisplayNameFor(model => model.PasswordStatus)</th>
+                                        <th>@Html.DisplayNameFor(model => model.Domain)</th>
+                                        <th>İşlemler</th>
                                     </tr>
-
                                 </thead>
                                 <tbody>
-
                                     @foreach (var item in Model)
                                     {
                                         <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.HotelName)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.ServerName)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.DatabaseName)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.PasswordStatus)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Domain)</td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.Id)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.HotelName)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.ServerName)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.DatabaseName)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.UserName)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.PasswordStatus)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Password)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Domain)
-                                            </td>
-
-                                            <td>
-                                                @Html.ActionLink("Güncelle", "EditApp", new { id = item.Id }) |
-                                                @Html.ActionLink("İncele", "DetailsApp", new { id = item.Id }) 
+                                                <a asp-action="EditApp" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Güncelle</a>
+                                                <a asp-action="DetailsApp" asp-route-id="@item.Id" class="btn btn-sm btn-info ms-1">İncele</a>
                                             </td>
                                         </tr>
                                     }
-
                                 </tbody>
                             </table>
                         </div>

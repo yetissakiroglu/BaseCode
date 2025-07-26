@@ -36,7 +36,6 @@ namespace Economy.Panel.UI.Controllers
                 Email = s.Email,
                 PhoneNumber = s.PhoneNumber,
                 IsDefaultAdmin = s.IsDefaultAdmin,
-                TenantId = s.TenantId,
                 UserName = s.UserName
             }).ToList();
 
@@ -46,13 +45,13 @@ namespace Economy.Panel.UI.Controllers
         {
             var result = new AppUserCreateViewModel();
 
-            var tenants = _panelAppService.Apps(false).Data.Select(x => new UserAppListViewModel
-            {
-                Id = x.Id,
-                Name = x.HotelName
-            }).ToList();
+            //var tenants = _panelAppService.Apps(false).Data.Select(x => new UserAppListViewModel
+            //{
+            //    Id = x.Id,
+            //    Name = x.HotelName
+            //}).ToList();
 
-            result.Tenants = tenants;
+            //result.Tenants = tenants;
 
             return View(result);
         }
@@ -64,7 +63,7 @@ namespace Economy.Panel.UI.Controllers
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
-                TenantId = viewModel.TenantId,
+                //TenantId = viewModel.TenantId,
                 UserName = viewModel.UserName,
                 Email = viewModel.Email,
                 Password = viewModel.Password,
@@ -81,13 +80,13 @@ namespace Economy.Panel.UI.Controllers
             {
                 var userApps = _panelAppService.Apps(false);
 
-                var tenants = _panelAppService.Apps(false).Data.Select(x => new UserAppListViewModel
-                {
-                    Id = x.Id,
-                    Name = x.HotelName
-                }).ToList();
+                //var tenants = _panelAppService.Apps(false).Data.Select(x => new UserAppListViewModel
+                //{
+                //    Id = x.Id,
+                //    Name = x.HotelName
+                //}).ToList();
 
-                viewModel.Tenants = tenants;
+                //viewModel.Tenants = tenants;
 
                 return View(viewModel);
             }
@@ -106,7 +105,6 @@ namespace Economy.Panel.UI.Controllers
                 FirstName = result.Data.FirstName,
                 LastName = result.Data.LastName,
                 UserName = result.Data.UserName,
-                TenantId= result.Data.TenantId,
                 Email = result.Data.Email,
                 PhoneNumber = result.Data.PhoneNumber
             };

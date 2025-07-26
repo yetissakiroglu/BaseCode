@@ -1,4 +1,7 @@
 using Economy.Application.Dtos.AppDtos;
+using Economy.Application.Dtos.AppSuperAdminUserDtos;
+using Economy.Application.Interfaces;
+using Economy.Application.Validations.AppSuperAdminValidator;
 using Economy.Application.Validations.AppUserValidator;
 using Economy.Application.Validations.AppValidator;
 using Economy.Base.Application.Dtos.BaseModels;
@@ -25,6 +28,7 @@ using Economy.Panel.Persistence.Services;
 using Economy.Panel.UI;
 using Economy.Panel.UI.Middlewares;
 using Economy.Persistence.Contexts;
+using Economy.Persistence.Services;
 using Economy.Persistence.UnitOfWorks;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -50,13 +54,13 @@ builder.Services.AddDbContext<DefaultDbContext>(options =>
     });
 });
 
-builder.Services.AddDbContext<HotelDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultHotelConnection"), configure =>
-    {
-        configure.MigrationsAssembly("Economy.Base.Persistence");
-    });
-});
+//builder.Services.AddDbContext<HotelDbContext>(options =>
+//{
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultHotelConnection"), configure =>
+//    {
+//        configure.MigrationsAssembly("Economy.Base.Persistence");
+//    });
+//});
 
 
 
@@ -149,6 +153,12 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Service kaydýný yapalým.
 builder.Services.AddScoped<IPanelAppUserService, PanelAppUserService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IPanelAppManagerService, PanelAppManagerService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IPanelSuperAdminService, PanelSuperAdminService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IValidator<AppSuperAdminUserCreateEditDto>, SuperAdminCreateEditDtoValidator>();
+
+
+
 builder.Services.AddScoped<IValidator<AppUserCreateDto>, AppUserCreateDtoValidator>();
 
 

@@ -19,7 +19,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationApps
                    Id = 1,
                    JobTitle = "Süper Admin",
                    UserName = "Admin",
-                   NormalizedUserName = "Admin",
+                   NormalizedUserName = "ADMIN",
                    Email = "yetissakiroglu@gmail.com",
                    NormalizedEmail = "YETISSAKIROGLU@GMAIL.COM",
                    EmailConfirmed = true,
@@ -29,7 +29,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationApps
                    SecurityStamp = "11111111-aaaa-bbbb-cccc-222222222222",
                    ConcurrencyStamp = "33333333-dddd-eeee-ffff-444444444444",
                    PasswordHash = "AQAAAAIAAYagAAAAENTd6wlppRLil0VbnPSjSF66HtD4Ckjs1Uraqpgi3/41X9LTDtE+ANyVCJQLfpjVyw==",
-                   TenantId = 0,
+                   //TenantId = 0,
                    //Bu örnek hash değeri "Admin123*" parolası için geçerlidir.
                }
                //,

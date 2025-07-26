@@ -21,6 +21,35 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
             _unitOfWork = unitOfWork;
             _panelAppRepository = unitOfWork.DefaultEntityRepository<App>();
         }
+        public async Task<ServiceResult<AppDto>> GetAppById(int id)
+        {
+            var entity = _panelAppRepository.GetForRead(x => x.Id == id);
+            if (entity == null)
+            {
+                return ServiceResult<AppDto>.Failure(
+                    message: $"ID'si {id} olan uygulama bulunamadı.",
+                    statusCode: (int)HttpStatusCode.NotFound
+                );
+            }
+
+            var dto = new AppDto
+            {
+                Id = entity.Id,
+                HotelName = entity.HotelName,
+                ServerName = entity.ServerName,
+                DatabaseName = entity.DatabaseName,
+                UserName = entity.UserName,
+                IsPassword = entity.IsPassword,
+                Password = entity.Password,
+                Domain = entity.Domain
+            };
+
+            return ServiceResult<AppDto>.Success(
+                dto,
+                message: "Uygulama başarıyla getirildi.",
+                statusCode: (int)HttpStatusCode.OK
+            );
+        }
 
         public ResponseModel<IEnumerable<AppDto>> Apps(bool isDeleted)
         {

@@ -11,38 +11,129 @@
     </div>
     <div class="app-nav" id="app-simple-bar">
         <ul class="main-nav p-0 mt-2">
-
-            @if (IsAdmin())
+            @if (IsSuperAdmin())
             {
-                <li class="menu-title">
-                    <span>Uygulama Yönetimi</span>
+                <li class="menu-title"><span>Süper Admin Yönetimi</span></li>
+                <li>
+                    <a data-bs-toggle="collapse" href="#superadmin" aria-expanded="false">
+                        <i class="iconoir-lock-square"></i> Süper Adminler
+                    </a>
+                    <ul class="collapse" id="superadmin">
+                        <li><a href="/SuperAdmin/List">Süper Admin Listesi</a></li>
+                        <li><a href="/SuperAdmin/Create">Yeni Süper Admin Ekle</a></li>
+                        <li><a href="/SuperAdmin/Logs">Giriş Kayıtları</a></li>
+                    </ul>
                 </li>
 
                 <li>
-                    <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#uygulamalar">
-                        <i class="iconoir-home-alt"></i>
-                        Uygulama Yönetimi
+                    <a data-bs-toggle="collapse" href="#sistem" aria-expanded="false">
+                        <i class="iconoir-settings"></i> Sistem Ayarları
+                    </a>
+                    <ul class="collapse" id="sistem">
+                        <li><a href="/System/General">Genel Ayarlar</a></li>
+                        <li><a href="/System/API">API / SMTP Ayarları</a></li>
+                        <li><a href="/System/CacheClear">Önbellek Temizleme</a></li>
+                        <li><a href="/System/Maintenance">Bakım Modu</a></li>
+                    </ul>
+                </li>
+            }
+
+            @if (IsTenantAdmin())
+            {
+                <li class="menu-title"><span>Uygulama Bazlı Yönetim</span></li>
+                <li>
+                    <a data-bs-toggle="collapse" href="#uygulamalar" aria-expanded="false">
+                        <i class="iconoir-home-alt"></i> Uygulama Yönetimi
                     </a>
                     <ul class="collapse" id="uygulamalar">
                         <li><a href="/App/CreateApp">Uygulama Oluştur</a></li>
                         <li><a href="/App/AppList">Uygulama Listesi</a></li>
+                        <li><a href="/App/SelectForManagerAssign">Yönetici Ata</a></li>
+                        <li><a href="/App/Settings">Tema / Dil / Varsayılan Ayarlar</a></li>
+                    </ul>
+                </li>
+                <li class="menu-title"><span>Kullanıcı Yönetimi</span></li>
+                <li>
+                    <a data-bs-toggle="collapse" href="#kullanicilar" aria-expanded="false">
+                        <i class="iconoir-user-square"></i> Uygulama Kullanıcıları
+                    </a>
+                    <ul class="collapse" id="kullanicilar">
+                        <li><a href="/User/UserList">Kullanıcı Listesi</a></li>
+                        <li><a href="/User/CreateUser">Kullanıcı Ekle</a></li>
+                        <li><a href="/User/Roles">Yetki Rolleri</a></li>
+                        <li><a href="/User/LoginLogs">Giriş Kayıtları</a></li>
+                        <li><a href="/User/ResetPassword">Şifre Sıfırlama</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a data-bs-toggle="collapse" href="#moduller" aria-expanded="false">
+                        <i class="iconoir-puzzle"></i> Modül Yönetimi
+                    </a>
+                    <ul class="collapse" id="moduller">
+                        <li><a href="/Module/List">Modül Listesi</a></li>
+                        <li><a href="/Module/Assign">Uygulamalara Modül Ata</a></li>
+                    </ul>
+                </li>
+            }
+      
+            @if (IsContentManager())
+            {
+                <li class="menu-title"><span>İçerik Yönetimi</span></li>
+                <li>
+                    <a data-bs-toggle="collapse" href="#icerik" aria-expanded="false">
+                        <i class="iconoir-document"></i> Sayfa / İçerik
+                    </a>
+                    <ul class="collapse" id="icerik">
+                        <li><a href="/Content/Pages">Sayfa Yönetimi</a></li>
+                        <li><a href="/Content/Sliders">Slider / Banner</a></li>
+                        <li><a href="/Content/Blog">Haber / Duyuru</a></li>
+                        <li><a href="/Content/Seo">SEO Ayarları</a></li>
                     </ul>
                 </li>
 
                 <li>
-                    <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#kullaniciYonetimi">
-                        <i class="iconoir-view-grid"></i>
-                        Kullanıcı Yönetimi
+                    <a href="/FileManager/Index">
+                        <i class="iconoir-folder"></i> Dosya Yöneticisi
                     </a>
-                    <ul class="collapse" id="kullaniciYonetimi">
-                        <li><a href="/User/UserList">Kullanıcı Listesi</a></li>
-                        <li><a href="/User/CreateUser">Kullanıcı Ekle</a></li>
+                </li>
+                <li class="menu-title"><span>Raporlama & Loglar</span></li>
+                <li>
+                    <a data-bs-toggle="collapse" href="#raporlar" aria-expanded="false">
+                        <i class="iconoir-graph-up"></i> Rapor & Kayıtlar
+                    </a>
+                    <ul class="collapse" id="raporlar">
+                        <li><a href="/Report/AppUsage">Uygulama Trafiği</a></li>
+                        <li><a href="/Report/Activity">Aktiflik Raporları</a></li>
+                        <li><a href="/Logs/Crud">İşlem Logları</a></li>
+                        <li><a href="/Logs/Error">Hata Kayıtları</a></li>
                     </ul>
                 </li>
+                <li class="menu-title"><span>Bildirim Ayarları</span></li>
+                <li>
+                    <a data-bs-toggle="collapse" href="#bildirim" aria-expanded="false">
+                        <i class="iconoir-bell"></i> Bildirim Yönetimi
+                    </a>
+                    <ul class="collapse" id="bildirim">
+                        <li><a href="/Notification/Templates">E-posta / SMS Şablonları</a></li>
+                        <li><a href="/Notification/Settings">Bildirim Ayarları</a></li>
+                    </ul>
+                </li>
+                <li class="menu-title"><span>Yardım & Destek</span></li>
+                <li><a href="/Help/Index"><i class="iconoir-help-circle"></i> Yardım Merkezi</a></li>
+                <li><a href="/Contact/Support"><i class="iconoir-headset-help"></i> Teknik Destek</a></li>
 
             }
 
-            @if (IsOtelEditor())
+
+
+
+
+
+
+
+
+
+            @*             @if (IsOtelEditor())
             {
                 <li class="menu-title"><span>Site Yönetimi</span></li>
                 <li class="no-sub">
@@ -112,12 +203,7 @@
 
             }
 
-
-
-
-
-
-
+ *@
 
         </ul>
     </div>
