@@ -43,7 +43,7 @@
                             </div>
                         </div>
                     </div>
-          
+
                 </div>
             </div>
             <!-- Hoverable Table start -->
@@ -52,7 +52,7 @@
                     <div class="card-header">
                         <h5> Kayıtlar </h5>
                         <p>
-                           Aşağıda kayıtlı bilgiler bulunmaktadır.
+                            Aşağıda kayıtlı bilgiler bulunmaktadır.
                         </p>
                     </div>
                     <div class="card-body">
@@ -84,6 +84,7 @@
                                             <td>
                                                 <a asp-action="EditApp" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Güncelle</a>
                                                 <a asp-action="DetailsApp" asp-route-id="@item.Id" class="btn btn-sm btn-info ms-1">İncele</a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-info ms-1">Sil</a>
                                             </td>
                                         </tr>
                                     }

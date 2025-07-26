@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.Controllers
 {
@@ -17,12 +16,13 @@ namespace Economy.Panel.UI.Controllers
         private readonly IPanelAppService _panelAppService;
         private readonly IPanelAppUserService _panelAppUserService;
         private readonly IPanelAppManagerService _panelAppManagerService;
-
-        public AppController(IPanelAppService panelAppService, IPanelAppUserService panelAppUserService, IPanelAppManagerService panelAppManagerService)
+        private readonly IConnectionTesterService _connectionTesterService;
+        public AppController(IPanelAppService panelAppService, IPanelAppUserService panelAppUserService, IPanelAppManagerService panelAppManagerService, IConnectionTesterService connectionTesterService)
         {
             _panelAppService = panelAppService;
             _panelAppUserService = panelAppUserService;
             _panelAppManagerService = panelAppManagerService;
+            _connectionTesterService = connectionTesterService;
         }
 
         public IActionResult AppList()
@@ -109,6 +109,22 @@ namespace Economy.Panel.UI.Controllers
             string json = JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true });
 
             return Json(result);
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int Id)
+        {
+            var result = _panelAppService.DeleteApp(Id);
+            AddMessage(result);
+            return RedirectToAction("AppList");
+        }
+
+        [HttpGet]
+        public IActionResult TestConnection(int Id)
+        {
+            var result = _connectionTesterService.TestConnectionAsync(Id);
+            AddMessage(result);
+            return RedirectToAction("AppList");
         }
 
 

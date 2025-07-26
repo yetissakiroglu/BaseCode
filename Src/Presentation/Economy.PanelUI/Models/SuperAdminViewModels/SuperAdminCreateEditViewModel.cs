@@ -59,4 +59,6 @@ namespace Economy.Panel.UI.Models.SuperAdminViewModels
 
         public List<SelectListItem>? RoleList { get; set; }
     }
+
+
 }

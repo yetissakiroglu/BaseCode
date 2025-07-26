@@ -2,7 +2,7 @@
 
 namespace Economy.Application.Dtos.AppSuperAdminUserDtos
 {
-    public class AppSuperAdminUserCreateEditDto 
+    public class AppSuperAdminUserCreateDto 
     {
         public int UserId { get; set; }
         public string FirstName { get; set; }

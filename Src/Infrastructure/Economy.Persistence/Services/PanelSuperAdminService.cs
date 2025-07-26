@@ -1,7 +1,10 @@
 ﻿using Economy.Application.Dtos.AppSuperAdminUserDtos;
 using Economy.Application.Dtos.AppUserDtos;
 using Economy.Application.Interfaces;
+using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Core.Interfaces;
+using Economy.Core.Tools;
+using Economy.Core.Tools.Models;
 using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.Identities;
 using Economy.Panel.Application.Extensions;
@@ -17,17 +20,18 @@ namespace Economy.Persistence.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
-        private readonly IValidator<AppSuperAdminUserCreateEditDto> _validator;
+        private readonly IValidator<AppSuperAdminUserCreateDto> _validatorCreate;
+        private readonly IValidator<AppSuperAdminUserEditDto> _validatorEdit;
 
-        public PanelSuperAdminService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IValidator<AppSuperAdminUserCreateEditDto> validator)
+        public PanelSuperAdminService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IValidator<AppSuperAdminUserCreateDto> validatorCreate, IValidator<AppSuperAdminUserEditDto> validatorEdit)
         {
             _unitOfWork = unitOfWork;
             _superAdminRepository = unitOfWork.DefaultEntityRepository<AppUser>();
             _userManager = userManager;
             _roleManager = roleManager;
-            _validator = validator;
+            _validatorCreate = validatorCreate;
+            _validatorEdit = validatorEdit;
         }
-
         public async Task<ServiceResult<List<AppRoleDto>>> GetRolesAsync()
         {
             try
@@ -53,7 +57,7 @@ namespace Economy.Persistence.Services
                 );
             }
         }
-        public async Task<ServiceResult<AppSuperAdminUserDto>> CreateUserAsync(AppSuperAdminUserCreateEditDto userDto)
+        public async Task<ServiceResult<AppSuperAdminUserDto>> CreateUserAsync(AppSuperAdminUserCreateDto userDto)
         {
             if (userDto == null)
             {
@@ -62,7 +66,7 @@ namespace Economy.Persistence.Services
                     statusCode: (int)HttpStatusCode.BadRequest);
             }
 
-            var validationResult = _validator.Validate(userDto);
+            var validationResult = _validatorCreate.Validate(userDto);
             if (!validationResult.IsValid)
             {
                 return ServiceResult<AppSuperAdminUserDto>.Failure(
@@ -144,7 +148,7 @@ namespace Economy.Persistence.Services
                 message: "Kullanıcı başarıyla oluşturuldu.",
                 statusCode: (int)HttpStatusCode.Created);
         }
-        public async Task<ServiceResult<AppSuperAdminUserDto>> UpdateUserAsync(AppSuperAdminUserCreateEditDto userDto)
+        public async Task<ServiceResult<AppSuperAdminUserDto>> UpdateUserAsync(AppSuperAdminUserEditDto userDto)
         {
             if (userDto == null || userDto.UserId <= 0)
             {
@@ -153,7 +157,7 @@ namespace Economy.Persistence.Services
                     statusCode: (int)HttpStatusCode.BadRequest);
             }
 
-            var validationResult = _validator.Validate(userDto);
+            var validationResult = _validatorEdit.Validate(userDto);
             if (!validationResult.IsValid)
             {
                 return ServiceResult<AppSuperAdminUserDto>.Failure(
@@ -192,21 +196,6 @@ namespace Economy.Persistence.Services
                     message: "Kullanıcı güncellenemedi.",
                     statusCode: (int)HttpStatusCode.BadRequest,
                     validationErrors: updateResult.Errors.ToValidationDictionary());
-            }
-
-            // 🔄 Şifre güncellemesi (opsiyonel)
-            if (!string.IsNullOrWhiteSpace(userDto.Password))
-            {
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var passwordResult = await _userManager.ResetPasswordAsync(user, token, userDto.Password);
-
-                if (!passwordResult.Succeeded)
-                {
-                    return ServiceResult<AppSuperAdminUserDto>.Failure(
-                        message: "Şifre güncellenemedi.",
-                        statusCode: (int)HttpStatusCode.BadRequest,
-                        validationErrors: passwordResult.Errors.ToValidationDictionary());
-                }
             }
 
             // 🔁 Rol güncelleme
@@ -307,17 +296,6 @@ namespace Economy.Persistence.Services
 
             return ServiceResult<AppSuperAdminUserDto>.Success(dto);
         }
-
-
-
-
-
-
-
-
-
-
-
         public async Task<ServiceResult<List<AppSuperAdminUserDto>>> GetUserListAsync()
         {
             var list = _superAdminRepository
@@ -351,11 +329,50 @@ namespace Economy.Persistence.Services
 
             return ServiceResult<List<AppSuperAdminUserDto>>.Success(list);
         }
+        public async Task<ServiceResult<AppSuperAdminUserDto>> DeleteUserAsync(int Id)
+        {
+            var entity = _superAdminRepository.GetForEdit(x => x.Id == Id && !x.IsDeleted);
+            if (entity == null)
+            {
+                return ServiceResult<AppSuperAdminUserDto>.Failure(
+                    message: "Kullanıcı bulunamadı.",
+                    statusCode: (int)HttpStatusCode.NotFound);
+            }
 
+            _superAdminRepository.Delete(entity);
+            await _unitOfWork.SaveDefaultChangesAsync();
 
+            var dto = new AppSuperAdminUserDto
+            {
+                Id = entity.Id,
+                UserName = entity.UserName,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
+                Email = entity.Email,
+                PhoneNumber = entity.PhoneNumber,
+                IsDefaultAdmin = entity.IsDefaultAdmin,
+                IsDeleted = entity.IsDeleted,
+                PhotoUrl = entity.PhotoUrl,
+                JobTitle = entity.JobTitle,
+                AccessFailedCount = entity.AccessFailedCount,
+                ConcurrencyStamp = entity.ConcurrencyStamp,
+                EmailConfirmed = entity.EmailConfirmed,
+                LockoutEnabled = entity.LockoutEnabled,
+                LockoutEnd = entity.LockoutEnd,
+                NormalizedEmail = entity.NormalizedEmail,
+                NormalizedUserName = entity.NormalizedUserName,
+                PasswordHash = entity.PasswordHash,
+                PhoneNumberConfirmed = entity.PhoneNumberConfirmed,
+                SecurityStamp = entity.SecurityStamp,
+                TwoFactorEnabled = entity.TwoFactorEnabled
+                // Rol bilgisi gerekiyorsa ayrıca çekilebilir
+            };
 
-
-
+            return ServiceResult<AppSuperAdminUserDto>.Success(
+                data: dto,
+                message: "Kullanıcı başarıyla silindi.",
+                statusCode: (int)HttpStatusCode.OK);
+        }
     }
 
 }

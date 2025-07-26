@@ -70,7 +70,7 @@ namespace Economy.Panel.UI.Controllers
                 return View(viewModel);
             }
 
-            var userDto = new AppSuperAdminUserCreateEditDto
+            var userDto = new AppSuperAdminUserCreateDto
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
@@ -157,14 +157,13 @@ namespace Economy.Panel.UI.Controllers
                 return View(viewModel);
             }
 
-            var userDto = new AppSuperAdminUserCreateEditDto
+            var userDto = new AppSuperAdminUserEditDto
             {
                 UserId = viewModel.UserId,
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
                 UserName = viewModel.UserName,
                 Email = viewModel.Email,
-                Password = viewModel.Password,
                 PhoneNumber = viewModel.PhoneNumber,
                 EmailConfirmed = viewModel.EmailConfirmed,
                 PhoneNumberConfirmed = viewModel.PhoneNumberConfirmed,
@@ -193,6 +192,12 @@ namespace Economy.Panel.UI.Controllers
             return RedirectToAction("List");
         }
 
-
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _panelSuperAdminService.DeleteUserAsync(id);
+            AddMessage(result);
+            return RedirectToAction("List");
+        }
     }
 }

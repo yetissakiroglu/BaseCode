@@ -155,8 +155,10 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IPanelAppUserService, PanelAppUserService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppManagerService, PanelAppManagerService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelSuperAdminService, PanelSuperAdminService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IValidator<AppSuperAdminUserCreateEditDto>, SuperAdminCreateEditDtoValidator>();
+builder.Services.AddScoped<IValidator<AppSuperAdminUserCreateDto>, SuperAdminCreateDtoValidator>();
+builder.Services.AddScoped<IValidator<AppSuperAdminUserEditDto>, SuperAdminEditDtoValidator>();
 
+builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>(); // Service sýnýfý kaydediliyor.
 
 
 builder.Services.AddScoped<IValidator<AppUserCreateDto>, AppUserCreateDtoValidator>();
@@ -165,6 +167,9 @@ builder.Services.AddScoped<IValidator<AppUserCreateDto>, AppUserCreateDtoValidat
 builder.Services.AddScoped<IValidator<AppSlideCreateEditDto>, AppSlideCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppCategoryCreateEditDto>, AppCategoryCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppCategoryTranslationCreateEditDto>, AppCategoryTranslationCreateEditDtoValidator>();
+
+
+
 
 builder.Services.AddTransient<IValidator<AppContentCreateEditDto>, AppContentCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppContentTranslationCreateEditDto>, AppContentTranslationCreateEditDtoValidator>();
