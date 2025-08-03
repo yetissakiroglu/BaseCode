@@ -1,19 +1,43 @@
-﻿namespace Economy.Panel.UI.Models.SuperAdminViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Economy.Panel.UI.Models.SuperAdminViewModels
 {
     public class SuperAdminViewModel
     {
+        [Display(Name = "Kullanıcı ID")]
         public int UserId { get; set; }
-        public string UserName { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public bool IsDefaultAdmin { get; set; }
-        public bool IsDeleted { get; set; }
-        public string? PhotoUrl { get; set; }
-        public string? JobTitle { get; set; }
-        public string? Email { get; set; }
-        public string? PhoneNumber { get; set; }
-        public bool EmailConfirmed { get; set; }
-        public bool PhoneNumberConfirmed { get; set; }
 
+        [Display(Name = "Kullanıcı Adı")]
+        public string UserName { get; set; }
+
+        [Display(Name = "Ad")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Soyad")]
+        public string LastName { get; set; }
+
+        [Display(Name = "Varsayılan Yönetici")]
+        public bool IsDefaultAdmin { get; set; }
+
+        [Display(Name = "Silinmiş Mi?")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Fotoğraf URL")]
+        public string? PhotoUrl { get; set; }
+
+        [Display(Name = "Görev Ünvanı")]
+        public string? JobTitle { get; set; }
+
+        [Display(Name = "E-Posta")]
+        public string? Email { get; set; }
+
+        [Display(Name = "Telefon Numarası")]
+        public string? PhoneNumber { get; set; }
+
+        [Display(Name = "E-Posta Doğrulandı")]
+        public bool EmailConfirmed { get; set; }
+
+        [Display(Name = "Telefon Doğrulandı")]
+        public bool PhoneNumberConfirmed { get; set; }
     }
 }

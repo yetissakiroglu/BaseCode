@@ -123,7 +123,7 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult TestConnection(int Id)
         {
             var result = _connectionTesterService.TestConnectionAsync(Id);
-            AddMessage(result);
+            //AddMessage(result);
             return RedirectToAction("AppList");
         }
 
