@@ -1,17 +1,27 @@
 ﻿using Economy.Application.Dtos.AppSuperAdminUserDtos;
 using Economy.Application.Interfaces;
+using Economy.Domain.Entites.Identities;
+using Economy.Panel.UI.Models.ProfileViewModels;
 using Economy.Panel.UI.Models.SuperAdminViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Economy.Panel.UI.Controllers
 {
+    [Authorize]
     public class SuperAdminController : BaseController
     {
         private readonly IPanelSuperAdminService _panelSuperAdminService;
-        public SuperAdminController(IPanelSuperAdminService panelSuperAdminService)
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+
+        public SuperAdminController(IPanelSuperAdminService panelSuperAdminService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             _panelSuperAdminService = panelSuperAdminService;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async Task<IActionResult> List()
@@ -47,7 +57,7 @@ namespace Economy.Panel.UI.Controllers
         {
             var roleResult = await _panelSuperAdminService.GetRolesAsync();
 
-            var model = new SuperAdminCreateEditViewModel
+            var model = new SuperAdminCreateViewModel
             {
                 RoleList = roleResult.HasData
                     ? roleResult.Data!.Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList()
@@ -58,7 +68,7 @@ namespace Economy.Panel.UI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(SuperAdminCreateEditViewModel viewModel)
+        public async Task<IActionResult> Create(SuperAdminCreateViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -104,6 +114,8 @@ namespace Economy.Panel.UI.Controllers
 
             return RedirectToAction("List");
         }
+        
+        
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -116,7 +128,7 @@ namespace Economy.Panel.UI.Controllers
 
             var roleResult = await _panelSuperAdminService.GetRolesAsync();
 
-            var viewModel = new SuperAdminCreateEditViewModel
+            var viewModel = new SuperAdminEditViewModel
             {
                 UserId = result.Data.Id,
                 FirstName = result.Data.FirstName,
@@ -145,7 +157,7 @@ namespace Economy.Panel.UI.Controllers
             return View(viewModel);
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(SuperAdminCreateEditViewModel viewModel)
+        public async Task<IActionResult> Edit(SuperAdminEditViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -191,7 +203,6 @@ namespace Economy.Panel.UI.Controllers
 
             return RedirectToAction("List");
         }
-
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -199,5 +210,44 @@ namespace Economy.Panel.UI.Controllers
             AddMessage(result);
             return RedirectToAction("List");
         }
+
+
+        [HttpGet]
+        public IActionResult ChangePassword(int id)
+        {
+            var model = new SuperAdminChangePasswordViewModel
+            {
+                UserId = id
+            };  
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(SuperAdminChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByIdAsync(model.UserId.ToString());
+            if (user == null)
+            {
+                TempData["SuccessMessage"] = "Kullanıcı Bulunamadı.";
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (result.Succeeded)
+            {
+                await _signInManager.RefreshSignInAsync(user);
+                TempData["SuccessMessage"] = "Şifreniz başarıyla değiştirildi.";
+                return RedirectToAction("ChangePassword");
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+
+            return View(model);
+        }
+
     }
 }

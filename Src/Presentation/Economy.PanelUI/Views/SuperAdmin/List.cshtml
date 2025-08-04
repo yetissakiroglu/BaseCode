@@ -2,7 +2,7 @@
 @model IEnumerable<SuperAdminViewModel>
 
 @{
-    ViewData["Title"] = "Süper Admin Listesi";
+    ViewData["Title"] = "Kullanıcı Listesi";
 }
 
 <main>
@@ -53,7 +53,7 @@
                                                 <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-sm btn-warning">Güncelle</a>
                                                 <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-sm btn-info ms-1">İncele</a>
                                                 <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-sm btn-info ms-1">Sil</a>
-
+                                                <a asp-action="ChangePassword" asp-route-id="@item.UserId" class="btn btn-sm btn-info ms-1">Şifre Değiştir</a>                                          
                                             </td>
                                         </tr>
                                     }

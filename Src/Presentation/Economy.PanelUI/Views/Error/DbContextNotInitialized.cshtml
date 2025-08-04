@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Sistem Hatası";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // kendi layout dosyana göre düzenle
+}
+
+<div class="container text-center mt-5">
+    <div class="card shadow-lg p-4">
+        <h1 class="display-4 text-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i> Sistem Hatası
+        </h1>
+        <p class="lead mt-3">
+            Gerekli veritabanı bağlantısı başlatılamadı.
+        </p>
+
+        <p class="text-muted">
+            Lütfen sistem yöneticinize başvurun veya daha sonra tekrar deneyin.
+        </p>
+
+        <div class="mt-4">
+            <a href="/" class="btn btn-primary me-2">
+                Ana Sayfaya Dön
+            </a>
+            <a href="mailto:destek@sirketiniz.com" class="btn btn-outline-secondary">
+                Destek ile İletişime Geç
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        max-width: 600px;
+        margin: 0 auto;
+        border-radius: 1rem;
+    }
+</style>

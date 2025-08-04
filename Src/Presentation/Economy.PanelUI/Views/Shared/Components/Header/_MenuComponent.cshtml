@@ -13,19 +13,18 @@
         <ul class="main-nav p-0 mt-2">
             @if (IsSuperAdmin())
             {
-                <li class="menu-title"><span>Süper Admin Yönetimi</span></li>
+                <li class="menu-title"><span>Kullanıcı Yönetimi</span></li>
                 <li>
                     <a data-bs-toggle="collapse" href="#superadmin" aria-expanded="false">
-                        <i class="iconoir-lock-square"></i> Süper Adminler
+                        <i class="iconoir-lock-square"></i> Kullanıcılar
                     </a>
                     <ul class="collapse" id="superadmin">
-                        <li><a href="/SuperAdmin/List">Süper Admin Listesi</a></li>
-                        <li><a href="/SuperAdmin/Create">Yeni Süper Admin Ekle</a></li>
-                        <li><a href="/SuperAdmin/Logs">Giriş Kayıtları</a></li>
+                        <li><a href="/SuperAdmin/List">Kullanıcı Listesi</a></li>
+                        <li><a href="/SuperAdmin/Create">Yeni Kullanıcı Ekle</a></li>
                     </ul>
                 </li>
 
-                <li>
+              @*   <li>
                     <a data-bs-toggle="collapse" href="#sistem" aria-expanded="false">
                         <i class="iconoir-settings"></i> Sistem Ayarları
                     </a>
@@ -35,7 +34,7 @@
                         <li><a href="/System/CacheClear">Önbellek Temizleme</a></li>
                         <li><a href="/System/Maintenance">Bakım Modu</a></li>
                     </ul>
-                </li>
+                </li> *@
             }
 
             @if (IsTenantAdmin())

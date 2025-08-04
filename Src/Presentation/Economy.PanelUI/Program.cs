@@ -216,6 +216,7 @@ builder.Services.Configure<FormOptions>(options =>
 
 
 var app = builder.Build();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 
 var fileProvider = new PhysicalFileProvider(

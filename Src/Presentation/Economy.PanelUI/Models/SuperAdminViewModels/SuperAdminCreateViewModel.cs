@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Economy.Panel.UI.Models.SuperAdminViewModels
 {
-    public class SuperAdminCreateEditViewModel
+    public class SuperAdminCreateViewModel
     {
         public int UserId { get; set; }
 

@@ -10,5 +10,13 @@ namespace Economy.Panel.UI.Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
+        public IActionResult DbContextNotInitialized()
+        {
+            return View();
+        }
+        public IActionResult General()
+        {
+            return View();
+        }
     }
 }
