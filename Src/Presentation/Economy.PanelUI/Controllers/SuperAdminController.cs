@@ -59,7 +59,7 @@ namespace Economy.Panel.UI.Controllers
 
             var model = new SuperAdminCreateViewModel
             {
-                RoleList = roleResult.HasData
+                RoleOptions = roleResult.HasData
                     ? roleResult.Data!.Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList()
                     : new List<SelectListItem>()
             };
@@ -73,7 +73,7 @@ namespace Economy.Panel.UI.Controllers
             if (!ModelState.IsValid)
             {
                 var roleResult = await _panelSuperAdminService.GetRolesAsync();
-                viewModel.RoleList = roleResult.HasData
+                viewModel.RoleOptions = roleResult.HasData
                     ? roleResult.Data!.Select(r => new SelectListItem { Text = r.Name, Value = r.Name }).ToList()
                     : new List<SelectListItem>();
 
@@ -95,7 +95,7 @@ namespace Economy.Panel.UI.Controllers
                 JobTitle = viewModel.JobTitle,
                 TwoFactorEnabled = viewModel.TwoFactorEnabled,
                 LockoutEnabled = viewModel.LockoutEnabled,
-                RoleName = viewModel.RoleName
+                SelectedRoles = viewModel.SelectedRoles
             };
 
             var result = await _panelSuperAdminService.CreateUserAsync(userDto);
@@ -105,7 +105,7 @@ namespace Economy.Panel.UI.Controllers
             if (!result.IsSuccess)
             {
                 var roleResult = await _panelSuperAdminService.GetRolesAsync();
-                viewModel.RoleList = roleResult.HasData
+                viewModel.RoleOptions = roleResult.HasData
                     ? roleResult.Data!.Select(r => new SelectListItem { Text = r.Name, Value = r.Name }).ToList()
                     : new List<SelectListItem>();
 
@@ -143,8 +143,8 @@ namespace Economy.Panel.UI.Controllers
                 JobTitle = result.Data.JobTitle,
                 TwoFactorEnabled = result.Data.TwoFactorEnabled,
                 LockoutEnabled = result.Data.LockoutEnabled,
-                RoleName = result.Data.RoleName,
-                RoleList = roleResult.HasData
+                SelectedRoles = result.Data.RolesName,
+                RoleOptions = roleResult.HasData
                     ? roleResult.Data!.Select(r => new SelectListItem
                     {
                         Value = r.Name,
@@ -162,7 +162,7 @@ namespace Economy.Panel.UI.Controllers
             if (!ModelState.IsValid)
             {
                 var roleResult = await _panelSuperAdminService.GetRolesAsync();
-                viewModel.RoleList = roleResult.HasData
+                viewModel.RoleOptions = roleResult.HasData
                     ? roleResult.Data!.Select(r => new SelectListItem { Text = r.Name, Value = r.Name }).ToList()
                     : new List<SelectListItem>();
 
@@ -184,7 +184,7 @@ namespace Economy.Panel.UI.Controllers
                 JobTitle = viewModel.JobTitle,
                 TwoFactorEnabled = viewModel.TwoFactorEnabled,
                 LockoutEnabled = viewModel.LockoutEnabled,
-                RoleName = viewModel.RoleName
+                SelectedRoles = viewModel.SelectedRoles
             };
 
             var result = await _panelSuperAdminService.UpdateUserAsync(userDto);
@@ -194,7 +194,7 @@ namespace Economy.Panel.UI.Controllers
             if (!result.IsSuccess)
             {
                 var roleResult = await _panelSuperAdminService.GetRolesAsync();
-                viewModel.RoleList = roleResult.HasData
+                viewModel.RoleOptions = roleResult.HasData
                     ? roleResult.Data!.Select(r => new SelectListItem { Text = r.Name, Value = r.Name }).ToList()
                     : new List<SelectListItem>();
 

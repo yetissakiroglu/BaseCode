@@ -101,21 +101,29 @@ namespace Economy.Persistence.Services
                     validationErrors: result.Errors.ToValidationDictionary());
             }
 
-            // 🔽 Rol Ataması
-            if (!string.IsNullOrWhiteSpace(userDto.RoleName))
+
+            var notFoundRoles = new List<string>();
+
+            foreach (var roleName in userDto.SelectedRoles.Where(r => !string.IsNullOrWhiteSpace(r)))
             {
-                var roleExists = await _roleManager.RoleExistsAsync(userDto.RoleName);
-                if (roleExists)
+                var trimmedRole = roleName.Trim();
+                if (await _roleManager.RoleExistsAsync(trimmedRole))
                 {
-                    await _userManager.AddToRoleAsync(user, userDto.RoleName);
+                    await _userManager.AddToRoleAsync(user, trimmedRole);
                 }
                 else
                 {
-                    return ServiceResult<AppSuperAdminUserDto>.Failure(
-                        message: $"'{userDto.RoleName}' adlı rol bulunamadı.",
-                        statusCode: (int)HttpStatusCode.BadRequest);
+                    notFoundRoles.Add(trimmedRole);
                 }
             }
+
+            if (notFoundRoles.Any())
+            {
+                return ServiceResult<AppSuperAdminUserDto>.Failure(
+                    message: $"Bulunamayan roller: {string.Join(", ", notFoundRoles)}",
+                    statusCode: (int)HttpStatusCode.BadRequest);
+            }
+
 
             // DTO oluştur
             var resultDto = new AppSuperAdminUserDto
@@ -198,30 +206,30 @@ namespace Economy.Persistence.Services
                     validationErrors: updateResult.Errors.ToValidationDictionary());
             }
 
-            // 🔁 Rol güncelleme
-            if (!string.IsNullOrWhiteSpace(userDto.RoleName))
-            {
-                var currentRoles = await _userManager.GetRolesAsync(user);
-                var currentRole = currentRoles.FirstOrDefault();
+            //// 🔁 Rol güncelleme
+            //if (!string.IsNullOrWhiteSpace(userDto.SelectedRoles))
+            //{
+            //    var currentRoles = await _userManager.GetRolesAsync(user);
+            //    var currentRole = currentRoles.FirstOrDefault();
 
-                if (currentRole != userDto.RoleName)
-                {
-                    if (currentRole != null)
-                        await _userManager.RemoveFromRoleAsync(user, currentRole);
+            //    if (currentRole != userDto.SelectedRoles)
+            //    {
+            //        if (currentRole != null)
+            //            await _userManager.RemoveFromRoleAsync(user, currentRole);
 
-                    var roleExists = await _roleManager.RoleExistsAsync(userDto.RoleName);
-                    if (roleExists)
-                    {
-                        await _userManager.AddToRoleAsync(user, userDto.RoleName);
-                    }
-                    else
-                    {
-                        return ServiceResult<AppSuperAdminUserDto>.Failure(
-                            message: $"'{userDto.RoleName}' adlı rol bulunamadı.",
-                            statusCode: (int)HttpStatusCode.BadRequest);
-                    }
-                }
-            }
+            //        var roleExists = await _roleManager.RoleExistsAsync(userDto.SelectedRoles);
+            //        if (roleExists)
+            //        {
+            //            await _userManager.AddToRoleAsync(user, userDto.SelectedRoles);
+            //        }
+            //        else
+            //        {
+            //            return ServiceResult<AppSuperAdminUserDto>.Failure(
+            //                message: $"'{userDto.SelectedRoles}' adlı rol bulunamadı.",
+            //                statusCode: (int)HttpStatusCode.BadRequest);
+            //        }
+            //    }
+            //}
 
             // DTO oluştur
             var resultDto = new AppSuperAdminUserDto
@@ -264,7 +272,6 @@ namespace Economy.Persistence.Services
 
             // 🔽 Rolü çek
             var roles = await _userManager.GetRolesAsync(entity);
-            var roleName = roles.FirstOrDefault(); // Çoklu rol varsa sadece ilkini alıyoruz
 
             var dto = new AppSuperAdminUserDto
             {
@@ -289,9 +296,7 @@ namespace Economy.Persistence.Services
                 PasswordHash = entity.PasswordHash,
                 PhoneNumberConfirmed = entity.PhoneNumberConfirmed,
                 SecurityStamp = entity.SecurityStamp,
-
-                // ✅ Yeni eklenen alan
-                RoleName = roleName
+                RolesName = roles.ToList()
             };
 
             return ServiceResult<AppSuperAdminUserDto>.Success(dto);
@@ -365,7 +370,6 @@ namespace Economy.Persistence.Services
                 PhoneNumberConfirmed = entity.PhoneNumberConfirmed,
                 SecurityStamp = entity.SecurityStamp,
                 TwoFactorEnabled = entity.TwoFactorEnabled
-                // Rol bilgisi gerekiyorsa ayrıca çekilebilir
             };
 
             return ServiceResult<AppSuperAdminUserDto>.Success(

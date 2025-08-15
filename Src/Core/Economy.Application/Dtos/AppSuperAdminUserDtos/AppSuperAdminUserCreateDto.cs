@@ -18,8 +18,6 @@ namespace Economy.Application.Dtos.AppSuperAdminUserDtos
         public string? JobTitle { get; set; }
         public bool TwoFactorEnabled { get; set; }
         public bool LockoutEnabled { get; set; }
-        // 🔽 Rol Seçimi için
-        public string RoleName { get; set; }
-        public List<SelectListItem>? RoleList { get; set; }
+        public List<string>? SelectedRoles { get; set; } = new();
     }
 }

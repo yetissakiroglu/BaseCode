@@ -28,63 +28,51 @@
                     <div class="card-body">
                         <div class="row mb-2">
                             <div class="col-xl-6 offset-xl-3">
-
-                                <form asp-action="Create" method="post">
+                                <form asp-action="Create" class="app-form" method="post">
                                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
                                     <input type="hidden" asp-for="UserId" />
-
                                     <div class="form-group mb-3">
                                         <label asp-for="FirstName" class="form-label"></label>
                                         <input asp-for="FirstName" class="form-control" />
                                         <span asp-validation-for="FirstName" class="text-danger"></span>
                                     </div>
-
                                     <div class="form-group mb-3">
                                         <label asp-for="LastName" class="form-label"></label>
                                         <input asp-for="LastName" class="form-control" />
                                         <span asp-validation-for="LastName" class="text-danger"></span>
                                     </div>
-
                                     <div class="form-group mb-3">
                                         <label asp-for="UserName" class="form-label"></label>
                                         <input asp-for="UserName" class="form-control" />
                                         <span asp-validation-for="UserName" class="text-danger"></span>
                                     </div>
-
                                     <div class="form-group mb-3">
                                         <label asp-for="Email" class="form-label"></label>
                                         <input asp-for="Email" class="form-control" />
                                         <span asp-validation-for="Email" class="text-danger"></span>
                                     </div>
-
                                     <div class="form-group mb-3">
                                         <label asp-for="Password" class="form-label"></label>
                                         <input asp-for="Password" type="password" class="form-control" />
                                         <span asp-validation-for="Password" class="text-danger"></span>
                                     </div>
-
                                     <div class="form-group mb-3">
                                         <label asp-for="PhoneNumber" class="form-label"></label>
                                         <input asp-for="PhoneNumber" class="form-control" />
                                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                     </div>
-
                                     <div class="form-check mb-2">
                                         <input asp-for="EmailConfirmed" class="form-check-input" />
                                         <label asp-for="EmailConfirmed" class="form-check-label"></label>
                                     </div>
-
                                     <div class="form-check mb-3">
                                         <input asp-for="PhoneNumberConfirmed" class="form-check-input" />
                                         <label asp-for="PhoneNumberConfirmed" class="form-check-label"></label>
                                     </div>
-
                                     <div class="form-check mb-3">
                                         <input asp-for="IsDefaultAdmin" class="form-check-input" />
                                         <label asp-for="IsDefaultAdmin" class="form-check-label"></label>
                                     </div>
-
                                     <div class="form-group mb-3">
                                         <label asp-for="PhotoUrl" class="form-label"></label>
                                         <input asp-for="PhotoUrl" class="form-control" />
@@ -108,12 +96,24 @@
                                     </div>
 
                                     <div class="form-group mb-4">
+                                        <label asp-for="SelectedRoles" class="form-label"></label>
+                                        <div class="select_primary">
+                                            <select asp-for="SelectedRoles"
+                                                    asp-items="Model.RoleOptions"
+                                                    class="form-select select2 w-100"
+                                                    multiple="multiple">
+                                            </select>
+                                            <span asp-validation-for="SelectedRoles" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    @* <div class="form-group mb-4">
                                         <label asp-for="RoleName" class="form-label"></label>
                                         <select asp-for="RoleName" asp-items="Model.RoleList" class="form-select">
                                             <option value="">Rol Seçiniz</option>
                                         </select>
                                         <span asp-validation-for="RoleName" class="text-danger"></span>
-                                    </div>
+                                    </div> *@
 
                                     <div class="text-end">
                                         <button type="submit" class="btn btn-success">Kaydet</button>
@@ -130,5 +130,16 @@
 </main>
 
 @section Scripts {
+
     @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "Roller Seçiniz",
+                width: 'resolve'
+            });
+        });
+    </script>
+
 }

@@ -53,11 +53,10 @@ namespace Economy.Panel.UI.Models.SuperAdminViewModels
         [DisplayName("Hesap Kilitlenebilir Mi?")]
         public bool LockoutEnabled { get; set; }
 
-        [Required(ErrorMessage = "Rol seçimi zorunludur.")]
-        [DisplayName("Kullanıcı Rolü")]
-        public string RoleName { get; set; }
+        [DisplayName("Kullanıcı Rolleri")]
+        public List<string> SelectedRoles { get; set; } = new();
+        public List<SelectListItem> RoleOptions { get; set; } = new();
 
-        public List<SelectListItem>? RoleList { get; set; }
     }
 
 
