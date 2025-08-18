@@ -16,13 +16,16 @@ namespace Economy.Panel.UI.Controllers
         private readonly IPanelSuperAdminService _panelSuperAdminService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly RoleManager<AppRole> _roleManager;
 
-        public SuperAdminController(IPanelSuperAdminService panelSuperAdminService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public SuperAdminController(IPanelSuperAdminService panelSuperAdminService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<AppRole> roleManager)
         {
             _panelSuperAdminService = panelSuperAdminService;
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
+        #region Kullanıcı 
 
         public async Task<IActionResult> List()
         {
@@ -91,10 +94,9 @@ namespace Economy.Panel.UI.Controllers
                 EmailConfirmed = viewModel.EmailConfirmed,
                 PhoneNumberConfirmed = viewModel.PhoneNumberConfirmed,
                 IsDefaultAdmin = viewModel.IsDefaultAdmin,
-                PhotoUrl = viewModel.PhotoUrl,
                 JobTitle = viewModel.JobTitle,
-                TwoFactorEnabled = viewModel.TwoFactorEnabled,
                 LockoutEnabled = viewModel.LockoutEnabled,
+                LockoutEnd = viewModel.LockoutEnd,
                 SelectedRoles = viewModel.SelectedRoles
             };
 
@@ -114,7 +116,6 @@ namespace Economy.Panel.UI.Controllers
 
             return RedirectToAction("List");
         }
-        
         
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -149,7 +150,7 @@ namespace Economy.Panel.UI.Controllers
                     {
                         Value = r.Name,
                         Text = r.Name,
-                        Selected = r.Name == result.Data.RoleName
+                        Selected = r.Name == result.Data.RolesName.Where(role => role == r.Name).FirstOrDefault()
                     }).ToList()
                     : new List<SelectListItem>()
             };
@@ -248,6 +249,106 @@ namespace Economy.Panel.UI.Controllers
 
             return View(model);
         }
+        #endregion
 
+        #region Role 
+        [HttpGet]
+        public IActionResult Roles()
+        {
+            var roles = _roleManager.Roles
+                .OrderBy(r => r.Name)
+                .ToList();
+
+            return View(roles);
+        }
+        // /SuperAdmin/CreateRole (GET)
+        public IActionResult CreateRole() => View(new CreateRoleViewModel());
+
+        // /SuperAdmin/CreateRole (POST)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateRole(CreateRoleViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var exists = await _roleManager.RoleExistsAsync(model.Name.Trim());
+            if (exists)
+            {
+                ModelState.AddModelError("", "Bu isimde bir rol zaten mevcut.");
+                return View(model);
+            }
+            var role = new AppRole
+            {
+                Name = model.Name.Trim()
+            };
+            var result = await _roleManager.CreateAsync(role);
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "Rol başarıyla oluşturuldu.";
+                return RedirectToAction(nameof(Roles));
+            }
+
+            foreach (var e in result.Errors) ModelState.AddModelError("", e.Description);
+            return View(model);
+        }
+
+        // /SuperAdmin/EditRole/{id} (GET)
+        [HttpGet]
+        public async Task<IActionResult> EditRole(int id)
+        {
+            var role = await _roleManager.FindByIdAsync(id.ToString());
+            if (role == null)
+            {
+                TempData["Error"] = "Rol bulunamadı.";
+                return RedirectToAction(nameof(Roles));
+            }
+            return View(new EditRoleViewModel { Id = role.Id, Name = role.Name! });
+        }
+
+        // /SuperAdmin/EditRole/{id} (POST)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditRole(int id, EditRoleViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var role = await _roleManager.FindByIdAsync(id.ToString());
+            if (role == null)
+            {
+                TempData["Error"] = "Rol bulunamadı.";
+                return RedirectToAction(nameof(Roles));
+            }
+
+            role.Name = model.Name.Trim();
+            var result = await _roleManager.UpdateAsync(role);
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "Rol güncellendi.";
+                return RedirectToAction(nameof(Roles));
+            }
+
+            foreach (var e in result.Errors) ModelState.AddModelError("", e.Description);
+            return View(model);
+        }
+
+        // /SuperAdmin/DeleteRole (POST)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteRole(string id)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                TempData["Error"] = "Rol bulunamadı.";
+                return RedirectToAction(nameof(Roles));
+            }
+
+            var result = await _roleManager.DeleteAsync(role);
+            TempData[result.Succeeded ? "Success" : "Error"] =
+                result.Succeeded ? "Rol silindi." : string.Join(" ", result.Errors.Select(e => e.Description));
+
+            return RedirectToAction(nameof(Roles));
+        }
+        #endregion
     }
 }

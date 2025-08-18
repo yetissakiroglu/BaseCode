@@ -27,6 +27,11 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppUserToken> UserTokens { get; set; }
         public DbSet<App> Apps { get; set; }
         public DbSet<AppManager> AppManagers { get; set; }
+        public DbSet<AppGeneralSetting> AppGeneralSettings { get; set; }
+        public DbSet<AppSecuritySetting> AppSecuritySettings { get; set; }
+        public DbSet<AppAuditLog> AppAuditLogs { get; set; }
+        public DbSet<AppErrorLog> AppErrorLogs { get; set; }
+        public DbSet<AppDatabaseBackupLog> AppDatabaseBackupLogs { get; set; }
 
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -38,8 +43,13 @@ namespace Economy.Persistence.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new App_Configuration()); // ← Burası önemli
-            modelBuilder.ApplyConfiguration(new AppManager_Configuration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new App_AppManagerConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new App_GeneralSettingsConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new App_AppSecuritySettingConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new App_AppAuditLogConfiguration()); // ← Burası önemli
+            modelBuilder.ApplyConfiguration(new App_AppErrorLogConfiguration()); // ← Burası önemli
 
+            
 
 
             modelBuilder.ApplyConfiguration(new AppRoleConfiguration()); // ← Burası önemli
@@ -51,8 +61,7 @@ namespace Economy.Persistence.Contexts
             modelBuilder.ApplyConfiguration(new UserTokenConfiguration()); // ← Burası önemli
 
 
-            modelBuilder.Entity<AppManager>()
-    .HasKey(am => am.Id); // Primary key
+            modelBuilder.Entity<AppManager>().HasKey(am => am.Id); // Primary key
 
             modelBuilder.Entity<AppManager>()
                 .HasOne(am => am.App)
@@ -65,13 +74,6 @@ namespace Economy.Persistence.Contexts
                 .WithMany()
                 .HasForeignKey(am => am.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-
-
-
-
-
-
 
             base.OnModelCreating(modelBuilder);
 		}

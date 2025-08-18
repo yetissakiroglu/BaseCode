@@ -41,19 +41,15 @@ namespace Economy.Panel.UI.Models.SuperAdminViewModels
         [DisplayName("Varsayılan Yönetici Mi?")]
         public bool IsDefaultAdmin { get; set; }
 
-        [DisplayName("Fotoğraf URL")]
-        public string? PhotoUrl { get; set; }
-
         [DisplayName("Ünvan")]
         public string? JobTitle { get; set; }
 
-        [DisplayName("2FA Aktif Mi?")]
-        public bool TwoFactorEnabled { get; set; }
-
         [DisplayName("Hesap Kilitlenebilir Mi?")]
         public bool LockoutEnabled { get; set; }
+        
+        [DisplayName("Hesap Ne Zamana Kadar Kilitli?")]
+        public DateTimeOffset? LockoutEnd { get; set; }
 
-        // 👇 Çoklu rol için liste
         [DisplayName("Kullanıcı Rolleri")]
         public List<string> SelectedRoles { get; set; } = new();
         public List<SelectListItem> RoleOptions { get; set; } = new();

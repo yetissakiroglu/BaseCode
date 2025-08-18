@@ -66,6 +66,13 @@ namespace Economy.Persistence.Services
                     statusCode: (int)HttpStatusCode.BadRequest);
             }
 
+            if (userDto.IsDefaultAdmin)
+            {
+                return ServiceResult<AppSuperAdminUserDto>.Failure(
+                   message: "Default Admin Kullanıcısı oluşturulamaz.",
+                   statusCode: (int)HttpStatusCode.NotFound);
+            }
+
             var validationResult = _validatorCreate.Validate(userDto);
             if (!validationResult.IsValid)
             {
@@ -85,10 +92,9 @@ namespace Economy.Persistence.Services
                 EmailConfirmed = userDto.EmailConfirmed,
                 PhoneNumberConfirmed = userDto.PhoneNumberConfirmed,
                 IsDefaultAdmin = userDto.IsDefaultAdmin,
-                PhotoUrl = userDto.PhotoUrl,
                 JobTitle = userDto.JobTitle,
-                TwoFactorEnabled = userDto.TwoFactorEnabled,
-                LockoutEnabled = userDto.LockoutEnabled
+                LockoutEnabled = userDto.LockoutEnabled,
+                LockoutEnd = userDto.LockoutEnd
             };
 
             var result = await _userManager.CreateAsync(user, userDto.Password);
@@ -164,6 +170,14 @@ namespace Economy.Persistence.Services
                     message: "Geçersiz kullanıcı bilgisi.",
                     statusCode: (int)HttpStatusCode.BadRequest);
             }
+
+            if (userDto.IsDefaultAdmin)
+            {
+                return ServiceResult<AppSuperAdminUserDto>.Failure(
+                   message: "Default Admin Kullanıcısı üzerinde değişiklik yapılamaz.",
+                   statusCode: (int)HttpStatusCode.NotFound);
+            }
+
 
             var validationResult = _validatorEdit.Validate(userDto);
             if (!validationResult.IsValid)
@@ -342,6 +356,13 @@ namespace Economy.Persistence.Services
                 return ServiceResult<AppSuperAdminUserDto>.Failure(
                     message: "Kullanıcı bulunamadı.",
                     statusCode: (int)HttpStatusCode.NotFound);
+            }
+
+            if (entity.IsDefaultAdmin)
+            {
+                return ServiceResult<AppSuperAdminUserDto>.Failure(
+                   message: "Default Admin Kullanıcısı Silinemez.",
+                   statusCode: (int)HttpStatusCode.NotFound);
             }
 
             _superAdminRepository.Delete(entity);

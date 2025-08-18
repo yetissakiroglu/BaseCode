@@ -13,28 +13,55 @@
         <ul class="main-nav p-0 mt-2">
             @if (IsSuperAdmin())
             {
-                <li class="menu-title"><span>Kullanıcı Yönetimi</span></li>
+                <li class="menu-title"><span>Uygulama Bazlı Yönetim</span></li>
                 <li>
-                    <a data-bs-toggle="collapse" href="#superadmin" aria-expanded="false">
-                        <i class="iconoir-lock-square"></i> Kullanıcılar
+                    <a data-bs-toggle="collapse" href="#uygulamalar" aria-expanded="false">
+                        <i class="iconoir-home-alt"></i> Uygulama Yönetimi
                     </a>
-                    <ul class="collapse" id="superadmin">
-                        <li><a href="/SuperAdmin/List">Kullanıcı Listesi</a></li>
-                        <li><a href="/SuperAdmin/Create">Yeni Kullanıcı Ekle</a></li>
+                    <ul class="collapse" id="uygulamalar">
+                        <li><a href="/App/CreateApp">Uygulama Oluştur</a></li>
+                        <li><a href="/App/AppList">Uygulama Listesi</a></li>
+                        <li><a href="/App/SelectForManagerAssign">Yönetici Ata</a></li>
                     </ul>
                 </li>
-
-              @*   <li>
-                    <a data-bs-toggle="collapse" href="#sistem" aria-expanded="false">
-                        <i class="iconoir-settings"></i> Sistem Ayarları
+                <!-- Kullanıcı Yönetimi -->
+                <li class="menu-title"><span>Kullanıcı Yönetimi</span></li>
+                <li>
+                    <a data-bs-toggle="collapse" href="#superadmin-users" aria-expanded="false">
+                        <i class="iconoir-user"></i> Kullanıcılar
                     </a>
-                    <ul class="collapse" id="sistem">
-                        <li><a href="/System/General">Genel Ayarlar</a></li>
-                        <li><a href="/System/API">API / SMTP Ayarları</a></li>
-                        <li><a href="/System/CacheClear">Önbellek Temizleme</a></li>
-                        <li><a href="/System/Maintenance">Bakım Modu</a></li>
+                    <ul class="collapse" id="superadmin-users">
+                        <li><a href="/SuperAdmin/List">Kullanıcı Listesi</a></li>
+                        <li><a href="/SuperAdmin/Create">Yeni Kullanıcı Ekle</a></li>
+                        <li><a href="/SuperAdmin/Roles">Rol & Yetki Yönetimi</a></li>
+                        <li><a href="/SuperAdmin/LoginLogs">Giriş Kayıtları</a></li>
+                        <li><a href="/SuperAdmin/ResetPassword">Şifre Sıfırlama</a></li>
                     </ul>
-                </li> *@
+                </li>
+                <li>
+                    <a data-bs-toggle="collapse" href="#moduller" aria-expanded="false">
+                        <i class="iconoir-puzzle"></i> Modül Yönetimi
+                    </a>
+                    <ul class="collapse" id="moduller">
+                        <li><a href="/Module/List">Modül Listesi</a></li>
+                        <li><a href="/Module/Assign">Uygulamalara Modül Ata</a></li>
+                    </ul>
+                </li>
+                <!-- Sistem Ayarları -->
+                <li class="menu-title"><span>Sistem Ayarları</span></li>
+                <li><a href="/Settings/General"><i class="iconoir-settings"></i> Genel Ayarlar</a></li>
+                <li><a href="/Settings/Security"><i class="iconoir-shield"></i> Güvenlik Ayarları</a></li>
+
+                <!-- Log Yönetimi -->
+                <li class="menu-title"><span>Log Yönetimi</span></li>
+                <li><a href="/Logs/Audit"><i class="iconoir-report-columns"></i> İşlem Logları</a></li>
+                <li><a href="/Logs/Error"><i class="iconoir-warning-triangle"></i> Hata Logları</a></li>
+
+                <!-- Veritabanı -->
+                <li class="menu-title"><span>Veritabanı</span></li>
+                <li><a href="/Database/Backup"><i class="iconoir-database"></i> Yedekleme / Geri Yükleme</a></li>
+
+
             }
 
             @if (IsTenantAdmin())

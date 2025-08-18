@@ -1,6 +1,9 @@
 using Economy.Application.Dtos.AppDtos;
+using Economy.Application.Dtos.AppGeneralSettingDtos;
+using Economy.Application.Dtos.AppSecuritySettingDtos;
 using Economy.Application.Dtos.AppSuperAdminUserDtos;
 using Economy.Application.Interfaces;
+using Economy.Application.Validations.AppSecuritySettingValidator;
 using Economy.Application.Validations.AppSuperAdminValidator;
 using Economy.Application.Validations.AppUserValidator;
 using Economy.Application.Validations.AppValidator;
@@ -31,7 +34,6 @@ using Economy.Persistence.Contexts;
 using Economy.Persistence.Services;
 using Economy.Persistence.UnitOfWorks;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -163,6 +165,13 @@ builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>();
 
 builder.Services.AddScoped<IValidator<AppUserCreateDto>, AppUserCreateDtoValidator>();
 
+builder.Services.AddScoped<IValidator<AppGeneralSettingCreateDto>, AppGeneralSettingCreateDtoValidator>();
+builder.Services.AddScoped<IValidator<AppGeneralSettingEditDto>, AppGeneralSettingEditDtoValidator>();
+
+builder.Services.AddScoped<IValidator<AppSecuritySettingCreateDto>, AppSecuritySettingCreateDtoValidator>();
+builder.Services.AddScoped<IValidator<AppSecuritySettingEditDto>, AppSecuritySettingEditDtoValidator>();
+
+
 
 builder.Services.AddScoped<IValidator<AppSlideCreateEditDto>, AppSlideCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppCategoryCreateEditDto>, AppCategoryCreateEditDtoValidator>();
@@ -186,6 +195,11 @@ builder.Services.AddScoped<IPanelAppSettingWhatsappLineService, PanelAppSettingW
 builder.Services.AddScoped<IPanelAppSlideService, PanelAppSlideService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppCategoryService, PanelAppCategoryService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppContentService, PanelAppContentService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IPanelAppGeneralSettingService, PanelAppGeneralSettingService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IPanelAppSecuritySettingService, PanelAppSecuritySettingService>();
+builder.Services.AddScoped<IPanelAuditLogService, PanelAuditLogService>();
+builder.Services.AddScoped<IPanelErrorLogService, PanelErrorLogService>();
+builder.Services.AddScoped<IDatabaseBackupService, DatabaseBackupService>();
 
 
 
@@ -260,28 +274,9 @@ app.MapControllerRoute(
 // Authorization ve Authentication iþlemleri
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ErrorLoggingMiddleware>();
 
 // Custom middleware
 app.UseMiddleware<HotelConnectionMiddleware>();
 // Uygulamayý çalýþtýr
 app.Run();
-//// Https yönlendirmesi ve routing iþlemleri
-//app.UseHttpsRedirection();
-//app.UseRouting();
-
-//app.MapStaticAssets();
-
-//// Authorization ve Authentication iþlemleri
-//app.UseAuthentication();
-//app.UseAuthorization();
-
-//app.MapRazorPages();
-
-
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-
-//// Uygulamayý çalýþtýr
-//app.Run();

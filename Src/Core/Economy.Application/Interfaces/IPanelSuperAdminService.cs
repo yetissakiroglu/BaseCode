@@ -1,7 +1,5 @@
 ﻿using Economy.Application.Dtos.AppSuperAdminUserDtos;
 using Economy.Application.Dtos.AppUserDtos;
-using Economy.Base.Application.Dtos.BaseModels;
-using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 
 namespace Economy.Application.Interfaces

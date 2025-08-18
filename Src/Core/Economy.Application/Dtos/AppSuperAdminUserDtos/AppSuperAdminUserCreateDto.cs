@@ -14,10 +14,9 @@ namespace Economy.Application.Dtos.AppSuperAdminUserDtos
         public bool EmailConfirmed { get; set; }
         public bool PhoneNumberConfirmed { get; set; }
         public bool IsDefaultAdmin { get; set; }
-        public string? PhotoUrl { get; set; }
         public string? JobTitle { get; set; }
-        public bool TwoFactorEnabled { get; set; }
         public bool LockoutEnabled { get; set; }
+        public DateTimeOffset? LockoutEnd { get; set; }
         public List<string>? SelectedRoles { get; set; } = new();
     }
 }

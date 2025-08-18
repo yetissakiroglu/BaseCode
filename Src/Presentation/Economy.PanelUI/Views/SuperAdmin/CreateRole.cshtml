@@ -1,0 +1,24 @@
+﻿@model CreateRoleViewModel
+@{
+    ViewData["Title"] = "Yeni Rol Ekle";
+}
+
+<h3 class="mb-3">Yeni Rol Ekle</h3>
+
+<form asp-action="CreateRole" method="post" class="card card-body">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Kaydet</button>
+        <a href="/SuperAdmin/Roles" class="btn btn-outline-secondary">İptal</a>
+    </div>
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
