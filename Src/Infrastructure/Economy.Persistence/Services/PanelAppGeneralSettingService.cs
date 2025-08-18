@@ -143,6 +143,8 @@ public class PanelAppGeneralSettingService : IPanelAppGeneralSettingService
         await _unitOfWork.SaveDefaultChangesAsync();
 
         var dto = MapToDto(entity);
+
+
         return ServiceResult<AppGeneralSettingDto>.Success(
             data: dto,
             message: "Genel ayarlar başarıyla güncellendi.",

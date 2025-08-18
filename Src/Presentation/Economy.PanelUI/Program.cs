@@ -3,6 +3,7 @@ using Economy.Application.Dtos.AppGeneralSettingDtos;
 using Economy.Application.Dtos.AppSecuritySettingDtos;
 using Economy.Application.Dtos.AppSuperAdminUserDtos;
 using Economy.Application.Interfaces;
+using Economy.Application.Providers;
 using Economy.Application.Validations.AppSecuritySettingValidator;
 using Economy.Application.Validations.AppSuperAdminValidator;
 using Economy.Application.Validations.AppUserValidator;
@@ -29,8 +30,10 @@ using Economy.Panel.Application.Validations.AppContentValidator;
 using Economy.Panel.Application.Validations.AppSlideValidator;
 using Economy.Panel.Persistence.Services;
 using Economy.Panel.UI;
+using Economy.Panel.UI.Filters;
 using Economy.Panel.UI.Middlewares;
 using Economy.Persistence.Contexts;
+using Economy.Persistence.Providers;
 using Economy.Persistence.Services;
 using Economy.Persistence.UnitOfWorks;
 using FluentValidation;
@@ -45,8 +48,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // MVC ve Razor Pages'ý ekleyin
-builder.Services.AddControllersWithViews()
-    .AddRazorRuntimeCompilation();
+builder.Services.AddControllersWithViews(o =>
+{
+    o.Filters.Add<SeoAndBrandingFilter>();
+}).AddRazorRuntimeCompilation(); 
 
 builder.Services.AddDbContext<DefaultDbContext>(options =>
 {
@@ -145,6 +150,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 //    options.ExpireTimeSpan = System.TimeSpan.FromDays(7);
 //    options.AccessDeniedPath = new PathString($"/Error/{HttpStatusCode.Forbidden}");
 //});
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<IAppSettingsProvider, AppSettingsProvider>();
+
 
 // Repository'leri otomatik olarak ekle
 builder.Services.AddRepositories(Assembly.GetExecutingAssembly());

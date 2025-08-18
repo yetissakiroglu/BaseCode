@@ -1,6 +1,7 @@
 ﻿using Economy.Application.Dtos.AppGeneralSettingDtos;
 using Economy.Application.Dtos.AppSecuritySettingDtos;
 using Economy.Application.Interfaces;
+using Economy.Application.Providers;
 using Economy.Panel.UI.Models.GeneralSettingsPageViewModels;
 using Economy.Panel.UI.Models.SecuritySettingsPageViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -16,12 +17,13 @@ namespace Economy.Panel.UI.Controllers
         private readonly IPanelAppGeneralSettingService _service;
         private readonly IWebHostEnvironment _env;
         private readonly IPanelAppSecuritySettingService _secService;
-
-        public SettingsController(IPanelAppGeneralSettingService service, IWebHostEnvironment env, IPanelAppSecuritySettingService secService)
+        private readonly IAppSettingsProvider _appSettingsProvider;
+        public SettingsController(IPanelAppGeneralSettingService service, IWebHostEnvironment env, IPanelAppSecuritySettingService secService, IAppSettingsProvider appSettingsProvider)
         {
             _service = service;
             _env = env;
             _secService = secService;
+            _appSettingsProvider = appSettingsProvider;
         }
 
         // GET: /Settings/General
@@ -92,6 +94,8 @@ namespace Economy.Panel.UI.Controllers
                     ModelState.AddModelError(string.Empty, update.Message ?? "Güncelleme sırasında bir hata oluştu.");
                     return View(vm);
                 }
+
+                _appSettingsProvider.InvalidateGeneralCache();
 
                 TempData["Success"] = "Genel ayarlar güncellendi.";
                 return RedirectToAction(nameof(General));

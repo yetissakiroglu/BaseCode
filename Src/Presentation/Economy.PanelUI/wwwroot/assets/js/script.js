@@ -25,6 +25,8 @@
 // 15. Modal js
 
 
+
+
 // >>-- 01 Horizontal Nav Js --<<
 let navBar = $(".main-nav");
 let size = "150px";
