@@ -1,4 +1,5 @@
 ﻿using Economy.Application.Dtos.AppSuperAdminUserDtos;
+using Economy.Application.Dtos.LoginLogPageQueryDto;
 using Economy.Application.Interfaces;
 using Economy.Domain.Entites.Identities;
 using Economy.Panel.UI.Models.ProfileViewModels;
@@ -17,13 +18,15 @@ namespace Economy.Panel.UI.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<AppRole> _roleManager;
+        private readonly IPanelLoginLogService _svc;
 
-        public SuperAdminController(IPanelSuperAdminService panelSuperAdminService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<AppRole> roleManager)
+        public SuperAdminController(IPanelSuperAdminService panelSuperAdminService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<AppRole> roleManager, IPanelLoginLogService svc)
         {
             _panelSuperAdminService = panelSuperAdminService;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _svc = svc;
         }
         #region Kullanıcı 
 
@@ -350,5 +353,28 @@ namespace Economy.Panel.UI.Controllers
             return RedirectToAction(nameof(Roles));
         }
         #endregion
+
+        [HttpGet]
+        public async Task<IActionResult> LoginLogs([FromQuery] LoginLogPageQuery q)
+        {
+            var res = await _svc.GetPageAsync(q);
+            if (!res.IsSuccess || res.Data == null)
+            {
+                TempData["Error"] = res.Message ?? "Kayıtlar alınamadı";
+                return View(new LoginLogPageViewModel { Q = q ?? new LoginLogPageQuery() });
+            }
+            ViewData["Title"] = "Login Logları";
+            return View(res.Data);
+        }
+
+        [HttpGet("LoginLogs/Export")]
+        public async Task<IActionResult> Export([FromQuery] LoginLogPageQuery q)
+        {
+            var res = await _svc.ExportCsvAsync(q);
+            if (!res.IsSuccess || res.Data == null)
+                return BadRequest(res.Message ?? "Export hatası");
+            return File(res.Data, "text/csv", "login-logs.csv");
+        }
+
     }
 }

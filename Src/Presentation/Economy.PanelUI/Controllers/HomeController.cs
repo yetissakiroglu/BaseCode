@@ -1,3 +1,5 @@
+using Economy.Application.Dtos.DashboardSummaryDtos;
+using Economy.Application.Interfaces;
 using Economy.PanelUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,14 +11,24 @@ namespace Economy.PanelUI.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly IPanelDashboardService _svc;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, IPanelDashboardService svc)
     {
         _logger = logger;
+        _svc = svc;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
+        var res = await _svc.GetSummaryAsync();
+        if (!res.IsSuccess || res.Data == null)
+        {
+            TempData["Error"] = res.Message ?? "Dashboard verileri alýnamadý.";
+            return View(new DashboardSummaryDto());
+        }
+        ViewData["Title"] = "Dashboard";
+        return View(res.Data);
 
         //var user = new AppUser
         //{
@@ -40,7 +52,7 @@ public class HomeController : Controller
         //var hasher = new PasswordHasher<AppUser>();
         //var result = hasher.VerifyHashedPassword(user, user.PasswordHash, password);
 
-          return View();
+        return View();
     }
     public IActionResult Editor()
     {

@@ -169,6 +169,9 @@ builder.Services.AddScoped<IValidator<AppSuperAdminUserCreateDto>, SuperAdminCre
 builder.Services.AddScoped<IValidator<AppSuperAdminUserEditDto>, SuperAdminEditDtoValidator>();
 
 builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IAuditLogWriter, AuditLogWriter>();
+builder.Services.AddScoped<IPanelDashboardService, PanelDashboardService>();
+builder.Services.AddScoped<IPanelLoginLogService, PanelLoginLogService>();
 
 
 builder.Services.AddScoped<IValidator<AppUserCreateDto>, AppUserCreateDtoValidator>();

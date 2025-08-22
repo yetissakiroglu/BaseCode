@@ -4,6 +4,21 @@
 
 
 
+@model DashboardSummaryDto
+@using System.Text.Json
+@using Economy.Application.Dtos.DashboardSummaryDtos
+@{
+    ViewData["Title"] = "Dashboard";
+    var labels24 = Model.ErrorsPerHour24h.Select(x => x.Label).ToArray();
+    var errors24 = Model.ErrorsPerHour24h.Select(x => x.Value).ToArray();
+    var failed24 = Model.FailedLoginsPerHour24h.Select(x => x.Value).ToArray();
+
+    var labels7 = Model.NewUsersPerDay7d.Select(x => x.Label).ToArray();
+    var new7 = Model.NewUsersPerDay7d.Select(x => x.Value).ToArray();
+
+    string J(object o) => JsonSerializer.Serialize(o);
+}
+
 <!-- Body main section starts -->
 <main>
     <div class="container-fluid">
@@ -28,6 +43,136 @@
         <!-- Breadcrumb end -->
         <!-- Blank start -->
         <div class="row">
+
+            <h3 class="mb-3">Dashboard</h3>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">@TempData["Error"]</div>
+            }
+
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="text-muted small">Toplam Kullanıcı</div>
+                            <div class="fs-3 fw-semibold">@Model.TotalUsers</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="text-muted small">Aktif Kullanıcı</div>
+                            <div class="fs-3 fw-semibold">@Model.ActiveUsers</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="text-muted small">Kilitli Kullanıcı</div>
+                            <div class="fs-3 fw-semibold">@Model.LockedOutUsers</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="text-muted small">2FA Açık</div>
+                            <div class="fs-3 fw-semibold">@Model.TwoFactorEnabledUsers</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="text-muted small">Son 24s Hata</div>
+                            <div class="fs-3 fw-semibold">@Model.ErrorsLast24h</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="text-muted small">Son 24s Başarısız Giriş</div>
+                            <div class="fs-3 fw-semibold">@Model.FailedLoginsLast24h</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="text-muted small">Son Yedek</div>
+                            <div class="fs-6 fw-semibold">
+                                @(Model.LastBackupUtc.HasValue
+                                                                ? Model.LastBackupUtc.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
+                                                                : "—")
+                            </div>
+                            <a class="btn btn-sm btn-outline-secondary mt-2" href="/Database/Backup">Yedek Al</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-1">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header">Hatalar & Başarısız Girişler (24s)</div>
+                        <div class="card-body">
+                            <canvas id="chart24" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header">Yeni Kullanıcı (7g)</div>
+                        <div class="card-body">
+                            <canvas id="chart7" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-3">
+                <div class="card-header">Son Hatalar</div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Mesaj</th>
+                                    <th>Path</th>
+                                    <th>Status</th>
+                                    <th>Exception</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.RecentErrors?.Any() == true)
+                                {
+                                    foreach (var e in Model.RecentErrors)
+                                    {
+                                        <tr>
+                                            <td>@e.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                                            <td title="@e.Message">@((e.Message?.Length ?? 0) > 80 ? e.Message!.Substring(0, 80) + "..." : e.Message)</td>
+                                            <td>@e.RequestPath</td>
+                                            <td>@(e.StatusCode?.ToString() ?? "-")</td>
+                                            <td>@e.ExceptionType</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="5" class="text-center text-muted">Kayıt yok</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <!-- Default Card start -->
             <div class="col-md-12">
                 <div class="card">
@@ -82,3 +227,33 @@
 
 <!--customizer-->
 <div id="customizer"></div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 24 saatlik iki seri
+        const labels24 = @Html.Raw(J(labels24));
+        const errors24 = @Html.Raw(J(errors24));
+        const failed24 = @Html.Raw(J(failed24));
+
+        new Chart(document.getElementById('chart24').getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: labels24,
+            datasets: [
+              { label: 'Hatalar', data: errors24 },
+              { label: 'Başarısız Giriş', data: failed24 }
+            ]
+          },
+          options: { responsive: true, tension: 0.3 }
+        });
+
+        // 7 gün yeni kullanıcı
+        const labels7 = @Html.Raw(J(labels7));
+        const new7 = @Html.Raw(J(new7));
+        new Chart(document.getElementById('chart7').getContext('2d'), {
+          type: 'bar',
+          data: { labels: labels7, datasets: [{ label: 'Yeni Kullanıcı', data: new7 }] },
+          options: { responsive: true }
+        });
+    </script>
+}
