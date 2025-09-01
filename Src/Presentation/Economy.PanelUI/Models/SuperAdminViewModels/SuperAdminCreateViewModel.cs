@@ -51,7 +51,7 @@ namespace Economy.Panel.UI.Models.SuperAdminViewModels
         public DateTimeOffset? LockoutEnd { get; set; }
 
         [DisplayName("Kullanıcı Rolleri")]
-        public List<string> SelectedRoles { get; set; } = new();
+        public string SelectedRole { get; set; }
         public List<SelectListItem> RoleOptions { get; set; } = new();
 
     }

@@ -26,14 +26,6 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationApps
                      NormalizedName = "TENANT ADMIN",
                      ConcurrencyStamp = "f6666666-g777-h888-i999-j00000000000"
                  }
-                 ,
-                 new AppRole
-                 {
-                     Id = 3,
-                     Name = "Content Manager",
-                     NormalizedName = "CONTENT MANAGER",
-                     ConcurrencyStamp = "f6666666-g777-h888-i999-j00000000321"
-                 }
              });
         }
     }

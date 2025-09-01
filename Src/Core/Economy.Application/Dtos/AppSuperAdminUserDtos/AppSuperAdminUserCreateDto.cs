@@ -17,6 +17,6 @@ namespace Economy.Application.Dtos.AppSuperAdminUserDtos
         public string? JobTitle { get; set; }
         public bool LockoutEnabled { get; set; }
         public DateTimeOffset? LockoutEnd { get; set; }
-        public List<string>? SelectedRoles { get; set; } = new();
+        public string SelectedRole { get; set; }
     }
 }

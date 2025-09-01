@@ -20,6 +20,20 @@
         <ul class="main-nav p-0 mt-2">
             @if (IsSuperAdmin())
             {
+                <!-- Kullanıcı Yönetimi -->
+                <li class="menu-title"><span>Kullanıcı Yönetimi</span></li>
+                <li>
+                    <a data-bs-toggle="collapse" href="#superadmin-users" aria-expanded="false">
+                        <i class="iconoir-user"></i> Kullanıcılar
+                    </a>
+                    <ul class="collapse" id="superadmin-users">
+                        <li><a href="/SuperAdmin/List">Kullanıcı Listesi</a></li>
+                        <li><a href="/SuperAdmin/Create">Yeni Kullanıcı Ekle</a></li>
+                        <li><a href="/SuperAdmin/Roles">Rol & Yetki Yönetimi</a></li>
+                        <li><a href="/UserLog/LoginLogs">Giriş Kayıtları</a></li>
+                    </ul>
+                </li>
+
                 <li class="menu-title"><span>Uygulama Bazlı Yönetim</span></li>
                 <li>
                     <a data-bs-toggle="collapse" href="#uygulamalar" aria-expanded="false">
@@ -31,20 +45,7 @@
                         <li><a href="/App/SelectForManagerAssign">Yönetici Ata</a></li>
                     </ul>
                 </li>
-                <!-- Kullanıcı Yönetimi -->
-                <li class="menu-title"><span>Kullanıcı Yönetimi</span></li>
-                <li>
-                    <a data-bs-toggle="collapse" href="#superadmin-users" aria-expanded="false">
-                        <i class="iconoir-user"></i> Kullanıcılar
-                    </a>
-                    <ul class="collapse" id="superadmin-users">
-                        <li><a href="/SuperAdmin/List">Kullanıcı Listesi</a></li>
-                        <li><a href="/SuperAdmin/Create">Yeni Kullanıcı Ekle</a></li>
-                        <li><a href="/SuperAdmin/Roles">Rol & Yetki Yönetimi</a></li>
-                        <li><a href="/SuperAdmin/LoginLogs">Giriş Kayıtları</a></li>
-                        <li><a href="/SuperAdmin/ResetPassword">Şifre Sıfırlama</a></li>
-                    </ul>
-                </li>
+                
                 <li>
                     <a data-bs-toggle="collapse" href="#moduller" aria-expanded="false">
                         <i class="iconoir-puzzle"></i> Modül Yönetimi

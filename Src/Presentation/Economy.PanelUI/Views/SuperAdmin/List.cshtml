@@ -29,9 +29,9 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>@Html.DisplayNameFor(model => model.UserId)</th>
-                                        <th>@Html.DisplayNameFor(model => model.FirstName)</th>
-                                        <th>@Html.DisplayNameFor(model => model.LastName)</th>
+                                        <th>@Html.DisplayNameFor(model => model.FirstName) @Html.DisplayNameFor(model => model.LastName)</th>
                                         <th>@Html.DisplayNameFor(model => model.UserName)</th>
+                                        <th>@Html.DisplayNameFor(model => model.RolesName)</th>
                                         <th>@Html.DisplayNameFor(model => model.EmailConfirmed)</th>
                                         <th>@Html.DisplayNameFor(model => model.PhoneNumberConfirmed)</th>
                                         <th>@Html.DisplayNameFor(model => model.IsDefaultAdmin)</th>
@@ -43,9 +43,9 @@
                                     {
                                         <tr>
                                             <td>@item.UserId</td>
-                                            <td>@item.FirstName</td>
-                                            <td>@item.LastName</td>
+                                            <td>@item.FirstName @item.LastName</td>
                                             <td>@item.UserName</td>
+                                            <td>@item.RolesName</td>
                                             <td>@item.EmailConfirmed.ToTurkishYesNo()</td>
                                             <td>@item.PhoneNumberConfirmed.ToTurkishYesNo()</td>
                                             <td>@item.IsDefaultAdmin.ToTurkishYesNo()</td>

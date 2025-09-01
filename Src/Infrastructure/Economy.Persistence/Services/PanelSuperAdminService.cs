@@ -9,7 +9,9 @@ using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.Identities;
 using Economy.Panel.Application.Extensions;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System.Collections.ObjectModel;
 using System.Net;
 
 namespace Economy.Persistence.Services
@@ -20,10 +22,11 @@ namespace Economy.Persistence.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
+        private readonly SignInManager<AppUser> _signInManager;
+
         private readonly IValidator<AppSuperAdminUserCreateDto> _validatorCreate;
         private readonly IValidator<AppSuperAdminUserEditDto> _validatorEdit;
-
-        public PanelSuperAdminService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IValidator<AppSuperAdminUserCreateDto> validatorCreate, IValidator<AppSuperAdminUserEditDto> validatorEdit)
+        public PanelSuperAdminService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IValidator<AppSuperAdminUserCreateDto> validatorCreate, IValidator<AppSuperAdminUserEditDto> validatorEdit, SignInManager<AppUser> signInManager)
         {
             _unitOfWork = unitOfWork;
             _superAdminRepository = unitOfWork.DefaultEntityRepository<AppUser>();
@@ -31,32 +34,120 @@ namespace Economy.Persistence.Services
             _roleManager = roleManager;
             _validatorCreate = validatorCreate;
             _validatorEdit = validatorEdit;
+            _signInManager = signInManager;
         }
+        public async Task<ServiceResult<List<AppSuperAdminUserDto>>> GetUserListAsync()
+        {
+            // Önce kullanıcıları çekiyoruz
+            var users = _superAdminRepository
+                .WhereForRead(x => !x.IsDeleted);
+
+            var result = new List<AppSuperAdminUserDto>();
+
+            foreach (var user in users)
+            {
+                // Rollerini çekiyoruz
+                var roles = await _userManager.GetRolesAsync(user);
+
+                // DTO’ya mapliyoruz
+                var dto = new AppSuperAdminUserDto
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    IsDeleted = user.IsDeleted,
+                    IsDefaultAdmin = user.IsDefaultAdmin,
+                    JobTitle = user.JobTitle,
+                    PhoneNumber = user.PhoneNumber,
+                    TwoFactorEnabled = user.TwoFactorEnabled,
+                    AccessFailedCount = user.AccessFailedCount,
+                    ConcurrencyStamp = user.ConcurrencyStamp,
+                    EmailConfirmed = user.EmailConfirmed,
+                    LockoutEnabled = user.LockoutEnabled,
+                    LockoutEnd = user.LockoutEnd,
+                    NormalizedEmail = user.NormalizedEmail,
+                    NormalizedUserName = user.NormalizedUserName,
+                    PasswordHash = user.PasswordHash,
+                    PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+                    SecurityStamp = user.SecurityStamp,
+                    RolesName = string.Join(", ", roles) // Virgülle ayırıyoruz
+                };
+
+                result.Add(dto);
+            }
+
+            return ServiceResult<List<AppSuperAdminUserDto>>.Success(result);
+        }
+        public async Task<ServiceResult<AppSuperAdminUserDto>> GetUserAsync(int userId)
+        {
+            var entity = _superAdminRepository.GetForRead(x => x.Id == userId && !x.IsDeleted);
+            if (entity == null)
+            {
+                return ServiceResult<AppSuperAdminUserDto>.Failure("Kullanıcı bulunamadı.");
+            }
+
+            // 🔽 Rolü çek
+            var roles = await _userManager.GetRolesAsync(entity);
+
+            var dto = new AppSuperAdminUserDto
+            {
+                Id = entity.Id,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
+                UserName = entity.UserName,
+                Email = entity.Email,
+                IsDeleted = entity.IsDeleted,
+                IsDefaultAdmin = entity.IsDefaultAdmin,
+                JobTitle = entity.JobTitle,
+                PhoneNumber = entity.PhoneNumber,
+                TwoFactorEnabled = entity.TwoFactorEnabled,
+                AccessFailedCount = entity.AccessFailedCount,
+                ConcurrencyStamp = entity.ConcurrencyStamp,
+                EmailConfirmed = entity.EmailConfirmed,
+                LockoutEnabled = entity.LockoutEnabled,
+                LockoutEnd = entity.LockoutEnd,
+                NormalizedEmail = entity.NormalizedEmail,
+                NormalizedUserName = entity.NormalizedUserName,
+                PasswordHash = entity.PasswordHash,
+                PhoneNumberConfirmed = entity.PhoneNumberConfirmed,
+                SecurityStamp = entity.SecurityStamp,
+                RolesName = roles.Count > 0 ? string.Join(", ", roles) : "Rol Atanmamış"
+            };
+
+            return ServiceResult<AppSuperAdminUserDto>.Success(dto);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
         public async Task<ServiceResult<List<AppRoleDto>>> GetRolesAsync()
         {
-            try
-            {
-                var roles = await Task.FromResult(
-                    _roleManager.Roles
-                        .Select(role => new AppRoleDto
-                        {
-                            Name = role.Name
-                        }).ToList()
-                );
+            var roles = await Task.FromResult(
+                _roleManager.Roles
+                    .Select(role => new AppRoleDto
+                    {
+                        RoleId = role.Id,
+                        Name = role.Name
+                    }).ToList()
+            );
 
-                if (roles.Any())
-                    return ServiceResult<List<AppRoleDto>>.Success(roles, "Roller başarıyla alındı.");
-                else
-                    return ServiceResult<List<AppRoleDto>>.Empty("Kayıtlı rol bulunamadı.");
-            }
-            catch (Exception ex)
-            {
-                return ServiceResult<List<AppRoleDto>>.Failure(
-                    "Roller alınırken bir hata oluştu.",
-                    new[] { ex.Message }
-                );
-            }
+            if (roles.Any())
+                return ServiceResult<List<AppRoleDto>>.Success(roles, "Roller başarıyla alındı.");
+            else
+                return ServiceResult<List<AppRoleDto>>.Empty("Kayıtlı rol bulunamadı.");
         }
+
+
         public async Task<ServiceResult<AppSuperAdminUserDto>> CreateUserAsync(AppSuperAdminUserCreateDto userDto)
         {
             if (userDto == null)
@@ -110,9 +201,9 @@ namespace Economy.Persistence.Services
 
             var notFoundRoles = new List<string>();
 
-            foreach (var roleName in userDto.SelectedRoles.Where(r => !string.IsNullOrWhiteSpace(r)))
+            var trimmedRole = userDto.SelectedRole.Trim();
+            if (!string.IsNullOrWhiteSpace(trimmedRole))
             {
-                var trimmedRole = roleName.Trim();
                 if (await _roleManager.RoleExistsAsync(trimmedRole))
                 {
                     await _userManager.AddToRoleAsync(user, trimmedRole);
@@ -122,8 +213,7 @@ namespace Economy.Persistence.Services
                     notFoundRoles.Add(trimmedRole);
                 }
             }
-
-            if (notFoundRoles.Any())
+            else
             {
                 return ServiceResult<AppSuperAdminUserDto>.Failure(
                     message: $"Bulunamayan roller: {string.Join(", ", notFoundRoles)}",
@@ -152,7 +242,6 @@ namespace Economy.Persistence.Services
                 NormalizedEmail = user.NormalizedEmail,
                 NormalizedUserName = user.NormalizedUserName,
                 PasswordHash = user.PasswordHash,
-                PhotoUrl = user.PhotoUrl,
                 SecurityStamp = user.SecurityStamp,
                 TwoFactorEnabled = user.TwoFactorEnabled
             };
@@ -206,10 +295,11 @@ namespace Economy.Persistence.Services
             user.EmailConfirmed = userDto.EmailConfirmed;
             user.PhoneNumberConfirmed = userDto.PhoneNumberConfirmed;
             user.IsDefaultAdmin = userDto.IsDefaultAdmin;
-            user.PhotoUrl = userDto.PhotoUrl;
             user.JobTitle = userDto.JobTitle;
-            user.TwoFactorEnabled = userDto.TwoFactorEnabled;
             user.LockoutEnabled = userDto.LockoutEnabled;
+            user.LockoutEnd = userDto.LockoutEnd;
+            user.ConcurrencyStamp = Guid.NewGuid().ToString(); // ConcurrencyStamp güncelle
+
 
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
@@ -220,30 +310,24 @@ namespace Economy.Persistence.Services
                     validationErrors: updateResult.Errors.ToValidationDictionary());
             }
 
-            //// 🔁 Rol güncelleme
-            //if (!string.IsNullOrWhiteSpace(userDto.SelectedRoles))
-            //{
-            //    var currentRoles = await _userManager.GetRolesAsync(user);
-            //    var currentRole = currentRoles.FirstOrDefault();
+            // 🔁 Rol güncelleme
+            if (!string.IsNullOrWhiteSpace(userDto.SelectedRole))
+            {
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                var currentRole = currentRoles.FirstOrDefault();
 
-            //    if (currentRole != userDto.SelectedRoles)
-            //    {
-            //        if (currentRole != null)
-            //            await _userManager.RemoveFromRoleAsync(user, currentRole);
 
-            //        var roleExists = await _roleManager.RoleExistsAsync(userDto.SelectedRoles);
-            //        if (roleExists)
-            //        {
-            //            await _userManager.AddToRoleAsync(user, userDto.SelectedRoles);
-            //        }
-            //        else
-            //        {
-            //            return ServiceResult<AppSuperAdminUserDto>.Failure(
-            //                message: $"'{userDto.SelectedRoles}' adlı rol bulunamadı.",
-            //                statusCode: (int)HttpStatusCode.BadRequest);
-            //        }
-            //    }
-            //}
+                if (currentRole != null)
+                    await _userManager.RemoveFromRoleAsync(user, currentRole);
+
+                await _userManager.AddToRoleAsync(user, userDto.SelectedRole);
+            }
+            else
+            {
+                return ServiceResult<AppSuperAdminUserDto>.Failure(
+                          message: $"'{userDto.SelectedRole}' adlı rol bulunamadı.",
+                          statusCode: (int)HttpStatusCode.BadRequest);
+            }
 
             // DTO oluştur
             var resultDto = new AppSuperAdminUserDto
@@ -266,87 +350,15 @@ namespace Economy.Persistence.Services
                 NormalizedEmail = user.NormalizedEmail,
                 NormalizedUserName = user.NormalizedUserName,
                 PasswordHash = user.PasswordHash,
-                PhotoUrl = user.PhotoUrl,
                 SecurityStamp = user.SecurityStamp,
-                TwoFactorEnabled = user.TwoFactorEnabled
+                TwoFactorEnabled = user.TwoFactorEnabled,
+                RolesName = userDto.SelectedRole
             };
 
             return ServiceResult<AppSuperAdminUserDto>.Success(
                 data: resultDto,
                 message: "Kullanıcı başarıyla güncellendi.",
                 statusCode: (int)HttpStatusCode.OK);
-        }
-        public async Task<ServiceResult<AppSuperAdminUserDto>> GetUserAsync(int userId)
-        {
-            var entity = _superAdminRepository.GetForRead(x => x.Id == userId && !x.IsDeleted);
-            if (entity == null)
-            {
-                return ServiceResult<AppSuperAdminUserDto>.Failure("Kullanıcı bulunamadı.");
-            }
-
-            // 🔽 Rolü çek
-            var roles = await _userManager.GetRolesAsync(entity);
-
-            var dto = new AppSuperAdminUserDto
-            {
-                Id = entity.Id,
-                FirstName = entity.FirstName,
-                LastName = entity.LastName,
-                UserName = entity.UserName,
-                Email = entity.Email,
-                IsDeleted = entity.IsDeleted,
-                IsDefaultAdmin = entity.IsDefaultAdmin,
-                PhotoUrl = entity.PhotoUrl,
-                JobTitle = entity.JobTitle,
-                PhoneNumber = entity.PhoneNumber,
-                TwoFactorEnabled = entity.TwoFactorEnabled,
-                AccessFailedCount = entity.AccessFailedCount,
-                ConcurrencyStamp = entity.ConcurrencyStamp,
-                EmailConfirmed = entity.EmailConfirmed,
-                LockoutEnabled = entity.LockoutEnabled,
-                LockoutEnd = entity.LockoutEnd,
-                NormalizedEmail = entity.NormalizedEmail,
-                NormalizedUserName = entity.NormalizedUserName,
-                PasswordHash = entity.PasswordHash,
-                PhoneNumberConfirmed = entity.PhoneNumberConfirmed,
-                SecurityStamp = entity.SecurityStamp,
-                RolesName = roles.ToList()
-            };
-
-            return ServiceResult<AppSuperAdminUserDto>.Success(dto);
-        }
-        public async Task<ServiceResult<List<AppSuperAdminUserDto>>> GetUserListAsync()
-        {
-            var list = _superAdminRepository
-                .WhereForRead(x => !x.IsDeleted)
-                .Select(x => new AppSuperAdminUserDto
-                {
-                    Id = x.Id,
-                    FirstName = x.FirstName,
-                    LastName = x.LastName,
-                    UserName = x.UserName,
-                    Email = x.Email,
-                    IsDeleted = x.IsDeleted,
-                    IsDefaultAdmin = x.IsDefaultAdmin,
-                    PhotoUrl = x.PhotoUrl,
-                    JobTitle = x.JobTitle,
-                    PhoneNumber = x.PhoneNumber,
-                    TwoFactorEnabled = x.TwoFactorEnabled,
-                    AccessFailedCount = x.AccessFailedCount,
-                    ConcurrencyStamp = x.ConcurrencyStamp,
-                    EmailConfirmed = x.EmailConfirmed,
-                    LockoutEnabled = x.LockoutEnabled,
-                    LockoutEnd = x.LockoutEnd,
-                    NormalizedEmail = x.NormalizedEmail,
-                    NormalizedUserName = x.NormalizedUserName,
-                    PasswordHash = x.PasswordHash,
-                    PhoneNumberConfirmed = x.PhoneNumberConfirmed,
-                    SecurityStamp = x.SecurityStamp,
-                    
-                })
-                .ToList();
-
-            return ServiceResult<List<AppSuperAdminUserDto>>.Success(list);
         }
         public async Task<ServiceResult<AppSuperAdminUserDto>> DeleteUserAsync(int Id)
         {
@@ -378,7 +390,6 @@ namespace Economy.Persistence.Services
                 PhoneNumber = entity.PhoneNumber,
                 IsDefaultAdmin = entity.IsDefaultAdmin,
                 IsDeleted = entity.IsDeleted,
-                PhotoUrl = entity.PhotoUrl,
                 JobTitle = entity.JobTitle,
                 AccessFailedCount = entity.AccessFailedCount,
                 ConcurrencyStamp = entity.ConcurrencyStamp,
@@ -397,6 +408,43 @@ namespace Economy.Persistence.Services
                 data: dto,
                 message: "Kullanıcı başarıyla silindi.",
                 statusCode: (int)HttpStatusCode.OK);
+        }
+        public async Task<ServiceResult<NoContent>> ChangePasswordAsync(AppSuperAdminChangePasswordDto model)
+        {
+            var user = await _userManager.FindByIdAsync(model.UserId.ToString());
+            if (user == null)
+            {
+                return ServiceResult<NoContent>.Failure(
+                    "Kullanıcı bulunamadı.",
+                    statusCode: StatusCodes.Status404NotFound
+                );
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                await _signInManager.RefreshSignInAsync(user);
+                return ServiceResult<NoContent>.Success(null,
+                    message: "Şifreniz başarıyla değiştirildi."
+                );
+            }
+
+            var validationErrors = new ReadOnlyDictionary<string, string[]>(
+                result.Errors
+                    .GroupBy(e => e.Code)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.Description).ToArray()
+                    )
+            );
+
+            return ServiceResult<NoContent>.Failure(
+                "Şifre değiştirme sırasında hatalar oluştu.",
+                errors: result.Errors.Select(e => e.Description),
+                statusCode: StatusCodes.Status400BadRequest,
+                validationErrors: validationErrors
+            );
         }
     }
 

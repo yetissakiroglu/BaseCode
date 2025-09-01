@@ -8,8 +8,7 @@ namespace Economy.Application.Dtos.AppSuperAdminUserDtos
         public string LastName { get; set; }
         public bool IsDefaultAdmin { get; set; }
         public bool IsDeleted { get; set; }
-        public string? PhotoUrl { get; set; }
         public string? JobTitle { get; set; }
-        public List<string> RolesName { get; set; }
+        public string RolesName { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
+using System.Collections.ObjectModel;
 
 namespace Economy.Panel.Application.Extensions
 {
@@ -23,5 +24,12 @@ namespace Economy.Panel.Application.Extensions
                     g => g.Select(e => e.ErrorMessage).ToArray()
                 );
         }
+
+        //public static IReadOnlyDictionary<TKey, TValue> ToReadOnlyDictionary<TKey, TValue>(
+        //        this IEnumerable<KeyValuePair<TKey, TValue>> source)
+        //        where TKey : notnull
+        //{
+        //    return new ReadOnlyDictionary<TKey, TValue>(source.ToDictionary(kv => kv.Key, kv => kv.Value));
+        //}
     }
 }

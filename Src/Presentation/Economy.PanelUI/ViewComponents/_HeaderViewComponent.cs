@@ -24,7 +24,7 @@ namespace Economy.Panel.UI.ViewComponents
             {
                 FullName = user.Result?.Data.FirstName + " " + user.Result?.Data.LastName  ?? "Kullanıcı Adı", // Gerçek veri varsa claim'e ekle
                 Email = user.Result.Data.Email,
-                PhotoUrl = user.Result.Data.PhotoUrl ?? "/assets/images/avtar/woman.jpg" // Gerçek veri varsa claim'e ekle
+                PhotoUrl = "/assets/images/avtar/woman.jpg" // Gerçek veri varsa claim'e ekle
             };
 
             return View("Components/Header/_HeaderComponent.cshtml", model);

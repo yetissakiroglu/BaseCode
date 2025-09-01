@@ -71,7 +71,6 @@ namespace Economy.Panel.Persistence.Services
                     PasswordHash = x.PasswordHash,
                     PhoneNumber = x.PhoneNumber,
                     PhoneNumberConfirmed = x.PhoneNumberConfirmed,
-                    PhotoUrl = x.PhotoUrl,
                     Roles = new List<string>(),
                     SecurityStamp = x.SecurityStamp,
                     TwoFactorEnabled = x.TwoFactorEnabled,
@@ -253,7 +252,6 @@ namespace Economy.Panel.Persistence.Services
                 //TenantId = entity.TenantId,
                 IsDefaultAdmin = entity.IsDefaultAdmin,
                 JobTitle = entity.JobTitle,
-                PhotoUrl = entity.PhotoUrl,
                 Roles = role?.ToList() ?? new List<string>()
             };
 

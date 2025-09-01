@@ -5,73 +5,53 @@
     Layout = "_LayoutLogin";
 }
 
-<!-- Body main section starts -->
-<div class="container">
-    <div class="row sign-in-content-bg">
-        <div class="col-lg-6 image-contentbox d-none d-lg-block">
-            <div class="form-container ">
-                <div class="signup-content mt-4">
-                    <span>
-                        <img alt="" class="img-fluid " src="../assets/images/logo/1.png">
-                    </span>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 p-0">
+            <div class="login-form-container">
+                <div class="mb-4">
+                    <a class="logo d-inline-block" href="index.html">
+                        <img alt="#" src="../assets/images/logo/1.png" width="250">
+                    </a>
                 </div>
+                <div class="form_container">
 
-                <div class="signup-bg-img">
-                    <img alt="" class="img-fluid" src="../assets/images/login/01.png">
-                </div>
-            </div>
-
-        </div>
-        <div class="col-lg-6 form-contentbox">
-            <div class="form-container">
-
-                <form class="app-form rounded-control needs-validation" asp-action="Login" method="post" novalidate>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-5 text-center text-lg-start">
-                                <h2 class="text-primary-dark f-w-600">Welcome To axelit! </h2>
-                                <p>Sign in with your data that you enterd during your registration</p>
-                            </div>
+                    <form class="app-form rounded-control needs-validation" asp-action="Login" method="post" novalidate>
+                        <div class="mb-3 text-center">
+                            <h3 class="text-primary-dark">Hesabınıza Giriş Yapın</h3>
+                            <p class="f-s-12 text-secondary">
+                                Uygulamamızı kullanmaya başlamak için hemen bir hesap oluşturun
+                                ve deneyimin tadını çıkarın.
+                            </p>
                         </div>
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <label class="form-label" for="Email">Email</label>
-                                <input class="form-control" asp-for="Email" placeholder="Enter Your Email"
-                                       type="text" required>
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="Email">E-Posta</label>
+                            <input class="form-control" asp-for="Email" placeholder="E-Posta Adresinizi Girin"
+                                   type="text" required>
                         </div>
-                        <div class="col-12">
+                        <div class="mb-3">
                             <div class="mb-3">
-                                <label class="form-label" for="password">Password</label>
-                                <a class="link-primary-dark float-end" href="password_reset.html">
-                                    Forgot Password
-                                    ?
-                                </a>
-                                <input class="form-control" asp-for="Password" placeholder="Enter Your Password"
+                                <label class="form-label" for="password">Şifre</label>
+                                <input class="form-control" asp-for="Password" placeholder="Şifrenizi Girin"
                                        type="password" required>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" id="checkDefault" type="checkbox" value="">
-                                <label class="form-check-label text-secondary" for="checkDefault">
-                                    Remember me
-                                </label>
-                            </div>
+                        <div class="mb-3 form-check">
+                            <input class="form-check-input" asp-for="RememberMe" type="checkbox">
+                            <label class="form-check-label" for="RememberMe">Beni hatırla</label>
                         </div>
-                        <div class="col-12">
-                            <div class="mb-3">
-                                <button type="submit" class="btn btn-light-primary w-100">
-                                    Giriş Yap
-                                </button>
-                            </div>
+                        <div>
+                            <button type="submit" class="btn btn-light-primary w-100">
+                                Giriş Yap
+                            </button>
                         </div>
-                       
-                       
-                    </div>
-                </form>
+                        <div class="app-divider-v justify-content-center">
+                            <p>VEYA</p>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
-<!-- Body main section ends -->

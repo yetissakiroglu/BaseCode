@@ -34,49 +34,9 @@
                                     <input type="hidden" asp-for="UserId" />
 
                                     <div class="form-group mb-3">
-                                        <label asp-for="FirstName" class="form-label"></label>
-                                        <input asp-for="FirstName" class="form-control" />
-                                        <span asp-validation-for="FirstName" class="text-danger"></span>
-                                    </div>
-
-                                    <div class="form-group mb-3">
-                                        <label asp-for="LastName" class="form-label"></label>
-                                        <input asp-for="LastName" class="form-control" />
-                                        <span asp-validation-for="LastName" class="text-danger"></span>
-                                    </div>
-
-                                    <div class="form-group mb-3">
-                                        <label asp-for="UserName" class="form-label"></label>
-                                        <input asp-for="UserName" class="form-control" />
-                                        <span asp-validation-for="UserName" class="text-danger"></span>
-                                    </div>
-
-                                    <div class="form-group mb-3">
-                                        <label asp-for="Email" class="form-label"></label>
-                                        <input asp-for="Email" class="form-control" />
-                                        <span asp-validation-for="Email" class="text-danger"></span>
-                                    </div>
-
-                               @*      <div class="form-group mb-3">
-                                        <label asp-for="Password" class="form-label"></label>
-                                        <input asp-for="Password" type="password" class="form-control" />
-                                        <span asp-validation-for="Password" class="text-danger"></span>
-                                    </div> *@
-
-                                    <div class="form-group mb-3">
-                                        <label asp-for="PhoneNumber" class="form-label"></label>
-                                        <input asp-for="PhoneNumber" class="form-control" />
-                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                                    </div>
-
-                                    <div class="form-check mb-2">
-                                        <input asp-for="EmailConfirmed" class="form-check-input" />
-                                        <label asp-for="EmailConfirmed" class="form-check-label"></label>
-                                    </div>
-
-                                    <div class="form-check mb-3">
-                                        <input asp-for="PhoneNumberConfirmed" class="form-check-input" />
-                                        <label asp-for="PhoneNumberConfirmed" class="form-check-label"></label>
+                                        <label asp-for="JobTitle" class="form-label"></label>
+                                        <input asp-for="JobTitle" class="form-control" />
+                                        <span asp-validation-for="JobTitle" class="text-danger"></span>
                                     </div>
 
                                     <div class="form-check mb-3">
@@ -85,20 +45,38 @@
                                     </div>
 
                                     <div class="form-group mb-3">
-                                        <label asp-for="PhotoUrl" class="form-label"></label>
-                                        <input asp-for="PhotoUrl" class="form-control" />
-                                        <span asp-validation-for="PhotoUrl" class="text-danger"></span>
+                                        <label asp-for="FirstName" class="form-label"></label>
+                                        <input asp-for="FirstName" class="form-control" />
+                                        <span asp-validation-for="FirstName" class="text-danger"></span>
                                     </div>
-
                                     <div class="form-group mb-3">
-                                        <label asp-for="JobTitle" class="form-label"></label>
-                                        <input asp-for="JobTitle" class="form-control" />
-                                        <span asp-validation-for="JobTitle" class="text-danger"></span>
+                                        <label asp-for="LastName" class="form-label"></label>
+                                        <input asp-for="LastName" class="form-control" />
+                                        <span asp-validation-for="LastName" class="text-danger"></span>
                                     </div>
-
+                                    <div class="form-group mb-3">
+                                        <label asp-for="UserName" class="form-label"></label>
+                                        <input asp-for="UserName" class="form-control" />
+                                        <span asp-validation-for="UserName" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label asp-for="Email" class="form-label"></label>
+                                        <input asp-for="Email" class="form-control" />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                  
+                                    <div class="form-group mb-3">
+                                        <label asp-for="PhoneNumber" class="form-label"></label>
+                                        <input asp-for="PhoneNumber" class="form-control" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    </div>
                                     <div class="form-check mb-2">
-                                        <input asp-for="TwoFactorEnabled" class="form-check-input" />
-                                        <label asp-for="TwoFactorEnabled" class="form-check-label"></label>
+                                        <input asp-for="EmailConfirmed" class="form-check-input" />
+                                        <label asp-for="EmailConfirmed" class="form-check-label"></label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input asp-for="PhoneNumberConfirmed" class="form-check-input" />
+                                        <label asp-for="PhoneNumberConfirmed" class="form-check-label"></label>
                                     </div>
 
                                     <div class="form-check mb-3">
@@ -106,12 +84,18 @@
                                         <label asp-for="LockoutEnabled" class="form-check-label"></label>
                                     </div>
 
+                                    <div class="mb-3">
+                                        <label asp-for="LockoutEnd" class="form-label"></label>
+                                        <input asp-for="LockoutEnd" class="form-control" type="datetime-local" />
+                                        <span asp-validation-for="LockoutEnd" class="text-danger"></span>
+                                    </div>
+
                                     <div class="form-group mb-4">
-                                        <label asp-for="SelectedRoles" class="form-label"></label>
-                                        <select asp-for="SelectedRoles" asp-items="Model.RoleOptions" class="form-select">
+                                        <label asp-for="SelectedRole" class="form-label"></label>
+                                        <select asp-for="SelectedRole" asp-items="Model.RoleOptions" class="form-select">
                                             <option value="">Rol Seçiniz</option>
                                         </select>
-                                        <span asp-validation-for="SelectedRoles" class="text-danger"></span>
+                                        <span asp-validation-for="SelectedRole" class="text-danger"></span>
                                     </div>
 
                                     <div class="text-end">

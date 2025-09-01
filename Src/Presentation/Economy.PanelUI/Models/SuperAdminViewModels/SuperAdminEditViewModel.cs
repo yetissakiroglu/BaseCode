@@ -24,11 +24,7 @@ namespace Economy.Panel.UI.Models.SuperAdminViewModels
         [EmailAddress(ErrorMessage = "Geçerli bir e-posta adresi giriniz.")]
         [DisplayName("E-posta")]
         public string Email { get; set; }
-
-        //[Required(ErrorMessage = "{0} alanı zorunludur.")]
-        //[DisplayName("Şifre")]
-        //public string Password { get; set; }
-
+    
         [DisplayName("Telefon Numarası")]
         public string PhoneNumber { get; set; }
 
@@ -41,20 +37,17 @@ namespace Economy.Panel.UI.Models.SuperAdminViewModels
         [DisplayName("Varsayılan Yönetici Mi?")]
         public bool IsDefaultAdmin { get; set; }
 
-        [DisplayName("Fotoğraf URL")]
-        public string? PhotoUrl { get; set; }
-
         [DisplayName("Ünvan")]
         public string? JobTitle { get; set; }
-
-        [DisplayName("2FA Aktif Mi?")]
-        public bool TwoFactorEnabled { get; set; }
 
         [DisplayName("Hesap Kilitlenebilir Mi?")]
         public bool LockoutEnabled { get; set; }
 
+        [DisplayName("Hesap Ne Zamana Kadar Kilitli?")]
+        public DateTimeOffset? LockoutEnd { get; set; }
+
         [DisplayName("Kullanıcı Rolleri")]
-        public List<string> SelectedRoles { get; set; } = new();
+        public string SelectedRole { get; set; }
         public List<SelectListItem> RoleOptions { get; set; } = new();
 
     }

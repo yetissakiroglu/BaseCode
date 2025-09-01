@@ -7,6 +7,7 @@ namespace Economy.Domain.BaseEntities
 		[Key]
         public TId Id { get; set; } = default!;
 		public bool IsDeleted { get; set; } = default!;
+      
         protected BaseEntity()
 		{
             IsDeleted = false;
@@ -21,7 +22,15 @@ namespace Economy.Domain.BaseEntities
 	public interface IHasId<TId>
 	{
 		 TId Id { get; set; }
-	}
+    }
+    
+    // Audit log için tarih interface'i
+    public interface IHasAuditDates
+    {
+        DateTime CreatedAt { get; set; }
+        DateTime? UpdatedAt { get; set; }
+        DateTime? DeletedAt { get; set; }
+    }
 
 }
 

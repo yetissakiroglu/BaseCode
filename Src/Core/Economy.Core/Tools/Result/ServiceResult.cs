@@ -39,7 +39,8 @@
             string? correlationId = null,
             IReadOnlyDictionary<string, string[]>? validationErrors = null,
             PaginationInfo? pagination = null,
-            IReadOnlyDictionary<string, object>? metadata = null)
+            IReadOnlyDictionary<string, object>? metadata = null,
+            string? redirectUrl=null)
         {
             IsSuccess = isSuccess;
             Data = data;
@@ -51,6 +52,7 @@
             ValidationErrors = validationErrors;
             Pagination = pagination;
             Metadata = metadata;
+            RedirectUrl = redirectUrl;
         }
 
         public static ServiceResult<T> Success(
@@ -58,8 +60,9 @@
             string message = "",
             int statusCode = 200,
             PaginationInfo? pagination = null,
-            IReadOnlyDictionary<string, object>? metadata = null)
-            => new(true, data, message, statusCode: statusCode, pagination: pagination, metadata: metadata);
+            IReadOnlyDictionary<string, object>? metadata = null,
+            string? redirectUrl = null)
+            => new(true, data, message, statusCode: statusCode, pagination: pagination, metadata: metadata, redirectUrl: redirectUrl);
 
         public static ServiceResult<T> Empty(
             string message = "Kayıt bulunamadı.",
@@ -72,8 +75,21 @@
             string? errorCode = null,
             int statusCode = 400,
             string? correlationId = null,
-            IReadOnlyDictionary<string, string[]>? validationErrors = null)
-            => new(false, default, message, errors, errorCode, statusCode, correlationId, validationErrors);
+            IReadOnlyDictionary<string, string[]>? validationErrors = null,
+            string? redirectUrl = null)
+            => new(false, default, message, errors, errorCode, statusCode, correlationId, validationErrors, redirectUrl: redirectUrl);
+
+        public static ServiceResult<T> Failure(T data,
+          string message,
+          IEnumerable<string>? errors = null,
+          string? errorCode = null,
+          int statusCode = 400,
+          string? correlationId = null,
+          IReadOnlyDictionary<string, string[]>? validationErrors = null,
+          string? redirectUrl = null)
+          => new(false, data, message, errors, errorCode, statusCode, correlationId, validationErrors, redirectUrl: redirectUrl);
+
+
     }
 
 }

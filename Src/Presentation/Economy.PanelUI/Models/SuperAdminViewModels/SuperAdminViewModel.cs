@@ -21,10 +21,7 @@ namespace Economy.Panel.UI.Models.SuperAdminViewModels
 
         [Display(Name = "Silinmiş Mi?")]
         public bool IsDeleted { get; set; }
-
-        [Display(Name = "Fotoğraf URL")]
-        public string? PhotoUrl { get; set; }
-
+      
         [Display(Name = "Görev Ünvanı")]
         public string? JobTitle { get; set; }
 
@@ -39,5 +36,8 @@ namespace Economy.Panel.UI.Models.SuperAdminViewModels
 
         [Display(Name = "Telefon Doğrulandı")]
         public bool PhoneNumberConfirmed { get; set; }
+
+        [Display(Name = "Yetki")]
+        public string RolesName { get; set; }
     }
 }

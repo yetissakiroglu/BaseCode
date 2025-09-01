@@ -35,7 +35,6 @@ namespace Economy.Panel.UI.Controllers
                 FullName = $"{profil?.Data?.FirstName} {profil?.Data?.LastName}",
                 JobTitle = profil?.Data?.JobTitle,
                 Phone = profil?.Data?.PhoneNumber,
-                PhotoUrl = profil?.Data?.PhotoUrl,
                 Roles = profil?.Data?.Roles?.ToList() ?? new List<string>()
             };
             return View(resılt);
