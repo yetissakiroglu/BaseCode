@@ -46,7 +46,7 @@ namespace Economy.Persistence.Services
             catch (Exception ex)
             {
                 return ServiceResult<bool>.Failure(
-                     "Roller alınırken bir hata oluştu.",
+                     "Bağlantı başarısız!",
                      new[] { ex.Message }
                  );
             }

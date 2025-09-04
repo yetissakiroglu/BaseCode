@@ -6,7 +6,9 @@ using Economy.Panel.UI.Models.AppViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Cryptography;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.Controllers
 {
@@ -34,8 +36,18 @@ namespace Economy.Panel.UI.Controllers
         [HttpGet]
         public IActionResult CreateApp()
         {
-            return View();
+            var newApp = new AppCreateViewModel
+            {
+                ApiKey = GenerateApiKey() // otomatik üret
+            };
+            return View(newApp);
         }
+        private string GenerateApiKey()
+        {
+            var key = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+            return key.Replace("+", "").Replace("/", "").Replace("=", "");
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateApp(AppCreateViewModel viewModel)
@@ -48,7 +60,9 @@ namespace Economy.Panel.UI.Controllers
                 IsPassword = viewModel.IsPassword,
                 Password = viewModel.Password,
                 ServerName = viewModel.ServerName,
-                UserName = viewModel.UserName
+                UserName = viewModel.UserName,
+                AccessMode = viewModel.AccessMode,
+                Theme = viewModel.Theme
             };
 
 
@@ -76,7 +90,10 @@ namespace Economy.Panel.UI.Controllers
                 UserName = result.Data.UserName,
                 IsPassword = result.Data.IsPassword,
                 Password = result.Data.Password,
-                Domain = result.Data.Domain
+                Domain = result.Data.Domain,
+                AccessMode = result.Data.AccessMode,
+                Theme = result.Data.Theme,
+
             };
             return View(editDto);
         }
@@ -119,13 +136,21 @@ namespace Economy.Panel.UI.Controllers
             return RedirectToAction("AppList");
         }
 
-        [HttpGet]
-        public IActionResult TestConnection(int Id)
+        [HttpPost]
+        public async Task<IActionResult> TestConnection(int Id)
         {
-            var result = _connectionTesterService.TestConnectionAsync(Id);
+            var result = await _connectionTesterService.TestConnectionAsync(Id);
             //AddMessage(result);
-            return RedirectToAction("AppList");
+            if (result.IsSuccess)
+            {
+                result.RedirectUrl = "/App/" + nameof(AppList);
+            }
+            string json = JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true });
+
+            return Json(result);
         }
+
+
 
 
         #region App Yönetici Atama
@@ -136,7 +161,8 @@ namespace Economy.Panel.UI.Controllers
                 .Select(a => new SelectListItem
                 {
                     Value = a.Id.ToString(),
-                    Text = a.HotelName
+                    Text = a.HotelName,
+                    //Selected = a.Id == selectedAppId   // seçili app işaretlensin
                 }).ToList();
 
             ViewBag.AppList = apps;
@@ -145,6 +171,11 @@ namespace Economy.Panel.UI.Controllers
 
         [HttpPost]
         public IActionResult SelectForManagerAssign(int selectedAppId)
+        {
+            return RedirectToAction("AssignManagers", new { id = selectedAppId });
+        }
+
+        public IActionResult SelectForManagerAssignNew(int selectedAppId)
         {
             return RedirectToAction("AssignManagers", new { id = selectedAppId });
         }

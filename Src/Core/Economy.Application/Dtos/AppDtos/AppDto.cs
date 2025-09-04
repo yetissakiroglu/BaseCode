@@ -1,6 +1,8 @@
-﻿using Economy.Core.Helpers;
+﻿using Economy.Core.Enums;
+using Economy.Core.Helpers;
+using Economy.Domain.Entites.AppEntities;
+using Economy.Domain.Entites.Identities;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace Economy.Panel.Application.Dtos.AppDtos
 {
@@ -35,5 +37,20 @@ namespace Economy.Panel.Application.Dtos.AppDtos
         [DisplayName("Bağlantı Cümlesi")]
         public string ConnectionString { get; set; }
 
+        public AppManagerDto AppManager { get; set; }
+
+
+        public AppAccessMode AccessMode { get; set; }
+        public AppTheme Theme { get; set; }
+        public string? ApiKey { get; set; }   // yeni alan
+
     }
+
+    public class AppManagerDto
+    {
+        public int UserId { get; set; }
+        public string UserName { get; set; }
+    }
+
+
 }

@@ -1,4 +1,5 @@
-﻿@using Economy.Panel.UI.Models.AppViewModels
+﻿@using Economy.Core.Enums
+@using Economy.Panel.UI.Models.AppViewModels
 @model AppCreateViewModel
 
 @{
@@ -58,11 +59,7 @@
                                             <span asp-validation-for="DatabaseName" class="text-danger"></span>
                                         </div>
 
-                                        <div class="form-group col-md-6">
-                                            <label asp-for="UserName"></label>
-                                            <input asp-for="UserName" class="form-control" />
-                                            <span asp-validation-for="UserName" class="text-danger"></span>
-                                        </div>
+                                       
 
                                         <div class="form-group col-md-6">
                                             <div class="form-check mt-4">
@@ -70,18 +67,49 @@
                                                 <label asp-for="IsPassword" class="form-check-label"></label>
                                             </div>
                                         </div>
+                                        <div id="passwordContainer">
+                                            <div class="form-group col-md-6">
+                                                <label asp-for="UserName"></label>
+                                                <input asp-for="UserName" class="form-control" />
+                                                <span asp-validation-for="UserName" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label asp-for="Password"></label>
+                                                <input asp-for="Password" type="password" class="form-control" />
+                                                <span asp-validation-for="Password" class="text-danger"></span>
+                                            </div>
 
-                                        <div class="form-group col-md-6" id="passwordContainer">
-                                            <label asp-for="Password"></label>
-                                            <input asp-for="Password" type="password" class="form-control" />
-                                            <span asp-validation-for="Password" class="text-danger"></span>
                                         </div>
-
+                                     
                                         <div class="form-group col-md-12">
                                             <label asp-for="Domain"></label>
                                             <input asp-for="Domain" class="form-control" />
                                             <span asp-validation-for="Domain" class="text-danger"></span>
                                         </div>
+
+                                        <!-- Yeni eklenen alanlar -->
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="AccessMode"></label>
+                                            <select asp-for="AccessMode" class="form-select"
+                                                    asp-items="Html.GetEnumSelectList<AppAccessMode>()">
+                                            </select>
+                                            <span asp-validation-for="AccessMode" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <label asp-for="Theme"></label>
+                                            <select asp-for="Theme" class="form-select"
+                                                    asp-items="Html.GetEnumSelectList<AppTheme>()">
+                                            </select>
+                                            <span asp-validation-for="Theme" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-12">
+                                            <label asp-for="ApiKey"></label>
+                                            <input asp-for="ApiKey" class="form-control" readonly />
+                                            <span asp-validation-for="ApiKey" class="text-danger"></span>
+                                        </div>
+
                                     </div>
 
                                     <button type="submit" class="btn btn-primary mt-3 float-end">Oluştur</button>

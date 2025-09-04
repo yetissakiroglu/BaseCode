@@ -3,24 +3,30 @@ using Economy.Application.Validations.AppValidator;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.AppEntities;
-using Economy.Domain.Entites.EntityAppLanguage;
+using Economy.Domain.Entites.Identities;
 using Economy.Panel.Application.Dtos.AppDtos;
-using Economy.Panel.Application.Dtos.AppLanguageDtos;
 using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
 using System.Net;
+using System.Security.Cryptography;
 
 namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
 {
     public class PanelAppService : IPanelAppService
     {
         private readonly IEntityRepository<App, int> _panelAppRepository;
+        private readonly IEntityRepository<AppManager, int> _panelAppManagerRepository;
+        private readonly IEntityRepository<AppUser, int> _appUserRepository;
+
         private readonly IUnitOfWork _unitOfWork;
         public PanelAppService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _panelAppRepository = unitOfWork.DefaultEntityRepository<App>();
+            _panelAppManagerRepository = unitOfWork.DefaultEntityRepository<AppManager>();
+            _appUserRepository = unitOfWork.DefaultEntityRepository<AppUser>();
         }
+   
         public async Task<ServiceResult<AppDto>> GetAppById(int id)
         {
             var entity = _panelAppRepository.GetForRead(x => x.Id == id);
@@ -41,7 +47,12 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 UserName = entity.UserName,
                 IsPassword = entity.IsPassword,
                 Password = entity.Password,
-                Domain = entity.Domain
+                Domain = entity.Domain,
+                AccessMode = entity.AccessMode,
+                Theme = entity.Theme,
+                ApiKey = entity.ApiKey
+
+
             };
 
             return ServiceResult<AppDto>.Success(
@@ -63,7 +74,27 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 IsPassword = x.IsPassword,
                 Password = x.Password,
                 Domain = x.Domain,
+                AccessMode = x.AccessMode,
+                Theme = x.Theme,
+                ApiKey =x.ApiKey
+
             }).ToList();
+            foreach (var app in result)
+            {
+                var manager = _panelAppManagerRepository.GetForRead(x => x.AppId == app.Id && x.IsDeleted == false);
+                if (manager != null)
+                {
+                    app.AppManager = new AppManagerDto();
+                    var user = _appUserRepository.GetForRead(x => x.Id == manager.UserId && x.IsDeleted == false);
+                    app.AppManager.UserId = manager.UserId;
+                    app.AppManager.UserName = user != null ? user.UserName : "Yönetici bulunamadı";
+                }else
+                {
+                    app.AppManager = new AppManagerDto();
+                    app.AppManager.UserId = 0;
+                    app.AppManager.UserName = "Yönetici bulunamadı";
+                }
+            }
 
             return ResponseModel<IEnumerable<AppDto>>.Success(result, System.Net.HttpStatusCode.OK);
         }
@@ -90,6 +121,10 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 IsPassword = model.IsPassword,
                 Password = model.Password,
                 Domain = model.Domain,
+               AccessMode = model.AccessMode,
+               Theme = model.Theme,
+               ApiKey =model.ApiKey
+
             };
 
             _panelAppRepository.Add(entity);

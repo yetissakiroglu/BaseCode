@@ -1,4 +1,4 @@
-﻿using Economy.Core.Interfaces;
+﻿using Economy.Application.Interfaces;
 using Economy.Domain.Entites.AppEntities;
 
 namespace Economy.Panel.UI.Middlewares
@@ -6,12 +6,11 @@ namespace Economy.Panel.UI.Middlewares
     public class ErrorLoggingMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger<ErrorLoggingMiddleware> _logger;
-        //private readonly IUnitOfWork _uow;
-
-        public ErrorLoggingMiddleware(RequestDelegate next, ILogger<ErrorLoggingMiddleware> logger)
+        //private readonly IPanelErrorLogService _panelErrorLogService;
+        public ErrorLoggingMiddleware(RequestDelegate next)
         {
-            _next = next; _logger = logger; 
+            _next = next;
+            //_panelErrorLogService = panelErrorLogService;
         }
 
         public async Task Invoke(HttpContext ctx)
@@ -26,7 +25,6 @@ namespace Economy.Panel.UI.Middlewares
                 {
 
 
-                    //var repo = _uow.DefaultEntityRepository<AppErrorLog>();
                     //var log = new AppErrorLog
                     //{
                     //    CreatedAt = DateTime.UtcNow,
@@ -45,16 +43,14 @@ namespace Economy.Panel.UI.Middlewares
                     //    Source = ex.Source,
                     //    TargetSite = ex.TargetSite?.Name
                     //};
-                    //repo.Add(log);
-                    //await _uow.SaveDefaultChangesAsync();
+
+                    //await _panelErrorLogService.Create(log);
                 }
                 catch (Exception logEx)
                 {
-                    _logger.LogError(logEx, "Error while writing AppErrorLog");
+
                 }
 
-                // tekrar fırlat
-                throw;
             }
         }
     }

@@ -167,5 +167,33 @@ namespace Economy.Persistence.Services
             RequestBodyTruncated = x.RequestBodyTruncated,
             CustomDataJson = x.CustomDataJson
         };
+
+        public async Task<ServiceResult<AppErrorLog>> Create(AppErrorLog appErrorLog)
+        {
+            var log = new AppErrorLog
+            {
+                CreatedAt = DateTime.UtcNow,
+                UserId = null, // Claims'ten alabilirsin
+                UserName = appErrorLog.UserName,
+                HttpMethod = appErrorLog.HttpMethod,
+                RequestPath = appErrorLog.RequestPath,
+                QueryString = appErrorLog.QueryString,
+                IpAddress = appErrorLog.IpAddress,
+                UserAgent = appErrorLog.UserAgent,
+                CorrelationId = appErrorLog.CorrelationId,
+                StatusCode = 500,
+                ExceptionType = appErrorLog.ExceptionType,
+                Message = appErrorLog.Message,
+                StackTrace = appErrorLog.StackTrace,
+                Source = appErrorLog.Source,
+                TargetSite = appErrorLog.TargetSite,
+            }
+            ;
+           _repo.Add(log);
+            await _uow.SaveDefaultChangesAsync();
+
+            return ServiceResult<AppErrorLog>.Success(log, "Kayıt Eklendi.");
+
+        }
     }
 }

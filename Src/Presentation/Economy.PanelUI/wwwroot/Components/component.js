@@ -209,7 +209,64 @@ function postResponseModelDelete(actionURL, actionData, successCallback, errorCa
     }
 }
 
+function postDataResponse(actionURL, actionData, successCallback, errorCallback) {
+    if (!wsLib.isNullOrEmpty(actionURL)) {
+        $.ajax({
+            url: actionURL, data: actionData, type: "POST",
+            success: function (response) {
+                if (response.isSuccess) {
+                    // Başarılı mesajı varsa göster
+                    if (response.message) {
+                        showSuccessNotification(response.message, "Başarılı");
+                    } else {
+                        showSuccessNotification("İşlem başarılı.", "Başarılı");
+                    }
 
+                    if (typeof successCallback === "function") {
+                        successCallback(response);
+                    }
+
+                    // Yönlendirme
+                    //if (response.redirectUrl) {
+                    //    window.location.href = response.redirectUrl;
+                    //}
+
+                } else {
+                    let errorMessages = [];
+
+                    // ValidationErrors varsa detaylı göster
+                    if (response.validationErrors) {
+                        for (const field in response.validationErrors) {
+                            const messages = response.validationErrors[field];
+                            if (Array.isArray(messages)) {
+                                errorMessages.push(`<b>${field}</b>: ${messages.join(", ")}`);
+                            }
+                        }
+                    }
+
+                    // Genel Errors varsa
+                    if (response.errors && response.errors.length > 0) {
+                        errorMessages = errorMessages.concat(response.errors);
+                    }
+
+                    // Hiçbir mesaj yoksa default
+                    if (errorMessages.length === 0) {
+                        errorMessages.push("İşlem sırasında bir hata oluştu.");
+                    }
+
+                    showErrorNotification(errorMessages.join("<br>"), "Hata");
+
+                    if (typeof errorCallback === "function") {
+                        errorCallback(response);
+                    }
+                }
+            },
+            error: function () {
+                showErrorNotification("Sunucu ile iletişim sırasında bir hata oluştu.", "Hata");
+            }
+        });
+    }
+}
 
 
 wsLib = function () {

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Economy.Core.Enums;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Economy.Panel.UI.Models.AppViewModels
@@ -22,7 +23,7 @@ namespace Economy.Panel.UI.Models.AppViewModels
         [DisplayName("Veritabanı Adı")]
         public string DatabaseName { get; set; }
 
-        [Required(ErrorMessage = "Kullanıcı adı gereklidir.")]
+        //[Required(ErrorMessage = "Kullanıcı adı gereklidir.")]
         [MaxLength(100)]
         [DisplayName("Kullanıcı Adı")]
         public string UserName { get; set; }
@@ -37,5 +38,12 @@ namespace Economy.Panel.UI.Models.AppViewModels
         [MaxLength(250)]
         [DisplayName("Domain")]
         public string Domain { get; set; }
+
+
+        // Yeni alanlar
+        public AppAccessMode AccessMode { get; set; }
+        public AppTheme Theme { get; set; }
+        public string? ApiKey { get; set; }   // yeni alan
+
     }
 }

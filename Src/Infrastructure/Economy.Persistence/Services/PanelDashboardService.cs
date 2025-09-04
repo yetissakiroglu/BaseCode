@@ -56,8 +56,8 @@ namespace Economy.Persistence.Services
                 .ToList();
 
             var failedLoginsGrouped = _auditRepo.WhereForRead(x => !x.IsDeleted && x.Action == "Login" && !x.Succeeded && x.CreatedDate >= from24)
-                //.GroupBy(x => new { x.CreatedDate.Value.Year, x.CreatedDate.Value.Month, x.CreatedDate.Value.Day, x.CreatedDate.Value.Hour })
-                //.Select(g => new { g.Key.Year, g.Key.Month, g.Key.Day, g.Key.Hour, Count = g.Count() })
+                .GroupBy(x => new { x.CreatedDate.Year, x.CreatedDate.Month, x.CreatedDate.Day, x.CreatedDate.Hour })
+                .Select(g => new { g.Key.Year, g.Key.Month, g.Key.Day, g.Key.Hour, Count = g.Count() })
                 .ToList();
 
             // 24 saatlik eksiksiz seriler
@@ -70,8 +70,8 @@ namespace Economy.Persistence.Services
                     .Where(a => a.Year == t.Year && a.Month == t.Month && a.Day == t.Day && a.Hour == t.Hour)
                     .Select(a => a.Count).FirstOrDefault();
                 var fCount = failedLoginsGrouped
-                    //.Where(a => a.Year == t.Year && a.Month == t.Month && a.Day == t.Day && a.Hour == t.Hour)
-                    .Select(a => a.Id).FirstOrDefault();
+                    .Where(a => a.Year == t.Year && a.Month == t.Month && a.Day == t.Day && a.Hour == t.Hour)
+                    .Select(a => a.Count).FirstOrDefault();
 
                 var label = t.ToLocalTime().ToString("HH:mm");
                 errorsSeries.Add(new TimePoint { Label = label, Value = eCount });
@@ -79,9 +79,9 @@ namespace Economy.Persistence.Services
             }
 
             // New users per day (7d)
-            var newUsersGrouped = _userRepo.WhereForRead(x => !x.IsDeleted /*&& x.CreatedDate >= from7d*/) // AppUser'da CreatedDate varsa; yoksa kendi alanını kullan
-                //.GroupBy(x => new { x.CreatedDate.Value.Year, x.CreatedDate.Value.Month, x.CreatedDate.Value.Day })
-                //.Select(g => new { g.Key.Year, g.Key.Month, g.Key.Day, Count = g.Count() })
+            var newUsersGrouped = _userRepo.WhereForRead(x => !x.IsDeleted && x.CreatedAt >= from7d) // AppUser'da CreatedDate varsa; yoksa kendi alanını kullan
+                .GroupBy(x => new { x.CreatedAt.Year, x.CreatedAt.Month, x.CreatedAt.Day })
+                .Select(g => new { g.Key.Year, g.Key.Month, g.Key.Day, Count = g.Count() })
                 .ToList();
 
             var newUsers7d = new List<TimePoint>();
@@ -89,8 +89,8 @@ namespace Economy.Persistence.Services
             {
                 var d = from7d.AddDays(i);
                 var c = newUsersGrouped
-                    //.Where(a => a.Year == d.Year && a.Month == d.Month && a.Day == d.Day)
-                    .Select(a => a.Id).FirstOrDefault();
+                    .Where(a => a.Year == d.Year && a.Month == d.Month && a.Day == d.Day)
+                    .Select(a => a.Count).FirstOrDefault();
                 newUsers7d.Add(new TimePoint { Label = d.ToLocalTime().ToString("dd MMM"), Value = c });
             }
 

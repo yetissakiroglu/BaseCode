@@ -1,4 +1,6 @@
-﻿using Economy.Domain.BaseEntities;
+﻿using Economy.Core.Enums;
+using Economy.Domain.BaseEntities;
+using Economy.Domain.Entites.EntityAppPages;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -36,6 +38,12 @@ namespace Economy.Domain.Entites.AppEntities
 
         public int? TenantId { get; set; }
 
+        public AppAccessMode AccessMode { get; set; } = AppAccessMode.LocalOnly;
+        public AppTheme Theme { get; set; } = AppTheme.Default;
+
+        public string? ApiKey { get; set; }   // yeni alan
+
+
         [NotMapped]
         public string ConnectionString
         {
@@ -51,6 +59,8 @@ namespace Economy.Domain.Entites.AppEntities
                 }
             }
         }
+
+
     }
-   
+
 }

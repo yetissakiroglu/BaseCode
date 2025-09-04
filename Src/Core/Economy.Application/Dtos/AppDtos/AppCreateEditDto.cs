@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Economy.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -36,5 +37,10 @@ namespace Economy.Application.Dtos.AppDtos
 
         [MaxLength(250)]
         public string Domain { get; set; }
+
+        public AppAccessMode AccessMode { get; set; }
+        public AppTheme Theme { get; set; }
+        public string? ApiKey { get; set; }   // yeni alan
+
     }
 }
