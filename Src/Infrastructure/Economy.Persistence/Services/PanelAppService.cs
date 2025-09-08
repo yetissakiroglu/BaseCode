@@ -4,6 +4,7 @@ using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.AppEntities;
 using Economy.Domain.Entites.Identities;
+using Economy.Panel.Application.Dtos.AppCategoryDtos;
 using Economy.Panel.Application.Dtos.AppDtos;
 using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
@@ -51,8 +52,6 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 AccessMode = entity.AccessMode,
                 Theme = entity.Theme,
                 ApiKey = entity.ApiKey
-
-
             };
 
             return ServiceResult<AppDto>.Success(
@@ -62,7 +61,7 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
             );
         }
 
-        public ResponseModel<IEnumerable<AppDto>> Apps(bool isDeleted)
+        public ServiceResult<IEnumerable<AppDto>> Apps(bool isDeleted)
         {
             var result = _panelAppRepository.WhereForRead(x => x.IsDeleted == isDeleted).Select(x => new AppDto
             {
@@ -79,6 +78,13 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 ApiKey =x.ApiKey
 
             }).ToList();
+
+            if (!result.Any())
+            {
+                return ServiceResult<IEnumerable<AppDto>>.Empty();
+            }
+
+
             foreach (var app in result)
             {
                 var manager = _panelAppManagerRepository.GetForRead(x => x.AppId == app.Id && x.IsDeleted == false);
@@ -96,7 +102,7 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 }
             }
 
-            return ResponseModel<IEnumerable<AppDto>>.Success(result, System.Net.HttpStatusCode.OK);
+            return ServiceResult<IEnumerable<AppDto>>.Success(result);
         }
 
         public async Task<ServiceResult<AppDto>> CreateApp(AppCreateEditDto model)
@@ -149,15 +155,19 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
             );
         }
 
-        public ResponseModel<AppDto> DeleteApp(int Id)
+        public ServiceResult<AppDto> DeleteApp(int Id)
         {
             var result = _panelAppRepository.GetForEdit(x => x.Id == Id);
             if (result is null)
-            { return ResponseModel<AppDto>.Fail("App not found", System.Net.HttpStatusCode.NotFound); }
+            { 
+                return ServiceResult<AppDto>.Empty();
+            }
+
             result.IsDeleted = true;
             _panelAppRepository.Update(result);
             _unitOfWork.SaveDefaultChanges();
-            return ResponseModel<AppDto>.Success(new AppDto
+
+            return ServiceResult<AppDto>.Success(new AppDto
             {
                 Id = result.Id,
                 HotelName = result.HotelName,
@@ -166,24 +176,24 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 UserName = result.UserName,
                 IsPassword = result.IsPassword,
                 Password = result.Password,
-                Domain = result.Domain,
-            }, System.Net.HttpStatusCode.OK);
+                Domain = result.Domain
+            });
         }
 
-        public Task<ResponseModel<AppDto>> EditApp(AppEditDto user)
+        public Task<ServiceResult<AppDto>> EditApp(AppCreateEditDto model)
         {
-            var result = _panelAppRepository.GetForEdit(x => x.Id == user.Id);
+            var result = _panelAppRepository.GetForEdit(x => x.Id == model.Id);
             if (result == null)
             {
-                return Task.FromResult(ResponseModel<AppDto>.Fail("App not found", System.Net.HttpStatusCode.NotFound));
+                return Task.FromResult(ServiceResult<AppDto>.Empty());
             }
-            result.HotelName = user.HotelName;
-            result.ServerName = user.ServerName;
-            result.DatabaseName = user.DatabaseName;
-            result.UserName = user.UserName;
-            result.IsPassword = user.IsPassword;
-            result.Password = user.Password;
-            result.Domain = user.Domain;
+            result.HotelName = model.HotelName;
+            result.ServerName = model.ServerName;
+            result.DatabaseName = model.DatabaseName;
+            result.UserName = model.UserName;
+            result.IsPassword = model.IsPassword;
+            result.Password = model.Password;
+            result.Domain = model.Domain;
             _panelAppRepository.Update(result);
             _unitOfWork.SaveDefaultChanges();
             var appDto = new AppDto
@@ -197,16 +207,16 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 Password = result.Password,
                 Domain = result.Domain,
             };
-            return Task.FromResult(ResponseModel<AppDto>.Success(appDto, System.Net.HttpStatusCode.OK)); ;
+            return Task.FromResult(ServiceResult<AppDto>.Success(appDto)); ;
 
         }
 
-        public ResponseModel<AppDto> GetApp(int Id, bool isDeleted)
+        public ServiceResult<AppDto> GetApp(int Id, bool isDeleted)
         {
             var result = _panelAppRepository.GetForRead(x => x.Id == Id && x.IsDeleted == isDeleted);
             if (result == null)
             {
-                return ResponseModel<AppDto>.Fail("App not found", System.Net.HttpStatusCode.NotFound);
+                return ServiceResult<AppDto>.Empty();
             }
             var appDto = new AppDto
             {
@@ -219,7 +229,7 @@ namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
                 Password = result.Password,
                 Domain = result.Domain,
             };
-            return ResponseModel<AppDto>.Success(appDto, System.Net.HttpStatusCode.OK);
+            return ServiceResult<AppDto>.Success(appDto);
         }
 
     }

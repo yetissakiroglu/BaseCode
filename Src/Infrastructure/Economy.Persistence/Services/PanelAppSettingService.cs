@@ -52,6 +52,8 @@ namespace Economy.Panel.Persistence.Services
         public ResponseModel<AppSettingDto> GetAppSetting(bool isDeleted)
         {
 
+            var test = _appSettingRepository.DataSet.Where(x=>x.IsDeleted);
+
             var result = _appSettingRepository.GetForReadFunc(
                 x => x.IsDeleted == isDeleted,
                 x => x.Include(y => y.Translations)

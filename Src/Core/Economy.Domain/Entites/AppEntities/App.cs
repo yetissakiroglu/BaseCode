@@ -22,21 +22,15 @@ namespace Economy.Domain.Entites.AppEntities
         [MaxLength(100)]
         public string DatabaseName { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         [Required]
         public bool IsPassword { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         [MaxLength(250)]
         public string Domain { get; set; }
-
-        public int? TenantId { get; set; }
 
         public AppAccessMode AccessMode { get; set; } = AppAccessMode.LocalOnly;
         public AppTheme Theme { get; set; } = AppTheme.Default;

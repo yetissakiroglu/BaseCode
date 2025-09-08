@@ -1,7 +1,4 @@
-﻿using Economy.Application.Interfaces;
-using Economy.Domain.Entites.AppEntities;
-
-namespace Economy.Panel.UI.Middlewares
+﻿namespace Economy.Panel.UI.Middlewares
 {
     public class ErrorLoggingMiddleware
     {

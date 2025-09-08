@@ -61,13 +61,13 @@ builder.Services.AddDbContext<DefaultDbContext>(options =>
     });
 });
 
-//builder.Services.AddDbContext<HotelDbContext>(options =>
-//{
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultHotelConnection"), configure =>
-//    {
-//        configure.MigrationsAssembly("Economy.Base.Persistence");
-//    });
-//});
+builder.Services.AddDbContext<HotelDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultHotelConnection"), configure =>
+    {
+        configure.MigrationsAssembly("Economy.Base.Persistence");
+    });
+});
 
 
 

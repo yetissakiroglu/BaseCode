@@ -7,7 +7,6 @@ namespace Economy.Panel.UI.Helpers
     {
         public bool IsSuperAdmin() => User?.IsInRole("Super Admin") ?? false;
         public bool IsTenantAdmin() => User?.IsInRole("Tenant Admin") ?? false;
-        public bool IsContentManager() => User?.IsInRole("Content Manager") ?? false;
         public string CurrentUserEmail => User?.FindFirstValue(ClaimTypes.Email) ?? "Anonim";
         public string CurrentUserId => User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
         public string CurrentUserName => User?.FindFirstValue(ClaimTypes.Name) ?? "";

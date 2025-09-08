@@ -9,7 +9,7 @@ namespace Economy.Application.Validations.AppValidator
         {
             RuleFor(x => x.HotelName)
             .NotEmpty().WithMessage("Otel adı boş olamaz.")
-            .MaximumLength(5).WithMessage("Otel adı en fazla 200 karakter olmalıdır.");
+            .MaximumLength(200).WithMessage("Otel adı en fazla 200 karakter olmalıdır.");
 
             RuleFor(x => x.ServerName)
                 .NotEmpty().WithMessage("Sunucu adı boş olamaz.")
@@ -19,12 +19,12 @@ namespace Economy.Application.Validations.AppValidator
                 .NotEmpty().WithMessage("Veritabanı adı boş olamaz.")
                 .MaximumLength(100).WithMessage("Veritabanı adı en fazla 100 karakter olmalıdır.");
 
-            RuleFor(x => x.UserName)
-                .NotEmpty().WithMessage("Kullanıcı adı boş olamaz.")
-                .MaximumLength(100).WithMessage("Kullanıcı adı en fazla 100 karakter olmalıdır.");
+            //RuleFor(x => x.UserName)
+            //    .NotEmpty().WithMessage("Kullanıcı adı boş olamaz.")
+            //    .MaximumLength(100).WithMessage("Kullanıcı adı en fazla 100 karakter olmalıdır.");
 
-            RuleFor(x => x.IsPassword)
-                .NotNull().WithMessage("Şifre var mı alanı boş olamaz.");
+            //RuleFor(x => x.IsPassword)
+            //    .NotNull().WithMessage("Şifre var mı alanı boş olamaz.");
 
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Şifre boş olamaz.")

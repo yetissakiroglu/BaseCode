@@ -18,6 +18,7 @@ public class PanelAppGeneralSettingService : IPanelAppGeneralSettingService
 
     public async Task<ServiceResult<AppGeneralSettingDto>> CreateGeneralSettingAsync(AppGeneralSettingCreateDto modelDto)
     {
+
         if (modelDto == null)
         {
             return ServiceResult<AppGeneralSettingDto>.Failure(

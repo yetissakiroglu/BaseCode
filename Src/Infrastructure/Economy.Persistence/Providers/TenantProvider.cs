@@ -27,13 +27,14 @@ namespace Economy.Core.Services.Providers
             var user = await _masterDbContext.Users.FindAsync(userId);
             if (user == null) throw new Exception("User not found.");
 
-            var tenant = await _masterDbContext.Apps.Where(x => (int)x.TenantId == userId).FirstOrDefaultAsync();
+            var tenant = await _masterDbContext.AppManagers.Where(x => (int)x.UserId == userId).FirstOrDefaultAsync();
             if (tenant == null)
                 return null;
 
-            //throw new Exception("Tenant not found.");
+            var tenantApp = await _masterDbContext.Apps.Where(x => (int)x.Id == tenant.AppId).FirstOrDefaultAsync();
 
-            return tenant.ConnectionString;
+
+            return tenantApp.ConnectionString;
         }
 
         public async Task<List<string>> GetAllConnectionStringsAsync()

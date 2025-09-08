@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Economy.Panel.UI.Models.AppViewModels
 {
-    public class AppCreateViewModel
+    public class AppEditViewModel
     {
         public int Id { get; set; }
 
@@ -43,6 +43,5 @@ namespace Economy.Panel.UI.Models.AppViewModels
         public AppAccessMode AccessMode { get; set; }
         public AppTheme Theme { get; set; }
         public string? ApiKey { get; set; }   // yeni alan
-
     }
 }

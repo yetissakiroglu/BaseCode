@@ -57,7 +57,7 @@
 
         public static ServiceResult<T> Success(
             T data,
-            string message = "",
+            string message = "İşlem Başarılı",
             int statusCode = 200,
             PaginationInfo? pagination = null,
             IReadOnlyDictionary<string, object>? metadata = null,
@@ -70,7 +70,7 @@
             => new(true, default, message, statusCode: statusCode);
 
         public static ServiceResult<T> Failure(
-            string message,
+            string message="Başarısız İşlem",
             IEnumerable<string>? errors = null,
             string? errorCode = null,
             int statusCode = 400,
@@ -79,8 +79,9 @@
             string? redirectUrl = null)
             => new(false, default, message, errors, errorCode, statusCode, correlationId, validationErrors, redirectUrl: redirectUrl);
 
-        public static ServiceResult<T> Failure(T data,
-          string message,
+        public static ServiceResult<T> Failure(
+          T data,
+          string message="Başarısız İşlem",
           IEnumerable<string>? errors = null,
           string? errorCode = null,
           int statusCode = 400,

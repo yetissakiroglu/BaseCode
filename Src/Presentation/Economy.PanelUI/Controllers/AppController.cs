@@ -1,6 +1,5 @@
 ﻿using Economy.Application.Dtos.AppDtos;
 using Economy.Application.Interfaces;
-using Economy.Panel.Application.Dtos.AppDtos;
 using Economy.Panel.Application.Interfaces;
 using Economy.Panel.UI.Models.AppViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Cryptography;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.Controllers
 {
@@ -81,7 +79,7 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult EditApp(int Id)
         {
             var result = _panelAppService.GetApp(Id, false);
-            var editDto = new AppEditDto
+            var editDto = new AppEditViewModel
             {
                 Id = result.Data.Id,
                 HotelName = result.Data.HotelName,
@@ -93,14 +91,29 @@ namespace Economy.Panel.UI.Controllers
                 Domain = result.Data.Domain,
                 AccessMode = result.Data.AccessMode,
                 Theme = result.Data.Theme,
+                ApiKey = result.Data.ApiKey
 
             };
             return View(editDto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditApp(AppEditDto modelDto)
+        public async Task<IActionResult> EditApp(AppEditViewModel viewModel)
         {
+            var modelDto = new AppCreateEditDto()
+            {
+                Id = viewModel.Id,
+                ApiKey = viewModel.ApiKey,
+                DatabaseName = viewModel.DatabaseName,
+                Domain = viewModel.Domain,
+                HotelName = viewModel.HotelName,
+                IsPassword = viewModel.IsPassword,
+                Password = viewModel.Password,
+                ServerName = viewModel.ServerName,
+                UserName = viewModel.UserName,
+                AccessMode = viewModel.AccessMode,
+                Theme = viewModel.Theme
+            };
             var editModel = await _panelAppService.EditApp(modelDto);
             AddMessage(editModel);
             return RedirectToAction(nameof(AppList));
@@ -121,10 +134,8 @@ namespace Economy.Panel.UI.Controllers
             var result = _panelAppService.DeleteApp(Id);
             if (result.IsSuccess)
             {
-                result.Message.RedirectUrl = "/App/" + nameof(AppList);
+                result.RedirectUrl = "/App/" + nameof(AppList);
             }
-            string json = JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true });
-
             return Json(result);
         }
 

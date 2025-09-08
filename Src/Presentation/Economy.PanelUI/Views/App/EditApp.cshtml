@@ -1,4 +1,6 @@
-﻿@model Economy.Panel.Application.Dtos.AppDtos.AppEditDto
+﻿@using Economy.Core.Enums
+@using Economy.Panel.UI.Models.AppViewModels
+@model AppEditViewModel
 
 @{
     ViewData["Title"] = "Uygulama Güncelleme";
@@ -7,29 +9,10 @@
 
 <main>
     <div class="container-fluid">
-        <!-- Breadcrumb start -->
-        <div class="row m-1">
-            <div class="col-12 ">
-                <h4 class="main-title">@ViewData["Title"]</h4>
-                <ul class="app-line-breadcrumbs mb-3">
-                    <li class="">
-                        <a class="f-s-14 f-w-500" href="#">
-                            <span>
-                                <i class="ph-duotone  ph-table f-s-16"></i> Anasayfa
-                            </span>
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a class="f-s-14 f-w-500" href="#"> @ViewData["Title"] </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        @await Html.PartialAsync("_breadcrumbs")
 
-        <!-- Breadcrumb end -->
         <!-- tables start  -->
         <div class="row">
-
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
@@ -38,83 +21,107 @@
                             </div>
                             <div>
                                 <div class="app-btn-list">
+                                    <a class="btn btn-primary" asp-action="CreateApp">Yeni Ekle</a>
                                     <a class="btn btn-info" asp-action="AppList">Tüm Kayıtlar</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
             <!-- Hoverable Table start -->
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5> Kayıtlar </h5>
                         <p>
-                            Aşağıda kayıtlı bilgiler bulunmaktadır.
+                            Aşağıda formu doldurarak bir uygulama oluşturabilirsiniz.
                         </p>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <form asp-action="EditApp" class="app-form rounded-control row g-3 needs-validation" novalidate="">
-                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                    <div class="form-group">
-                                        <label asp-for="Id" class="control-label"></label>
-                                        <input asp-for="Id" class="form-control" />
-                                        <span asp-validation-for="Id" class="text-danger"></span>
+                        <div class="row p-2">
+                            <div class="col-md-6 offset-md-3">
+
+                                <form asp-action="EditApp" method="post" class="needs-validation" novalidate>
+                                    <div class="row">
+                                        <div class="form-group col-md-6 mb-3">
+                                            <label asp-for="HotelName"></label>
+                                            <input asp-for="HotelName" class="form-control" />
+                                            <span asp-validation-for="HotelName" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-6 mb-3">
+                                            <label asp-for="ServerName"></label>
+                                            <input asp-for="ServerName" class="form-control" />
+                                            <span asp-validation-for="ServerName" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-6 mb-3">
+                                            <label asp-for="DatabaseName"></label>
+                                            <input asp-for="DatabaseName" class="form-control" />
+                                            <span asp-validation-for="DatabaseName" class="text-danger"></span>
+                                        </div>
+
+
+
+                                        <div class="form-group col-md-6 mb-3">
+                                            <div class="form-check mt-4">
+                                                <input asp-for="IsPassword" class="form-check-input" id="isPasswordCheck" />
+                                                <label asp-for="IsPassword" class="form-check-label"></label>
+                                            </div>
+                                        </div>
+                                        <div id="passwordContainer">
+                                            <div class="form-group col-md-6 mb-3">
+                                                <label asp-for="UserName"></label>
+                                                <input asp-for="UserName" class="form-control" />
+                                                <span asp-validation-for="UserName" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group col-md-6 mb-3">
+                                                <label asp-for="Password"></label>
+                                                <input asp-for="Password" type="password" class="form-control" />
+                                                <span asp-validation-for="Password" class="text-danger"></span>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group col-md-12 mb-3">
+                                            <label asp-for="Domain"></label>
+                                            <input asp-for="Domain" class="form-control" />
+                                            <span asp-validation-for="Domain" class="text-danger"></span>
+                                        </div>
+
+                                        <!-- Yeni eklenen alanlar -->
+                                        <div class="form-group col-md-6 mb-3">
+                                            <label asp-for="AccessMode"></label>
+                                            <select asp-for="AccessMode" class="form-select"
+                                                    asp-items="Html.GetEnumSelectList<AppAccessMode>()">
+                                            </select>
+                                            <span asp-validation-for="AccessMode" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-6 mb-3">
+                                            <label asp-for="Theme"></label>
+                                            <select asp-for="Theme" class="form-select"
+                                                    asp-items="Html.GetEnumSelectList<AppTheme>()">
+                                            </select>
+                                            <span asp-validation-for="Theme" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group col-md-12 mb-3">
+                                            <label asp-for="ApiKey"></label>
+                                            <input asp-for="ApiKey" class="form-control" readonly />
+                                            <span asp-validation-for="ApiKey" class="text-danger"></span>
+                                        </div>
+
                                     </div>
-                                    <div class="form-group">
-                                        <label asp-for="HotelName" class="control-label"></label>
-                                        <input asp-for="HotelName" class="form-control" />
-                                        <span asp-validation-for="HotelName" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="ServerName" class="control-label"></label>
-                                        <input asp-for="ServerName" class="form-control" />
-                                        <span asp-validation-for="ServerName" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="DatabaseName" class="control-label"></label>
-                                        <input asp-for="DatabaseName" class="form-control" />
-                                        <span asp-validation-for="DatabaseName" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="UserName" class="control-label"></label>
-                                        <input asp-for="UserName" class="form-control" />
-                                        <span asp-validation-for="UserName" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group form-check">
-                                        <label class="form-check-label">
-                                            <input class="form-check-input" asp-for="IsPassword" /> @Html.DisplayNameFor(model => model.IsPassword)
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Password" class="control-label"></label>
-                                        <input asp-for="Password" class="form-control" />
-                                        <span asp-validation-for="Password" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="Domain" class="control-label"></label>
-                                        <input asp-for="Domain" class="form-control" />
-                                        <span asp-validation-for="Domain" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="submit" value="Save" class="btn btn-primary" />
-                                    </div>
+
+                                    <button type="submit" class="btn btn-primary mt-3 float-end">Oluştur</button>
                                 </form>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-            <!-- Hoverable Table end -->
-
-
         </div>
-        <!-- tables-end  -->
     </div>
 </main>
 

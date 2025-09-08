@@ -1,10 +1,13 @@
 ﻿using Economy.Core.PagingModels;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Economy.Core.Interfaces
 {
     public interface IEntityRepository<T, TId> where T : class
     {
+        DbSet<T> DataSet { get; }   // ← eklendi
+
         T? GetForRead(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
         T? GetForEdit(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
         List<T> WhereForRead(Expression<Func<T, bool>>? filters = null, params Expression<Func<T, object>>[] includes);
