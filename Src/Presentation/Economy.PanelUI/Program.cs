@@ -278,6 +278,10 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.MapStaticAssets();
 
+// Area routing: önce Areas!
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 // MVC, Razor Sayfalarý ve Blazor bileþenleri için routing iþlemleri
 app.MapControllerRoute(
     name: "default",

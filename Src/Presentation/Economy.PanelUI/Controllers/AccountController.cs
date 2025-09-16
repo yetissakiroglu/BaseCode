@@ -3,6 +3,7 @@ using Economy.Core.Dtos;
 using Economy.Domain.Entites.Identities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace Economy.Panel.UI.Controllers
 {
@@ -29,6 +30,12 @@ namespace Economy.Panel.UI.Controllers
             var loginResult = await _panelAppAccountService.LoginAsync(model, returnUrl, HttpContext, ModelState);
             if (loginResult.IsSuccess)
             {
+                if (loginResult.Data.User.Roles.Contains("Super Admin"))
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
+
+                if (loginResult.Data.User.Roles.Contains("Tenant Admin"))
+                    return RedirectToAction("Index", "Home", new { area = "Tenant" });
+
                 return Redirect(loginResult.RedirectUrl);
             }
             return View(model);

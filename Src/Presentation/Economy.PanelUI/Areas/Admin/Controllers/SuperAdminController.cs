@@ -1,16 +1,14 @@
 ﻿using Economy.Application.Dtos.AppSuperAdminUserDtos;
-using Economy.Application.Dtos.LoginLogPageQueryDto;
 using Economy.Application.Interfaces;
-using Economy.Domain.Entites.Identities;
-using Economy.Panel.UI.Models.ProfileViewModels;
+using Economy.Panel.UI.Controllers;
 using Economy.Panel.UI.Models.SuperAdminViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Economy.Panel.UI.Controllers
+namespace Economy.Panel.UI.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     [Authorize]
     public class SuperAdminController : BaseController
     {

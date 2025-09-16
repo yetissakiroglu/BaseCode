@@ -62,6 +62,8 @@ namespace Economy.Persistence.Services
             {
                 await SafeAuditLogAsync(user, model.Email, true, "Login succeeded", httpContext, 200);
 
+                List<string> roles = (await _userManager.GetRolesAsync(user)).ToList();
+
                 return ServiceResult<LoginResultDto>.Success(
                     new LoginResultDto
                     {
@@ -70,7 +72,8 @@ namespace Economy.Persistence.Services
                         {
                             Id = user.Id,
                             Email = user.Email!,
-                            UserName = user.UserName!
+                            UserName = user.UserName!,
+                            Roles = roles
                         }
                     },
                     message: "Giriş başarılı.",
