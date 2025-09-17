@@ -1,0 +1,42 @@
+﻿@using Economy.Panel.UI.Models.AppViewModels
+@model AssignManagersViewModel
+
+@{
+    ViewData["Title"] = "Yönetici Ata";
+}
+
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <p>
+                            Aşağıda formu doldurarak bir uygulama oluşturabilirsiniz.
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row p-2">
+                            <div class="col-md-6 offset-md-3">
+                                <form asp-action="AssignManagers" method="post">
+                                    <input type="hidden" asp-for="AppId" />
+                                    <div class="form-group">
+                                        <label>Yöneticiler</label>
+                                        <select asp-for="SelectedManagerIds"
+                                                asp-items="@(new MultiSelectList(Model.AllManagers, "Id", "FullName", Model.SelectedManagerIds))"
+                                                class="form-control" multiple size="10">
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success mt-3">Kaydet</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+

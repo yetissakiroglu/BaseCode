@@ -1,0 +1,133 @@
+﻿@using Economy.Panel.UI.Models.DatabaseBackupPageViewModels
+@model DatabaseBackupPageViewModel
+@{
+    ViewData["Title"] = "Veritabanı Yedekleme";
+}
+<h3 class="mb-3">Veritabanı Yedekleme</h3>
+
+@if (!string.IsNullOrWhiteSpace(Model.LastResultMessage))
+{
+    <div class="alert @(Model.LastBackupFullPath != null ? "alert-success" : "alert-danger")">
+        @Model.LastResultMessage
+        @if (!string.IsNullOrWhiteSpace(Model.LastBackupFullPath))
+        {
+            <div class="mt-1">
+                <small><b>Dosya:</b> @Model.LastBackupFullPath</small>
+            </div>
+        }
+    </div>
+}
+
+
+<main>
+    <div class="container-fluid">
+        <!-- Başlık ve Breadcrumb -->
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- Yeni Ekle Butonu -->
+        <div class="row mb-3">
+            <div class="col-12 d-flex justify-content-end">
+                <form asp-action="Backup" asp-controller="Database" method="post" class="card card-body">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label asp-for="TargetFolder" class="form-label"></label>
+                            <input asp-for="TargetFolder" class="form-control" placeholder="C:\SqlBackups veya \\server\share" />
+                            <span asp-validation-for="TargetFolder" class="text-danger"></span>
+                            <div class="form-text">
+                                Yol SQL Server hizmeti tarafından erişilebilir olmalı.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="FileName" class="form-label"></label>
+                            <input asp-for="FileName" class="form-control" placeholder="(boş bırak: otomatik isim, .bak)" />
+                            <span asp-validation-for="FileName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="d-flex flex-wrap gap-4">
+                                <div class="form-check">
+                                    <input asp-for="CopyOnly" class="form-check-input" />
+                                    <label asp-for="CopyOnly" class="form-check-label"></label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Compression" class="form-check-input" />
+                                    <label asp-for="Compression" class="form-check-label"></label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Checksum" class="form-check-input" />
+                                    <label asp-for="Checksum" class="form-check-label"></label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Verify" class="form-check-input" />
+                                    <label asp-for="Verify" class="form-check-label"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">Yedek Al</button>
+                        <a href="/" class="btn btn-outline-secondary">İptal</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        <!-- Kullanıcı Tablosu -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Kayıtlar</h5>
+                        <p>Aşağıda kayıtlı bilgileri yer almaktadır.</p>
+                    </div>
+                    <div class="card-body">
+
+
+                        @if (Model.ExistingBackups?.Any() == true)
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-bottom-border table-hover align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Dosya</th>
+                                            <th>Boyut</th>
+                                            <th>Tarih</th>
+                                            <th class="text-end">İşlem</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var f in Model.ExistingBackups)
+                                        {
+                                            <tr>
+                                                <td>@f.Name</td>
+                                                <td>@(Math.Round(f.SizeBytes / 1024d / 1024d, 2)) MB</td>
+                                                <td>@f.LastWriteTime.ToString("yyyy-MM-dd HH:mm")</td>
+                                                <td class="text-end">
+                                                    <a class="btn btn-sm btn-outline-secondary"
+                                                       href="@Url.Action("Download", "Database", new { file = f.Name, dir = Model.TargetFolder })">
+                                                        İndir
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

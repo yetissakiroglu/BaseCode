@@ -1,0 +1,158 @@
+﻿@using Economy.Core.Enums
+@model IEnumerable<AppDto>
+
+@{
+    ViewData["Title"] = "Uygulamalar";
+}
+
+
+<main>
+    <div class="container-fluid">
+        <!-- Breadcrumb start -->
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- Breadcrumb end -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                                <div class="app-btn-list">
+                                    <a class="btn btn-primary" asp-action="CreateApp">Yeni Ekle</a>
+                                    <a class="btn btn-info" asp-action="AppList">Tüm Kayıtlar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Hoverable Table start -->
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5> Kayıtlar </h5>
+                        <p>
+                            Aşağıda kayıtlı bilgiler bulunmaktadır.
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row p-2">
+                            <div class="col-md-10 offset-md-1">
+                                <div class="row">
+                                    @foreach (var item in Model)
+                                    {
+                                        <div class="col-md-6 col-xl-4 project-card">
+                                            <div class="card hover-effect" id="card1">
+                                                <div class="card-header">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="h-40 w-40 d-flex-center b-r-50 overflow-hidden">
+                                                            <img alt="" class="img-fluid"
+                                                                 src="../assets/images/icons/logo1.png">
+                                                        </div>
+                                                        <a class="flex-grow-1 ps-2" href="@item.Domain"
+                                                           target="_blank">
+                                                            <h6 class="m-0 text-dark f-w-600"> @item.HotelName</h6>
+                                                            <div class="text-muted f-s-14 f-w-500">@item.Domain</div>
+                                                        </a>
+
+                                                        <div class="dropdown">
+                                                            <button aria-expanded="false" class="bg-none border-0"
+                                                                    data-bs-toggle="dropdown" type="button">
+                                                                <i class="ti ti-dots-vertical text-dark"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                                <li>
+                                                                    <a asp-action="EditApp" asp-route-id="@item.Id" class="dropdown-item">
+                                                                        <i class="ti ti-edit text-success"></i> Düzenle
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="dropdown-item" asp-action="DetailsApp" asp-route-id="@item.Id">
+                                                                        <i class="ti ti-trash text-danger"></i> İncele
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="dropdown-item delete-button" asp-action="Delete" asp-route-id="@item.Id">
+                                                                        <i class="ti ti-trash text-danger"></i> Sil
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="d-flex">
+                                                        <div>
+                                                            <h6 class="text-dark f-s-14">
+                                                                Yayın Durumu :    <span class="@(item.AccessMode switch
+                                                                                        {
+                                                                                            AppAccessMode.Blocked => "text-danger",   // kırmızı
+                                                                                            AppAccessMode.LocalOnly => "text-warning",  // sarı
+                                                                                            AppAccessMode.Public => "text-success",  // yeşil
+                                                                                            _ => "text-muted"
+                                                                                        })">
+                                                                @item.AccessMode
+                                                            </span>
+                                                        </h6>
+                                                        <h6 class="text-dark f-s-14">
+                                                            Tema : <span class="text-danger">@item.Theme</span>
+                                                        </h6>
+                                                    </div>
+                                                    <div class="flex-grow-1 text-end">
+                                                        <p class="f-w-500 text-secondary">Yönetici Kullanıcı </p>
+                                                        <h6 class="f-w-600">@item.AppManager?.UserName</h6>
+                                                    </div>
+                                                </div>
+
+                                                    <div class="text-end mb-2">
+                                                        <button id="appTestEt" data-appId="@item.Id" class="btn btn-danger badge text-light-primary">Test Et</button>
+                                                        <a asp-action="SelectForManagerAssignNew" asp-route-selectedAppId="@item.Id" class="btn btn-danger badge text-light-primary">
+                                                            <i class="ti ti-edit text-success"></i> Yönetici ata
+                                                        </a>
+                                                        <a href="@item.Domain" target="_blank" class="btn btn-danger badge text-light-primary">
+                                                            <i class="ti ti-world text-success"></i>
+                                                        </a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                                                        }
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- tables-end  -->
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(document).on("click", "#appTestEt", function () {
+                let appId = $(this).data("appid");
+                let actionURL = "/SystemApps/TestConnection"; // Controller Action URL
+                let actionData = { id: appId };
+                postDataResponse(
+                    actionURL,
+                    actionData,
+                    function (response) {
+                        console.log("Başarılı:", response);
+                    },
+                    function (response) {
+                        console.error("Hata:", response);
+                    }
+                );
+            });
+        });
+    </script>
+}

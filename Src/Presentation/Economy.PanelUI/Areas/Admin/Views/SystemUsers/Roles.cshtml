@@ -1,0 +1,73 @@
+﻿@using Economy.Domain.Entites.Identities
+@model IEnumerable<RoleViewModel>
+
+@{
+    ViewData["Title"] = "Role Listesi";
+}
+
+<main>
+    <div class="container-fluid">
+        <!-- Başlık ve Breadcrumb -->
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- Yeni Ekle Butonu -->
+        <div class="row mb-3">
+            <div class="col-12 d-flex justify-content-end">
+@*                 <a class="btn btn-primary" asp-action="CreateRole">Yeni Ekle</a>
+ *@            </div>
+        </div>
+        <!-- Kullanıcı Tablosu -->
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Kayıtlar</h5>
+                        <p>Aşağıda kayıtlı kullanıcı role bilgileri yer almaktadır.</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bottom-border table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%;">Id</th>
+                                        <th style="width: 30%;">Rol Adı</th>
+                                        <th style="width: 30%;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        foreach (var r in Model)
+                                        {
+                                            <tr>
+                                                <td class="text-muted">@r.RoleId</td>
+                                                <td>@r.Name</td>
+                                                <td class="text-end">
+                                                @*     <a class="btn btn-sm btn-outline-secondary" href="/SuperAdmin/EditRole/@r.RoleId">Düzenle</a>
+                                                    <form asp-action="DeleteRole" asp-controller="SuperAdmin" method="post" class="d-inline">
+                                                        <input type="hidden" name="id" value="@r.RoleId" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                                onclick="return confirm('Bu rolü silmek istediğinize emin misiniz?');">
+                                                            Sil
+                                                        </button>
+                                                        @Html.AntiForgeryToken()
+                                                    </form> *@
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td colspan="3" class="text-center text-muted">Kayıt bulunamadı.</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
