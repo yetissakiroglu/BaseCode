@@ -1,5 +1,6 @@
 ﻿using Economy.Application.Dtos.DashboardSummaryDtos;
 using Economy.Application.Interfaces;
+using Economy.Panel.UI.Controllers;
 using Economy.PanelUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace Economy.Panel.UI.Areas.Admin.Controllers
     [Area("Admin")]
     [Authorize]
     //[Route("[area]/[controller]")]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IPanelDashboardService _svc;

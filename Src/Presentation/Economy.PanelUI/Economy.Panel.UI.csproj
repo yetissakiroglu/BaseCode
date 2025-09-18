@@ -24,4 +24,9 @@
 		<ProjectReference Include="..\..\Infrastructure\Economy.Persistence\Economy.Persistence.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Areas\Admin\Models\" />
+	  <Folder Include="Areas\Tenant\Models\" />
+	</ItemGroup>
+
 </Project>

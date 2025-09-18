@@ -1,4 +1,5 @@
 ﻿using Economy.Application.Interfaces;
+using Economy.Panel.UI.Controllers;
 using Economy.Panel.UI.Models.DatabaseBackupPageViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ namespace Economy.Panel.UI.Areas.Admin.Controllers
     [Area("Admin")]
     [Authorize]
     [Route("[area]/[controller]")]
-    public class SystemDatabasesController : Controller
+    public class SystemDatabasesController : BaseController
     {
         private readonly IDatabaseBackupService _backup;
 

@@ -2,6 +2,7 @@
 using Economy.Application.Dtos.AppSecuritySettingDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Providers;
+using Economy.Panel.UI.Controllers;
 using Economy.Panel.UI.Models.GeneralSettingsPageViewModels;
 using Economy.Panel.UI.Models.SecuritySettingsPageViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +14,7 @@ namespace Economy.Panel.UI.Areas.Admin.Controllers
     [Area("Admin")]
     [Authorize]
     //[Route("[area]/[controller]")]
-    public class SystemSettingsController : Controller
+    public class SystemSettingsController : BaseController
     {
         private readonly IPanelAppGeneralSettingService _service;
         private readonly IWebHostEnvironment _env;

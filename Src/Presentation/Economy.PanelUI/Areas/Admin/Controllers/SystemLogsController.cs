@@ -2,6 +2,7 @@
 using Economy.Application.Dtos.AppAuditLogDtos;
 using Economy.Application.Dtos.AppErrorLogDtos;
 using Economy.Application.Interfaces;
+using Economy.Panel.UI.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,7 @@ namespace Economy.Panel.UI.Areas.Admin.Controllers
     [Area("Admin")]
     [Authorize]
     //[Route("[area]/[controller]")]
-    public class SystemLogsController : Controller
+    public class SystemLogsController : BaseController
     {
         private readonly IPanelAuditLogService _audit;
         private readonly IPanelErrorLogService _errorService;
