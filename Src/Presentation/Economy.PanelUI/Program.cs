@@ -40,6 +40,7 @@ using Economy.Persistence.Services;
 using Economy.Persistence.UnitOfWorks;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -257,6 +258,12 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = fileProvider,
     RequestPath = "/Files"
+});
+
+//todo bak
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
 
 // Uygulama baþlatýldýðýnda migrasyonlarý çalýþtýrmak için örneðin þöyle bir iþlev ekleyebilirsiniz:
