@@ -37,6 +37,7 @@ namespace Economy.Domain.Entites.AppEntities
 
         public string? ApiKey { get; set; }   // yeni alan
 
+        //Todo Düzeltilecek
 
         [NotMapped]
         public string ConnectionString

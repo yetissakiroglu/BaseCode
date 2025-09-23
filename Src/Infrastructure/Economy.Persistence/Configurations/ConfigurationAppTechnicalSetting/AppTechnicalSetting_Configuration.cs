@@ -18,9 +18,6 @@ namespace Economy.Persistence.Configurations.ConfigurationAppTechnicalSetting
             entity.Property(x => x.StaticFileUrl)
                 .HasMaxLength(500);
 
-            entity.Property(x => x.AppVersion)
-                .HasMaxLength(50);
-
             entity.Property(x => x.MaintenanceMessage)
                 .HasMaxLength(1000);
 
@@ -38,9 +35,7 @@ namespace Economy.Persistence.Configurations.ConfigurationAppTechnicalSetting
 
             entity.Property(x => x.FacebookPixelCode)
                 .HasMaxLength(1000);
-
-            entity.Property(x => x.PreloaderHtml)
-                .HasColumnType("nvarchar(max)");
+                    
 
             // Boolean alanlar (IsSiteLive, EnableCache vs.) için özel yapılandırmaya gerek yok
 
@@ -54,20 +49,14 @@ namespace Economy.Persistence.Configurations.ConfigurationAppTechnicalSetting
                 EnableCDN = false,
                 StaticFileUrl = "",
                 EnableDebugMode = false,
-                AppVersion = "v1.0.0",
                 MaintenanceMessage = "Sitemiz şu anda bakım modundadır. Lütfen daha sonra tekrar deneyiniz.",
                 EnableCache = true,
                 CustomCss = "",
                 CustomJs = "",
                 EnableMaintenanceIpWhitelist = false,
                 AllowedIpAddresses = null,
-                EnableCustomHeaderScripts = false,
-                EnableCustomFooterScripts = false,
                 GoogleAnalyticsCode = null,
                 FacebookPixelCode = null,
-                EnableGlobalScriptInjection = false,
-                EnablePreloader = false,
-                PreloaderHtml = null,
                 IsDeleted = false
             });
         }

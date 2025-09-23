@@ -5,6 +5,13 @@ namespace Economy.Core.Extensions
 {
     public static class StringExtensions
     {
+        private static string? SanitizeHtml(string? html)
+        {
+            if (string.IsNullOrWhiteSpace(html)) return html;
+            return html.Replace("<script", "", StringComparison.OrdinalIgnoreCase)
+                       .Replace("</script>", "", StringComparison.OrdinalIgnoreCase);
+        }
+
         public static string ToUrlFriendly(this string text)
         {
             return text

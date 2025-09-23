@@ -2,8 +2,10 @@ using Economy.Application.Dtos.AppDtos;
 using Economy.Application.Dtos.AppGeneralSettingDtos;
 using Economy.Application.Dtos.AppSecuritySettingDtos;
 using Economy.Application.Dtos.AppSuperAdminUserDtos;
+using Economy.Application.Dtos.AppTechnicalSettingDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Providers;
+using Economy.Application.Validations;
 using Economy.Application.Validations.AppSecuritySettingValidator;
 using Economy.Application.Validations.AppSuperAdminValidator;
 using Economy.Application.Validations.AppUserValidator;
@@ -172,7 +174,7 @@ builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>();
 builder.Services.AddScoped<IAuditLogWriter, AuditLogWriter>();
 builder.Services.AddScoped<IPanelDashboardService, PanelDashboardService>();
 builder.Services.AddScoped<IPanelLoginLogService, PanelLoginLogService>();
-
+builder.Services.AddScoped<IPanelAppTechnicalSettingService, PanelAppTechnicalSettingService>(); 
 
 builder.Services.AddScoped<IValidator<AppUserCreateDto>, AppUserCreateDtoValidator>();
 
@@ -181,6 +183,7 @@ builder.Services.AddScoped<IValidator<AppGeneralSettingEditDto>, AppGeneralSetti
 
 builder.Services.AddScoped<IValidator<AppSecuritySettingCreateDto>, AppSecuritySettingCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<AppSecuritySettingEditDto>, AppSecuritySettingEditDtoValidator>();
+builder.Services.AddScoped<IValidator<AppTechnicalSettingCreateEditDto>, AppTechnicalSettingCreateEditDtoValidator>();
 
 
 
@@ -285,7 +288,7 @@ app.MapControllerRoute(
 // MVC, Razor Sayfalarý ve Blazor bileþenleri için routing iþlemleri
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=tenant/Home}/{action=Index}/{id?}");
 
 // Authorization ve Authentication iþlemleri
 app.UseAuthentication();

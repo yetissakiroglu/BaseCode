@@ -19,41 +19,6 @@ public class HomeController : Controller
         _svc = svc;
     }
 
-    public async Task<IActionResult> Index()
-    {
-        var res = await _svc.GetSummaryAsync();
-        if (!res.IsSuccess || res.Data == null)
-        {
-            TempData["Error"] = res.Message ?? "Dashboard verileri alýnamadý.";
-            return View(new DashboardSummaryDto());
-        }
-        ViewData["Title"] = "Dashboard";
-        return View(res.Data);
-
-        //var user = new AppUser
-        //{
-        //    Id = 1,
-        //    UserName = "Hotel1",
-        //    NormalizedUserName = "Hotel1",
-        //    Email = "Hotel1@example.com",
-        //    NormalizedEmail = "HOTEL1@EXAMPLE.COM",
-        //    EmailConfirmed = true,
-        //    FirstName = "Hotel1",
-        //    LastName = "Yöneticisi",
-        //    IsDefaultAdmin = true,
-        //    SecurityStamp = "11111111-aaaa-bbbb-cccc-222222222222",
-        //    ConcurrencyStamp = "33333333-dddd-eeee-ffff-444444444444",
-        //    PasswordHash = "AQAAAAIAAYagAAAAENTd6wlppRLil0VbnPSjSF66HtD4Ckjs1Uraqpgi3/41X9LTDtE+ANyVCJQLfpjVyw==",
-        //    TenantId = 1,
-        //    //Bu örnek hash deðeri "Admin123*" parolasý için geçerlidir.
-        //};
-
-        //var password = "Admin123*"; // Kullanýcýnýn girdiði þifre
-        //var hasher = new PasswordHasher<AppUser>();
-        //var result = hasher.VerifyHashedPassword(user, user.PasswordHash, password);
-
-        return View();
-    }
     public IActionResult Editor()
     {
         return View();
