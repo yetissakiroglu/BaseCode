@@ -17,11 +17,12 @@ namespace Economy.Persistence.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IValidator<AppTechnicalSettingCreateEditDto> _validator;
-        public PanelAppTechnicalSettingService(IUnitOfWork unitOfWork, IFileImageHelperService fileImageHelperService, IValidator<AppTechnicalSettingCreateEditDto> validator)
+        public PanelAppTechnicalSettingService(IUnitOfWork unitOfWork, IFileImageHelperService fileImageHelperService, IValidator<AppTechnicalSettingCreateEditDto> validator, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _repo = unitOfWork.HotelEntityRepository<AppTechnicalSetting>();
             _validator = validator;
+            _mapper = mapper;
         }
 
 

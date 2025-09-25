@@ -1,0 +1,77 @@
+﻿@using Economy.Application.Dtos.AppMenuDtos
+@using Economy.Core.Enums
+@model MenuNodeDto
+@{
+    var title = Model.Translations?.FirstOrDefault()?.Title ?? $"#{Model.Id}";
+}
+
+<li class="list-group-item mb-2" data-node-id="@Model.Id">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+            <strong>@title</strong>
+            <span class="badge bg-light text-dark">#@Model.Id</span>
+            @if (Model.PageId.HasValue && !Model.IsExternal)
+            {
+                <span class="badge bg-info text-dark">PageId: @Model.PageId</span>
+            }
+            @if (Model.IsExternal)
+            {
+                <span class="badge bg-secondary">External</span>
+            }
+            @if (!Model.IsActive)
+            {
+                <span class="badge bg-warning text-dark">Pasif</span>
+            }
+            @if (Model.OpenTarget == MenuOpenTarget.NewTab)
+            {
+                <span class="badge bg-dark">_blank</span>
+            }
+        </div>
+        <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-@Model.Id">Düzenle</button>
+            <form asp-action="Delete" method="post" class="ms-1" onsubmit="return confirm('Silinsin mi? Alt menüleri önce silmelisiniz.');">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="location" value="@Model.Location" />
+                <button class="btn btn-outline-danger" type="submit">Sil</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="edit-@Model.Id" class="collapse mt-3">
+        <form asp-action="Save" method="post" class="border rounded p-3">
+            @Html.AntiForgeryToken()
+            @* Mevcut menüyü düzenlemek için DTO üretelim *@
+            @{
+                var dto = new MenuItemDto(
+                Id: Model.Id,
+                Location: Model.Location,
+                PageId: Model.PageId,
+                OpenTarget: Model.OpenTarget,
+                SortOrder: Model.SortOrder,
+                IsActive: Model.IsActive,
+                IsExternal: Model.IsExternal,
+                ParentId: Model.ParentId,
+                Translations: (Model.Translations ?? new List<MenuNodeTranslationDto>())
+                .OrderBy(t => t.AppLanguageId)
+                .Select(t => new MenuTranslationDto(t.AppLanguageId, t.Title, t.Url))
+                .ToList()
+                );
+            }
+            @await Html.PartialAsync("_Form", dto)
+            <div class="mt-2">
+                <button class="btn btn-success btn-sm" type="submit">Güncelle</button>
+            </div>
+        </form>
+    </div>
+
+    <ul class="list-group list-group-flush mt-2 menu-level">
+        @if (Model.Children?.Any() == true)
+        {
+            foreach (var c in Model.Children.OrderBy(x => x.SortOrder))
+            {
+                @Html.Partial("_MenuNode", c)
+            }
+        }
+    </ul>
+</li>

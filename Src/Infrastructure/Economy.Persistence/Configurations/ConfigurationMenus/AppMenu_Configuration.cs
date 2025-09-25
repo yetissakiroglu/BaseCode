@@ -13,11 +13,10 @@ namespace Economy.Persistence.Configurations.ConfigurationMenuItems
             builder.HasKey(x => x.Id);
 
             // 🧭 Self-referencing: ParentMenu - SubMenus
-            builder
-                .HasOne(x => x.ParentMenu)
-                .WithMany(x => x.SubMenus)
-                .HasForeignKey(x => x.ParentMenuId)
-                .OnDelete(DeleteBehavior.Restrict); // Sonsuz döngüleri önlemek için
+            builder.HasOne(x => x.Parent)
+         .WithMany(x => x.Children)
+         .HasForeignKey(x => x.ParentId)
+         .OnDelete(DeleteBehavior.Restrict);
 
             // 🌐 Translations: One-to-Many
             builder
@@ -33,15 +32,6 @@ namespace Economy.Persistence.Configurations.ConfigurationMenuItems
 
             // 📦 Tablo Adı (isteğe bağlı)
             builder.ToTable("AppMenus");
-
-            builder.HasData(
-                new AppMenu { Id = 1, IsExternal = false, ParentMenuId = null },
-                new AppMenu { Id = 2, IsExternal = false, ParentMenuId = null },
-                new AppMenu { Id = 3, IsExternal = false, ParentMenuId = null },
-                new AppMenu { Id = 4, IsExternal = false, ParentMenuId = null },
-                new AppMenu { Id = 5, IsExternal = false, ParentMenuId = null },
-                new AppMenu { Id = 6, IsExternal = false, ParentMenuId = null }
-            );
 
 
         }

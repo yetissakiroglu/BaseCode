@@ -1,7 +1,9 @@
 ﻿using Economy.Base.Persistence.Configurations.ConfigurationAppCategory;
 using Economy.Base.Persistence.Configurations.ConfigurationAppSettings;
+using Economy.Domain.Entites.EntityAppMenus;
 using Economy.Domain.Entites.EntityAppSettings;
 using Economy.Domain.Entites.EntityCategories;
+using Economy.Domain.Entites.EntityMenuItems;
 using Economy.Domain.Entites.EntitySlides;
 using Economy.Persistence.Configurations.ConfigurationAppContent;
 using Economy.Persistence.Configurations.ConfigurationAppLanguage;
@@ -32,6 +34,9 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppCategory> AppCategorys { get; set; }
         public DbSet<Economy.Domain.Entites.EntityAppContents.AppContents.AppContent> AppContentss { get; set; }
 
+
+        public DbSet<AppMenu> AppMenus { get; set; }
+        public DbSet<AppMenuTranslation> AppMenuTranslations { get; set; }
 
         // diğer otel tabloları...
 

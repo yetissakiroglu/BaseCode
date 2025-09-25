@@ -1,11 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
+using Economy.Application.Dtos.AppTechnicalSettingDtos;
+using Economy.Domain.Entites.EntityAppSettings;
+using Economy.Panel.Application.Dtos.AppSettingDtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AutoMapper;
-using Economy.Application.Dtos.AppTechnicalSettingDtos;
-using Economy.Domain.Entites.EntityAppSettings;
 
 namespace Economy.Application.Mapping
 {
@@ -16,6 +17,9 @@ namespace Economy.Application.Mapping
         {
             CreateMap<AppTechnicalSetting, AppTechnicalSettingDto>().ReverseMap();
             CreateMap<AppTechnicalSetting, AppTechnicalSettingCreateEditDto>().ReverseMap();
+            CreateMap<AppTechnicalSettingDto, AppTechnicalSettingCreateEditDto>().ReverseMap();
+
+
         }
     }
 }

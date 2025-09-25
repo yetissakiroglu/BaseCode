@@ -1,0 +1,107 @@
+﻿@model MenuItemDto
+@using Economy.Application.Dtos.AppMenuDtos
+@using Economy.Panel.Application.Dtos.AppLanguageDtos
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    var parentList = ViewBag.ParentList as List<SelectListItem> ?? new();
+    var languages = ViewBag.Languages as List<AppLanguageDto> ?? new();
+}
+
+<input type="hidden" asp-for="Id" />
+<input type="hidden" asp-for="Location" />
+
+<div class="row g-3">
+    <div class="col-md-3">
+        <label class="form-label">İçerik Sayfa ID (PageId)</label>
+        <input asp-for="PageId" class="form-control" id="PageIdInput" placeholder="örn. 123" />
+        <span asp-validation-for="PageId" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Açılış</label>
+        <select asp-for="OpenTarget" class="form-select">
+            <option value="0">Aynı Sekme</option>
+            <option value="1">Yeni Sekme</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Sıra</label>
+        <input asp-for="SortOrder" type="number" min="0" class="form-control" />
+    </div>
+
+    <div class="col-md-3 d-flex align-items-end">
+        <div class="form-check">
+            <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+            <label class="form-check-label">Aktif</label>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Üst Menü (ParentId)</label>
+        <select asp-for="ParentId" class="form-select">
+            <option value="">(Yok)</option>
+            @foreach (var it in parentList)
+            {
+                <option value="@it.Value">@it.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-6 d-flex align-items-end">
+        <div class="form-check">
+            <input asp-for="IsExternal" class="form-check-input" type="checkbox" id="IsExternalChk" />
+            <label class="form-check-label">Dış Link (IsExternal)</label>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="mb-2">
+    <strong>Çeviriler</strong> <small class="text-muted">(Her dil için Başlık ve Url)</small>
+</div>
+
+<div class="row g-3">
+    @for (int i = 0; i < Model.Translations.Count; i++)
+    {
+        var lang = languages.FirstOrDefault(l => l.Id == Model.Translations[i].AppLanguageId);
+        <div class="col-12 border rounded p-3">
+            <input type="hidden" asp-for="Translations[@i].AppLanguageId" />
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Dil</label>
+                    <input class="form-control" value="@(lang?.Name ?? ("Lang#" + Model.Translations[i].AppLanguageId))" readonly />
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Başlık</label>
+                    <input asp-for="Translations[@i].Title" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Url (SEO / Dış link)</label>
+                    <input asp-for="Translations[@i].Url" class="form-control tr-url" placeholder="/hakkimizda veya https://..." />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // IsExternal(flag) ↔ PageId XOR:
+        (function(){
+          const chk = document.getElementById('IsExternalChk');
+          const page = document.getElementById('PageIdInput');
+          function sync(){
+            if(chk.checked){
+              page.value = "";
+              page.disabled = true;
+            } else {
+              page.disabled = false;
+            }
+          }
+          chk?.addEventListener('change', sync);
+          sync();
+        })();
+    </script>
+}

@@ -11,20 +11,20 @@ namespace Economy.Domain.Entites.EntityAppSettings
         public bool ForceSSL { get; set; }
 
         // "www.otelsitem.com" gibi; protokol içermez (öneri)
-        public string DomainName { get; set; }
+        public string? DomainName { get; set; }
 
         public bool EnableCDN { get; set; }
-        public string StaticFileUrl { get; set; }
+        public string? StaticFileUrl { get; set; }
 
         public bool EnableDebugMode { get; set; }
 
-        public string MaintenanceMessage { get; set; }
+        public string? MaintenanceMessage { get; set; }
 
         public bool EnableCache { get; set; }  // Cache altyapısı kullanmasan bile feature flag olarak kalabilir
 
         // Stil & Script alanları (sık kullanılan)
-        public string CustomCss { get; set; }    // <head> içine <style> ile basılacak
-        public string CustomJs { get; set; }     // </body> öncesi <script> ile basılacak
+        public string? CustomCss { get; set; }    // <head> içine <style> ile basılacak
+        public string? CustomJs { get; set; }     // </body> öncesi <script> ile basılacak
 
         // Bakım/Whitelist
         public bool EnableMaintenanceIpWhitelist { get; set; }

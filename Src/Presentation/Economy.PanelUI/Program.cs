@@ -1,5 +1,6 @@
 using Economy.Application.Dtos.AppDtos;
 using Economy.Application.Dtos.AppGeneralSettingDtos;
+using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Dtos.AppSecuritySettingDtos;
 using Economy.Application.Dtos.AppSuperAdminUserDtos;
 using Economy.Application.Dtos.AppTechnicalSettingDtos;
@@ -171,11 +172,21 @@ builder.Services.AddScoped<IPanelSuperAdminService, PanelSuperAdminService>(); /
 builder.Services.AddScoped<IValidator<AppSuperAdminUserCreateDto>, SuperAdminCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<AppSuperAdminUserEditDto>, SuperAdminEditDtoValidator>();
 
+builder.Services.AddScoped<IPanelAppMenuService, PanelAppMenuService>();
+
+
 builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IAuditLogWriter, AuditLogWriter>();
 builder.Services.AddScoped<IPanelDashboardService, PanelDashboardService>();
 builder.Services.AddScoped<IPanelLoginLogService, PanelLoginLogService>();
-builder.Services.AddScoped<IPanelAppTechnicalSettingService, PanelAppTechnicalSettingService>(); 
+builder.Services.AddScoped<IPanelAppTechnicalSettingService, PanelAppTechnicalSettingService>();
+
+
+
+
+builder.Services.AddScoped<IValidator<MenuItemDto>, MenuItemValidator>();
+
+
 
 builder.Services.AddScoped<IValidator<AppUserCreateDto>, AppUserCreateDtoValidator>();
 
