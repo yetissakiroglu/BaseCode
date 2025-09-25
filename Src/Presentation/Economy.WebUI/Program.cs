@@ -27,7 +27,8 @@ builder.Services.AddSingleton<IContentService, InMemoryContentService>();
 builder.Services.AddSingleton<ICommentsService, InMemoryCommentsService>();
 builder.Services.AddSingleton<IReservationService, InMemoryReservationService>();
 builder.Services.AddSingleton<IRecaptchaService, InMemoryRecaptchaService>();
-
+builder.Services.AddSingleton<IMenuService, InMemoryMenuService>();
+builder.Services.AddSingleton<IPageService, InMemoryPageService>();
 // Blog / SSS / Galeri (eklediysen)
 builder.Services.AddSingleton<IBlogService, InMemoryBlogService>();
 builder.Services.AddSingleton<IFaqService, InMemoryFaqService>();
