@@ -1,0 +1,13 @@
+﻿
+@model List<Comment>
+<div class="mb-2"><strong>Yorumlar (@Model.Count)</strong></div>
+@foreach (var c in Model)
+{
+    <div class="border rounded p-2 mb-2">
+        <div class="small text-muted d-flex justify-content-between">
+@*             <span>@c.Name</span><span>@new string('★', c.Rating)</span>
+ *@        </div>
+        <div>@c.Text</div>
+        <div class="small text-muted">@c.CreatedAt.ToLocalTime()</div>
+    </div>
+}

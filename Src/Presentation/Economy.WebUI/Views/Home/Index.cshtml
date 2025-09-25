@@ -1,8 +1,14 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@inject Microsoft.Extensions.Localization.IStringLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Views.Home.Title"]; var sliders = ViewBag.Sliders as List<SliderItem> ?? new();
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div id="hero" class="mb-4">
+    @foreach (var s in sliders)
+    {
+        <div class="mb-3 p-4 rounded bg-light">
+            <h2>@s.Title</h2><p class="text-muted">@s.Subtitle</p>
+            <img src="@s.ImageUrl" class="img-fluid rounded" alt="@s.Title" />
+        </div>
+    }
 </div>
+<a class="btn btn-primary" href="@Url.Action("Index", "Rooms")">@Localizer["Odalarımız"]</a>

@@ -1,0 +1,22 @@
+﻿@model List<Room>
+@inject Microsoft.Extensions.Localization.IStringLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Views.Rooms.Title"];
+}
+<h1 class="mb-3">@ViewData["Title"]</h1>
+<div class="row g-3">
+    @foreach (var r in Model)
+    {
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="@r.CoverImage" class="card-img-top" />
+                <div class="card-body">
+                    <h5>@r.Name</h5>
+                    <div class="text-muted">@Localizer["Gecelik"] @r.PricePerNight.ToString("C0")</div>
+                    <p>@r.ShortDesc</p>
+                    <a class="btn btn-primary" href="@Url.Action("Detail", "Rooms", new { slug = r.Slug, culture = System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName })">@Localizer["Detay"]</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

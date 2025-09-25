@@ -1,0 +1,38 @@
+﻿@model List<GalleryItem>
+@{
+    ViewData["Title"] = "Galeri";
+    var cats = ViewBag.Categories as List<string> ?? new();
+    var current = ViewBag.Category as string;
+    var page = (int)(ViewBag.Page ?? 1);
+    var total = (int)(ViewBag.Total ?? 0);
+}
+<h1 class="mb-3">Galeri</h1>
+
+<div class="mb-3">
+    <a class="btn btn-sm @(string.IsNullOrEmpty(current) ? "btn-primary" : "btn-outline-primary")" asp-action="Index">Tümü</a>
+    @foreach (var c in cats)
+    {
+        <a class="btn btn-sm @(c == current ? "btn-primary" : "btn-outline-primary")" asp-action="Index" asp-route-category="@c">@c</a>
+    }
+</div>
+
+<div class="row g-3">
+    @foreach (var g in Model)
+    {
+        <div class="col-md-4">
+            <a href="@g.ImageUrl" class="glightbox" data-gallery="galeri" data-title="@g.Title">
+                <img src="@g.ImageUrl" class="img-fluid rounded" alt="@g.Title" />
+            </a>
+        </div>
+    }
+</div>
+
+@if (total > Model.Count)
+{
+    <a class="btn btn-outline-primary mt-3" asp-route-category="@current" asp-route-page="@(page + 1)">Daha fazla</a>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script>document.addEventListener('DOMContentLoaded',()=>{ if(document.querySelector('.glightbox')) GLightbox({ selector: '.glightbox' }); });</script>
+}

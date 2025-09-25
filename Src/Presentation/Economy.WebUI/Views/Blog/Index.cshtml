@@ -1,0 +1,36 @@
+﻿@model List<BlogPost>
+@{
+    ViewData["Title"] = "Blog";
+    var tag = ViewBag.Tag as string;
+    var page = (int)(ViewBag.Page ?? 1);
+    var total = (int)(ViewBag.Total ?? 0);
+}
+<h1 class="mb-3">Blog</h1>
+
+<form class="mb-3" method="get">
+    <div class="input-group">
+        <span class="input-group-text">Tag</span>
+        <input name="tag" value="@tag" class="form-control" />
+        <button class="btn btn-outline-secondary" type="submit">Filtre</button>
+    </div>
+</form>
+
+@foreach (var p in Model)
+{
+    <div class="border rounded p-3 mb-3">
+        <h3><a asp-action="Detail" asp-route-slug="@p.Slug">@p.Title</a></h3>
+        <div class="text-muted small">@p.UpdatedAt.ToLocalTime()</div>
+        <p>@p.Excerpt</p>
+        <div>
+            @foreach (var t in p.Tags)
+            {
+                <a class="badge bg-secondary text-decoration-none" asp-route-tag="@t" asp-action="Index">@t</a>
+            }
+        </div>
+    </div>
+}
+
+@if (total > Model.Count)
+{
+    <a class="btn btn-outline-primary" asp-route-tag="@tag" asp-route-page="@(page + 1)">Daha fazla</a>
+}
