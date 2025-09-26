@@ -110,6 +110,12 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor
 });
 
+
+
+
+
+// Teknik ayarlara göre compression vs (demo: compression zaten aktif)
+app.UseResponseCompression();
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
@@ -124,14 +130,8 @@ app.UseStaticFiles(new StaticFileOptions
     }
 });
 
-
-
-// Teknik ayarlara göre compression vs (demo: compression zaten aktif)
-app.UseResponseCompression();
-
-
 // ⬇️ 1) Statikler ÖNCE
-app.UseStaticFiles();
+//app.UseStaticFiles();
 
 // SEO sırası (statik dosyadan önce normalize/maintenance/lang)
 //app.UseMiddleware<SecurityHeadersMiddleware>();

@@ -18,6 +18,6 @@
 @foreach (var l in langs)
 {
         var t =l.Code == current ? "selected" : null;
-        <option value="@BuildUrl(l.Code)" t>@l.Name</option>
+        <option value="@BuildUrl(l.Code)" selected="@t">@l.Name</option>
 }
 </select>

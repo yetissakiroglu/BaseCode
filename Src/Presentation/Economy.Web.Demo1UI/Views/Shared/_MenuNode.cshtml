@@ -1,0 +1,39 @@
+﻿@model MyHotelSite.Services.MenuNode
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    var hasChildren = Model.Children != null && Model.Children.Any();
+    var level = (int?)ViewData["Level"] ?? 0;
+    var liClass = "single-list" + (Model.BranchSelected ? " active-branch" : "");
+    var aClass = "single" + (Model.Selected ? " link-active" : "");
+}
+
+<li class="@liClass">
+    @if (hasChildren)
+    {
+        <a href="javascript:void(0)" class="@aClass">
+            @Model.Title
+            @if (level == 0)
+            {
+                <i class="ri-arrow-down-s-line"></i>
+            }
+            else
+            {
+
+                <i class="ri-arrow-right-s-line"></i>
+            }
+        </a>
+        <ul class="submenu">
+            @foreach (var c in Model.Children)
+            {
+                @await Html.PartialAsync("_MenuNode", c, new ViewDataDictionary(ViewData) { ["Level"] = level + 1 })
+            }
+        </ul>
+    }
+    else
+    {
+        <a href="@Model.Url"
+           class="@aClass"
+           @(Model.IsExternal ? "target=\"_blank\" rel=\"noopener\"" : null)>@Model.Title</a>
+    }
+</li>

@@ -68,7 +68,7 @@ public class FakeMenuRepository : IMenuRepository
     {
         var L = (string tr, string en, string de) => lang switch { "tr" => tr, "en" => en, "de" => de, _ => tr };
         var items = new List<MenuItem> {
-            new() { Id=1, AppId=appId, Lang=lang, Title=L("Ana Sayfa","Home","Startseite"), PageId=101, Order=1 },
+            new() { Id=1, AppId=appId, Lang=lang, Title=L("Ana Sayfa","Home","Startseite"),IsExternal=true, ExternalUrl="tr", Order=1 },
             new() { Id=2, AppId=appId, Lang=lang, Title=L("Odalar","Rooms","Zimmer"), PageId=201, Order=2 },
             new() { Id=3, AppId=appId, Lang=lang, Title=L("Deniz Manzaralı","Sea View","Meerblick"), ParentId=2, PageId=301, Order=1 },
             new() { Id=4, AppId=appId, Lang=lang, Title=L("Aile Suiti","Family Suite","Familiensuite"), ParentId=3, PageId=302, Order=1 },

@@ -3,7 +3,11 @@ using MyHotelSite.Repositories;
 
 namespace MyHotelSite.Services;
 
-public record MenuNode(string Title, string Url, bool IsExternal, List<MenuNode> Children);
+public record MenuNode(string Title, string Url, bool IsExternal, bool IsActive, List<MenuNode> Children)
+{
+    public bool Selected { get; set; }        // tam eşleşen sayfa
+    public bool BranchSelected { get; set; }  // kendisi veya çocuklarından biri aktif
+}
 
 public interface IMenuService
 {
@@ -14,59 +18,73 @@ public class MenuService : IMenuService
 {
     private readonly IMenuRepository _repo;
     private readonly IPageRepository _pages;
-    public MenuService(IMenuRepository repo, IPageRepository pages) { _repo = repo; _pages = pages; }
+    private readonly IHttpContextAccessor _http;
+
+    public MenuService(IMenuRepository repo, IPageRepository pages, IHttpContextAccessor http)
+    { _repo = repo; _pages = pages; _http = http; }
+
+    private static string NormalizePath(string? p)
+    {
+        if (string.IsNullOrWhiteSpace(p)) return "/";
+        var q = p.Split('#')[0].Split('?')[0];
+        if (q.Length > 1 && q.EndsWith("/")) q = q[..^1];
+        return q.ToLowerInvariant();
+    }
 
     public async Task<List<MenuNode>> GetTreeAsync(int appId, string lang)
     {
-        var items = await _repo.GetAsync(appId, lang);
-        //var byParent = items.GroupBy(i => i.ParentId).ToDictionary(g => g.Key, g => g.OrderBy(x => x.Order).ToList());
+        var items = await _repo.GetAsync(appId, lang) ?? new List<MenuItem>();
+
         var byParent = items
-       .OrderBy(x => x.Order)
-       .ToLookup(i => i.ParentId); // ILookup<int?, MenuItem>
+            .Where(i => i.IsActive)
+            .OrderBy(i => i.Order)
+            .ToLookup(i => i.ParentId); // null parent destekler
+
+        var reqPath = NormalizePath(_http.HttpContext?.Request?.Path.Value ?? "/");
+
         async Task<MenuNode> Map(MenuItem x, int level)
         {
             string url = "#"; bool ext = x.IsExternal;
-            if (x.IsExternal && !string.IsNullOrWhiteSpace(x.ExternalUrl)) url = x.ExternalUrl!;
+
+            if (ext && !string.IsNullOrWhiteSpace(x.ExternalUrl))
+            {
+                url = x.ExternalUrl!;
+            }
             else if (x.PageId.HasValue)
             {
                 var p = await _pages.GetAsync(appId, lang, x.PageId.Value);
                 if (p != null) url = $"/{p.Lang}/{p.SectionKey}/{p.Slug}";
             }
 
-            var node = new MenuNode(x.Title, url, ext, new());
+            var node = new MenuNode(x.Title ?? "", url, ext, x.IsActive, new());
+
             if (level < 3)
             {
-                // çocuklar: null key sorunu yok, doğrudan lookup kullan
                 foreach (var c in byParent[x.Id])
                     node.Children.Add(await Map(c, level + 1));
             }
+
+            // Aktiflik: sadece internal URL’lerde değerlendir
+            if (!node.IsExternal && !string.IsNullOrWhiteSpace(node.Url) && node.Url.StartsWith("/"))
+            {
+                var my = NormalizePath(node.Url);
+                var exact = reqPath == my;
+                var under = !exact && reqPath.StartsWith(my + "/", StringComparison.Ordinal);
+
+                node.Selected = exact;
+                node.BranchSelected = exact || under || node.Children.Any(ch => ch.Selected || ch.BranchSelected);
+            }
+            else
+            {
+                node.Selected = false;
+                node.BranchSelected = node.Children.Any(ch => ch.Selected || ch.BranchSelected);
+            }
+
             return node;
         }
 
-        // kökler: ParentId == null
-        var roots = byParent[null];
         var list = new List<MenuNode>();
-        foreach (var root in roots) list.Add(await Map(root, 1));
+        foreach (var root in byParent[null]) list.Add(await Map(root, 1));
         return list;
-
-        //async Task<MenuNode> Map(MenuItem x, int level)
-        //{
-        //    string url = "#"; bool ext = x.IsExternal;
-        //    if (x.IsExternal && !string.IsNullOrWhiteSpace(x.ExternalUrl)) url = x.ExternalUrl!;
-        //    else if (x.PageId.HasValue)
-        //    {
-        //        var p = await _pages.GetAsync(appId, lang, x.PageId.Value);
-        //        if (p != null) url = $"/{p.Lang}/{p.SectionKey}/{p.Slug}";
-        //    }
-        //    var node = new MenuNode(x.Title, url, ext, new());
-        //    if (level < 3 && byParent.TryGetValue(x.Id, out var children))
-        //        foreach (var c in children) node.Children.Add(await Map(c, level + 1));
-        //    return node;
-        //}
-
-        //var roots = byParent.TryGetValue(null, out var r) ? r : new List<MenuItem>();
-        //var list = new List<MenuNode>();
-        //foreach (var root in roots) list.Add(await Map(root, 1));
-        //return list;
     }
 }
