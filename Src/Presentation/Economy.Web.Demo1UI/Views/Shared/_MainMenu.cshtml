@@ -1,0 +1,23 @@
+﻿@model List<MyHotelSite.Services.MenuNode>
+
+@* @helper RenderNode(MyHotelSite.Services.MenuNode n)
+{
+<li>
+    <a href="@n.Url" @(n.IsExternal ? "target=\"_blank\" rel=\"nofollow noopener\"" : null)>@n.Title</a>
+    @if (n.Children?.Count > 0)
+    {
+        <ul class="submenu">
+            @foreach (var c in n.Children) { @RenderNode(c) }
+        </ul>
+    }
+</li>
+}
+
+<input type="checkbox" id="nav-toggle" class="nav-toggle" hidden />
+<label for="nav-toggle" class="nav-toggle-btn">☰ Menü</label>
+
+<nav class="main-menu">
+    <ul class="root">
+        @foreach (var item in Model) { @RenderNode(item) }
+    </ul>
+</nav> *@

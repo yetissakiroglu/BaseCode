@@ -1,0 +1,11 @@
+﻿@model MyHotelSite.Models.Room
+@inject MyHotelSite.Services.ICdnHelper Cdn
+
+<section class="page-hero">
+    <nav class="breadcrumb"><a href="/@((string)Context.Items["Lang"]!)">Ana sayfa</a> › <a href="/@((string)Context.Items["Lang"]!)/rooms">Odalar</a> › @Model.RoomName</nav>
+    <h1>@Model.RoomName</h1>
+</section>
+<article class="room-detail">
+    @Html.Raw(Cdn.PictureHtml(Model.MainImageUrl ?? "/images/rooms/placeholder.jpg", new[] { 640, 880, 1100, 1400 }, "100vw", Model.RoomName, eagerLcp: true))
+    <p>@Model.ShortDescription</p>
+</article>

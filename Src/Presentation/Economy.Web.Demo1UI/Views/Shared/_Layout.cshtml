@@ -1,0 +1,65 @@
+﻿@using MyHotelSite.Models
+@inject MyHotelSite.Services.ISiteConfigAccessor SiteCfg
+@inject MyHotelSite.Services.ISeoHelper Seo
+@inject MyHotelSite.Services.IMenuService MenuService
+@inject MyHotelSite.Services.ICdnHelper Cdn
+
+@{
+    var appId = 1;
+    var lang = (string?)Context.Items["Lang"] ?? "tr";
+    var cfg = await SiteCfg.GetAsync(appId);
+    var seo = (SeoViewModel?)ViewData["Seo"] ?? new SeoViewModel { MetaTitle = cfg.Setting?.Title ?? "Site" };
+    var menu = await MenuService.GetTreeAsync(appId, lang);
+
+    var pref = Context.Request.Cookies["cookie.pref"];
+    var gtm = cfg.Technical?.GoogleTagManagerId;
+    var ga = cfg.Technical?.GoogleAnalyticsId;
+    var canLoadAnalytics = string.Equals(pref, "accept", StringComparison.OrdinalIgnoreCase);
+}
+<!DOCTYPE html>
+<html lang="@lang">
+<head>
+    @await Html.PartialAsync("_SeoHead", seo)
+
+    <link rel="icon" href="@Cdn.Url(cfg.Setting?.FaviconPath ?? "/favicon.ico")" />
+
+    <!-- CSS (CDN) -->
+    <link rel="stylesheet" href="@Cdn.Url("/css/site.css")" />
+
+    @if (!string.IsNullOrWhiteSpace(cfg.Technical?.CdnBaseUrl))
+    {
+        <link rel="preconnect" href="@cfg.Technical.CdnBaseUrl" crossorigin />
+        <link rel="dns-prefetch" href="@cfg.Technical.CdnBaseUrl" />
+    }
+
+@*     <link rel="icon" href="@cfg.Setting?.FaviconPath" />
+    <link rel="stylesheet" href="/css/site.css" /> *@
+
+    @if (canLoadAnalytics && (!string.IsNullOrWhiteSpace(gtm) || !string.IsNullOrWhiteSpace(ga)))
+    {
+        @await Html.PartialAsync("_Analytics", (gtm, ga))
+    }
+</head>
+<body>
+    <header>
+        <div class="topbar">
+            <a href="/@lang"><img src="@cfg.Setting?.LogoPath" alt="logo" style="height:40px" /></a>
+            @await Html.PartialAsync("_LangSwitcher")
+        </div>
+        @await Html.PartialAsync("_MainMenu", menu)
+    </header>
+
+    @await Html.PartialAsync("_CookieBanner")
+
+    <main role="main" class="container">
+        @RenderBody()
+    </main>
+
+    <footer>
+        <div>© @DateTime.UtcNow.Year - @cfg.Setting?.Title</div>
+    </footer>
+    <!-- JS (CDN) -->
+    <script src="@Cdn.Url("/js/site.js")" defer></script>
+@*     <script src="/js/site.js"></script>
+ *@</body>
+</html>

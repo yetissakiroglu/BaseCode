@@ -1,0 +1,13 @@
+﻿@model List<MyHotelSite.Models.Room>
+<section class="page-hero"><h1>Odalar</h1></section>
+<div class="grid">
+    @foreach (var r in Model)
+    {
+        <div class="card">
+            <img src="@r.MainImageUrl" alt="@r.RoomName" style="width:100%;height:180px;object-fit:cover" />
+            <h3>@r.RoomName</h3>
+            <p>@r.ShortDescription</p>
+            <a href="/@((string)Context.Items["Lang"]!)/room/@r.Slug">Detay</a>
+        </div>
+    }
+</div>

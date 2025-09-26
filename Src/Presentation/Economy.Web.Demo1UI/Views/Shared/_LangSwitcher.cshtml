@@ -1,0 +1,23 @@
+﻿@inject MyHotelSite.Repositories.ILanguageService LangSvc
+@inject IHttpContextAccessor HttpCtx
+@{
+    var ctx = HttpCtx.HttpContext!;
+    var appId = 1;
+    var langs = await LangSvc.GetAllAsync(appId);
+    var current = ctx.Items["Lang"]?.ToString() ?? langs.First().Code;
+    string BuildUrl(string code) {
+        var req = ctx.Request;
+        var path = req.Path.Value ?? "/";
+        var parts = path.Split('/', StringSplitOptions.RemoveEmptyEntries).ToList();
+        if (parts.Count==0) parts.Insert(0, code); else parts[0] = code;
+        var newPath = "/" + string.Join('/', parts);
+        return $"{req.Scheme}://{req.Host}{newPath}{req.QueryString}";
+    }
+}
+<select onchange="if(this.value) window.location.href=this.value;">
+@foreach (var l in langs)
+{
+        var t =l.Code == current ? "selected" : null;
+        <option value="@BuildUrl(l.Code)" t>@l.Name</option>
+}
+</select>

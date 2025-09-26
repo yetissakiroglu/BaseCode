@@ -1,0 +1,13 @@
+﻿@model MyHotelSite.Models.GalleryItem
+@inject MyHotelSite.Services.ICdnHelper Cdn
+
+<section class="page-hero">
+    <h1>@(Model.Caption ?? "Galeri")</h1>
+</section>
+<figure>
+    @Html.Raw(Cdn.PictureHtml(Model.Url, new[] { 640, 960, 1280, 1600 }, "100vw", Model.Caption ?? "Galeri", eagerLcp: true))
+    @if (!string.IsNullOrWhiteSpace(Model.Caption))
+    {
+        <figcaption>@Model.Caption</figcaption>
+    }
+</figure>

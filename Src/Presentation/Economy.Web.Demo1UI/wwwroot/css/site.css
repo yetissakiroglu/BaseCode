@@ -1,0 +1,156 @@
+body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    margin: 0;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.topbar {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.main-menu .root, .main-menu .submenu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.main-menu .root {
+    display: flex;
+    gap: 1rem;
+    padding: .5rem 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.main-menu .submenu {
+    display: none;
+    position: absolute;
+    background: #fff;
+    border: 1px solid #eee;
+    padding: .5rem;
+}
+
+.main-menu li {
+    position: relative;
+}
+
+    .main-menu li:hover > .submenu {
+        display: block;
+    }
+
+.nav-toggle-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .nav-toggle-btn {
+        display: block;
+        background: #eee;
+        padding: .5rem .75rem;
+        margin: .5rem 1rem;
+        cursor: pointer;
+    }
+
+    .main-menu .root {
+        display: none;
+        flex-direction: column;
+        gap: .25rem;
+    }
+
+    #nav-toggle:checked ~ .main-menu .root {
+        display: flex;
+    }
+
+    .main-menu .submenu {
+        position: static;
+        display: none;
+        border: 0;
+        padding-left: 1rem;
+    }
+
+    .main-menu li:hover > .submenu {
+        display: block;
+    }
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+.grid-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: .75rem;
+}
+
+@media (max-width: 900px) {
+    .grid-5 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .grid-5 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.card {
+    border: 1px solid #eee;
+    padding: .75rem;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.page-hero {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb {
+    font-size: .875rem;
+    color: #666;
+    margin-bottom: .5rem;
+}
+
+.strip {
+    display: flex;
+    gap: .5rem;
+    overflow: auto;
+    padding: .5rem 0;
+}
+
+.feature img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+.hero-slider img {
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}

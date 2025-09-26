@@ -1,0 +1,80 @@
+﻿@model MyHotelSite.Models.HomeViewModel
+@inject MyHotelSite.Services.ICdnHelper Cdn
+
+<section id="hero">
+    @if (!string.IsNullOrWhiteSpace(Model.SliderVideoUrl))
+    {
+        <video autoplay muted loop playsinline style="width:100%;max-height:420px;object-fit:cover">
+            <source src="@Model.SliderVideoUrl" type="video/mp4" />
+        </video>
+    }
+    else
+    {
+        <div class="hero-slider">
+            @foreach (var img in Model.SliderImages)
+            {
+                @Html.Raw(Cdn.PictureHtml(img, new[] { 480, 768, 1024, 1280, 1600 }, "(max-width:768px) 100vw, 100vw", "Hero", eagerLcp: true))
+            }
+        </div>
+    }
+</section>
+
+<section id="rooms">
+    <h2>Odalar</h2>
+    <div class="grid">
+        @foreach (var r in Model.Rooms)
+        {
+            <div class="card">
+                @Html.Raw(Cdn.PictureHtml(r.MainImageUrl ?? "/images/rooms/placeholder.jpg", new[] { 320, 480, 640, 800 }, "(max-width:768px) 50vw, 33vw", r.RoomName))
+                <h3>@r.RoomName</h3>
+                <p>@r.ShortDescription</p>
+                <a href="/@((string)Context.Items["Lang"]!)/room/@r.Slug">Detay</a>
+            </div>
+        }
+    </div>
+</section>
+
+<section id="features">
+    <h2>Öne Çıkanlar</h2>
+    <div class="grid-5">
+        <div class="feature"><img src="/images/features/food.jpg" /><h4>Yemekler</h4></div>
+        <div class="feature"><img src="/images/features/sea.jpg" /><h4>Deniz</h4></div>
+        <div class="feature"><img src="/images/features/beach.jpg" /><h4>Sahil</h4></div>
+        <div class="feature"><img src="/images/features/pool.jpg" /><h4>Havuz</h4></div>
+        <div class="feature"><img src="/images/features/spa.jpg" /><h4>Spa</h4></div>
+    </div>
+</section>
+
+<section id="campaigns">
+    <h2>Kampanyalar</h2>
+    <div class="grid">
+        @foreach (var c in Model.Campaigns)
+        {
+            <div class="card">
+                @Html.Raw(Cdn.PictureHtml(c.HeroImage ?? "/images/campaigns/placeholder.jpg", new[] { 320, 480, 640, 800 }, "(max-width:768px) 50vw, 33vw", c.Title))
+                <h3>@c.Title</h3>
+                <p>@c.ShortDescription</p>
+                <a href="/@((string)Context.Items["Lang"]!)/campaign/@c.Slug">Detay</a>
+            </div>
+        }
+    </div>
+</section>
+
+<section id="gallery-strip">
+    <h2>Galeri</h2>
+    <div class="strip">
+        @foreach (var g in Model.Gallery)
+        {
+            @Html.Raw(Cdn.PictureHtml(g.Url, new[] { 160, 240, 320 }, "(max-width:768px) 40vw, 160px", g.Caption ?? "Galeri"))
+        }
+    </div>
+</section>
+
+<section id="subscribe">
+    <h2>Abone Ol</h2>
+    <form method="post" action="/@((string)Context.Items["Lang"]!)/subscription/subscribe">
+        @Html.AntiForgeryToken()
+        <input name="email" placeholder="E-posta" />
+        <button type="submit">Abone Ol</button>
+    </form>
+</section>
