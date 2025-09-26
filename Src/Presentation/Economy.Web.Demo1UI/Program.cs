@@ -96,6 +96,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error/Server");
 }
+
 app.UseStatusCodePagesWithReExecute("/Error/Status/{0}");
 
 app.Use(async (ctx, next) => {
@@ -128,14 +129,17 @@ app.UseStaticFiles(new StaticFileOptions
 // Teknik ayarlara göre compression vs (demo: compression zaten aktif)
 app.UseResponseCompression();
 
+
+// ⬇️ 1) Statikler ÖNCE
+app.UseStaticFiles();
+
 // SEO sırası (statik dosyadan önce normalize/maintenance/lang)
-app.UseMiddleware<SecurityHeadersMiddleware>();
+//app.UseMiddleware<SecurityHeadersMiddleware>();
 
 app.UseMiddleware<UrlNormalizationMiddleware>();
 app.UseMiddleware<MaintenanceMiddleware>();
 app.UseMiddleware<LangResolverMiddleware>();
 
-app.UseStaticFiles();
 
 app.UseRouting();
 app.UseOutputCache();

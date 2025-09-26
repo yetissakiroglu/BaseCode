@@ -32,13 +32,10 @@
         <link rel="dns-prefetch" href="@cfg.Technical.CdnBaseUrl" />
     }
 
-@*     <link rel="icon" href="@cfg.Setting?.FaviconPath" />
-    <link rel="stylesheet" href="/css/site.css" /> *@
-
-    @if (canLoadAnalytics && (!string.IsNullOrWhiteSpace(gtm) || !string.IsNullOrWhiteSpace(ga)))
+ @*    @if (canLoadAnalytics && (!string.IsNullOrWhiteSpace(gtm) || !string.IsNullOrWhiteSpace(ga)))
     {
         @await Html.PartialAsync("_Analytics", (gtm, ga))
-    }
+    } *@
 </head>
 <body>
     <header>

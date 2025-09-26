@@ -60,7 +60,7 @@
     </div>
 </section>
 
-<section id="gallery-strip">
+@* <section id="gallery-strip">
     <h2>Galeri</h2>
     <div class="strip">
         @foreach (var g in Model.Gallery)
@@ -68,7 +68,7 @@
             @Html.Raw(Cdn.PictureHtml(g.Url, new[] { 160, 240, 320 }, "(max-width:768px) 40vw, 160px", g.Caption ?? "Galeri"))
         }
     </div>
-</section>
+</section> *@
 
 <section id="subscribe">
     <h2>Abone Ol</h2>
