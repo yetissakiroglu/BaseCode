@@ -7,5 +7,8 @@ namespace Economy.Domain.Entites.EntityAppSettings
         public string LogoPath { get; set; } = string.Empty; 
         public string? MobileLogoPath { get; set; }
         public string? FaviconPath { get; set; }
+        public string? ShareImagePath { get; set; }
+
+        
     }
 }

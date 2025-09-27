@@ -47,7 +47,6 @@ builder.Services.AddRateLimiter(o =>
     });
 });
 
-
 // Http helpers
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<Microsoft.AspNetCore.Mvc.Infrastructure.IActionContextAccessor, Microsoft.AspNetCore.Mvc.Infrastructure.ActionContextAccessor>();

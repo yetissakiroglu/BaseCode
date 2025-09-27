@@ -20,7 +20,7 @@ namespace Economy.Application.Dtos.AppTechnicalSettingDtos
         public bool EnableDebugMode { get; set; }
         public string? MaintenanceMessage { get; set; }
 
-        public bool EnableCache { get; set; }
+        public bool? EnableCache { get; set; }
 
         public string? CustomCss { get; set; }
         public string? CustomJs { get; set; }

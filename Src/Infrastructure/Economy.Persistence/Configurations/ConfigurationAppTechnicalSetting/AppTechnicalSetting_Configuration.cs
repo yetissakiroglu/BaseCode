@@ -15,26 +15,26 @@ namespace Economy.Persistence.Configurations.ConfigurationAppTechnicalSetting
                 .HasMaxLength(255)
                 .IsRequired();
 
-            entity.Property(x => x.StaticFileUrl)
-                .HasMaxLength(500);
+            //entity.Property(x => x.StaticFileUrl)
+            //    .HasMaxLength(500);
 
             entity.Property(x => x.MaintenanceMessage)
                 .HasMaxLength(1000);
 
-            entity.Property(x => x.CustomCss)
-                .HasColumnType("nvarchar(max)");
+            //entity.Property(x => x.CustomCss)
+            //    .HasColumnType("nvarchar(max)");
 
-            entity.Property(x => x.CustomJs)
-                .HasColumnType("nvarchar(max)");
+            //entity.Property(x => x.CustomJs)
+            //    .HasColumnType("nvarchar(max)");
 
-            entity.Property(x => x.AllowedIpAddresses)
-                .HasMaxLength(1000);
+            //entity.Property(x => x.AllowedIpAddresses)
+            //    .HasMaxLength(1000);
 
-            entity.Property(x => x.GoogleAnalyticsCode)
-                .HasMaxLength(500);
+            //entity.Property(x => x.GoogleAnalyticsCode)
+            //    .HasMaxLength(500);
 
-            entity.Property(x => x.FacebookPixelCode)
-                .HasMaxLength(1000);
+            //entity.Property(x => x.FacebookPixelCode)
+            //    .HasMaxLength(1000);
                     
 
             // Boolean alanlar (IsSiteLive, EnableCache vs.) için özel yapılandırmaya gerek yok
@@ -43,20 +43,20 @@ namespace Economy.Persistence.Configurations.ConfigurationAppTechnicalSetting
             entity.HasData(new AppTechnicalSetting
             {
                 Id = 1,
-                IsSiteLive = true,
+                //IsSiteLive = true,
                 ForceSSL = true,
                 DomainName = "www.otelsitem.com",
-                EnableCDN = false,
-                StaticFileUrl = "",
+                //EnableCDN = false,
+                //StaticFileUrl = "",
                 EnableDebugMode = false,
                 MaintenanceMessage = "Sitemiz şu anda bakım modundadır. Lütfen daha sonra tekrar deneyiniz.",
-                EnableCache = true,
-                CustomCss = "",
-                CustomJs = "",
-                EnableMaintenanceIpWhitelist = false,
-                AllowedIpAddresses = null,
-                GoogleAnalyticsCode = null,
-                FacebookPixelCode = null,
+                EnableOutputCache = true,
+                //CustomCss = "",
+                //CustomJs = "",
+                //EnableMaintenanceIpWhitelist = false,
+                //AllowedIpAddresses = null,
+                //GoogleAnalyticsCode = null,
+                //FacebookPixelCode = null,
                 IsDeleted = false
             });
         }

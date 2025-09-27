@@ -25,6 +25,8 @@ namespace Economy.Persistence.Contexts
         }
 
         public DbSet<AppSetting> AppSettings { get; set; }
+        public DbSet<AppSettingTranslation> AppSettingTranslations { get; set; }
+
         public DbSet<AppSettingLogo> AppSettingLogos { get; set; }      
         public DbSet<AppTechnicalSetting> AppTechnicalSettings { get; set; }
         public DbSet<AppSettingReservationLink> AppSettingReservationLinks { get; set; }
@@ -43,8 +45,8 @@ namespace Economy.Persistence.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new AppLanguage_Configuration()); // ← Burası önemli
-            modelBuilder.ApplyConfiguration(new AppSetting_Configuration()); // ← Burası önemli
-            modelBuilder.ApplyConfiguration(new AppSettingTranslation_Configuration()); // ← Burası önemli
+            //modelBuilder.ApplyConfiguration(new AppSetting_Configuration()); // ← Burası önemli
+            //modelBuilder.ApplyConfiguration(new AppSettingTranslation_Configuration()); // ← Burası önemli
             modelBuilder.ApplyConfiguration(new AppSettingLogoConfiguration()); // ← Burası önemli
             modelBuilder.ApplyConfiguration(new AppSettingReservationNumberConfiguration());
             modelBuilder.ApplyConfiguration(new AppSettingReservationLinkConfiguration());

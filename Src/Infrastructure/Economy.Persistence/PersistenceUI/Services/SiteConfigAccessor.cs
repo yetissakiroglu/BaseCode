@@ -1,15 +1,9 @@
 ﻿using Economy.Application.ApplicationUI.Dtos;
 using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Core.Interfaces;
+using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Domain.Entites.EntityAppSettings;
-using Economy.Persistence.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Economy.Persistence.PersistenceUI.Services
 {
@@ -17,55 +11,105 @@ namespace Economy.Persistence.PersistenceUI.Services
     {
         private readonly IEntityRepository<AppSetting, int> _appSettingRepository;
         private readonly IEntityRepository<AppTechnicalSetting, int> _appTechnicalSettingRepository;
-        private readonly IMemoryCache _cache;
-        private readonly IUnitOfWork _unitOfWork;
-        public SiteConfigAccessor(IMemoryCache cache, IUnitOfWork unitOfWork)
+        private readonly IEntityRepository<AppLanguage, int> _appLanguageRepository;
+        private readonly IEntityRepository<AppSettingLogo, int> _appSettingLogoRepository;
+
+
+        public SiteConfigAccessor(IUnitOfWork unitOfWork)
         {
-            _cache = cache;
-            _unitOfWork = unitOfWork;
             _appSettingRepository = unitOfWork.HotelEntityRepository<AppSetting>();
             _appTechnicalSettingRepository = unitOfWork.HotelEntityRepository<AppTechnicalSetting>();
+            _appLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
+            _appSettingLogoRepository = unitOfWork.HotelEntityRepository<AppSettingLogo>();
         }
-
-
-
-        public async Task<(SiteSettingDto? Setting, SiteTechnicalDto? Technical)> GetAsync(int appId)
+        public (SiteSettingDto? Setting, SiteTechnicalDto? Technical) GetAsync(string lang)
         {
-            var key = $"sitecfg:{appId}";
-            return await _cache.GetOrCreateAsync(key, async e =>
+            // 1) Teknik ayarlar
+            var t = _appTechnicalSettingRepository.DataSet
+                .AsNoTracking()
+                .FirstOrDefault(x => !x.IsDeleted);
+
+            // 2) Default dil AppLanguage’den
+            var defaultLang = _appLanguageRepository.DataSet
+                .AsNoTracking()
+                .Where(x => !x.IsDeleted && x.IsDefault)
+                .Select(x => x.Code)
+                .FirstOrDefault();
+
+            var supportedLanguages = _appLanguageRepository.DataSet
+              .AsNoTracking()
+              .Where(x => !x.IsDeleted)
+              .Select(x => x.Code).ToArray();
+
+
+            if (string.IsNullOrEmpty(defaultLang))
             {
-                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                var s = await _appSettingRepository.DataSet.Include(i=>i.Translations).FirstOrDefaultAsync(x => !x.IsDeleted);
-                var t = await _appTechnicalSettingRepository.DataSet.FirstOrDefaultAsync(x=>!x.IsDeleted);
+                return (null, null);
+            }
 
-                return (s is null ? null : new SiteSettingDto
-                {
-                    AppId = s.AppId,
-                    Title = s.Title,
-                    Description = s.Description,
-                    LogoPath = s.LogoPath,
-                    FaviconPath = s.FaviconPath,
-                    ShareImage = s.ShareImage
-                },
+            var logoSite = _appSettingLogoRepository.DataSet
+              .AsNoTracking()
+              .Where(x => !x.IsDeleted)
+              .FirstOrDefault();
 
-                t is null ? null : new SiteTechnicalDto
+            // 3) Site ayarları + çeviriler
+            var s = _appSettingRepository.DataSet
+            .AsNoTracking()
+            .Include(i => i.Translations)
+            .ThenInclude(tr => tr.AppLanguage) // Dil koduna erişim için
+            .FirstOrDefault(x => !x.IsDeleted);
+
+            SiteSettingDto? settingDto = null;
+            if (s != null)
+            {
+                // İstenen dil yoksa → default dil, o da yoksa → ana değerler
+                var tr = s.Translations?
+                            .FirstOrDefault(x => x.AppLanguage.Code == lang)
+                         ?? s.Translations?
+                            .FirstOrDefault(x => x.AppLanguage.Code == defaultLang);
+
+                settingDto = new SiteSettingDto
                 {
-                    AppId = t.AppId,
-                    DefaultLanguage = t.DefaultLanguage,
-                    SupportedLanguages = t.SupportedLanguages,
+                    SiteTitle = tr?.SiteTitle,
+                    Description = tr?.Description,
+                    LogoPath = logoSite.LogoPath,
+                    MetaDescription = tr.MetaDescription,
+                    MetaSlogan = tr.MetaSlogan,
+                    MetaTitle =tr.MetaSlogan,
+                    FaviconPath = logoSite.FaviconPath,
+                    ShareImagePath = logoSite.ShareImagePath,
+                };
+            }
+
+            SiteTechnicalDto? technicalDto = null;
+            if (t != null)
+            {
+                technicalDto = new SiteTechnicalDto
+                {
+                    DefaultLanguage = defaultLang,
+                    SupportedLanguages = supportedLanguages ?? Array.Empty<string>(),
                     CdnBaseUrl = t.CdnBaseUrl,
                     CdnEnabled = t.CdnEnabled,
                     EnableOutputCache = t.EnableOutputCache,
                     OutputCacheTtlSeconds = t.OutputCacheTtlSeconds,
                     MaintenanceModeEnabled = t.MaintenanceModeEnabled,
-                    MaintenanceAllowedIpList = t.MaintenanceAllowedIpList,
+                    MaintenanceAllowedIpList = t.MaintenanceAllowedIpList ?? new List<string>(),
                     CookieBannerEnabled = t.CookieBannerEnabled,
-                    GoogleAnalyticsId = t.GoogleAnalyticsId,
-                    GoogleTagManagerId = t.GoogleTagManagerId,
-                    HreflangDomainMap = t.HreflangDomainMap
-                });
-            })!;
+                    DomainName = t.DomainName,
+                    EnableDebugMode = t.EnableDebugMode,
+                    ForceSSL = t.ForceSSL,
+                    MaintenanceMessage = t.MaintenanceMessage
+                };
+
+
+
+
+            }
+            return (settingDto, technicalDto);
+
         }
+
+      
     }
 
 }

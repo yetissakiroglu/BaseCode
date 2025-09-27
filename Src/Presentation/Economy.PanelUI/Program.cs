@@ -1,3 +1,4 @@
+using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Application.Dtos.AppDtos;
 using Economy.Application.Dtos.AppGeneralSettingDtos;
 using Economy.Application.Dtos.AppMenuDtos;
@@ -36,6 +37,7 @@ using Economy.Panel.UI;
 using Economy.Panel.UI.Filters;
 using Economy.Panel.UI.Middlewares;
 using Economy.Persistence.Contexts;
+using Economy.Persistence.PersistenceUI.Services;
 using Economy.Persistence.Providers;
 using Economy.Persistence.Services;
 using Economy.Persistence.UnitOfWorks;
@@ -173,6 +175,7 @@ builder.Services.AddScoped<IValidator<AppSuperAdminUserCreateDto>, SuperAdminCre
 builder.Services.AddScoped<IValidator<AppSuperAdminUserEditDto>, SuperAdminEditDtoValidator>();
 
 builder.Services.AddScoped<IPanelAppMenuService, PanelAppMenuService>();
+builder.Services.AddScoped<ISiteConfigAccessor, SiteConfigAccessor>();
 
 
 builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>(); // Service sýnýfý kaydediliyor.
