@@ -1,42 +1,48 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using MyHotelSite.Models;
-using MyHotelSite.Repositories;
+﻿using Economy.UI.Models;
+using Economy.Web.Demo1UI.Helpers;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace MyHotelSite.Services;
 
 public interface ISiteConfigAccessor
 {
-    Task<(SiteSettingDto? Setting, SiteTechnicalDto? Technical)> GetAsync(int appId);
+    Task<(SiteSettingDto? Setting, SiteTechnicalDto? Technical)> GetAsync(string lang);
 }
 
 public class SiteConfigAccessor : ISiteConfigAccessor
 {
-    private readonly IAppSettingRepository _s;
-    private readonly IAppSettingTechnicalRepository _t;
+    private readonly IApiClientHelper _apiClient;
     private readonly IMemoryCache _cache;
-    public SiteConfigAccessor(IAppSettingRepository s, IAppSettingTechnicalRepository t, IMemoryCache cache)
-    { _s = s; _t = t; _cache = cache; }
-
-    public async Task<(SiteSettingDto? Setting, SiteTechnicalDto? Technical)> GetAsync(int appId)
+    public SiteConfigAccessor(IMemoryCache cache, IApiClientHelper apiClient)
     {
-        var key = $"sitecfg:{appId}";
+        _cache = cache;
+        _apiClient = apiClient;
+    }
+
+    public async Task<(SiteSettingDto? Setting, SiteTechnicalDto? Technical)> GetAsync(string lang)
+    {
+        var key = $"sitecfg:{lang}";
         return await _cache.GetOrCreateAsync(key, async e =>
         {
-            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-            var s = await _s.GetAsync(appId);
-            var t = await _t.GetAsync(appId);
+            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(10);
+
+            var appConfig = await _apiClient.GetAsync<SiteConfigResponse>("/api/siteconfig", lang);
+
+            var s = appConfig.Setting;
+            var t = appConfig.Technical;
             return (s is null ? null : new SiteSettingDto
             {
-                AppId = s.AppId,
-                Title = s.Title,
+                SiteTitle = s.SiteTitle,
+                MetaDescription = s.MetaDescription,
+                MetaSlogan = s.MetaSlogan,
+                MetaTitle = s.MetaTitle,
+                ShareImagePath = s.ShareImagePath,
                 Description = s.Description,
                 LogoPath = s.LogoPath,
-                FaviconPath = s.FaviconPath,
-                ShareImage = s.ShareImage
+                FaviconPath = s.FaviconPath
             },
             t is null ? null : new SiteTechnicalDto
             {
-                AppId = t.AppId,
                 DefaultLanguage = t.DefaultLanguage,
                 SupportedLanguages = t.SupportedLanguages,
                 CdnBaseUrl = t.CdnBaseUrl,
@@ -46,9 +52,10 @@ public class SiteConfigAccessor : ISiteConfigAccessor
                 MaintenanceModeEnabled = t.MaintenanceModeEnabled,
                 MaintenanceAllowedIpList = t.MaintenanceAllowedIpList,
                 CookieBannerEnabled = t.CookieBannerEnabled,
-                GoogleAnalyticsId = t.GoogleAnalyticsId,
-                GoogleTagManagerId = t.GoogleTagManagerId,
-                HreflangDomainMap = t.HreflangDomainMap
+                DomainName = t.DomainName,
+                EnableDebugMode = t.EnableDebugMode,
+                ForceSSL = t.ForceSSL,
+                MaintenanceMessage = t.MaintenanceMessage
             });
         })!;
     }

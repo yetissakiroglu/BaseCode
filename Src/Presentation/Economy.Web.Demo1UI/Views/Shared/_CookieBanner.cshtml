@@ -1,7 +1,7 @@
 ﻿@inject MyHotelSite.Services.ISiteConfigAccessor Config
 @inject MyHotelSite.Services.IViewLocalizerHelper L
 @{
-    var cfg = await Config.GetAsync(1);
+    var cfg = await Config.GetAsync("tr");
     if (cfg.Technical?.CookieBannerEnabled != true)
     {
         <text></text>

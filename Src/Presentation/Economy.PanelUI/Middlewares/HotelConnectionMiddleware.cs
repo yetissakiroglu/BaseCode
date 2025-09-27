@@ -16,6 +16,8 @@ namespace Economy.Panel.UI.Middlewares
         {
             var user = context.User;
 
+
+
             if (user.Identity?.IsAuthenticated == true)
             {
                 var connectionString = await tenantProvider.GetConnectionStringAsync();
@@ -25,6 +27,28 @@ namespace Economy.Panel.UI.Middlewares
                     unitOfWork.SetHotelConnectionString(connectionString);
                 }
             }
+            else
+            {
+                var connectionString = await tenantProvider.GetConnectionStringAsync("HotelDb2");
+                if (!string.IsNullOrWhiteSpace(connectionString))
+                {
+                    unitOfWork.SetHotelConnectionString(connectionString);
+                }
+
+                //var apiKey = context.Request.Headers["X-API-KEY"].FirstOrDefault();
+                //if (!string.IsNullOrWhiteSpace(apiKey))
+                //{
+                //    var connectionString = await tenantProvider.GetConnectionStringAsync(apiKey);
+                //    if (!string.IsNullOrWhiteSpace(connectionString))
+                //    {
+                //        unitOfWork.SetHotelConnectionString(connectionString);
+                //    }
+                //}
+            }
+
+
+
+
 
             await _next(context);
         }

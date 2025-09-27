@@ -62,8 +62,7 @@ builder.Services.AddSingleton<Microsoft.AspNetCore.Mvc.Infrastructure.IActionCon
 //builder.Services.AddSingleton<Microsoft.AspNetCore.Mvc.IUrlHelperFactory, Microsoft.AspNetCore.Mvc.Routing.UrlHelperFactory>();
 
 // Fake repositories
-builder.Services.AddSingleton<IAppSettingRepository, FakeAppSettingRepository>();
-builder.Services.AddSingleton<IAppSettingTechnicalRepository, FakeAppSettingTechnicalRepository>();
+
 builder.Services.AddSingleton<ILanguageService, FakeLanguageService>();
 builder.Services.AddSingleton<IMenuRepository, FakeMenuRepository>();
 builder.Services.AddSingleton<IPageRepository, FakePageRepository>();

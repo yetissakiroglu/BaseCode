@@ -1,6 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Economy.Application.ApplicationUI.Dtos
+namespace Economy.UI.Models
 {
     public class SiteSettingDto
     {
@@ -13,8 +17,4 @@ namespace Economy.Application.ApplicationUI.Dtos
         public string? FaviconPath { get; set; }
         public string? ShareImagePath { get; set; }
     }
-
-
-
-
 }

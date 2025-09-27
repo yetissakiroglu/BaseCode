@@ -6,7 +6,7 @@ using MyHotelSite.Models;
 
 namespace MyHotelSite.Controllers;
 
-[OutputCache(PolicyName = "LangAnon300")]
+//[OutputCache(PolicyName = "LangAnon300")]
 public class CampaignController : Controller
 {
     private readonly ICampaignRepository _repo;
@@ -21,7 +21,7 @@ public class CampaignController : Controller
         var appId = 1;
         var list = await _repo.ListAsync(appId, lang);
         var seed = new SeoSeed { Title = lang == "tr" ? "Kampanyalar" : "Campaigns", Description = "Güncel teklifler" };
-        ViewData["Seo"] = await _seo.BuildAsync(appId, seed, "Campaign", "List", null, lang);
+        ViewData["Seo"] = await _seo.BuildAsync( seed, "Campaign", "List", null, lang);
         return View(list);
     }
 
@@ -59,7 +59,7 @@ public class CampaignController : Controller
             OgType = "product",
             JsonLd = _bc.CombineJsonLd(offer, bc)
         };
-        ViewData["Seo"] = await _seo.BuildAsync(appId, seed, "Campaign", "Details", new { slug }, lang);
+        ViewData["Seo"] = await _seo.BuildAsync(seed, "Campaign", "Details", new { slug }, lang);
         return View(c);
     }
 }

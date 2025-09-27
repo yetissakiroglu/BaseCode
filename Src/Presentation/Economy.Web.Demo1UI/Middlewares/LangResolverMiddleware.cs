@@ -1,4 +1,5 @@
 ﻿using MyHotelSite.Repositories;
+using MyHotelSite.Services;
 
 namespace MyHotelSite.Middlewares;
 
@@ -9,7 +10,7 @@ public class LangResolverMiddleware
 
     public LangResolverMiddleware(RequestDelegate next) => _next = next;
 
-    public async Task Invoke(HttpContext ctx, ILanguageService langs, IAppSettingTechnicalRepository techRepo)
+    public async Task Invoke(HttpContext ctx, ILanguageService langs, ISiteConfigAccessor techRepo)
     {
         var p = ctx.Request.Path.Value ?? "/";
         if (p.StartsWith("/css/", StringComparison.OrdinalIgnoreCase) ||
@@ -27,7 +28,7 @@ public class LangResolverMiddleware
         var appId = 1;
         var supported = (await langs.GetAllAsync(appId)).Select(x => x.Code)
                          .ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var defaultLang = (await techRepo.GetAsync(appId))?.DefaultLanguage ?? "tr";
+        var defaultLang = (await techRepo.GetAsync("tr")).Technical?.DefaultLanguage ?? "tr";
 
         // İlk segment dil mi?
         var seg = p.Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();

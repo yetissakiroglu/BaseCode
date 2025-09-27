@@ -15,6 +15,11 @@ namespace Economy.Core.Services.Providers
             _httpContextAccessor = httpContextAccessor;
             _masterDbContext = masterDbContext;
         }
+        public async Task<string> GetConnectionStringAsync(string token)
+        {
+           var tenantApp = await _masterDbContext.Apps.Where(x => x.ApiKey == token).FirstOrDefaultAsync();
+           return tenantApp.ConnectionString;
+        }
 
         public async Task<string> GetConnectionStringAsync()
         {

@@ -1,4 +1,4 @@
-﻿using Economy.Application.ApplicationUI.Dtos;
+﻿using Economy.UI.Models;
 
 namespace Economy.Application.ApplicationUI.Interfaces
 {

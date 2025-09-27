@@ -16,10 +16,9 @@ public class ContactController : Controller
     [Route("{lang}/contact")]
     public async Task<IActionResult> Index(string lang = "tr")
     {
-        var appId = 1;
-        var cfg = await _cfg.GetAsync(appId);
+        var cfg = await _cfg.GetAsync(lang);
         var seed = new SeoSeed { Title = lang == "tr" ? "İletişim" : "Contact", Description = lang == "tr" ? "Bize ulaşın" : "Get in touch" };
-        ViewData["Seo"] = await _seo.BuildAsync(appId, seed, "Contact", "Index", null, lang);
+        ViewData["Seo"] = await _seo.BuildAsync(seed, "Contact", "Index", null, lang);
         return View(cfg);
     }
 

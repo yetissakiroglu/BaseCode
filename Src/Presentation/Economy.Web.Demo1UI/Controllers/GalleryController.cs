@@ -20,7 +20,7 @@ public class GalleryController : Controller
         var appId = 1;
         var items = await _repo.ListAsync(appId, lang);
         var seed = new SeoSeed { Title = "Galeri", Description = "Tesisimizden kareler", OgType = "website" };
-        ViewData["Seo"] = await _seo.BuildAsync(appId, seed, "Gallery", "List", null, lang);
+        ViewData["Seo"] = await _seo.BuildAsync(seed, "Gallery", "List", null, lang);
         return View(items);
     }
 
@@ -52,7 +52,7 @@ public class GalleryController : Controller
             JsonLd = jsonLd
         };
 
-        ViewData["Seo"] = await _seo.BuildAsync(appId, seed, "Gallery", "Details", new { slug }, lang);
+        ViewData["Seo"] = await _seo.BuildAsync(seed, "Gallery", "Details", new { slug }, lang);
         return View(it);
     }
 }

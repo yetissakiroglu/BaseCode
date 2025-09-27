@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using MyHotelSite.Models;
 using MyHotelSite.Repositories;
 using MyHotelSite.Services;
 
 namespace MyHotelSite.Controllers;
 
-[OutputCache(PolicyName = "LangAnon300")]
 public class HomeController : Controller
 {
     private readonly ISiteConfigAccessor _cfg;
@@ -21,20 +19,21 @@ public class HomeController : Controller
     public async Task<IActionResult> Index(string lang = "tr")
     {
         var appId = 1;
-        var setting = await _cfg.GetAsync(appId);
+        var setting = await _cfg.GetAsync(lang);
         var rooms = await _rooms.ListAsync(appId, lang);
         var camps = await _campaigns.ListAsync(appId, lang);
         var gal = await _gallery.ListAsync(appId, lang);
 
         var seed = new SeoSeed
         {
-            Title = setting.Setting?.Title ?? "Site",
+            Title = setting.Setting?.SiteTitle ?? "Site",
             Description = setting.Setting?.Description ?? "",
-            ShareImage = setting.Setting?.ShareImage
+            ShareImage = setting.Setting?.ShareImagePath,
+            OgType = "website"
         };
 
         var origin = $"{Request.Scheme}://{Request.Host}";
-        ViewData["Seo"] = await _seo.BuildAsync(appId, seed, controller: "Home", action: "Index", currentLang: lang, xDefaultUrl: origin);
+        ViewData["Seo"] = await _seo.BuildAsync(seed, controller: "Home", action: "Index", currentLang: lang, xDefaultUrl: origin);
 
         var vm = new HomeViewModel
         {

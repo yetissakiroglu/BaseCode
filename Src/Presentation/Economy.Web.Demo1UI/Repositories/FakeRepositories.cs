@@ -1,9 +1,6 @@
 ﻿using MyHotelSite.Models;
 
 namespace MyHotelSite.Repositories;
-
-public interface IAppSettingRepository { Task<AppSetting?> GetAsync(int appId); Task UpsertAsync(AppSetting s); }
-public interface IAppSettingTechnicalRepository { Task<AppSettingTechnical?> GetAsync(int appId); Task UpsertAsync(AppSettingTechnical t); }
 public interface ILanguageService { Task<List<(string Code, string Name, bool IsDefault)>> GetAllAsync(int appId); }
 public interface IMenuRepository { Task<List<MenuItem>> GetAsync(int appId, string lang); }
 public interface IPageRepository { Task<Page?> GetAsync(int appId, string lang, int id); }
@@ -12,49 +9,6 @@ public interface ICampaignRepository { Task<List<Campaign>> ListAsync(int appId,
 public interface IGalleryRepository { Task<List<GalleryItem>> ListAsync(int appId, string lang); Task<GalleryItem?> GetBySlugAsync(int appId, string lang, string slug); }
 public interface ILocalizationRepository { Task<string?> GetAsync(int appId, string lang, string key); }
 
-public class FakeAppSettingRepository : IAppSettingRepository
-{
-    private static readonly AppSetting _s = new()
-    {
-        AppId = 1,
-        Title = "Karadeniz Bungalov Tatili",
-        Description = "Doğayla iç içe, konforlu bungalov tatili.",
-        LogoPath = "/assets/logo.svg",
-        FaviconPath = "/favicon.ico",
-        ShareImage = "/images/share/og.jpg"
-    };
-    public Task<AppSetting?> GetAsync(int appId) => Task.FromResult(appId == 1 ? _s : null);
-    public Task UpsertAsync(AppSetting s) => Task.CompletedTask;
-}
-
-public class FakeAppSettingTechnicalRepository : IAppSettingTechnicalRepository
-{
-    private static readonly AppSettingTechnical _t = new()
-    {
-        AppId = 1,
-        DefaultLanguage = "tr",
-        SupportedLanguages = new List<string> { "tr", "en", "de" },
-        CdnBaseUrl = "https://cdn.example.com",
-        CdnEnabled = false,
-        EnableOutputCache = false,
-        OutputCacheTtlSeconds = 300,
-        EnableCompression = false,
-        DebugEnableCdn = false,
-        MaintenanceModeEnabled = false,
-        MaintenanceAllowedIpList = new List<string> { "127.0.0.1" },
-        CookieBannerEnabled = false,
-        GoogleTagManagerId = "GTM-TEST123",
-        GoogleAnalyticsId = "G-TEST123456",
-        HreflangDomainMap = new Dictionary<string, string>
-        {
-            ["tr"] = "https://www.ornek.com",
-            ["en"] = "https://en.ornek.com",
-            ["de"] = "https://www.beispiel.de"
-        }
-    };
-    public Task<AppSettingTechnical?> GetAsync(int appId) => Task.FromResult(appId == 1 ? _t : null);
-    public Task UpsertAsync(AppSettingTechnical t) => Task.CompletedTask;
-}
 
 public class FakeLanguageService : ILanguageService
 {

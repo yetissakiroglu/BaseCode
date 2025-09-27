@@ -1,8 +1,8 @@
-﻿using Economy.Application.ApplicationUI.Dtos;
-using Economy.Application.ApplicationUI.Interfaces;
+﻿using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Domain.Entites.EntityAppSettings;
+using Economy.UI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Economy.Persistence.PersistenceUI.Services

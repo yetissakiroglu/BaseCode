@@ -1,37 +1,5 @@
 ﻿namespace MyHotelSite.Models;
 
-public class AppSetting
-{
-    public int AppId { get; set; }
-    public string Title { get; set; } = "";
-    public string Description { get; set; } = "";
-    public string? LogoPath { get; set; }
-    public string? FaviconPath { get; set; }
-    public string? ShareImage { get; set; }
-}
-
-public class AppSettingTechnical
-{
-    public int AppId { get; set; }
-    public string DefaultLanguage { get; set; } = "tr";
-    public List<string> SupportedLanguages { get; set; } = new() { "tr", "en" };
-    public string? CdnBaseUrl { get; set; }
-    public bool CdnEnabled { get; set; } = true;
-    public bool EnableOutputCache { get; set; } = true;
-    public int OutputCacheTtlSeconds { get; set; } = 300;
-    public bool EnableCompression { get; set; } = true;
-    public bool DebugEnableCdn { get; set; } = false;
-    public bool MaintenanceModeEnabled { get; set; } = false;
-    public List<string> MaintenanceAllowedIpList { get; set; } = new();
-    public bool CookieBannerEnabled { get; set; } = true;
-
-    // Analytics
-    public string? GoogleTagManagerId { get; set; }
-    public string? GoogleAnalyticsId { get; set; }
-
-    // Multi-domain hreflang
-    public Dictionary<string, string> HreflangDomainMap { get; set; } = new();
-}
 
 // Content entities
 public class Page
@@ -94,16 +62,3 @@ public class LocalizationString
 }
 
 // Menu
-public class MenuItem
-{
-    public int Id { get; set; }
-    public int AppId { get; set; }
-    public string Lang { get; set; } = "tr";
-    public int? ParentId { get; set; }
-    public string Title { get; set; } = "";
-    public bool IsExternal { get; set; } = false;
-    public string? ExternalUrl { get; set; }
-    public int? PageId { get; set; }
-    public int Order { get; set; }
-    public bool IsActive { get; set; } = true;
-}

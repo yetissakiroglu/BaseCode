@@ -1,5 +1,8 @@
 ﻿using Economy.Application.ApplicationUI.Interfaces;
+using Economy.Core.Interfaces;
+using Economy.Core.Services.Providers;
 using Economy.Persistence.PersistenceUI.Services;
+using Economy.Persistence.UnitOfWorks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,11 +16,14 @@ namespace Economy.Panel.UI.Areas.Api
         public SiteConfigController(ISiteConfigAccessor siteConfigAccessor)
         {
             _siteConfigAccessor = siteConfigAccessor;
+
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> GetAsync()
         {
+  
+
             var lang = HttpContext.Request.Headers["Accept-Language"].ToString();
             var (setting, technical) = _siteConfigAccessor.GetAsync("tr");
             return Ok(new { Setting = setting, Technical = technical }); // JSON kesin görünür

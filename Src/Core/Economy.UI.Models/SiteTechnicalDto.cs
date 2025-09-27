@@ -1,11 +1,15 @@
-﻿namespace Economy.Application.ApplicationUI.Dtos
-{
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace Economy.UI.Models
+{
     public class SiteTechnicalDto
     {
         public string DefaultLanguage { get; set; } = "tr";
         public IReadOnlyList<string> SupportedLanguages { get; set; } = Array.Empty<string>();
-
         public string DomainName { get; set; }
         public bool ForceSSL { get; set; }
         public bool CdnEnabled { get; set; }
@@ -17,6 +21,6 @@
         public bool EnableOutputCache { get; set; }
         public int OutputCacheTtlSeconds { get; set; }
         public bool CookieBannerEnabled { get; set; }
-
     }
+
 }

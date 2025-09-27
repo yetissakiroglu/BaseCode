@@ -21,7 +21,7 @@ public class RoomController : Controller
         var appId = 1;
         var list = await _rooms.ListAsync(appId, lang);
         var seed = new SeoSeed { Title = lang == "tr" ? "Odalar" : "Rooms", Description = "Konforlu odalarımız" };
-        ViewData["Seo"] = await _seo.BuildAsync(appId, seed, "Room", "List", null, lang);
+        ViewData["Seo"] = await _seo.BuildAsync(seed, "Room", "List", null, lang);
         return View(list);
     }
 
@@ -67,7 +67,7 @@ public class RoomController : Controller
             OgType = "product",
             JsonLd = _bc.CombineJsonLd(jsonLd, bc)
         };
-        ViewData["Seo"] = await _seo.BuildAsync(appId, seed, "Room", "Details", new { slug }, lang);
+        ViewData["Seo"] = await _seo.BuildAsync( seed, "Room", "Details", new { slug }, lang);
         return View(r);
     }
 }

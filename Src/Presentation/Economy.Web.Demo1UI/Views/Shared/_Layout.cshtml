@@ -7,13 +7,13 @@
 @{
     var appId = 1;
     var lang = (string?)Context.Items["Lang"] ?? "tr";
-    var cfg = await SiteCfg.GetAsync(appId);
-    var seo = (SeoViewModel?)ViewData["Seo"] ?? new SeoViewModel { MetaTitle = cfg.Setting?.Title ?? "Site" };
+    var cfg = await SiteCfg.GetAsync(lang);
+    var seo = (SeoViewModel?)ViewData["Seo"] ?? new SeoViewModel { MetaTitle = cfg.Setting?.MetaTitle ?? "Site" };
     var menu = await MenuService.GetTreeAsync(appId, lang);
 
     var pref = Context.Request.Cookies["cookie.pref"];
-    var gtm = cfg.Technical?.GoogleTagManagerId;
-    var ga = cfg.Technical?.GoogleAnalyticsId;
+    // var gtm = cfg.Technical?.GoogleTagManagerId;
+    // var ga = cfg.Technical?.GoogleAnalyticsId;
     var canLoadAnalytics = string.Equals(pref, "accept", StringComparison.OrdinalIgnoreCase);
 }
 <!DOCTYPE html>
@@ -473,7 +473,7 @@
     </main>
 
     <footer>
-        <div>© @DateTime.UtcNow.Year - @cfg.Setting?.Title</div>
+        <div>© @DateTime.UtcNow.Year - @cfg.Setting?.SiteTitle</div>
     </footer>
     <!-- JS (CDN) -->
 

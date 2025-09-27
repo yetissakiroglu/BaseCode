@@ -11,7 +11,7 @@ namespace MyHotelSite.Services;
 public interface ISeoHelper
 {
     Task<SeoViewModel> BuildAsync(
-        int appId, SeoSeed seed, string controller, string action,
+        SeoSeed seed, string controller, string action,
         object? routeValuesBase = null, string? currentLang = null,
         string? xDefaultUrl = null
     );
@@ -27,31 +27,48 @@ public class SeoHelper : ISeoHelper
     public SeoHelper(ILanguageService langs, IActionContextAccessor ac, IUrlHelperFactory urlFactory, ISiteConfigAccessor cfg)
     { _langs = langs; _ac = ac; _urlFactory = urlFactory; _cfg = cfg; }
 
-    public async Task<SeoViewModel> BuildAsync(int appId, SeoSeed seed, string controller, string action, object? routeValuesBase = null, string? currentLang = null, string? xDefaultUrl = null)
+    public async Task<SeoViewModel> BuildAsync(
+        SeoSeed seed, string controller, string action,
+        object? routeValuesBase = null, string? currentLang = null,
+        string? xDefaultUrl = null)
     {
         var ac = _ac.ActionContext ?? throw new InvalidOperationException("No ActionContext");
         var url = _urlFactory.GetUrlHelper(ac);
         var req = ac.HttpContext.Request;
-        var detected = currentLang ?? (ac.RouteData.Values.TryGetValue("lang", out var r) ? r?.ToString() : null) ?? "tr";
 
-        var langs = await _langs.GetAllAsync(appId);
-        var cfg = await _cfg.GetAsync(appId);
-        var domainMap = cfg.Technical?.HreflangDomainMap ?? new Dictionary<string, string>();
+        // dil tespiti
+        var detected = currentLang
+                       ?? (ac.RouteData.Values.TryGetValue("lang", out var r) ? r?.ToString() : null)
+                       ?? "tr";
+
+        var langs = await _langs.GetAllAsync(1);
+        // Config'i mevcut/tespit dil ile getir (önceden currentLang gönderiliyordu)
+        var cfg = await _cfg.GetAsync(detected);
 
         string BuildAbs(string langCode, object? rvBase)
         {
-            var u = url.Action(action, controller, Merge(rvBase, new { lang = langCode }), req.Scheme) ?? req.GetDisplayUrl();
-            if (domainMap.TryGetValue(langCode, out var baseUrl) && !string.IsNullOrWhiteSpace(baseUrl))
-            {
-                var uri = new Uri(u);
-                var pathAndQuery = uri.PathAndQuery + uri.Fragment;
-                return baseUrl.TrimEnd('/') + pathAndQuery;
-            }
-            return u;
+            // 1) Route'a dil paramını enjekte ederek mutlak URL üret
+            var u = url.Action(action, controller, Merge(rvBase, new { lang = langCode }), req.Scheme)
+                    ?? req.GetDisplayUrl();
+
+            // 2) ForceSSL/DomainName varsa base kısmını override et
+            var original = new Uri(u);
+
+            var targetScheme = (cfg.Technical?.ForceSSL == true) ? "https" : original.Scheme;
+            var targetHost = !string.IsNullOrWhiteSpace(cfg.Technical?.DomainName)
+                               ? cfg.Technical!.DomainName
+                               : original.Host;
+
+            // Port kullanımını istersen koruyabilirsin; çoğu senaryoda gerekmez:
+            // var portPart = original.IsDefaultPort ? "" : $":{original.Port}";
+            // return $"{targetScheme}://{targetHost}{portPart}{original.PathAndQuery}{original.Fragment}";
+
+            return $"{targetScheme}://{targetHost}{original.PathAndQuery}{original.Fragment}";
         }
 
         var canonical = BuildAbs(detected, routeValuesBase);
         var hreflangs = langs.Select(l => (l.Code, BuildAbs(l.Code, routeValuesBase))).ToList();
+
         if (!string.IsNullOrWhiteSpace(xDefaultUrl))
             hreflangs.Add(("x-default", xDefaultUrl!));
 

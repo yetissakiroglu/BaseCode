@@ -17,7 +17,7 @@ public class CdnHelper : ICdnHelper
 
     public string Url(string path, bool withVersion = true)
     {
-        var cfg = _cfg.GetAsync(1).GetAwaiter().GetResult();
+        var cfg = _cfg.GetAsync("tr").GetAwaiter().GetResult();
         var baseUrl = cfg.Technical?.CdnBaseUrl;
         var enabled = cfg.Technical?.CdnEnabled ?? false;
 
@@ -68,7 +68,7 @@ public class CdnHelper : ICdnHelper
 
     public string PictureHtml(string path, int[] widths, string sizes, string alt, bool eagerLcp = false)
     {
-        var cfg = _cfg.GetAsync(1).GetAwaiter().GetResult();
+        var cfg = _cfg.GetAsync("tr").GetAwaiter().GetResult();
         var enabled = cfg.Technical?.CdnEnabled ?? false;
 
         var loading = eagerLcp ? @"fetchpriority=""high""" : @"loading=""lazy""";

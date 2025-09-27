@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.Application", "Src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.Web.Demo1UI", "Src\Presentation\Economy.Web.Demo1UI\Economy.Web.Demo1UI.csproj", "{B1338C2A-B9D9-442F-ADF4-0C4534A2CF4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.UI.Models", "Src\Core\Economy.UI.Models\Economy.UI.Models.csproj", "{DC7CE258-66A5-43F5-8703-7AC267757F0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{B1338C2A-B9D9-442F-ADF4-0C4534A2CF4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1338C2A-B9D9-442F-ADF4-0C4534A2CF4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1338C2A-B9D9-442F-ADF4-0C4534A2CF4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC7CE258-66A5-43F5-8703-7AC267757F0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC7CE258-66A5-43F5-8703-7AC267757F0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC7CE258-66A5-43F5-8703-7AC267757F0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC7CE258-66A5-43F5-8703-7AC267757F0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +101,7 @@ Global
 		{D00A1125-0F12-484C-9FD4-C9D45563F036} = {FA6C4317-017A-46A5-AC2B-2223501710B3}
 		{64DE1C96-C22F-4C0E-B07E-4EDB6BF672F4} = {A562FD7E-981E-4AD8-83BD-2ABE0791DB98}
 		{B1338C2A-B9D9-442F-ADF4-0C4534A2CF4D} = {FA6C4317-017A-46A5-AC2B-2223501710B3}
+		{DC7CE258-66A5-43F5-8703-7AC267757F0C} = {A562FD7E-981E-4AD8-83BD-2ABE0791DB98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {20E107F7-FA8E-44CE-9C37-93776883CCC7}
