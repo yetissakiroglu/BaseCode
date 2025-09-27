@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.HttpOverrides;
+﻿using Economy.Web.Demo1UI.Helpers;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.ResponseCompression;
 using MyHotelSite.Middlewares;
@@ -9,6 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // MVC + Razor
 builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddHttpClient("ApiClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7248"); // API kök adresi
+});
+
+builder.Services.AddScoped<IApiClientHelper, ApiClientHelper>();
 
 // Caching & Compression & OutputCache
 builder.Services.AddMemoryCache();
