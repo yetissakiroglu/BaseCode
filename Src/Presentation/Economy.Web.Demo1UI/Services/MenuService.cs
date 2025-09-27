@@ -1,4 +1,5 @@
-﻿using MyHotelSite.Models;
+﻿using Economy.UI.Models;
+using Economy.Web.Demo1UI.Helpers;
 using MyHotelSite.Repositories;
 
 namespace MyHotelSite.Services;
@@ -16,12 +17,12 @@ public interface IMenuService
 
 public class MenuService : IMenuService
 {
-    private readonly IMenuRepository _repo;
+    private readonly IApiClientHelper _apiClient;
     private readonly IPageRepository _pages;
     private readonly IHttpContextAccessor _http;
 
-    public MenuService(IMenuRepository repo, IPageRepository pages, IHttpContextAccessor http)
-    { _repo = repo; _pages = pages; _http = http; }
+    public MenuService(IApiClientHelper repo, IPageRepository pages, IHttpContextAccessor http)
+    { _apiClient = repo; _pages = pages; _http = http; }
 
     private static string NormalizePath(string? p)
     {
@@ -33,10 +34,9 @@ public class MenuService : IMenuService
 
     public async Task<List<MenuNode>> GetTreeAsync(int appId, string lang)
     {
-        var items = await _repo.GetAsync(appId, lang) ?? new List<MenuItem>();
+        var items = await _apiClient.GetAsync<List<MenuItem>>("/api/menuconfig", lang);
 
         var byParent = items
-            .Where(i => i.IsActive)
             .OrderBy(i => i.Order)
             .ToLookup(i => i.ParentId); // null parent destekler
 
@@ -46,14 +46,17 @@ public class MenuService : IMenuService
         {
             string url = "#"; bool ext = x.IsExternal;
 
-            if (ext && !string.IsNullOrWhiteSpace(x.ExternalUrl))
+            if (ext && !string.IsNullOrWhiteSpace(x.Url))
             {
-                url = x.ExternalUrl!;
+                url = x.Url!;
             }
             else if (x.PageId.HasValue)
             {
                 var p = await _pages.GetAsync(appId, lang, x.PageId.Value);
                 if (p != null) url = $"/{p.Lang}/{p.SectionKey}/{p.Slug}";
+            }else
+            {
+                url = x.Url!;
             }
 
             var node = new MenuNode(x.Title ?? "", url, ext, x.IsActive, new());
@@ -65,7 +68,7 @@ public class MenuService : IMenuService
             }
 
             // Aktiflik: sadece internal URL’lerde değerlendir
-            if (!node.IsExternal && !string.IsNullOrWhiteSpace(node.Url) && node.Url.StartsWith("/"))
+            if (node.IsExternal && !string.IsNullOrWhiteSpace(node.Url) && node.Url.StartsWith("/"))
             {
                 var my = NormalizePath(node.Url);
                 var exact = reqPath == my;

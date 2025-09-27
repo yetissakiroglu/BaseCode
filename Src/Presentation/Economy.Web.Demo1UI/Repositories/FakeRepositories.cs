@@ -2,7 +2,6 @@
 
 namespace MyHotelSite.Repositories;
 public interface ILanguageService { Task<List<(string Code, string Name, bool IsDefault)>> GetAllAsync(int appId); }
-public interface IMenuRepository { Task<List<MenuItem>> GetAsync(int appId, string lang); }
 public interface IPageRepository { Task<Page?> GetAsync(int appId, string lang, int id); }
 public interface IRoomRepository { Task<List<Room>> ListAsync(int appId, string lang); Task<Room?> GetBySlugAsync(int appId, string lang, string slug); }
 public interface ICampaignRepository { Task<List<Campaign>> ListAsync(int appId, string lang); Task<Campaign?> GetBySlugAsync(int appId, string lang, string slug); }
@@ -16,22 +15,7 @@ public class FakeLanguageService : ILanguageService
         => Task.FromResult(new List<(string, string, bool)> { ("tr", "Türkçe", true), ("en", "English", false), ("de", "Deutsch", false) });
 }
 
-public class FakeMenuRepository : IMenuRepository
-{
-    public Task<List<MenuItem>> GetAsync(int appId, string lang)
-    {
-        var L = (string tr, string en, string de) => lang switch { "tr" => tr, "en" => en, "de" => de, _ => tr };
-        var items = new List<MenuItem> {
-            new() { Id=1, AppId=appId, Lang=lang, Title=L("Ana Sayfa","Home","Startseite"),IsExternal=true, ExternalUrl="tr", Order=1 },
-            new() { Id=2, AppId=appId, Lang=lang, Title=L("Odalar","Rooms","Zimmer"), PageId=201, Order=2 },
-            new() { Id=3, AppId=appId, Lang=lang, Title=L("Deniz Manzaralı","Sea View","Meerblick"), ParentId=2, PageId=301, Order=1 },
-            new() { Id=4, AppId=appId, Lang=lang, Title=L("Aile Suiti","Family Suite","Familiensuite"), ParentId=3, PageId=302, Order=1 },
-            new() { Id=5, AppId=appId, Lang=lang, Title=L("Kampanyalar","Campaigns","Angebote"), PageId=401, Order=3 },
-            new() { Id=6, AppId=appId, Lang=lang, Title="Blog", IsExternal=true, ExternalUrl="https://blog.example.com", Order=4 }
-        };
-        return Task.FromResult(items.Where(x => x.IsActive).OrderBy(x => x.Order).ToList());
-    }
-}
+
 
 public class FakePageRepository : IPageRepository
 {

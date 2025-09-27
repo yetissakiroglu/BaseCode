@@ -176,6 +176,7 @@ builder.Services.AddScoped<IValidator<AppSuperAdminUserEditDto>, SuperAdminEditD
 
 builder.Services.AddScoped<IPanelAppMenuService, PanelAppMenuService>();
 builder.Services.AddScoped<ISiteConfigAccessor, SiteConfigAccessor>();
+builder.Services.AddScoped<IMenuAccessor, MenuAccessor>(); //
 
 
 builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>(); // Service sýnýfý kaydediliyor.

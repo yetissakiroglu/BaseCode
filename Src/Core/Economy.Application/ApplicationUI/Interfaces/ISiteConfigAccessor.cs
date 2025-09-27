@@ -1,4 +1,5 @@
-﻿using Economy.UI.Models;
+﻿using Economy.Domain.Entites.AppEntities;
+using Economy.UI.Models;
 
 namespace Economy.Application.ApplicationUI.Interfaces
 {
@@ -6,4 +7,9 @@ namespace Economy.Application.ApplicationUI.Interfaces
     {
         (SiteSettingDto? Setting, SiteTechnicalDto? Technical) GetAsync(string lang);
     }
+
+
+
+
+
 }

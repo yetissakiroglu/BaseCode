@@ -64,7 +64,6 @@ builder.Services.AddSingleton<Microsoft.AspNetCore.Mvc.Infrastructure.IActionCon
 // Fake repositories
 
 builder.Services.AddSingleton<ILanguageService, FakeLanguageService>();
-builder.Services.AddSingleton<IMenuRepository, FakeMenuRepository>();
 builder.Services.AddSingleton<IPageRepository, FakePageRepository>();
 builder.Services.AddSingleton<IRoomRepository, FakeRoomRepository>();
 builder.Services.AddSingleton<ICampaignRepository, FakeCampaignRepository>();
