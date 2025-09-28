@@ -5,6 +5,8 @@ namespace Economy.Application.ApplicationUI.Interfaces
 {
     public interface ISiteConfigAccessor
     {
+        Task<List<SlideVm>> GetSlidesAsync(string lang);
+
         (SiteSettingDto? Setting, SiteTechnicalDto? Technical) GetAsync(string lang);
     }
 

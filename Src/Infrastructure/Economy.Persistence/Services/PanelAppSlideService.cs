@@ -44,18 +44,18 @@ namespace Economy.Panel.Persistence.Services
 
             var entity = new AppSlide();
             SlideMapper.MapToEntity(entity, model);
+            //todo dikkat
+            //if (model.ThumbnailBase64 is not null)
+            //{
+            //    var webImage = _fileImageHelperService.UploadBase64(model.ThumbnailBase64, new List<string> { "updates", "slider" });
+            //    entity.ThumbnailBase64 = webImage.Data.MediaFullURL;
+            //}
 
-            if (model.ThumbnailBase64 is not null)
-            {
-                var webImage = _fileImageHelperService.UploadBase64(model.ThumbnailBase64, new List<string> { "updates", "slider" });
-                entity.ThumbnailBase64 = webImage.Data.MediaFullURL;
-            }
-
-            if (model.ThumbnailMobilBase64 is not null)
-            {
-                var mobilImage = _fileImageHelperService.UploadBase64(model.ThumbnailMobilBase64, new List<string> { "updates", "slider" });
-                entity.ThumbnailMobilBase64 = mobilImage.Data.MediaFullURL;
-            }
+            //if (model.ThumbnailMobilBase64 is not null)
+            //{
+            //    var mobilImage = _fileImageHelperService.UploadBase64(model.ThumbnailMobilBase64, new List<string> { "updates", "slider" });
+            //    entity.ThumbnailMobilBase64 = mobilImage.Data.MediaFullURL;
+            //}
 
             _entityRepository.Add(entity);
             _unitOfWork.SaveHotelChanges();
@@ -110,18 +110,19 @@ namespace Economy.Panel.Persistence.Services
 
            SlideMapper.MapToEntity(entity, model);
 
-            if (model.ThumbnailBase64 is not null)
-            {
-                var webImage = _fileImageHelperService.UploadBase64(model.ThumbnailBase64, new List<string> { "updates", "slider" });
-                entity.ThumbnailBase64 = webImage.Data.MediaFullURL;
-            }
+            //todo: image
+            //if (model.ThumbnailBase64 is not null)
+            //{
+            //    var webImage = _fileImageHelperService.UploadBase64(model.ThumbnailBase64, new List<string> { "updates", "slider" });
+            //    entity.ThumbnailBase64 = webImage.Data.MediaFullURL;
+            //}
 
-            if (model.ThumbnailMobilBase64 is not null)
-            {
-                var mobilImage = _fileImageHelperService.UploadBase64(model.ThumbnailMobilBase64, new List<string> { "updates", "slider" });
-                entity.ThumbnailMobilBase64 = mobilImage.Data.MediaFullURL;
-            }
-          
+            //if (model.ThumbnailMobilBase64 is not null)
+            //{
+            //    var mobilImage = _fileImageHelperService.UploadBase64(model.ThumbnailMobilBase64, new List<string> { "updates", "slider" });
+            //    entity.ThumbnailMobilBase64 = mobilImage.Data.MediaFullURL;
+            //}
+
 
             _entityRepository.Update(entity);
             _unitOfWork.SaveHotelChanges();

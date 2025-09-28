@@ -12,18 +12,18 @@ namespace Economy.Panel.Persistence.Extensions
         public static void MapToEntity(AppSlide entity, AppSlideCreateEditDto model)
         {
             entity.Id = model.Id;
-            entity.Sequence = model.Sequence;
+            //entity.Sequence = model.Sequence;
             entity.Translations = model.Translations?.Select(t => new AppSlideTranslation
             {
                 Id = t.Id,
                 AppSlideId = t.AppSlideId,
                 AppLanguageId = t.AppLanguageId,
                 Title = t.Title,
-                Content = t.Content,
+                //Content = t.Content,
                 ButtonText = t.ButtonText,
-                ButtonUrl = t.ButtonUrl,
-                ButtonIcon = t.ButtonIcon,
-                IsExternal = t.IsExternal
+                //ButtonUrl = t.ButtonUrl,
+                //ButtonIcon = t.ButtonIcon,
+                //IsExternal = t.IsExternal
             }).ToList() ?? new List<AppSlideTranslation>();
 
         }
@@ -32,9 +32,9 @@ namespace Economy.Panel.Persistence.Extensions
             return new AppSlideDto
             {
                 Id = entity.Id,
-                Sequence = entity.Sequence,
-                WebImageFile = entity.ThumbnailBase64,
-                MobileImageFile = entity.ThumbnailMobilBase64,
+                //Sequence = entity.Sequence,
+                //WebImageFile = entity.ThumbnailBase64,
+                //MobileImageFile = entity.ThumbnailMobilBase64,
                 Translations = entity.Translations.Select(MapTranslationEntityToDto).ToList()
             };
         }
@@ -43,9 +43,9 @@ namespace Economy.Panel.Persistence.Extensions
             return new AppSlideDto
             {
                 Id = entity.Id,
-                Sequence = entity.Sequence,
-                WebImageFile = entity.ThumbnailBase64,
-                MobileImageFile = entity.ThumbnailMobilBase64,
+                //Sequence = entity.Sequence,
+                //WebImageFile = entity.ThumbnailBase64,
+                //MobileImageFile = entity.ThumbnailMobilBase64,
                 Translations = entity.Translations.Select(MapTranslationEntityToDto).ToList()
             };
         }
@@ -62,11 +62,11 @@ namespace Economy.Panel.Persistence.Extensions
                 AppSlideId = entity.AppSlideId,
                 AppLanguageId = entity.AppLanguageId,
                 Title = entity.Title,
-                Content = entity.Content,
+                //Content = entity.Content,
                 ButtonText = entity.ButtonText,
-                ButtonUrl = entity.ButtonUrl,
-                ButtonIcon = entity.ButtonIcon,
-                IsExternal = entity.IsExternal
+                //ButtonUrl = entity.ButtonUrl,
+                //ButtonIcon = entity.ButtonIcon,
+                //IsExternal = entity.IsExternal
             };
         }
 

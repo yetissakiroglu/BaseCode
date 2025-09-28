@@ -22,11 +22,20 @@ namespace Economy.Panel.UI.Areas.Api
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-  
-
             var lang = HttpContext.Request.Headers["Accept-Language"].ToString();
             var (setting, technical) = _siteConfigAccessor.GetAsync("tr");
             return Ok(new { Setting = setting, Technical = technical }); // JSON kesin görünür
         }
+
+
+
+        [HttpGet("Menus")]
+        public async Task<IActionResult> GetMenuAsync()
+        {
+            var lang = HttpContext.Request.Headers["Accept-Language"].ToString();
+            var slideModels = await _siteConfigAccessor.GetSlidesAsync("tr");
+            return Ok(slideModels); // JSON kesin görünür
+        }
+
     }
 }
