@@ -1,0 +1,72 @@
+﻿@using Economy.UI.Models.PageDtos
+@model PageUnifiedVm
+@{
+    Layout = "_Layout";
+    string BuildUrl(string slug) => $"/@Model.Lang/@slug";
+}
+
+<article class="page-detail">
+    <header>
+        <h1>@Model.Title</h1>
+        @if (!string.IsNullOrWhiteSpace(Model.Summary))
+        {
+            <p class="lead">@Model.Summary</p>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.Image))
+        {
+            <img src="@Model.Image" alt="@Model.Title" class="cover" />
+        }
+    </header>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Body))
+    {
+        <section class="body">
+            @Html.Raw(Model.Body) <!-- Body HTML olabilir -->
+        </section>
+    }
+
+    @if (Model.Gallery != null && Model.Gallery.Count > 0)
+    {
+        <section class="gallery">
+            @foreach (var m in Model.Gallery)
+            {
+                <figure>
+                    <img src="@m.Url" alt="@m.Alt" />
+                    @if (!string.IsNullOrWhiteSpace(m.Caption))
+                    { <figcaption>@m.Caption</figcaption> }
+                </figure>
+            }
+        </section>
+    }
+
+    @if (Model.Blocks != null && Model.Blocks.Count > 0)
+    {
+        foreach (var b in Model.Blocks)
+        {
+            switch (b.Template)
+            {
+                case "Hero":
+                    @await Html.PartialAsync("_BlockHero", b)
+                    break;
+                case "RichText":
+                    @await Html.PartialAsync("_BlockRichText", b)
+                    break;
+                case "IncludeSnippet":
+                    @await Html.PartialAsync("_BlockSnippet", b)
+                    break;
+                case "RoomList":
+                    @await Html.PartialAsync("_BlockRoomList", b)
+                    break;
+                case "CampaignList":
+                    @await Html.PartialAsync("_BlockCampaignList", b)
+                    break;
+                case "PageList":
+                    @await Html.PartialAsync("_BlockPageList", b)
+                    break;
+                default:
+                    @await Html.PartialAsync("_BlockRichText", b) <!-- fallback -->
+                    break;
+            }
+        }
+    }
+</article>

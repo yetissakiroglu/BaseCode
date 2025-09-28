@@ -1,0 +1,19 @@
+﻿@using Economy.UI.Models.PageDtos
+@model BlockVm
+@{
+    string BuildUrl(string lang, string slug) => $"/{lang}/{slug}";
+    var cards = Model.Pages ?? new List<PageCardVm>();
+}
+<section class="block pagelist">
+    @if (!string.IsNullOrWhiteSpace(Model.Title)) { <h2>@Model.Title</h2> }
+    <div class="card-grid">
+        @foreach (var card in cards)
+        {
+            var url = string.IsNullOrWhiteSpace(card.Url) ? BuildUrl(Model.Lang, card.Slug) : card.Url;
+            <partial name="_Card" model="new PageCardVm{
+                Id = card.Id, Slug = card.Slug, Title = card.Title,
+                Summary = card.Summary, Image = card.Image, Url = url
+            }" />
+        }
+    </div>
+</section>

@@ -1,12 +1,16 @@
 ﻿using Economy.UI.Models;
+using Economy.UI.Models.PageDtos;
 using Economy.Web.Demo1UI.Helpers;
 using Microsoft.Extensions.Caching.Memory;
+using static System.Net.WebRequestMethods;
 
 namespace MyHotelSite.Services;
 
 public interface ISiteConfigAccessor
 {
     Task<(SiteSettingDto? Setting, SiteTechnicalDto? Technical)> GetAsync(string lang);
+    Task<PageUnifiedVm?> GetPageAsync(string lang, string slug, CancellationToken ct = default);
+
 }
 
 public class SiteConfigAccessor : ISiteConfigAccessor
@@ -58,5 +62,14 @@ public class SiteConfigAccessor : ISiteConfigAccessor
                 MaintenanceMessage = t.MaintenanceMessage
             });
         })!;
+    }
+
+    public async Task<PageUnifiedVm?> GetPageAsync(string lang, string slug, CancellationToken ct = default)
+    {
+        // /api/pages/{lang}/{slug}
+        var url = $"/api/pages/{lang}/{slug}";
+        var resp = await _apiClient.GetAsync<PageUnifiedVm>(url, lang);
+ 
+        return resp;
     }
 }

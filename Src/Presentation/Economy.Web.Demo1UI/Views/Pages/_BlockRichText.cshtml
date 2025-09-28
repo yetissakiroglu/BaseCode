@@ -1,0 +1,12 @@
+﻿@using Economy.UI.Models.PageDtos
+@model BlockVm
+<section class="block richtext">
+    @if (!string.IsNullOrWhiteSpace(Model.Title))
+    {
+        <h2>@Model.Title</h2>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Body))
+    {
+        @Html.Raw(Model.Body)
+    }
+</section>

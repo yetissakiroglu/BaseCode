@@ -83,7 +83,7 @@ namespace Economy.UI.Models.PageDtos
         public List<PageCardVm>? Pages { get; set; }       // PageList
     }
 
-    public class PageCardVm
+    public record class PageCardVm
     {
         public int Id { get; set; }
         public string Slug { get; set; } = "";
@@ -93,7 +93,7 @@ namespace Economy.UI.Models.PageDtos
         public string Url { get; set; } = ""; // "/tr/aile-odasi"
     }
 
-    public sealed class CampaignCardVm : PageCardVm
+    public record class CampaignCardVm : PageCardVm
     {
         public string? Badge { get; set; }
         public string? ValidFrom { get; set; }

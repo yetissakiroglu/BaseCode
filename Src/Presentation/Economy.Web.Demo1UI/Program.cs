@@ -150,6 +150,11 @@ app.UseMiddleware<LangResolverMiddleware>();
 app.UseRouting();
 app.UseOutputCache();
 
+//app.MapControllerRoute(
+//    name: "pages",
+//    pattern: "{lang}/{slug?}",
+//    defaults: new { controller = "Pages", action = "Index", slug = "home" });
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{lang=tr}/{controller=Home}/{action=Index}/{id?}"
