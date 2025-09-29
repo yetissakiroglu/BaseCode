@@ -1,0 +1,32 @@
+﻿@using Economy.UI.Models.PageDtos
+@model PageUnifiedVm
+@{
+    Layout = "_Layout";
+    string BuildUrl(string slug) => $"/@Model.Lang/@slug";
+}
+
+<section class="page-header">
+    <h1>@Model.Title</h1>
+    @if (!string.IsNullOrWhiteSpace(Model.Summary))
+    {
+        <p class="lead">@Model.Summary</p>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Image))
+    {
+        <img src="@Model.Image" alt="@Model.Title" class="cover" />
+    }
+</section>
+
+<section class="card-grid">
+    @foreach (var item in Model.Items)
+    {
+        <partial name="_Card" model="new PageCardVm{
+            Id = item.Id,
+            Slug = item.Slug,
+            Title = item.Title,
+            Summary = item.Summary,
+            Image = item.Image,
+            Url = BuildUrl(item.Slug)
+        }" />
+    }
+</section>

@@ -1,0 +1,16 @@
+﻿@using Economy.UI.Models.PageDtos
+@model BlockVm
+<section class="block snippet">
+    @if (!string.IsNullOrWhiteSpace(Model.Title))
+    {
+        <h3>@Model.Title</h3>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.SnippetTitle))
+    {
+        <h4>@Model.SnippetTitle</h4>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.SnippetBody))
+    {
+        @Html.Raw(Model.SnippetBody)
+    }
+</section>

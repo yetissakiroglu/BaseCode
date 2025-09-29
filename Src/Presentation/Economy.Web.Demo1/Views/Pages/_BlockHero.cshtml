@@ -1,0 +1,19 @@
+﻿@using Economy.UI.Models.PageDtos
+@model BlockVm
+<section class="block hero">
+    @if (!string.IsNullOrWhiteSpace(Model.Image))
+    {
+        <img src="@Model.Image" alt="@Model.Title" class="hero-img" />
+    }
+    <div class="hero-text">
+        <h2>@Model.Title</h2>
+        @if (!string.IsNullOrWhiteSpace(Model.Summary))
+        {
+            <p>@Model.Summary</p>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.ButtonText) && !string.IsNullOrWhiteSpace(Model.ButtonUrl))
+        {
+            <a href="@Model.ButtonUrl" class="btn">@Model.ButtonText</a>
+        }
+    </div>
+</section>

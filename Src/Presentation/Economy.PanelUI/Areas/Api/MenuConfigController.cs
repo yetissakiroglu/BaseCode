@@ -23,7 +23,7 @@ namespace Economy.Panel.UI.Areas.Api
         public async Task<IActionResult> GetAsync()
         {
             var lang = HttpContext.Request.Headers["Accept-Language"].ToString();
-            var menuView = await _siteConfigAccessor.GetAsync("tr");
+            var menuView = await _siteConfigAccessor.GetAsync(lang);
             return Ok(menuView); // JSON kesin görünür
         }
     }
