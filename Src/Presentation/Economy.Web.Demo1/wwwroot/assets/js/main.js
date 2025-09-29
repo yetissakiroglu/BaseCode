@@ -92,7 +92,7 @@
         loop: true,
         slidesPerView: 1,
         centeredSlides: true,
-        spaceBetween: 24,
+        spaceBetween: 0,
         autoplay: {
             delay: 6000,
         },
@@ -102,7 +102,7 @@
         },
         breakpoints: {
             992: {
-                slidesPerView: 2,
+                slidesPerView: 1,
             },
         },
     });

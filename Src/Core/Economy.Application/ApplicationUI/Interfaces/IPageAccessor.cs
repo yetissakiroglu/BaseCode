@@ -11,6 +11,7 @@ namespace Economy.Application.ApplicationUI.Interfaces
         /// slug = {page-slug}       => detay
         /// </summary>
         Task<PageUnifiedVm?> GetAsync(string lang, string slug, CancellationToken ct = default);
+        Task<PageUnifiedVm?> GetAsync(string lang, bool ishomepage, CancellationToken ct = default);
 
     }
 }

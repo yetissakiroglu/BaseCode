@@ -71,6 +71,50 @@ namespace Economy.Persistence.PersistenceUI.Services
             // 3) Çocuğu yoksa DETAY sayfasıdır → mevcut detail akışın
             return await BuildDetailByHitAsync(langId, langCode, hit.ci, hit.tr, ct);
         }
+        public async Task<PageUnifiedVm?> GetAsync(string lang, bool ishomepage, CancellationToken ct = default)
+        {
+            var want = (lang ?? "tr").ToLowerInvariant();
+            var l = await _langRepo.DataSet
+                .Where(x => !x.IsDeleted && x.IsActive && x.Code.ToLower() == want)
+                .Select(x => new { x.Id, x.Code })
+                .FirstOrDefaultAsync(ct)
+                ?? await _langRepo.DataSet
+                     .Where(x => !x.IsDeleted && x.IsActive && x.IsDefault)
+                     .Select(x => new { x.Id, x.Code })
+                     .FirstOrDefaultAsync(ct)
+                ?? new { Id = 1, Code = "tr" };
+
+            var langId = l.Id;
+            var langCode = l.Code;
+
+            // 1) Slug'a göre sayfayı bul (detay ya da liste başlığı olabilir)
+            var hit = await (from ci in _contentRepo.DataSet
+                             where !ci.IsDeleted && ci.IsActive && ci.Type == ContentItemType.Page && ci.IsHomepage==true
+                             join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId
+                             where !tr.IsDeleted && tr.IsActive && tr.LanguageId == langId
+                             select new { ci, tr })
+                            .FirstOrDefaultAsync(ct);
+
+            if (hit is null) return null;
+
+            // 2) Bu sayfanın çocukları var mı? (OwnerType=Content, OwnerId=this.Id)
+            var childCount = await _contentRepo.DataSet
+                .Where(x => !x.IsDeleted && x.IsActive
+                            && x.Type == ContentItemType.Page
+                            && x.OwnerType == ContentOwnerType.Content
+                            && x.OwnerId == hit.ci.Id)
+                .CountAsync(ct);
+
+            if (childCount > 0)
+            {
+                // Bu bir LİSTE sayfasıdır → genel list builder ile dön
+                return await BuildListByHeaderAsync(langId, langCode, hit.ci, hit.tr, ct);
+            }
+
+            // 3) Çocuğu yoksa DETAY sayfasıdır → mevcut detail akışın
+            return await BuildDetailByHitAsync(langId, langCode, hit.ci, hit.tr, ct);
+        }
+
         private static string Join2(string lang, string slug) => "/" + lang + "/" + slug;
         private static string Join3(string lang, string parent, string slug) => "/" + lang + "/" + parent + "/" + slug;
 

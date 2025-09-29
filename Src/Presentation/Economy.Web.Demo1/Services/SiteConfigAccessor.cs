@@ -56,13 +56,22 @@ namespace Economy.Web.Demo1.Services
                 });
             })!;
         }
-
+        public async Task<PageUnifiedVm?> GetHomepageAsync(string lang)
+        {
+            var url = $"/api/pages/Homepage";
+            var resp = await _apiClient.GetAsync<PageUnifiedVm>(url);
+            return resp;
+        }
         public async Task<PageUnifiedVm?> GetPageAsync(string lang, string slug)
         {
-            // /api/pages/{lang}/{slug}
-            var url = $"/api/pages/{lang}/{slug}";
+            var url = $"/api/pages/{slug}";
             var resp = await _apiClient.GetAsync<PageUnifiedVm>(url, lang);
-
+            return resp;
+        }
+        
+        public async Task<List<SlideVm>> GetSlidesAsync(string lang)
+        {
+            var resp = await _apiClient.GetAsync<List<SlideVm>>("/api/siteconfig/slides", lang);
             return resp;
         }
     }

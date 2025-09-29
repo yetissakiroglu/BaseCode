@@ -20,6 +20,9 @@ namespace Economy.Domain.Entites.EntityAppNewPages
         // Sadece Block’larda anlamlı
         public BlockTemplate? BlockTemplate { get; set; }
 
+        public bool IsHomepage { get; set; } = true;
+
+        
         // Listeleme/SEO
         public bool IsActive { get; set; } = true;
         public int SortOrder { get; set; } = 0;

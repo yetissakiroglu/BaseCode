@@ -1,0 +1,126 @@
+﻿@using Economy.Core.Enums
+@using Economy.UI.Models
+@using Economy.Web.Demo1.Services
+@model IEnumerable<SlideVm>
+@inject ICdnHelper Cdn
+
+@{
+    var slides = (Model ?? Enumerable.Empty<SlideVm>())
+                 .Where(s => !string.IsNullOrWhiteSpace(s.Image))
+                 .ToList();
+    bool hasSlides = slides.Count > 0;
+
+    string ToTarget(SlideTargetEnum t) => t switch
+    {
+        SlideTargetEnum.Blank => "_blank",
+        SlideTargetEnum.Self => "_self",
+        _ => "_self"
+    };
+
+    string ToRel(bool isExternal, SlideTargetEnum t)
+        => (isExternal || t == SlideTargetEnum.Blank) ? "noopener noreferrer" : "";
+}
+
+<section class="tour-details-section">
+    <div class="tour-details-area">
+        <div class="tour-details-banner">
+            <div class="swiper tourSwiper-active">
+                <div class="swiper-wrapper">
+                    @if (hasSlides)
+                    {
+                        for (int i = 0; i < slides.Count; i++)
+                        {
+                            var s = slides[i];
+                            var alt = string.IsNullOrWhiteSpace(s.Title) ? "slide image" : s.Title;
+                            var loading = i == 0 ? "eager" : "lazy";
+                            var fetchPriority = i == 0 ? "high" : "auto";
+                            var target = ToTarget(s.Target);
+                            var rel = ToRel(s.IsExternal, s.Target);
+                            var hasLink = !string.IsNullOrWhiteSpace(s.Url);
+
+                            <div class="swiper-slide">
+                                @if (hasLink)
+                                {
+                                    <a href="@s.Url" target="@target" rel="@rel" aria-label="@s.Title">
+
+                                        @Html.Raw(Cdn.PictureHtml(s.Image, new[] { 640, 960, 1280, 1600 }, "100vw", s.Title ?? "Slide", eagerLcp: true))
+
+                                       
+                                    </a>
+                                }
+                                else
+                                {
+                                    @Html.Raw(Cdn.PictureHtml(s.Image, new[] { 640, 960, 1280, 1600 }, "100vw", s.Title ?? "Slide", eagerLcp: true))
+
+                                }
+
+                                @* İsteğe bağlı başlık/alt yazı ve buton *@
+                                @if (!string.IsNullOrWhiteSpace(s.Title) || !string.IsNullOrWhiteSpace(s.Description) || (hasLink && !string.IsNullOrWhiteSpace(s.ButtonText)))
+                                {
+                                    <div class="slide-caption">
+                                        @if (!string.IsNullOrWhiteSpace(s.Title))
+                                        {
+                                            <h3 class="slide-title">@s.Title</h3>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(s.Description))
+                                        {
+                                            <p class="slide-desc">@s.Description</p>
+                                        }
+                                        @if (hasLink && !string.IsNullOrWhiteSpace(s.ButtonText))
+                                        {
+                                            <a class="btn btn-primary"
+                                               href="@s.Url"
+                                               target="@target"
+                                               rel="@rel">
+                                                @s.ButtonText
+                                            </a>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="swiper-slide">
+                            <img src="~/assets/images/gallery/tour-details-banner.png"
+                                 alt="placeholder"
+                                 loading="eager"
+                                 decoding="async"
+                                 fetchpriority="high"
+                                 width="1600" height="900" />
+                        </div>
+                    }
+                </div>
+
+                <div class="swiper-button-next" aria-label="Next slide"><i class="ri-arrow-right-s-line"></i></div>
+                <div class="swiper-button-prev" aria-label="Previous slide"><i class="ri-arrow-left-s-line"></i></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Basit bir caption yerleşimi — dilersen kendi CSS’ine taşı */
+    .slide-caption {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 1rem 1.25rem;
+        background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 100%);
+        color: #fff;
+    }
+
+    .slide-title {
+        margin: 0 0 .25rem 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+
+    .slide-desc {
+        margin: 0 0 .5rem 0;
+        font-size: .95rem;
+        opacity: .95;
+    }
+</style>

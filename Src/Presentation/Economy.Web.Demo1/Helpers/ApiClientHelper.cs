@@ -23,13 +23,18 @@ namespace Economy.Web.Demo1.Helpers
                 client.DefaultRequestHeaders.AcceptLanguage.Clear();
                 client.DefaultRequestHeaders.AcceptLanguage.ParseAdd(lang);
             }
+            try
+            {
+                using var res = await client.GetAsync(url, ct);
 
-            using var res = await client.GetAsync(url, ct);
-            res.EnsureSuccessStatusCode();
-
+                res.EnsureSuccessStatusCode();
+          
             await using var stream = await res.Content.ReadAsStreamAsync(ct);
-            return await JsonSerializer.DeserializeAsync<T>(stream,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, ct);
+                return await JsonSerializer.DeserializeAsync<T>(stream,
+          new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, ct);
+            }
+            catch { }
+      return default;
         }
     }
 

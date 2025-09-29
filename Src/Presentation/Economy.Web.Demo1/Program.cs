@@ -1,4 +1,4 @@
-using Economy.Web.Demo1.Helpers;
+ï»¿using Economy.Web.Demo1.Helpers;
 using Economy.Web.Demo1.Middlewares;
 using Economy.Web.Demo1.Services;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -10,12 +10,12 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient("ApiClient", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7248"); // API kök adresi
+    client.BaseAddress = new Uri("https://localhost:7248"); // API kÃ¶k adresi
 });
 builder.Services.AddScoped<IApiClientHelper, ApiClientHelper>();
 builder.Services.AddScoped<ISiteConfigAccessor, SiteConfigAccessor>();
 builder.Services.AddScoped<IMenuService, MenuService>();
-
+builder.Services.AddScoped<ICdnHelper, CdnHelper>();
 builder.Services.AddScoped<ISeoHelper, SeoHelper>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -36,19 +36,33 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        var path = ctx.File.PhysicalPath?.ToLowerInvariant() ?? "";
+        // resimler, css, js â†’ 30 gÃ¼n
+        if (path.EndsWith(".jpg") || path.EndsWith(".jpeg") || path.EndsWith(".png") || path.EndsWith(".webp")
+            || path.EndsWith(".avif") || path.EndsWith(".css") || path.EndsWith(".js"))
+        {
+            ctx.Context.Response.Headers["Cache-Control"] = "public,max-age=2592000,immutable";
+        }
+    }
+});
+app.UseMiddleware<UrlNormalizationMiddleware>();
 app.UseMiddleware<LangResolverMiddleware>();
+
+
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
 app.MapStaticAssets();
 
-// (Teþhis) eþleþen endpoint’i consola yaz
+// (TeÅŸhis) eÅŸleÅŸen endpointâ€™i consola yaz
 app.Use(async (ctx, next) =>
 {
     await next();
-    Console.WriteLine($"[ROUTE] {ctx.Request.Path} -> {ctx.GetEndpoint()?.DisplayName ?? "(eþleþme yok)"}");
+    Console.WriteLine($"[ROUTE] {ctx.Request.Path} -> {ctx.GetEndpoint()?.DisplayName ?? "(eÅŸleÅŸme yok)"}");
 });
 app.MapControllerRoute(
     name: "page-detail",
@@ -71,13 +85,13 @@ app.MapControllerRoute(
 
 
 
-// (opsiyonel) diðer controller/action rotalarý en SONDA kalsýn
+// (opsiyonel) diÄŸer controller/action rotalarÄ± en SONDA kalsÄ±n
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 ).WithStaticAssets(); 
 
-// (opsiyonel) kökü /tr’ye yönlendir
+// (opsiyonel) kÃ¶kÃ¼ /trâ€™ye yÃ¶nlendir
 //app.MapGet("/", ctx => { ctx.Response.Redirect("/tr", false); return Task.CompletedTask; });
 
 

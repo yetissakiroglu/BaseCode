@@ -32,11 +32,17 @@ namespace Economy.Web.Demo1.Controllers
             var origin = $"{Request.Scheme}://{Request.Host}";
             ViewData["Seo"] = await _seo.BuildAsync(seed, controller: "Home", action: "Index", currentLang: lang, xDefaultUrl: origin);
 
-
-
             lang = (lang ?? "tr").ToLowerInvariant();
-            // test çıktısı
-            return View();
+
+            var vm = await _cfg.GetHomepageAsync(lang!);
+            if (vm is null) return NotFound();
+
+            // Görünüm yönlendirmesi
+            if (vm.Type == "list")
+                return View("List", vm);
+
+            return View("Detail", vm);
+
         }
 
         // /tr/odalarimiz -> Index (lang ve slug dolu gelmeli)

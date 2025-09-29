@@ -2,7 +2,7 @@
 @model PageUnifiedVm
 @{
     Layout = "_Layout";
-    string BuildUrl(string slug) => $"/@Model.Lang/@slug";
+    string BuildUrl(string slug) => $"/{@Model.Lang}/{@slug}";
 }
 
 @await Html.PartialAsync("_Breadcrumbs", Model)

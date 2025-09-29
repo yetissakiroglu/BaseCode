@@ -11,10 +11,19 @@ namespace Economy.Panel.UI.Areas.Api
         private readonly IPageAccessor _pages;
         public PagesController(IPageAccessor pages) => _pages = pages;
 
-        [HttpGet("{lang}/{slug}")]
-        public async Task<IActionResult> Get(string lang, string slug, CancellationToken ct)
+        [HttpGet("{slug}")]
+        public async Task<IActionResult> GetAsync(string slug, CancellationToken ct)
         {
+            var lang = HttpContext.Request.Headers["Accept-Language"].ToString();
             var vm = await _pages.GetAsync(lang, slug, ct);
+            if (vm is null) return NotFound();
+            return Ok(vm);
+        }
+        [HttpGet("Homepage")]
+        public async Task<IActionResult> GetHomepageAsync(CancellationToken ct)
+        {
+            var lang = HttpContext.Request.Headers["Accept-Language"].ToString();
+            var vm = await _pages.GetAsync(lang, true, ct);
             if (vm is null) return NotFound();
             return Ok(vm);
         }
