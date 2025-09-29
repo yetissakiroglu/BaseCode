@@ -50,7 +50,11 @@ app.Use(async (ctx, next) =>
     await next();
     Console.WriteLine($"[ROUTE] {ctx.Request.Path} -> {ctx.GetEndpoint()?.DisplayName ?? "(eþleþme yok)"}");
 });
-
+app.MapControllerRoute(
+    name: "page-detail",
+    pattern: "{lang:length(2)}/{parentSlug}/{slug}",
+    defaults: new { controller = "Pages", action = "IndexParent" }
+);
 // 1) /{lang}/{slug}  -> Pages.Index
 app.MapControllerRoute(
     name: "pages-with-slug",
@@ -64,6 +68,8 @@ app.MapControllerRoute(
     pattern: "{lang:length(2)}",
     defaults: new { controller = "Pages", action = "Anasayfa" }
 );
+
+
 
 // (opsiyonel) diðer controller/action rotalarý en SONDA kalsýn
 app.MapControllerRoute(

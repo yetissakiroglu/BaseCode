@@ -4,6 +4,7 @@
     Layout = "_Layout";
     string BuildUrl(string slug) => $"/@Model.Lang/@slug";
 }
+@await Html.PartialAsync("_Breadcrumbs", Model)
 
 <section class="page-header">
     <h1>@Model.Title</h1>

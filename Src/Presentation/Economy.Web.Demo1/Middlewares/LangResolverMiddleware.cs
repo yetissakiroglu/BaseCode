@@ -46,7 +46,7 @@ namespace Economy.Web.Demo1.Middlewares
 
                 // Hatırlatma çerezi
                 ctx.Response.Cookies.Append(LangCookieName, lang,
-                    new CookieOptions { Expires = DateTimeOffset.UtcNow.AddMinutes(10), HttpOnly = false, SameSite = SameSiteMode.Lax });
+                    new CookieOptions { Expires = DateTimeOffset.UtcNow.AddMinutes(1), HttpOnly = false, SameSite = SameSiteMode.Lax });
 
                 await _next(ctx);
                 return;

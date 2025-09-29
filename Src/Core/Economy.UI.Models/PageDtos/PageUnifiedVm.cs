@@ -17,6 +17,15 @@ namespace Economy.UI.Models.PageDtos
         public int? Id { get; set; }
         public string? Lang { get; set; }
         public string? Slug { get; set; }
+        public string? ParentTitle { get; set; }
+
+        
+        public string? ParentSlug { get; set; }
+        public string? Url { get; set; }
+
+
+
+
         public string? Title { get; set; }
         public string? Summary { get; set; }
         public string? Body { get; set; }
@@ -35,6 +44,8 @@ namespace Economy.UI.Models.PageDtos
     {
         public int Id { get; set; }
         public string Slug { get; set; } = "";
+        public string? ParentSlug { get; set; }
+        public string? Url { get; set; }
         public string Title { get; set; } = "";
         public string? Summary { get; set; }
         public string? Image { get; set; }
@@ -87,7 +98,11 @@ namespace Economy.UI.Models.PageDtos
     {
         public int Id { get; set; }
         public string Slug { get; set; } = "";
+        public string? ParentSlug { get; set; } = "";
+
         public string Title { get; set; } = "";
+        public string? ParentTitle { get; set; } = "";
+
         public string? Summary { get; set; }
         public string? Image { get; set; }
         public string Url { get; set; } = ""; // "/tr/aile-odasi"

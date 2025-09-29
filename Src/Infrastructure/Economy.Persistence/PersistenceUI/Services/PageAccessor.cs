@@ -5,6 +5,7 @@ using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Domain.Entites.EntityAppNewPages;
 using Economy.UI.Models.PageDtos;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Economy.Persistence.PersistenceUI.Services
 {
@@ -70,14 +71,43 @@ namespace Economy.Persistence.PersistenceUI.Services
             // 3) Çocuğu yoksa DETAY sayfasıdır → mevcut detail akışın
             return await BuildDetailByHitAsync(langId, langCode, hit.ci, hit.tr, ct);
         }
+        private static string Join2(string lang, string slug) => "/" + lang + "/" + slug;
+        private static string Join3(string lang, string parent, string slug) => "/" + lang + "/" + parent + "/" + slug;
 
+        // Belirli sayfaların parent slug’larını (mevcut dilde) tek seferde topla.
+        private async Task<Dictionary<int, string>> GetParentSlugMapAsync(
+            int langId, IEnumerable<int?> ownerIds, CancellationToken ct)
+        {
+            var ids = ownerIds.Where(x => x.HasValue).Select(x => x!.Value).Distinct().ToList();
+            if (ids.Count == 0) return new Dictionary<int, string>();
+
+            return await _trRepo.DataSet
+                .Where(t => !t.IsDeleted && t.IsActive && t.LanguageId == langId && ids.Contains(t.ContentItemId))
+                .GroupBy(t => t.ContentItemId)
+                .Select(g => new { Id = g.Key, Slug = g.Select(x => x.Slug).FirstOrDefault() })
+                .ToDictionaryAsync(x => x.Id, x => x.Slug ?? "", ct);
+        }
+
+        private async Task<Dictionary<int, string>> GetParentTitleMapAsync(
+    int langId, IEnumerable<int?> ownerIds, CancellationToken ct)
+        {
+            return await (from ci in _contentRepo.DataSet
+                          join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId
+                          where !ci.IsDeleted && ci.IsActive
+                                && !tr.IsDeleted && tr.IsActive
+                                && tr.LanguageId == langId
+                                && ownerIds.Contains(ci.Id)
+                          select new { ci.Id, tr.Title })
+                         .ToDictionaryAsync(x => x.Id, x => x.Title ?? "", ct);
+        }
         // ---------------- helpers ----------------
         private async Task<PageUnifiedVm> BuildListByHeaderAsync(
-    int langId, string langCode,
-    ContentItem headerCi, ContentItemTranslation headerTr,
-    CancellationToken ct)
+        int langId, string langCode,
+        ContentItem headerCi, ContentItemTranslation headerTr,
+        CancellationToken ct)
         {
-            // 1) Bu başlığa bağlı çocuk sayfaları getir
+            var listSlug = headerTr.Slug ?? "";
+
             var items = await (from ci in _contentRepo.DataSet
                                where !ci.IsDeleted && ci.IsActive
                                      && ci.Type == ContentItemType.Page
@@ -90,19 +120,16 @@ namespace Economy.Persistence.PersistenceUI.Services
                                {
                                    Id = ci.Id,
                                    Slug = tr.Slug ?? "",
+                                   ParentSlug = listSlug,                           // <-- parent sabit
                                    Title = tr.Title ?? "",
                                    Summary = tr.Summary,
                                    Image = tr.Image,
                                    PublishAtUtc = ci.PublishAtUtc,
-                                   IsActive = ci.IsActive
+                                   IsActive = ci.IsActive,
+                                   Url = Join3(langCode, listSlug, tr.Slug ?? "")  // <-- /lang/parent/child
                                })
                               .ToListAsync(ct);
 
-            // 2) contentType'ı dinamik verelim: rooms/campaigns/restoranlar …
-            // UI'in beklediği sabit değer yoksa slug'ı kullanmak en pratik olanı:
-            var contentType = headerTr.Slug?.ToLowerInvariant() ?? "list";
-
-            // 3) hreflangs
             var hreflangs = await (from t in _trRepo.DataSet
                                    where !t.IsDeleted && t.IsActive && t.ContentItemId == headerCi.Id
                                    join la in _langRepo.DataSet on t.LanguageId equals la.Id
@@ -112,50 +139,86 @@ namespace Economy.Persistence.PersistenceUI.Services
                                    {
                                        Lang = la.Code,
                                        Slug = t.Slug ?? "",
-                                       Url = ""
-                                   }).ToListAsync(ct);
+                                       Url = Join2(la.Code, t.Slug ?? "")
+                                   })
+                                  .ToListAsync(ct);
 
-            // 4) VM
             return new PageUnifiedVm
             {
                 Type = "list",
-                ContentType = contentType,
-                Items = items,
-
+                ContentType = (headerTr.Slug ?? "list").ToLowerInvariant(), // istersen "rooms" sabitle
                 Id = headerCi.Id,
                 Lang = langCode,
                 Slug = headerTr.Slug,
-                Title = headerTr.Title,
+                ParentSlug = null,
+                ParentTitle = null,
+                Url = Join2(langCode, listSlug),
+
+                Title = string.IsNullOrWhiteSpace(headerTr.Title) ? headerTr.Slug : headerTr.Title,
                 Summary = headerTr.Summary,
                 Body = headerTr.Body,
                 Image = headerTr.Image,
 
                 MetaTitle = string.IsNullOrWhiteSpace(headerTr.MetaTitle) ? headerTr.Title : headerTr.MetaTitle,
                 MetaDescription = headerTr.MetaDescription,
-                Hreflangs = hreflangs
+                Hreflangs = hreflangs,
+                Items = items
             };
         }
 
+
         private async Task<PageUnifiedVm> BuildDetailByHitAsync(
-    int langId, string langCode,
-    ContentItem ci, ContentItemTranslation tr,
-    CancellationToken ct)
+       int langId, string langCode,
+       ContentItem ci, ContentItemTranslation tr,
+       CancellationToken ct)
         {
-            // 1) Hreflangs
+            // (1) Parent slug + title (önce aynı dil, yoksa herhangi dil)
+            string? parentSlug = null;
+            string? parentTitle = null;
+
+            if (ci.OwnerType == ContentOwnerType.Content && ci.OwnerId.HasValue)
+            {
+                var parentTrs = await _trRepo.DataSet
+                    .Where(x => !x.IsDeleted && x.IsActive && x.ContentItemId == ci.OwnerId.Value)
+                    .OrderBy(x => x.LanguageId)
+                    .Select(x => new { x.LanguageId, x.Slug, x.Title })
+                    .ToListAsync(ct);
+
+                var same = parentTrs.FirstOrDefault(x => x.LanguageId == langId);
+                if (same is not null)
+                {
+                    parentSlug = same.Slug;
+                    parentTitle = same.Title;
+                }
+                else if (parentTrs.Count > 0)
+                {
+                    parentSlug = parentTrs[0].Slug;
+                    parentTitle = parentTrs[0].Title;
+                }
+            }
+
+            // (2) Hreflangs (parent’ın aynı dil slug’ını da ekle)
             var hreflangs = await (from t in _trRepo.DataSet
                                    where !t.IsDeleted && t.IsActive && t.ContentItemId == ci.Id
                                    join la in _langRepo.DataSet on t.LanguageId equals la.Id
                                    where !la.IsDeleted && la.IsActive
+                                   join pt in _trRepo.DataSet
+                                        on new { P = (ci.OwnerId ?? 0), L = t.LanguageId }
+                                        equals new { P = pt.ContentItemId, L = pt.LanguageId }
+                                        into ptx
+                                   from pt in ptx.DefaultIfEmpty()
                                    orderby la.Code
                                    select new HreflangVm
                                    {
                                        Lang = la.Code,
                                        Slug = t.Slug ?? "",
-                                       Url = "" // Controller'da absolut üretilebilir
+                                       Url = (pt != null && !string.IsNullOrWhiteSpace(pt.Slug))
+                                           ? Join3(la.Code, pt.Slug!, t.Slug ?? "")
+                                           : Join2(la.Code, t.Slug ?? "")
                                    })
                                   .ToListAsync(ct);
 
-            // 2) Gallery (sayfa seviyesi)
+            // (3) Gallery
             var gallery = await (from m in _mediaRepo.DataSet
                                  where !m.IsDeleted && m.IsActive
                                        && m.OwnerType == MediaOwnerType.Content
@@ -167,20 +230,20 @@ namespace Economy.Persistence.PersistenceUI.Services
                                      Url = m.Url,
                                      SortOrder = m.SortOrder,
                                      Alt = _mediaTrRepo.DataSet
-                                            .Where(t => !t.IsDeleted && t.IsActive && t.ContentMediaId == m.Id && t.LanguageId == langId)
-                                            .Select(t => t.Alt).FirstOrDefault(),
+                                         .Where(t => !t.IsDeleted && t.IsActive && t.ContentMediaId == m.Id && t.LanguageId == langId)
+                                         .Select(t => t.Alt).FirstOrDefault(),
                                      Caption = _mediaTrRepo.DataSet
-                                            .Where(t => !t.IsDeleted && t.IsActive && t.ContentMediaId == m.Id && t.LanguageId == langId)
-                                            .Select(t => t.Caption).FirstOrDefault()
+                                         .Where(t => !t.IsDeleted && t.IsActive && t.ContentMediaId == m.Id && t.LanguageId == langId)
+                                         .Select(t => t.Caption).FirstOrDefault()
                                  })
                                 .ToListAsync(ct);
 
-            // 3) Blocks (OwnerType=Content, OwnerId=pageId)
+            // (4) Blocks — PageList kartları için parent’lı URL’ler
             var rawBlocks = await (from b in _contentRepo.DataSet
                                    where !b.IsDeleted && b.IsActive
-                                      && b.Type == ContentItemType.Block
-                                      && b.OwnerType == ContentOwnerType.Content
-                                      && b.OwnerId == ci.Id
+                                         && b.Type == ContentItemType.Block
+                                         && b.OwnerType == ContentOwnerType.Content
+                                         && b.OwnerId == ci.Id
                                    orderby b.SortOrder, b.Id
                                    select new
                                    {
@@ -207,10 +270,7 @@ namespace Economy.Persistence.PersistenceUI.Services
 
             foreach (var x in rawBlocks)
             {
-                var tplName = x.BlockTemplate.HasValue
-                    ? x.BlockTemplate.Value.ToString() // "Hero","RichText","IncludeSnippet","RoomList","CampaignList","PageList",...
-                    : "Custom";
-
+                var tplName = x.BlockTemplate.HasValue ? x.BlockTemplate.Value.ToString() : "Custom";
                 var vm = new BlockVm
                 {
                     Id = x.Id,
@@ -226,7 +286,6 @@ namespace Economy.Persistence.PersistenceUI.Services
                     JsonData = x.T?.JsonData
                 };
 
-                // --- Template bazlı zenginleştirme (materialize sonrası JSON parse) ---
                 if (tplName == nameof(BlockTemplate.IncludeSnippet))
                 {
                     var code = ReadJsonString(vm.JsonData, "snippetCode");
@@ -234,115 +293,84 @@ namespace Economy.Persistence.PersistenceUI.Services
                     {
                         var sn = await (from s in _contentRepo.DataSet
                                         where !s.IsDeleted && s.IsActive && s.Type == ContentItemType.Snippet && s.Code == code
-                                        join t in _trRepo.DataSet on s.Id equals t.ContentItemId
-                                        where !t.IsDeleted && t.IsActive && t.LanguageId == langId
-                                        select new { t.Title, t.Body })
+                                        join ttr in _trRepo.DataSet on s.Id equals ttr.ContentItemId
+                                        where !ttr.IsDeleted && ttr.IsActive && ttr.LanguageId == langId
+                                        select new { ttr.Title, ttr.Body })
                                        .FirstOrDefaultAsync(ct);
-
                         vm.SnippetTitle = sn?.Title;
                         vm.SnippetBody = sn?.Body;
                     }
                 }
-                else if (tplName == nameof(BlockTemplate.RoomList))
-                {
-                    var ids = ReadJsonIntArray(vm.JsonData, "pageIds");
-                    var q = from p in _contentRepo.DataSet
-                            where !p.IsDeleted && p.IsActive && p.Type == ContentItemType.Page
-                            join t in _trRepo.DataSet on p.Id equals t.ContentItemId
-                            where !t.IsDeleted && t.IsActive && t.LanguageId == langId
-                            select new { p, t };
-
-                    if (ids?.Any() == true) q = q.Where(z => ids.Contains(z.p.Id));
-
-                    vm.Rooms = await q.OrderBy(z => z.p.SortOrder).ThenBy(z => z.p.Id)
-                        .Select(z => new PageCardVm
-                        {
-                            Id = z.p.Id,
-                            Slug = z.t.Slug ?? "",
-                            Title = z.t.Title ?? "",
-                            Summary = z.t.Summary,
-                            Image = z.t.Image,
-                            Url = BuildRelativeUrl(langCode, z.t.Slug ?? "")
-                        })
-                        .Take(ids?.Any() == true ? int.MaxValue : 12)
-                        .ToListAsync(ct);
-                }
-                else if (tplName == nameof(BlockTemplate.CampaignList))
-                {
-                    var ids = ReadJsonIntArray(vm.JsonData, "pageIds");
-                    var q = from p in _contentRepo.DataSet
-                            where !p.IsDeleted && p.IsActive && p.Type == ContentItemType.Page
-                            join t in _trRepo.DataSet on p.Id equals t.ContentItemId
-                            where !t.IsDeleted && t.IsActive && t.LanguageId == langId
-                            select new { p, t };
-
-                    if (ids?.Any() == true) q = q.Where(z => ids.Contains(z.p.Id));
-
-                    vm.Campaigns = await q.OrderBy(z => z.p.SortOrder).ThenBy(z => z.p.Id)
-                        .Select(z => new CampaignCardVm
-                        {
-                            Id = z.p.Id,
-                            Slug = z.t.Slug ?? "",
-                            Title = z.t.Title ?? "",
-                            Summary = z.t.Summary,
-                            Image = z.t.Image,
-                            Url = BuildRelativeUrl(langCode, z.t.Slug ?? ""),
-                            Badge = ReadJsonString(z.t.JsonData, "badge"),
-                            ValidFrom = ReadJsonString(z.t.JsonData, "validFrom"),
-                            ValidTo = ReadJsonString(z.t.JsonData, "validTo"),
-                            PriceFrom = ReadJsonDecimal(z.t.JsonData, "priceFrom"),
-                            Currency = ReadJsonString(z.t.JsonData, "currency")
-                        })
-                        .Take(ids?.Any() == true ? int.MaxValue : 12)
-                        .ToListAsync(ct);
-                }
-                else if (tplName == nameof(BlockTemplate.PageList))
+                else if (tplName == nameof(BlockTemplate.PageList)
+                      || tplName == nameof(BlockTemplate.RoomList)
+                      || tplName == nameof(BlockTemplate.CampaignList))
                 {
                     var ids = ReadJsonIntArray(vm.JsonData, "pageIds");
                     var slugs = ReadJsonStringArray(vm.JsonData, "slugs");
                     var take = ReadJsonInt(vm.JsonData, "take") ?? 12;
-                    var order = ReadJsonString(vm.JsonData, "order") ?? "sort_asc"; // publish_desc/sort_desc/sort_asc
 
                     var q = from p in _contentRepo.DataSet
                             where !p.IsDeleted && p.IsActive && p.Type == ContentItemType.Page
-                            join t in _trRepo.DataSet on p.Id equals t.ContentItemId
-                            where !t.IsDeleted && t.IsActive && t.LanguageId == langId
-                            select new { p, t };
+                            join ttr in _trRepo.DataSet on p.Id equals ttr.ContentItemId
+                            where !ttr.IsDeleted && ttr.IsActive && ttr.LanguageId == langId
+                            select new { p, ttr };
 
                     if (ids?.Any() == true) q = q.Where(z => ids.Contains(z.p.Id));
-                    if (slugs?.Any() == true) q = q.Where(z => slugs.Contains(z.t.Slug!));
+                    if (slugs?.Any() == true) q = q.Where(z => slugs.Contains(z.ttr.Slug!));
 
-                    q = order switch
+                    var list = await q
+                        .OrderBy(z => z.p.SortOrder).ThenBy(z => z.p.Id)
+                        .Take(take)
+                        .ToListAsync(ct);
+
+                    // Parent slug’ları tek seferde çek
+                    var parentSlugMap = await GetParentSlugMapAsync(langId, list.Select(z => z.p.OwnerId), ct);
+                    var parentTitleMap = await GetParentTitleMapAsync(langId, list.Select(z => z.p.OwnerId), ct);
+
+                    vm.Pages = list.Select(z =>
                     {
-                        "publish_desc" => q.OrderByDescending(z => z.p.PublishAtUtc).ThenBy(z => z.p.SortOrder),
-                        "sort_desc" => q.OrderByDescending(z => z.p.SortOrder).ThenByDescending(z => z.p.Id),
-                        _ => q.OrderBy(z => z.p.SortOrder).ThenBy(z => z.p.Id)
-                    };
+                        parentSlugMap.TryGetValue(z.p.OwnerId ?? 0, out var pSlug);
+                        parentTitleMap.TryGetValue(z.p.OwnerId ?? 0, out var pTitle);
 
-                    vm.Pages = await q.Take(take)
-                        .Select(z => new PageCardVm
+                        pSlug = pSlug ?? "";
+                        pTitle = pTitle ?? "";
+
+                        return new PageCardVm
                         {
                             Id = z.p.Id,
-                            Slug = z.t.Slug ?? "",
-                            Title = z.t.Title ?? "",
-                            Summary = z.t.Summary,
-                            Image = z.t.Image,
-                            Url = BuildRelativeUrl(langCode, z.t.Slug ?? "")
-                        })
-                        .ToListAsync(ct);
+                            Slug = z.ttr.Slug ?? "",
+                            ParentSlug = string.IsNullOrWhiteSpace(pSlug) ? null : pSlug,
+                            ParentTitle = string.IsNullOrWhiteSpace(pTitle) ? null : pTitle,
+                            Title = z.ttr.Title ?? "",
+                            Summary = z.ttr.Summary,
+                            Image = z.ttr.Image,
+                            Url = !string.IsNullOrWhiteSpace(pSlug)
+                                ? Join3(langCode, pSlug, z.ttr.Slug ?? "")
+                                : Join2(langCode, z.ttr.Slug ?? "")
+                        };
+                    }).ToList();
                 }
 
                 blocks.Add(vm);
             }
 
-            // 4) Detail VM
-            var detail = new PageUnifiedVm
+            // (5) Kendi URL
+            var selfUrl = !string.IsNullOrWhiteSpace(parentSlug)
+                ? Join3(langCode, parentSlug!, tr.Slug ?? "")
+                : Join2(langCode, tr.Slug ?? "");
+
+            // (6) VM (items = null çünkü detail)
+            return new PageUnifiedVm
             {
                 Type = "detail",
-                ContentType = GuessContentType(tr, ci), // "rooms" | "campaigns" | "page" (istersen sabit "page" yap)
+                ContentType = GuessContentType(tr, ci), // istersen sabit "rooms" ver
                 Id = ci.Id,
                 Lang = langCode,
                 Slug = tr.Slug,
+                ParentSlug = parentSlug,
+                ParentTitle = parentTitle,
+                Url = selfUrl,
+
                 Title = tr.Title,
                 Summary = tr.Summary,
                 Body = tr.Body,
@@ -350,15 +378,16 @@ namespace Economy.Persistence.PersistenceUI.Services
                 MetaTitle = string.IsNullOrWhiteSpace(tr.MetaTitle) ? tr.Title : tr.MetaTitle,
                 MetaDescription = tr.MetaDescription,
                 OgImage = tr.OgImage,
+
                 Hreflangs = hreflangs,
                 Gallery = gallery,
-                Blocks = blocks
+                Blocks = blocks,
+                Items = null
             };
-
-            return detail;
-
-        
         }
+
+
+
         // ---- Helpers (serviste zaten varsa bunları kullan/çıkar) ----
         private static string BuildRelativeUrl(string lCode, string s) => $"/{lCode}/{s}";
 

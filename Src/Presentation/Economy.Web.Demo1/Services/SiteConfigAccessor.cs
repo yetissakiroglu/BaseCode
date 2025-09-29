@@ -57,7 +57,14 @@ namespace Economy.Web.Demo1.Services
             })!;
         }
 
-      
+        public async Task<PageUnifiedVm?> GetPageAsync(string lang, string slug)
+        {
+            // /api/pages/{lang}/{slug}
+            var url = $"/api/pages/{lang}/{slug}";
+            var resp = await _apiClient.GetAsync<PageUnifiedVm>(url, lang);
+
+            return resp;
+        }
     }
 
 }

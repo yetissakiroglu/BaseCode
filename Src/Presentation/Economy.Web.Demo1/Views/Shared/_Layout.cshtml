@@ -64,7 +64,7 @@
                                         <div class="d-none d-lg-block">
                                             <div class="header-right">
                                                 <div class="ms-auto">
-                                                    @await Html.PartialAsync("_LangSwitcher", cfg.Technical.SupportedLanguages)
+                                                    @await Html.PartialAsync("_LangSwitcher", cfg)
                                                 </div>
 
 
@@ -436,9 +436,7 @@
         </div>
         <!-- / End-Search -->
     </header>
-
-
-    <main role="main" class="container">
+    <main>
         @RenderBody()
     </main>
 

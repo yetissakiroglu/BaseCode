@@ -1,0 +1,16 @@
+﻿@using Economy.UI.Models.PageDtos
+@model PageCardVm
+<article class="card">
+    <a href="@Model.Url" class="stretched-link">
+        <div class="card-image">
+            <img src="@Model.Image" alt="@Model.Title" />
+        </div>
+        <div class="card-body">
+            <h3>@Model.Title</h3>
+            @if (!string.IsNullOrWhiteSpace(Model.Summary))
+            {
+                <p>@Model.Summary</p>
+            }
+        </div>
+    </a>
+</article>

@@ -41,14 +41,29 @@ namespace Economy.Web.Demo1.Controllers
 
         // /tr/odalarimiz -> Index (lang ve slug dolu gelmeli)
         [HttpGet]
-        public IActionResult Index(string lang, string slug)
+        public async Task<IActionResult> IndexAsync(string lang, string slug)
         {
-            lang = (lang ?? "tr").ToLowerInvariant();
-            if (string.IsNullOrWhiteSpace(slug))
-                return RedirectToAction(nameof(AnasayfaAsync), new { lang });
+            var vm = await _cfg.GetPageAsync(lang, slug!);
+            if (vm is null) return NotFound();
 
-            // test çıktısı
-            return View();
+            // Görünüm yönlendirmesi
+            if (vm.Type == "list")
+                return View("List", vm);
+
+            return View("Detail", vm);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> IndexParentAsync(string lang,string parentSlug, string slug)
+        {
+            var vm = await _cfg.GetPageAsync(lang, slug!);
+            if (vm is null) return NotFound();
+
+            // Görünüm yönlendirmesi
+            if (vm.Type == "list")
+                return View("List", vm);
+
+            return View("Detail", vm);
         }
     }
 }
