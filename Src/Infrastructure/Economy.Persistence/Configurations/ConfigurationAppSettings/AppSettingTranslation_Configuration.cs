@@ -1,4 +1,4 @@
-﻿using Economy.Domain.Entites.EntityAppSettings;
+﻿using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

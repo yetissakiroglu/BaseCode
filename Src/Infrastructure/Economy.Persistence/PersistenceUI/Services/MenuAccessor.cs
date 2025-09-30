@@ -1,16 +1,9 @@
 ﻿using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Core.Interfaces;
-using Economy.Domain.Entites.AppEntities;
 using Economy.Domain.Entites.EntityAppLanguage;
-using Economy.Domain.Entites.EntityAppSettings;
 using Economy.Domain.Entites.EntityMenuItems;
 using Economy.UI.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Economy.Persistence.PersistenceUI.Services
 {

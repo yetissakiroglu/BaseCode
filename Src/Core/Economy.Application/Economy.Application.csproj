@@ -17,8 +17,4 @@
     <ProjectReference Include="..\Economy.UI.Models\Economy.UI.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\AdminDtos\" />
-  </ItemGroup>
-
 </Project>

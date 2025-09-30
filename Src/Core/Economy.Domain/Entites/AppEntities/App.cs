@@ -1,6 +1,5 @@
 ﻿using Economy.Core.Enums;
 using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityAppPages;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

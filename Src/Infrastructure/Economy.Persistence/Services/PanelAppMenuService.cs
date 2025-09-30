@@ -27,7 +27,7 @@ namespace Economy.Persistence.Services
         {
             _unitOfWork = unitOfWork;
             _repo = unitOfWork.HotelEntityRepository<AppMenu>();
-            _repoLang = unitOfWork.DefaultEntityRepository<AppLanguage>();
+            _repoLang = unitOfWork.HotelEntityRepository<AppLanguage>();
 
             _validatorMenuItemDto = validatorMenuItemDto;
             _mapper = mapper;

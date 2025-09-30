@@ -1,8 +1,8 @@
 ﻿using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.EntityAppLanguage;
-using Economy.Domain.Entites.EntityAppSettings;
 using Economy.Domain.Entites.EntitySlides;
+using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
 using Economy.UI.Models;
 using Microsoft.EntityFrameworkCore;
 

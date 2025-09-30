@@ -1,15 +1,12 @@
 ﻿using Economy.Application.Dtos.AppDtos;
 using Economy.Application.Validations.AppValidator;
-using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.AppEntities;
 using Economy.Domain.Entites.Identities;
-using Economy.Panel.Application.Dtos.AppCategoryDtos;
 using Economy.Panel.Application.Dtos.AppDtos;
 using Economy.Panel.Application.Extensions;
 using Economy.Panel.Application.Interfaces;
 using System.Net;
-using System.Security.Cryptography;
 
 namespace Economy.Core.Interfaces.Economy.Panel.Persistence.Services
 {

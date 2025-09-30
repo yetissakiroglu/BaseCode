@@ -27,14 +27,8 @@ using Economy.Core.Interfaces.Economy.Panel.Persistence.Services;
 using Economy.Core.Services.Providers;
 using Economy.Domain.Entites.Identities;
 using Economy.Infrastructure.Services;
-using Economy.Panel.Application.Dtos.AppCategoryDtos;
-using Economy.Panel.Application.Dtos.AppCategoryDtos.CategoryTranslationDtos;
-using Economy.Panel.Application.Dtos.AppContentDtos;
-using Economy.Panel.Application.Dtos.AppContentDtos.AppContentTranslationDtos;
 using Economy.Panel.Application.Dtos.AppSlideDtos;
 using Economy.Panel.Application.Interfaces;
-using Economy.Panel.Application.Validations.AppCategoryValidator;
-using Economy.Panel.Application.Validations.AppContentValidator;
 using Economy.Panel.Application.Validations.AppSlideValidator;
 using Economy.Panel.Persistence.Services;
 using Economy.Panel.UI;
@@ -203,15 +197,9 @@ builder.Services.AddScoped<IValidator<AppSettingCreateEditDto>, AppSettingCreate
 
 
 builder.Services.AddScoped<IValidator<AppSlideCreateEditDto>, AppSlideCreateEditDtoValidator>();
-builder.Services.AddTransient<IValidator<AppCategoryCreateEditDto>, AppCategoryCreateEditDtoValidator>();
-builder.Services.AddTransient<IValidator<AppCategoryTranslationCreateEditDto>, AppCategoryTranslationCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppSettingLogoCreateEditDto>, AppSettingLogoCreateEditDtoValidator>();
 
 
-
-
-builder.Services.AddTransient<IValidator<AppContentCreateEditDto>, AppContentCreateEditDtoValidator>();
-builder.Services.AddTransient<IValidator<AppContentTranslationCreateEditDto>, AppContentTranslationCreateEditDtoValidator>();
 
 builder.Services.AddTransient<IValidator<AppCreateEditDto>, AppCreateEditDtoValidator>();
 
@@ -219,12 +207,7 @@ builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sýný
 builder.Services.AddScoped<IPanelAppSettingService, PanelAppSettingService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppLanguageService, PanelAppLanguageService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSettingLogoService, PanelAppSettingLogoService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelAppSettingReservationLinkService, PanelAppSettingReservationLinkService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelAppSettingReservationNumberService, PanelAppSettingReservationNumberService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelAppSettingWhatsappLineService, PanelAppSettingWhatsappLineService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSlideService, PanelAppSlideService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelAppCategoryService, PanelAppCategoryService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelAppContentService, PanelAppContentService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppGeneralSettingService, PanelAppGeneralSettingService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSecuritySettingService, PanelAppSecuritySettingService>();
 builder.Services.AddScoped<IPanelAuditLogService, PanelAuditLogService>();

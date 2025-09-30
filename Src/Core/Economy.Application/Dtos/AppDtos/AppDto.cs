@@ -1,7 +1,6 @@
 ﻿using Economy.Core.Enums;
+using Economy.Core.Extensions;
 using Economy.Core.Helpers;
-using Economy.Domain.Entites.AppEntities;
-using Economy.Domain.Entites.Identities;
 using System.ComponentModel;
 
 namespace Economy.Panel.Application.Dtos.AppDtos
@@ -26,7 +25,7 @@ namespace Economy.Panel.Application.Dtos.AppDtos
         public bool IsPassword { get; set; }
 
         [DisplayName("Şifre Durumu")]
-        public string PasswordStatus => DisplayHelper.GetYesNoText(IsPassword);
+        public string PasswordStatus => IsPassword.GetYesNoText();
 
         [DisplayName("Şifre")]
         public string Password { get; set; }

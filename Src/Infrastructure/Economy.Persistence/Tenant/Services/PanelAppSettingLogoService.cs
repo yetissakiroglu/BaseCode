@@ -5,7 +5,7 @@ using Economy.Core.Helpers;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
-using Economy.Domain.Entites.EntityAppSettings;
+using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
 using Economy.Panel.Application.Extensions;
 using FluentValidation;
 using System.Net;
