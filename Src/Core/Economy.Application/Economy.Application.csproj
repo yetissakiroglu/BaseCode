@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Folder Include="Dtos\AdminDtos\" />
-    <Folder Include="Mapping\AdminMappings\" />
   </ItemGroup>
 
 </Project>

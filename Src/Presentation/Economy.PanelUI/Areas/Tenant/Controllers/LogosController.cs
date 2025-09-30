@@ -1,7 +1,7 @@
-﻿using Economy.Panel.Application.Dtos.AppSettingLogoDtos;
-using Economy.Panel.Application.Interfaces;
+﻿using Economy.Application.TenantUI.Dtos.AppSettingLogoDtos;
+using Economy.Application.TenantUI.Interfaces;
+using Economy.Panel.UI.Areas.Tenant.Models.AppSettingLogoViewModels;
 using Economy.Panel.UI.Controllers;
-using Economy.Panel.UI.Models.SettingLogoViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,30 +12,24 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
     public class LogosController : BaseController
     {
         private readonly IPanelAppSettingLogoService _panelAppSettingLogoService;
-        private readonly IWebHostEnvironment _environment;
-
-        public LogosController(IPanelAppSettingLogoService panelAppSettingLogoService, IWebHostEnvironment environment)
+        public LogosController(IPanelAppSettingLogoService panelAppSettingLogoService)
         {
             _panelAppSettingLogoService = panelAppSettingLogoService;
-            _environment = environment;
         }
 
         public IActionResult Index()
         {
             var result = _panelAppSettingLogoService.GetAppSettingLogo(false);
-
             var resultDto = new AppSettingLogoCreateEditViewModel()
             {
                 FaviconPath = result.Data.FaviconPath,
                 LogoPath = result.Data.LogoPath,
                 MobileLogoPath = result.Data.MobileLogoPath,
+                ShareImagePath = result.Data.ShareImagePath,
                 Id = result.Data.Id
             };
-
             return View(resultDto);
         }
-
-
         public IActionResult CreateEditLogo(AppSettingLogoCreateEditViewModel model)
         {
             var result = _panelAppSettingLogoService.CreateEditAppSettingLogo(new AppSettingLogoCreateEditDto
@@ -46,29 +40,15 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 FaviconPath = model.FaviconPath,
                 FaviconBase64 = model.CroppedFaviconBase64,
                 LogoBase64 = model.CroppedLogoBase64,
-                MobileLogoBase64 = model.CroppedMobileLogoBase64
+                MobileLogoBase64 = model.CroppedMobileLogoBase64,
+                ShareImageBase64 =model.CroppedShareImageBase64,
+                ShareImagePath = model.ShareImagePath
             });
 
             AddValidationErrorsToModelState(result.ValidationErrors);
             AddMessage(result);
-
             return RedirectToAction("Index");
         }
 
-        // Varsayılan görseli döndüren yardımcı fonksiyon
-        //private string GetOrDefaultLogo(string type)
-        //{
-        //    // Gerçek uygulamada ilgili veritabanı kaydı kontrol edilir
-        //    var base64 = GetBase64FromDb(type); // bu sizin veritabanı kodunuz olmalı
-
-        //    if (string.IsNullOrWhiteSpace(base64))
-        //    {
-        //        var defaultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/no-img.jpeg");
-        //        var imageBytes = System.IO.File.ReadAllBytes(defaultImagePath);
-        //        return $"data:image/jpeg;base64,{Convert.ToBase64String(imageBytes)}";
-        //    }
-
-        //    return base64;
-        //}
-    }
+     }
 }

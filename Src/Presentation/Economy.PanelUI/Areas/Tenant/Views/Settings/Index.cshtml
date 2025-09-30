@@ -1,33 +1,13 @@
-﻿@model SettingViewModel
+﻿@model AppSettingViewModel
 
 @{
     ViewData["Title"] = "Site Ayarları";
 }
-
-
 <main>
     <div class="container-fluid">
         <!-- Breadcrumb start -->
-        <div class="row m-1">
-            <div class="col-12 ">
-                <h4 class="main-title">@ViewData["Title"]</h4>
-                <ul class="app-line-breadcrumbs mb-3">
-                    <li class="">
-                        <a class="f-s-14 f-w-500" href="#">
-                            <span>
-                                <i class="ph-duotone  ph-table f-s-16"></i> Anasayfa
-                            </span>
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a class="f-s-14 f-w-500" href="#"> @ViewData["Title"] </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
+        @await Html.PartialAsync("_breadcrumbs")
         <!-- Breadcrumb end -->
-        <!-- tables start  -->
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -36,14 +16,6 @@
                             <div>
                             </div>
                             <div>
-                                <form id="antiForgeryForm">
-                                    @Html.AntiForgeryToken()
-                                </form>
-                                <div class="app-btn-list">
-                                    <button id="deleteBtn" class="btn btn-danger">Sil</button>
-                                    @Html.ActionLink("Güncelle", "EditUser", new { id = Model.Id }, new { @class = "btn btn-primary" })
-                                    <a class="btn btn-info" asp-action="UserList">Tüm Kayıtlar</a>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -51,78 +23,78 @@
                 </div>
             </div>
             <div class="col-lg-12">
-                @if(Model.Translations is not null)
+                @if (Model.Translations is not null)
                 {
-                <form asp-action="SaveSetting" method="post">
-                    <input type="hidden" asp-for="@Model.Id" />
-                    <div class="card equal-card">
-                        <div class="card-header">
-                            <h5> Kayıtlar </h5>
-                            <p>
-                                Aşağıda kayıtlı bilgiler bulunmaktadır.
-                            </p>
-                        </div>
-                        <div class="card-body">
-                            <ul class="nav nav-tabs tab-light-secondary" id="lang-Light" role="tablist">
-                                @for (int i = 0; i < Model.Translations.Count; i++)
-                                {
-                                    var t = Model.Translations[i];
-                                    var isActive = i == 0 ? "active" : "";
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link gap-2 @isActive"
-                                                id="lang-tab-@i"
-                                                data-bs-toggle="tab"
-                                                data-bs-target="#lang-tab-pane-@i"
-                                                type="button"
-                                                role="tab"
-                                                aria-selected="@(i == 0 ? "true" : "false")">
-                                            <i class="@t.Icon?.ToLower()"></i>
-                                            @t.Name
-                                        </button>
-                                    </li>
-                                }
-                            </ul>
-
-                            <div class="tab-content" id="lang-LightContent">
-                                @for (int i = 0; i < Model.Translations.Count; i++)
-                                {
-                                    var t = Model.Translations[i];
-                                    var isActive = i == 0 ? "show active" : "";
-                                    <div class="tab-pane fade @isActive" id="lang-tab-pane-@i" role="tabpanel" aria-labelledby="lang-tab-@i">
-                                        <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
-                                        <input type="hidden" name="Translations[@i].AppSettingId" value="@Model.Id" />
-                                        <input type="hidden" name="Translations[@i].AppLanguageId" value="@t.AppLanguageId" />
-
-                                        <div class="form-group mb-3">
-                                            <label>Site Title</label>
-                                            <input class="form-control" name="Translations[@i].SiteTitle" value="@t.SiteTitle" />
-                                        </div>
-
-                                        <div class="form-group mb-3">
-                                            <label>Description</label>
-                                            <textarea class="form-control" name="Translations[@i].Description">@t.Description</textarea>
-                                        </div>
-
-                                        <div class="form-group mb-3">
-                                            <label>Meta Title</label>
-                                            <input class="form-control" name="Translations[@i].MetaTitle" value="@t.MetaTitle" />
-                                        </div>
-
-                                        <div class="form-group mb-3">
-                                            <label>Meta Description</label>
-                                            <textarea class="form-control" name="Translations[@i].MetaDescription">@t.MetaDescription</textarea>
-                                        </div>
-                                    </div>
-                                }
+                    <form asp-action="SaveSetting" method="post">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <div class="card equal-card">
+                            <div class="card-header">
+                                <h5> Kayıtlar </h5>
+                                <p>
+                                    Aşağıda kayıtlı bilgiler bulunmaktadır.
+                                </p>
                             </div>
+                            <div class="card-body">
+                                <ul class="nav nav-tabs tab-light-secondary" id="lang-Light" role="tablist">
+                                    @for (int i = 0; i < Model.Translations.Count; i++)
+                                    {
+                                        var t = Model.Translations[i];
+                                        var isActive = i == 0 ? "active" : "";
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link gap-2 @isActive"
+                                                    id="lang-tab-@i"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#lang-tab-pane-@i"
+                                                    type="button"
+                                                    role="tab"
+                                                    aria-selected="@(i == 0 ? "true" : "false")">
+                                                <i class="@t.Icon?.ToLower()"></i>
+                                                @t.Name
+                                            </button>
+                                        </li>
+                                    }
+                                </ul>
 
-                            <hr />
-                            <div class="mt-3 text-end">
-                                <button type="submit" class="btn btn-success">Kaydet</button>
+                                <div class="tab-content" id="lang-LightContent">
+                                    @for (int i = 0; i < Model.Translations.Count; i++)
+                                    {
+                                        var t = Model.Translations[i];
+                                        var isActive = i == 0 ? "show active" : "";
+                                        <div class="tab-pane fade @isActive" id="lang-tab-pane-@i" role="tabpanel" aria-labelledby="lang-tab-@i">
+                                            <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
+                                            <input type="hidden" name="Translations[@i].AppSettingId" value="@Model.Id" />
+                                            <input type="hidden" name="Translations[@i].AppLanguageId" value="@t.AppLanguageId" />
+
+                                            <div class="form-group mb-3">
+                                                <label>Site Title</label>
+                                                <input class="form-control" name="Translations[@i].SiteTitle" value="@t.SiteTitle" />
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label>Description</label>
+                                                <textarea class="form-control" name="Translations[@i].Description">@t.Description</textarea>
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label>Meta Title</label>
+                                                <input class="form-control" name="Translations[@i].MetaTitle" value="@t.MetaTitle" />
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label>Meta Description</label>
+                                                <textarea class="form-control" name="Translations[@i].MetaDescription">@t.MetaDescription</textarea>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <hr />
+                                <div class="mt-3 text-end">
+                                    <button type="submit" class="btn btn-success">Kaydet</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
                 }
                 else
                 {

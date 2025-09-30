@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Economy.Application.TenantUI.AppTechnicalSettingDtos;
+using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Helpers;
 using Economy.Core.Interfaces;
@@ -8,7 +8,7 @@ using Economy.Domain.Entites.EntityAppSettings;
 using Economy.Panel.Application.Extensions;
 using FluentValidation;
 
-namespace Economy.Persistence.Services
+namespace Economy.Persistence.Tenant.Services
 {
     public sealed class PanelAppTechnicalSettingService : IPanelAppTechnicalSettingService
     {
@@ -17,7 +17,7 @@ namespace Economy.Persistence.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IValidator<AppTechnicalSettingCreateEditDto> _validator;
-        public PanelAppTechnicalSettingService(IUnitOfWork unitOfWork, IFileImageHelperService fileImageHelperService, IValidator<AppTechnicalSettingCreateEditDto> validator, IMapper mapper)
+        public PanelAppTechnicalSettingService(IUnitOfWork unitOfWork,IValidator<AppTechnicalSettingCreateEditDto> validator, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _repo = unitOfWork.HotelEntityRepository<AppTechnicalSetting>();

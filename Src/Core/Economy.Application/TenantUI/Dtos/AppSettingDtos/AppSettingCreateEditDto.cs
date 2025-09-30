@@ -1,4 +1,4 @@
-﻿namespace Economy.Panel.Application.Dtos.AppSettingDtos
+﻿namespace Economy.Application.TenantUI.Dtos.AppSettingDtos
 {
     public class AppSettingCreateEditDto
     {

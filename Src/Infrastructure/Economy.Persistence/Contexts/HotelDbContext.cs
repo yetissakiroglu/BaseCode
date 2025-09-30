@@ -25,11 +25,21 @@ namespace Economy.Persistence.Contexts
         {
             base.OnConfiguring(optionsBuilder);
         }
-
+        public DbSet<AppTechnicalSetting> AppTechnicalSettings { get; set; }
         public DbSet<AppSetting> AppSettings { get; set; }
         public DbSet<AppSettingTranslation> AppSettingTranslations { get; set; }
+
+
+
+
+
+
+
+
+        //-------------------------
+
+
         public DbSet<AppSettingLogo> AppSettingLogos { get; set; }      
-        public DbSet<AppTechnicalSetting> AppTechnicalSettings { get; set; }
         public DbSet<AppMenu> AppMenus { get; set; }
         public DbSet<AppMenuTranslation> AppMenuTranslations { get; set; }
         public DbSet<AppSlide> AppSlides { get; set; }

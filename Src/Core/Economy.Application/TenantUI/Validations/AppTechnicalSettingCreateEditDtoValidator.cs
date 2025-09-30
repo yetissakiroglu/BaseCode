@@ -1,4 +1,4 @@
-﻿using Economy.Application.TenantUI.AppTechnicalSettingDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
 using FluentValidation;
 
 namespace Economy.Application.TenantUI.Validations

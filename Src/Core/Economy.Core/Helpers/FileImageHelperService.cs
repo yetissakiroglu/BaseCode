@@ -92,8 +92,6 @@ namespace Economy.Core.Helpers
         }
 
 
-
-
         //public async Task<ResponseModel<UploadFile>> UploadBase64(string? base64String, List<string> folderPaths)
         //{
         //    var response = new ResponseModel<UploadFile>();

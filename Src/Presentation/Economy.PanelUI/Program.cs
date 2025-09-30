@@ -6,7 +6,9 @@ using Economy.Application.Dtos.AppSecuritySettingDtos;
 using Economy.Application.Dtos.AppSuperAdminUserDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Providers;
-using Economy.Application.TenantUI.AppTechnicalSettingDtos;
+using Economy.Application.TenantUI.Dtos.AppSettingDtos;
+using Economy.Application.TenantUI.Dtos.AppSettingLogoDtos;
+using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Application.TenantUI.Validations;
 using Economy.Application.Validations;
@@ -42,6 +44,7 @@ using Economy.Persistence.Contexts;
 using Economy.Persistence.PersistenceUI.Services;
 using Economy.Persistence.Providers;
 using Economy.Persistence.Services;
+using Economy.Persistence.Tenant.Services;
 using Economy.Persistence.UnitOfWorks;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.Features;
@@ -160,8 +163,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 //});
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IAppSettingsProvider, AppSettingsProvider>();
-
-
 // Repository'leri otomatik olarak ekle
 builder.Services.AddRepositories(Assembly.GetExecutingAssembly());
 // EfEntityRepositoryBase<T> kaydý
@@ -187,12 +188,7 @@ builder.Services.AddScoped<IPanelDashboardService, PanelDashboardService>();
 builder.Services.AddScoped<IPanelLoginLogService, PanelLoginLogService>();
 builder.Services.AddScoped<IPanelAppTechnicalSettingService, PanelAppTechnicalSettingService>();
 
-
-
-
 builder.Services.AddScoped<IValidator<MenuItemDto>, MenuItemValidator>();
-
-
 
 builder.Services.AddScoped<IValidator<AppUserCreateDto>, AppUserCreateDtoValidator>();
 
@@ -202,12 +198,14 @@ builder.Services.AddScoped<IValidator<AppGeneralSettingEditDto>, AppGeneralSetti
 builder.Services.AddScoped<IValidator<AppSecuritySettingCreateDto>, AppSecuritySettingCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<AppSecuritySettingEditDto>, AppSecuritySettingEditDtoValidator>();
 builder.Services.AddScoped<IValidator<AppTechnicalSettingCreateEditDto>, AppTechnicalSettingCreateEditDtoValidator>();
+builder.Services.AddScoped<IValidator<AppSettingCreateEditDto>, AppSettingCreateEditDtoValidator>();
 
 
 
 builder.Services.AddScoped<IValidator<AppSlideCreateEditDto>, AppSlideCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppCategoryCreateEditDto>, AppCategoryCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppCategoryTranslationCreateEditDto>, AppCategoryTranslationCreateEditDtoValidator>();
+builder.Services.AddTransient<IValidator<AppSettingLogoCreateEditDto>, AppSettingLogoCreateEditDtoValidator>();
 
 
 

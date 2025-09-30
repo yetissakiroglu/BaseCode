@@ -1,4 +1,4 @@
-﻿using Economy.Application.TenantUI.AppTechnicalSettingDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 

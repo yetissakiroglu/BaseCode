@@ -1,4 +1,4 @@
-﻿namespace Economy.Panel.UI.Models.SettingLogoViewModels
+﻿namespace Economy.Panel.UI.Areas.Tenant.Models.AppSettingLogoViewModels
 {
     public class AppSettingLogoCreateEditViewModel
     {
@@ -12,5 +12,11 @@
 
         public string? FaviconPath { get; set; }
         public string? CroppedFaviconBase64 { get; set; }
+
+        public string? ShareImagePath { get; set; }
+        public string? CroppedShareImageBase64 { get; set; }
+
+
+        
     }
 }

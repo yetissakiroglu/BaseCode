@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Economy.Application.TenantUI.AppTechnicalSettingDtos
+namespace Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos
 {
     public class AppTechnicalSettingDto
     {
@@ -50,7 +50,7 @@ namespace Economy.Application.TenantUI.AppTechnicalSettingDtos
         [DisplayName("İzinli IP Listesi (satır satır)")]
         public string MaintenanceAllowedIpListRaw
         {
-            get => (MaintenanceAllowedIpList is null || MaintenanceAllowedIpList.Count == 0)
+            get => MaintenanceAllowedIpList is null || MaintenanceAllowedIpList.Count == 0
                 ? string.Empty
                 : string.Join(Environment.NewLine, MaintenanceAllowedIpList);
             set => MaintenanceAllowedIpList = value.ToIpList();

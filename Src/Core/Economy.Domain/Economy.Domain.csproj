@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Economy.Core\Economy.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entites\TenantEntity\" />
+  </ItemGroup>
+
 </Project>

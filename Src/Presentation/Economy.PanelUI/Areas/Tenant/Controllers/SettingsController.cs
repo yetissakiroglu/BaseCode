@@ -1,4 +1,5 @@
-﻿using Economy.Panel.Application.Dtos.AppSettingDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppSettingDtos;
+using Economy.Application.TenantUI.Interfaces;
 using Economy.Panel.Application.Interfaces;
 using Economy.Panel.UI.Controllers;
 using Economy.Panel.UI.Models.SettingViewModels;
@@ -13,7 +14,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
     {
         private readonly IPanelAppSettingService _panelAppSettingService;
         private readonly IPanelAppLanguageService _panelAppLanguageService;
-
         public SettingsController(IPanelAppSettingService panelAppSettingService, IPanelAppLanguageService panelAppLanguageService)
         {
             _panelAppSettingService = panelAppSettingService;
@@ -24,11 +24,20 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         public IActionResult Index()
         {
             var allLanguages = _panelAppLanguageService.GetAllLanguage(false, true);
-      
+            if(!allLanguages.HasData)
+            {
+                AddMessage(allLanguages);
+                return View(new AppSettingViewModel());
+            }
+
             var appSetting = _panelAppSettingService.GetAppSetting(false);
+
+            // DİL VARSA: her dil için mevcut çeviriyi (varsa) eşleştir
             var translations = allLanguages.Data.Select(lang =>
             {
-                var existing = appSetting.Data?.Translations?.FirstOrDefault(p => p.AppLanguageId == lang.Id);
+                var existing = appSetting?.Data?.Translations?
+                    .FirstOrDefault(p => p.AppLanguageId == lang.Id);
+
                 return new SettingLanguageViewModel
                 {
                     Id = existing?.Id,
@@ -39,23 +48,23 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                     Description = existing?.Description,
                     MetaDescription = existing?.MetaDescription,
                     AppLanguageId = lang.Id,
-                    AppSettingId = existing?.AppSettingId,
+                    // Çeviride yoksa bile AppSetting Id’sini ver; o da yoksa 0
+                    AppSettingId = existing?.AppSettingId ?? (appSetting?.Data?.Id ?? 0),
                     MetaTitle = existing?.MetaTitle,
-                    SiteTitle = existing?.SiteTitle,
+                    SiteTitle = existing?.SiteTitle
                 };
             }).ToList();
 
-
-            var vm = new SettingViewModel
+            var vm = new AppSettingViewModel
             {
-                Id = appSetting.Data.Id,
+                Id = appSetting?.Data?.Id ?? 0,
                 Translations = translations
             };
             return View(vm);
         }
 
         [HttpPost]
-        public IActionResult SaveSetting(SettingViewModel viewModel)
+        public IActionResult SaveSetting(AppSettingViewModel viewModel)
         {
             var createEditModel = new AppSettingCreateEditDto();
             createEditModel.Id = viewModel.Id;
@@ -75,7 +84,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                         Id = translation.Id,
                         MetaTitle = translation.MetaTitle,
                         SiteTitle = translation.SiteTitle,
-
                     });
                 }
                 else
@@ -89,7 +97,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                         Id = translation.Id,
                         MetaTitle = translation.MetaTitle,
                         SiteTitle = translation.SiteTitle,
-
                     });
                 }
 
@@ -98,11 +105,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             var saveModel = _panelAppSettingService.SaveAppSetting(createEditModel);
             AddMessage(saveModel);
             return RedirectToAction(nameof(Index));
-
-
         }
-
-
     }
 }
 

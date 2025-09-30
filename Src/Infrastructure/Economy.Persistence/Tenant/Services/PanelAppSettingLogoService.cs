@@ -1,29 +1,44 @@
-﻿using Economy.Core.Helpers;
+﻿using AutoMapper;
+using Economy.Application.TenantUI.Dtos.AppSettingLogoDtos;
+using Economy.Application.TenantUI.Interfaces;
+using Economy.Core.Helpers;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.EntityAppSettings;
-using Economy.Panel.Application.Dtos.AppSettingLogoDtos;
-using Economy.Panel.Application.Interfaces;
+using Economy.Panel.Application.Extensions;
+using FluentValidation;
 using System.Net;
 
-namespace Economy.Panel.Persistence.Services
+namespace Economy.Persistence.Tenant.Services
 {
     public class PanelAppSettingLogoService : IPanelAppSettingLogoService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEntityRepository<AppSettingLogo, int> _appSettingLogoRepository;
         private readonly IFileImageHelperService _fileImageHelperService;
-
-        public PanelAppSettingLogoService(IUnitOfWork unitOfWork, IFileImageHelperService fileImageHelperService)
+        private readonly IMapper _mapper;
+        private readonly IValidator<AppSettingLogoCreateEditDto> _validator;
+        public PanelAppSettingLogoService(IUnitOfWork unitOfWork, IFileImageHelperService fileImageHelperService, IMapper mapper, IValidator<AppSettingLogoCreateEditDto> validator)
         {
             _unitOfWork = unitOfWork;
             _appSettingLogoRepository = unitOfWork.HotelEntityRepository<AppSettingLogo>();
             _fileImageHelperService = fileImageHelperService;
+            _mapper = mapper;
+            _validator = validator;
         }
 
         public ServiceResult<AppSettingLogoDto> CreateEditAppSettingLogo(AppSettingLogoCreateEditDto model)
         {
+            var validation = _validator.Validate(model);
+            if (!validation.IsValid)
+            {
+                return ServiceResult<AppSettingLogoDto>.Failure(
+                    "Doğrulama hatası",
+                    validationErrors: validation.ToValidationDictionary()
+                );
+            }
+
             // Var olan modeli al
             var controlModel = _appSettingLogoRepository.GetForEdit(w => w.Id == model.Id);
 
@@ -56,7 +71,11 @@ namespace Economy.Panel.Persistence.Services
                     var mobilImage = _fileImageHelperService.UploadBase64(model.FaviconBase64, new List<string> { "updates", "logo" });
                     newModel.FaviconPath = mobilImage.Data.MediaFullURL;
                 }
-
+                if (model.ShareImageBase64 is not null)
+                {
+                    var mobilImage = _fileImageHelperService.UploadBase64(model.ShareImageBase64, new List<string> { "updates", "logo" });
+                    newModel.ShareImagePath = mobilImage.Data.MediaFullURL;
+                }
                 // Yeni modeli ekle
                 _appSettingLogoRepository.Add(newModel);
             }
@@ -80,39 +99,41 @@ namespace Economy.Panel.Persistence.Services
                     controlModel.FaviconPath = mobilImage.Data.MediaFullURL;
                 }
 
+                if (model.ShareImageBase64 is not null)
+                {
+                    var mobilImage = _fileImageHelperService.UploadBase64(model.ShareImageBase64, new List<string> { "updates", "logo" });
+                    controlModel.ShareImagePath = mobilImage.Data.MediaFullURL;
+                }
+
                 // Mevcut modeli güncelle
                 _appSettingLogoRepository.Update(controlModel);
             }
 
             // Değişiklikleri kaydet
             _unitOfWork.SaveHotelChanges();
+            var entity = _mapper.Map<AppSettingLogoDto>(controlModel);
 
-            return ServiceResult<AppSettingLogoDto>.Success(new AppSettingLogoDto { Id = model.Id });
+            return ServiceResult<AppSettingLogoDto>.Success(entity);
         }
-
-        public ResponseModel<AppSettingLogoDto> DeleteAppSettingLogo(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ResponseModel<AppSettingLogoDto> GetAppSettingLogo(bool isDeleted)
+        public ServiceResult<AppSettingLogoDto> GetAppSettingLogo(bool isDeleted)
         {
             var result = _appSettingLogoRepository.GetForRead(
                 x => x.IsDeleted == isDeleted);       
 
             if (result == null)
             {
-                return ResponseModel<AppSettingLogoDto>.Fail("Kayıt bulunamadı.", HttpStatusCode.NotFound);
+                return ServiceResult<AppSettingLogoDto>.Failure("Kayıt bulunamadı.");
             }
             var entityDto = new AppSettingLogoDto
             {
                 Id = result.Id,
                 FaviconPath = result.FaviconPath,
                 LogoPath = result.LogoPath,
-                MobileLogoPath = result.MobileLogoPath
+                MobileLogoPath = result.MobileLogoPath,
+                ShareImagePath = result.ShareImagePath
             };
 
-            return ResponseModel<AppSettingLogoDto>.Success(entityDto, HttpStatusCode.OK);
+            return ServiceResult<AppSettingLogoDto>.Success(entityDto);
         }
     }
 }

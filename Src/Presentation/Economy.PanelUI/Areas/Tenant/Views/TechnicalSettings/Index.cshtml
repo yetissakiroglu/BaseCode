@@ -1,4 +1,4 @@
-﻿@using Economy.Application.TenantUI.AppTechnicalSettingDtos
+﻿@using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos
 
 @model AppTechnicalSettingCreateEditDto
 @{
@@ -10,7 +10,6 @@
         <!-- Breadcrumb start -->
         @await Html.PartialAsync("_breadcrumbs")
         <!-- Breadcrumb end -->
-
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -134,12 +133,8 @@
                 </div>
             </div>
         </div>
-
-        <!-- tables-end  -->
     </div>
 </main>
-
-
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

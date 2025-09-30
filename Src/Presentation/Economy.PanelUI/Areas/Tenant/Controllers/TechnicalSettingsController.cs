@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using Economy.Application.TenantUI.AppTechnicalSettingDtos;
+using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
-using Economy.Core.Extensions;
 using Economy.Panel.UI.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
