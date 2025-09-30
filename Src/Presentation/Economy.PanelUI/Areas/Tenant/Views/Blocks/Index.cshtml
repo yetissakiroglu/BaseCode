@@ -1,0 +1,71 @@
+﻿@model List<Economy.Panel.UI.Areas.Tenant.Models.BlockListItemVm>
+@{
+    ViewBag.Title = "Bloklar";
+    var pageId = (int)ViewBag.PageId;
+}
+
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
+        <div class="row m-1">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                                <div class="app-btn-list">
+                                    <a class="btn btn-primary" asp-action="Index">Tüm Kayıtlar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h3>Bloklar (Sayfa #@pageId)</h3>
+                    <a class="btn btn-primary" href="/Tenant/blocks/create?pageId=@pageId">Yeni Blok</a>
+                </div>
+
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Şablon</th>
+                            <th>Başlık</th>
+                            <th>Sıra</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model)
+                        {
+                            <tr>
+                                <td>@r.Id</td>
+                                <td>@r.Template</td>
+                                <td>@(r.Title ?? "-")</td>
+                                <td>@r.SortOrder</td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-outline-secondary" href="/Tenant/blocks/edit/@r.Id?pageId=@pageId">Düzenle</a>
+                                    <form method="post" action="/Tenant/blocks/delete/@r.Id?pageId=@pageId" style="display:inline" onsubmit="return confirm('Silinsin mi?');">
+                                        @Html.AntiForgeryToken()
+                                        <button class="btn btn-sm btn-outline-danger">Sil</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <p>
+                    <a class="btn btn-light" href="/Tenant/pages/edit/@pageId">« Sayfaya Dön</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</main>

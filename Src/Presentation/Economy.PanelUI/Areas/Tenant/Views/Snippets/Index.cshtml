@@ -1,6 +1,6 @@
-﻿@model List<Economy.Panel.UI.Areas.Tenant.Models.PageListItemAdminVm>
+﻿@model List<Economy.Panel.UI.Areas.Tenant.Models.SnippetListItemVm>
 @{
-    ViewBag.Title = "Sayfalar";
+    ViewBag.Title = "Snippets";
 }
 <main>
     <div class="container-fluid">
@@ -25,20 +25,16 @@
         <div class="row">
             <div class="col-12">
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h3>Sayfalar</h3>
-    <a class="btn btn-primary" href="/Tenant/pages/create">Yeni Sayfa</a>
+    <h3>Snippets</h3>
+    <a class="btn btn-primary" href="/tenant/snippets/create">Yeni Snippet</a>
 </div>
 
 <table class="table table-striped align-middle">
     <thead>
         <tr>
             <th>#</th>
-            <th>Başlık</th>
-            <th>Slug</th>
-            <th>Üst</th>
+            <th>Code</th>
             <th>Aktif</th>
-            <th>Yayın</th>
-            <th>Sıra</th>
             <th></th>
         </tr>
     </thead>
@@ -47,18 +43,10 @@
         {
             <tr>
                 <td>@r.Id</td>
-                <td>@(r.Title ?? "(başlık yok)")</td>
-                <td>@r.Slug</td>
-                <td>@r.ParentTitle</td>
+                <td>@r.Code</td>
                 <td>@(r.IsActive ? "Evet" : "Hayır")</td>
-                <td>@(r.PublishAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
-                <td>@r.SortOrder</td>
                 <td class="text-end">
-                    <a class="btn btn-sm btn-outline-secondary" href="/Tenant/pages/edit/@r.Id">Düzenle</a>
-                    <form method="post" action="/Tenant/pages/delete/@r.Id" style="display:inline" onsubmit="return confirm('Silinsin mi?');">
-                        @Html.AntiForgeryToken()
-                        <button class="btn btn-sm btn-outline-danger">Sil</button>
-                    </form>
+                    <a class="btn btn-sm btn-outline-secondary" href="/tenant/snippets/edit/@r.Id">Düzenle</a>
                 </td>
             </tr>
         }

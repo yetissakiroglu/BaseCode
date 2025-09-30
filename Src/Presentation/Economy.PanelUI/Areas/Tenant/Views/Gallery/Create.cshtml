@@ -1,0 +1,74 @@
+﻿@model Economy.Panel.UI.Areas.Tenant.Models.MediaEditVm
+@{
+    ViewBag.Title = "Yeni Medya";
+}
+<main>
+    <div class="container-fluid">
+@await Html.PartialAsync("_breadcrumbs")
+        <div class="row m-1">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                                <div class="app-btn-list">
+                                    <a class="btn btn-primary" asp-action="Index">Tüm Kayıtlar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mb-3">Yeni Medya (Sayfa #@Model.PageId)</h3>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="PageId" />
+    <input type="hidden" asp-for="LanguageId" />
+    <input type="hidden" asp-for="LanguageCode" />
+
+    <div class="card mb-3">
+        <div class="card-header">Medya</div>
+        <div class="card-body row g-3">
+            <div class="col-md-8">
+                <label class="form-label">URL</label>
+                <input class="form-control" asp-for="Url" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Sıra</label>
+                <input class="form-control" asp-for="SortOrder" />
+            </div>
+            <div class="col-md-2 d-flex align-items-center">
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" asp-for="IsActive" />
+                    <label class="form-check-label">Aktif</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header">Çeviri (@Model.LanguageCode.ToUpper())</div>
+        <div class="card-body row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Alt</label>
+                <input class="form-control" asp-for="Alt" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Caption</label>
+                <input class="form-control" asp-for="Caption" />
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" type="submit">Kaydet</button>
+        <a class="btn btn-light" href="/tenant/gallery/index?pageId=@Model.PageId">Vazgeç</a>
+    </div>
+</form>
+</div></div></div></main>

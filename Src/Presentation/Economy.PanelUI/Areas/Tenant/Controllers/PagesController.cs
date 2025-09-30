@@ -1,117 +1,295 @@
-﻿using Economy.Panel.Application.Interfaces;
-using Economy.Panel.UI.Controllers;
-using Economy.Panel.UI.Extensions;
-using Economy.Panel.UI.Models.ContentViewModels;
+﻿using Economy.Core.Enums;
+using Economy.Core.Interfaces;
+using Economy.Domain.Entites.EntityAppLanguage;
+using Economy.Domain.Entites.EntityAppNewPages;
+using Economy.Panel.UI.Areas.Tenant.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
     [Area("Tenant")]
     [Authorize]
-    public class PagesController : BaseController
+    public sealed class PagesController : Controller
     {
-        private readonly IPanelAppContentService _panelAppContentService;
-        private readonly IPanelAppLanguageService _panelAppLanguageService;
+        private readonly IUnitOfWork _uow;
+        private readonly IEntityRepository<ContentItem, int> _contentRepo;
+        private readonly IEntityRepository<ContentItemTranslation, int> _trRepo;
+        private readonly IEntityRepository<AppLanguage, int> _langRepo;
 
-        public PagesController(IPanelAppContentService panelAppContentService, IPanelAppLanguageService panelAppLanguageService)
+        public PagesController(IUnitOfWork uow)
         {
-            _panelAppContentService = panelAppContentService;
-            _panelAppLanguageService = panelAppLanguageService;
+            _uow = uow;
+            _contentRepo = uow.HotelEntityRepository<ContentItem>();
+            _trRepo = uow.HotelEntityRepository<ContentItemTranslation>();
+            _langRepo = uow.HotelEntityRepository<AppLanguage>();
         }
 
+        // LIST
+        public async Task<IActionResult> Index(CancellationToken ct)
+        {
+            var defLangId = await _langRepo.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
+                .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            if (defLangId == 0)
+                defLangId = await _langRepo.DataSet.Where(l => !l.IsDeleted && l.IsActive)
+                    .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            var list = await (from ci in _contentRepo.DataSet
+                              where !ci.IsDeleted && ci.Type == ContentItemType.Page
+                              join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId into trx
+                              from tr in trx.Where(t => !t.IsDeleted && t.LanguageId == defLangId).DefaultIfEmpty()
+                              join ptr in _trRepo.DataSet on ci.OwnerId equals ptr.ContentItemId into ptx
+                              from ptr in ptx.Where(p => !p.IsDeleted && p.LanguageId == defLangId).DefaultIfEmpty()
+                              orderby ci.SortOrder, ci.Id
+                              select new PageListItemAdminVm
+                              {
+                                  Id = ci.Id,
+                                  ParentTitle = ptr.Title,
+                                  Title = tr.Title,
+                                  Slug = tr.Slug,
+                                  IsActive = ci.IsActive,
+                                  PublishAtUtc = ci.PublishAtUtc,
+                                  SortOrder = ci.SortOrder
+                              })
+                              .ToListAsync(ct);
+
+            return View(list);
+        }
+
+        // CREATE
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Create(CancellationToken ct)
         {
-            var allLanguages = _panelAppLanguageService.GetAllLanguage(false, true);
-            if (!allLanguages.HasData)
-            {
-                AddMessage(allLanguages);
-                return View(new List<AppContentListViewModel>());
-            }
-
-            var result = _panelAppContentService.GetAllContent(false);
-            if (!result.HasData)
-            {
-                AddMessage(result);
-                return View(result.Data);
-            }
-            var resultModel = result.Data.MapToListViewModel(allLanguages.Data);
-
-            return View(resultModel);
-  
+            var vm = new PageEditVm();
+            await FillLanguagesAsync(vm, ct);
+            ViewBag.Parents = await GetParentOptionsAsync(ct);
+            return View(vm);
         }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(PageEditVm vm, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                await EnsureLanguageTabsAsync(vm, ct);
+                ViewBag.Parents = await GetParentOptionsAsync(ct);
+                return View(vm);
+            }
+
+            var ci = new ContentItem
+            {
+                IsDeleted = false,
+                IsActive = vm.IsActive,
+                PublishAtUtc = vm.PublishAtUtc,
+                SortOrder = vm.SortOrder,
+                Type = ContentItemType.Page,
+                OwnerType = ContentOwnerType.Content,
+                OwnerId = vm.OwnerId
+            };
+            await _contentRepo.DataSet.AddAsync(ci, ct);
+            await _uow.SaveHotelChangesAsync();
+
+            foreach (var t in vm.Translations)
+            {
+                if (string.IsNullOrWhiteSpace(t.Slug) && string.IsNullOrWhiteSpace(t.Title))
+                    continue;
+
+                var tr = new ContentItemTranslation
+                {
+                    ContentItemId = ci.Id,
+                    LanguageId = t.LanguageId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    Slug = t.Slug,
+                    Title = t.Title,
+                    Summary = t.Summary,
+                    Body = t.Body,
+                    Image = t.Image,
+                    MetaTitle = t.MetaTitle,
+                    MetaDescription = t.MetaDescription,
+                    OgImage = t.OgImage,
+                    JsonData = t.JsonData
+                };
+                await _trRepo.DataSet.AddAsync(tr, ct);
+            }
+            await _uow.SaveHotelChangesAsync();
+
+            TempData["ok"] = "Sayfa oluşturuldu.";
+            return RedirectToAction(nameof(Edit), new { id = ci.Id });
+        }
+
+        // EDIT
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Edit(int id, CancellationToken ct)
         {
-            var allLanguages = _panelAppLanguageService.GetAllLanguage(false, true);
-            if (!allLanguages.HasData)
+            var ci = await _contentRepo.DataSet.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
+            if (ci is null) return NotFound();
+
+            var vm = new PageEditVm
             {
-                AddMessage(allLanguages);
-                return RedirectToAction(nameof(Index));
+                Id = ci.Id,
+                OwnerId = ci.OwnerId,
+                IsActive = ci.IsActive,
+                PublishAtUtc = ci.PublishAtUtc,
+                SortOrder = ci.SortOrder,
+                Type = (short)ci.Type,
+                OwnerType = (byte)ci.OwnerType
+            };
+
+            await FillLanguagesAsync(vm, ct);
+
+            var trs = await _trRepo.DataSet
+                .Where(t => !t.IsDeleted && t.ContentItemId == ci.Id)
+                .ToListAsync(ct);
+
+            foreach (var t in vm.Translations)
+            {
+                var hit = trs.FirstOrDefault(x => x.LanguageId == t.LanguageId);
+                if (hit is null) continue;
+
+                t.Id = hit.Id;
+                t.Slug = hit.Slug;
+                t.Title = hit.Title;
+                t.Summary = hit.Summary;
+                t.Body = hit.Body;
+                t.Image = hit.Image;
+                t.MetaTitle = hit.MetaTitle;
+                t.MetaDescription = hit.MetaDescription;
+                t.OgImage = hit.OgImage;
+                t.JsonData = hit.JsonData;
             }
-            var viewModel = new AppContentCreateEditViewModel();
-            viewModel.ToEmptyCreateEditViewModel(allLanguages.Data);
-            return View(viewModel);
+
+            ViewBag.Parents = await GetParentOptionsAsync(ct, excludeId: ci.Id);
+            return View(vm);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(AppContentCreateEditViewModel viewModel)
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, PageEditVm vm, CancellationToken ct)
         {
-            var dto = viewModel.MapToDto();
-            var result = _panelAppContentService.CreateContent(dto);
-
-            AddValidationErrorsToModelState(result.ValidationErrors);
-            AddMessage(result);
-
-            if (!result.IsSuccess)
+            if (!ModelState.IsValid)
             {
-                return View(viewModel);
+                await EnsureLanguageTabsAsync(vm, ct);
+                ViewBag.Parents = await GetParentOptionsAsync(ct, excludeId: id);
+                return View(vm);
             }
 
-            return RedirectToAction("Index");
+            var ci = await _contentRepo.DataSet.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
+            if (ci is null) return NotFound();
+
+            ci.OwnerId = vm.OwnerId;
+            ci.IsActive = vm.IsActive;
+            ci.PublishAtUtc = vm.PublishAtUtc;
+            ci.SortOrder = vm.SortOrder;
+
+            var existing = await _trRepo.DataSet
+                .Where(t => !t.IsDeleted && t.ContentItemId == id)
+                .ToListAsync(ct);
+
+            foreach (var t in vm.Translations)
+            {
+                var ex = existing.FirstOrDefault(x => x.LanguageId == t.LanguageId);
+                if (ex is null)
+                {
+                    if (string.IsNullOrWhiteSpace(t.Slug) && string.IsNullOrWhiteSpace(t.Title))
+                        continue;
+
+                    var tr = new ContentItemTranslation
+                    {
+                        ContentItemId = id,
+                        LanguageId = t.LanguageId,
+                        IsActive = true,
+                        IsDeleted = false,
+                        Slug = t.Slug,
+                        Title = t.Title,
+                        Summary = t.Summary,
+                        Body = t.Body,
+                        Image = t.Image,
+                        MetaTitle = t.MetaTitle,
+                        MetaDescription = t.MetaDescription,
+                        OgImage = t.OgImage,
+                        JsonData = t.JsonData
+                    };
+                    await _trRepo.DataSet.AddAsync(tr, ct);
+                }
+                else
+                {
+                    ex.Slug = t.Slug;
+                    ex.Title = t.Title;
+                    ex.Summary = t.Summary;
+                    ex.Body = t.Body;
+                    ex.Image = t.Image;
+                    ex.MetaTitle = t.MetaTitle;
+                    ex.MetaDescription = t.MetaDescription;
+                    ex.OgImage = t.OgImage;
+                    ex.JsonData = t.JsonData;
+                }
+            }
+
+            await _uow.SaveHotelChangesAsync();
+            TempData["ok"] = "Sayfa güncellendi.";
+            return RedirectToAction(nameof(Edit), new { id });
         }
 
-        [HttpGet]
-        public IActionResult Edit(int Id)
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
         {
-            var allLanguages = _panelAppLanguageService.GetAllLanguage(false, true);
-            if (!allLanguages.HasData)
-            {
-                AddMessage(allLanguages);
-                return RedirectToAction(nameof(Index));
-            }
-
-            var result = _panelAppContentService.GetContent(Id, false);
-            if (!result.HasData)
-            {
-                AddMessage(result);
-                return RedirectToAction(nameof(Index));
-            }
-
-            var resultModel = result.Data.MapToEditViewModel(allLanguages.Data);
-
-            return View(resultModel);
+            var ci = await _contentRepo.DataSet.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
+            if (ci is null) return NotFound();
+            ci.IsDeleted = true;
+            await _uow.SaveHotelChangesAsync();
+            TempData["ok"] = "Sayfa silindi.";
+            return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(AppContentCreateEditViewModel viewModel)
+        // ---------------- helpers ----------------
+        private async Task<List<PageParentOptionVm>> GetParentOptionsAsync(CancellationToken ct, int? excludeId = null)
         {
-            var dto = viewModel.MapToDto();
-            var result = _panelAppContentService.EditContent(dto);
+            var q = _contentRepo.DataSet.Where(x => !x.IsDeleted && x.IsActive && x.Type == ContentItemType.Page);
+            if (excludeId.HasValue) q = q.Where(x => x.Id != excludeId.Value);
 
-            AddValidationErrorsToModelState(result.ValidationErrors);
-            AddMessage(result);
+            var defLangId = await _langRepo.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
+                .Select(l => l.Id).FirstOrDefaultAsync(ct);
 
-            if (!result.IsSuccess)
-            {
-                return View(viewModel);
-            }
-
-            return RedirectToAction("Index");
+            return await (from ci in q
+                          join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId
+                          where !tr.IsDeleted && tr.LanguageId == defLangId
+                          orderby ci.SortOrder, ci.Id
+                          select new PageParentOptionVm { Id = ci.Id, Title = tr.Title ?? ("#" + ci.Id) })
+                         .ToListAsync(ct);
         }
 
+        private async Task FillLanguagesAsync(PageEditVm vm, CancellationToken ct)
+        {
+            var langs = await _langRepo.DataSet
+                .Where(x => !x.IsDeleted && x.IsActive)
+                .OrderByDescending(x => x.IsDefault)
+                .ThenBy(x => x.Id)
+                .Select(x => new { x.Id, x.Code })
+                .ToListAsync(ct);
+
+            vm.Translations = langs.Select(l => new PageTranslationVm
+            {
+                LanguageId = l.Id,
+                LanguageCode = l.Code
+            }).ToList();
+        }
+
+        private async Task EnsureLanguageTabsAsync(PageEditVm vm, CancellationToken ct)
+        {
+            var exist = vm.Translations.Select(t => t.LanguageId).ToHashSet();
+            var langs = await _langRepo.DataSet.Where(x => !x.IsDeleted && x.IsActive)
+                .Select(x => new { x.Id, x.Code }).ToListAsync(ct);
+
+            foreach (var l in langs)
+                if (!exist.Contains(l.Id))
+                    vm.Translations.Add(new PageTranslationVm { LanguageId = l.Id, LanguageCode = l.Code });
+
+            vm.Translations = vm.Translations
+                .OrderByDescending(t => t.LanguageCode == "tr")
+                .ThenBy(t => t.LanguageId)
+                .ToList();
+        }
     }
 }

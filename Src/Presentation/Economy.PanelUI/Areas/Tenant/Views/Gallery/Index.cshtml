@@ -1,6 +1,8 @@
-﻿@model List<Economy.Panel.UI.Areas.Tenant.Models.PageListItemAdminVm>
+﻿@using Economy.Panel.UI.Areas.Tenant.Models
+@model List<MediaListItemVm>
 @{
-    ViewBag.Title = "Sayfalar";
+    ViewBag.Title = "Galeri";
+    var pageId = (int)ViewBag.PageId;
 }
 <main>
     <div class="container-fluid">
@@ -25,19 +27,18 @@
         <div class="row">
             <div class="col-12">
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h3>Sayfalar</h3>
-    <a class="btn btn-primary" href="/Tenant/pages/create">Yeni Sayfa</a>
+    <h3>Galeri (Sayfa #@pageId)</h3>
+    <a class="btn btn-primary" href="/tenant/gallery/create?pageId=@pageId">Yeni Medya</a>
 </div>
 
 <table class="table table-striped align-middle">
     <thead>
         <tr>
             <th>#</th>
-            <th>Başlık</th>
-            <th>Slug</th>
-            <th>Üst</th>
-            <th>Aktif</th>
-            <th>Yayın</th>
+            <th>Önizleme</th>
+            <th>URL</th>
+            <th>Alt</th>
+            <th>Caption</th>
             <th>Sıra</th>
             <th></th>
         </tr>
@@ -47,15 +48,15 @@
         {
             <tr>
                 <td>@r.Id</td>
-                <td>@(r.Title ?? "(başlık yok)")</td>
-                <td>@r.Slug</td>
-                <td>@r.ParentTitle</td>
-                <td>@(r.IsActive ? "Evet" : "Hayır")</td>
-                <td>@(r.PublishAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                <td style="width:120px">
+                    <img src="@r.Url" style="max-width:110px;max-height:70px;object-fit:cover;border-radius:4px" />
+                </td>
+                <td>@r.Url</td>
+                <td>@r.Alt</td>
+                <td>@r.Caption</td>
                 <td>@r.SortOrder</td>
                 <td class="text-end">
-                    <a class="btn btn-sm btn-outline-secondary" href="/Tenant/pages/edit/@r.Id">Düzenle</a>
-                    <form method="post" action="/Tenant/pages/delete/@r.Id" style="display:inline" onsubmit="return confirm('Silinsin mi?');">
+                    <form method="post" action="/tenant/gallery/delete/@r.Id?pageId=@pageId" onsubmit="return confirm('Silinsin mi?');">
                         @Html.AntiForgeryToken()
                         <button class="btn btn-sm btn-outline-danger">Sil</button>
                     </form>
@@ -64,4 +65,8 @@
         }
     </tbody>
 </table>
+
+<p>
+    <a class="btn btn-light" href="/tenant/pages/edit/@pageId"> « Sayfaya Dön</a>
+</p>
 </div></div></div></main>

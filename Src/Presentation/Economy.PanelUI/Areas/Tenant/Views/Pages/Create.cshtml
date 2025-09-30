@@ -1,14 +1,12 @@
-﻿@using Economy.Panel.UI.Models.ContentViewModels
-@model AppContentCreateEditViewModel
-
+﻿@model Economy.Panel.UI.Areas.Tenant.Models.PageEditVm
 @{
-    ViewData["Title"] = "Sayfa Ekle";
+    bool isEdit = Model.Id.HasValue;
+    ViewBag.Title = isEdit ? "Sayfa Düzenle" : "Yeni Sayfa";
+    var parents = (List<Economy.Panel.UI.Areas.Tenant.Models.PageParentOptionVm>)ViewBag.Parents!;
 }
-
-
 <main>
     <div class="container-fluid">
-        @await Html.PartialAsync("_breadcrumbs")
+@await Html.PartialAsync("_breadcrumbs")
         <div class="row m-1">
             <div class="col-12">
                 <div class="card">
@@ -23,110 +21,127 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
-                <form asp-action="Create" method="post" class="app-form rounded-control needs-validation" novalidate>
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="Id" />
-                    <input type="hidden" asp-for="ContentType" />
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h3>@ViewBag.Title</h3>
+    @if (isEdit)
+    {
+        <div class="btn-group">
+            <a class="btn btn-outline-secondary" href="/tenant/gallery/index?pageId=@Model.Id">Galeri</a>
+            <a class="btn btn-outline-secondary" href="/tenant/blocks/index?pageId=@Model.Id">Bloklar</a>
+        </div>
+    }
+</div>
 
-                    <div class="card equal-card">
-                        <div class="card-header">
-                            <h5>Slider Çevirileri</h5>
-                            <p>Her dil için çevirileri aşağıdan düzenleyebilirsiniz.</p>
-                        </div>
-                        <div class="card-body">
-                            <ul class="nav nav-tabs tab-light-secondary" role="tablist">
-                                @for (int i = 0; i < Model.Translations.Count; i++)
-                                {
-                                    var t = Model.Translations[i];
-                                    var isActive = i == 0 ? "active" : "";
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link gap-2 @isActive"
-                                                id="lang-tab-@i"
-                                                data-bs-toggle="tab"
-                                                data-bs-target="#lang-tab-pane-@i"
-                                                type="button"
-                                                role="tab"
-                                                aria-selected="@(i == 0 ? "true" : "false")">
-                                            <i class="@t.LanguageIcon?.ToLower()"></i> @t.LanguageName
-                                        </button>
-                                    </li>
-                                }
-                            </ul>
-
-                            <div class="tab-content">
-
-                                @for (int i = 0; i < Model.Translations.Count; i++)
-                                {
-                                    var t = Model.Translations[i];
-                                    var isActive = i == 0 ? "show active" : "";
-                                    <div class="tab-pane fade @isActive" id="lang-tab-pane-@i" role="tabpanel" aria-labelledby="lang-tab-@i">
-                                        <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
-                                        <input type="hidden" name="Translations[@i].AppLanguageId" value="@t.AppLanguageId" />
-                                        <input type="hidden" name="Translations[@i].LanguageName" value="@t.LanguageName" />
-                                        <input type="hidden" name="Translations[@i].LanguageIcon" value="@t.LanguageIcon" />
-                                        <input type="hidden" name="Translations[@i].AppContentId" value="@t.AppContentId" />
-
-                                        <div class="form-group mb-3">
-                                            <label asp-for="Translations[@i].Title" class="control-label"></label>
-                                            <input class="form-control" name="Translations[@i].Title" value="@t.Title" />
-                                            <span asp-validation-for="Translations[@i].Title" class="text-danger"></span>
-                                        </div>
-                                    
-                                        <div class="form-group">
-                                            <label asp-for="Translations[@i].Url" class="control-label"></label>
-                                            <input asp-for="Translations[@i].Url" class="form-control" />
-                                            <span asp-validation-for="Translations[@i].Url" class="text-danger"></span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label asp-for="Translations[@i].ShortDescription" class="control-label"></label>
-                                            <input asp-for="Translations[@i].ShortDescription" class="form-control" />
-                                            <span asp-validation-for="Translations[@i].ShortDescription" class="text-danger"></span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label asp-for="Translations[@i].Content" class="control-label"></label>
-                                            <input asp-for="Translations[@i].Content" class="form-control" />
-                                            <span asp-validation-for="Translations[@i].Content" class="text-danger"></span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label asp-for="Translations[@i].MetaTitle" class="control-label"></label>
-                                            <input asp-for="Translations[@i].MetaTitle" class="form-control" />
-                                            <span asp-validation-for="Translations[@i].MetaTitle" class="text-danger"></span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label asp-for="Translations[@i].MetaDescription" class="control-label"></label>
-                                            <input asp-for="Translations[@i].MetaDescription" class="form-control" />
-                                            <span asp-validation-for="Translations[@i].MetaDescription" class="text-danger"></span>
-                                        </div>
-
-                                    </div>
-                                }
-                            </div>
-
-                            <hr />
-                            <div class="mt-3 text-end">
-                                <button type="submit" class="btn btn-success">Kaydet</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div class="card mb-3">
+        <div class="card-header">Genel</div>
+        <div class="card-body row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Üst Sayfa</label>
+                <select class="form-select" asp-for="OwnerId">
+                    <option value="">(Yok)</option>
+                    @foreach (var p in parents)
+                    {
+                        <option value="@p.Id" selected="@(Model.OwnerId == p.Id ? "selected" : null)">@p.Title</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Sıra</label>
+                <input class="form-control" asp-for="SortOrder" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Yayın (UTC)</label>
+                <input class="form-control" asp-for="PublishAtUtc" type="datetime-local" />
+            </div>
+            <div class="col-md-3 d-flex align-items-center">
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" asp-for="IsActive" />
+                    <label class="form-check-label">Aktif</label>
+                </div>
             </div>
         </div>
     </div>
-</main>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+    <div class="card mb-3">
+        <div class="card-header">İçerik (Diller)</div>
+        <div class="card-body">
+            <ul class="nav nav-tabs" role="tablist">
+                @for (int i = 0; i < Model.Translations.Count; i++)
+                {
+                    var t = Model.Translations[i];
+                    <li class="nav-item">
+                        <button class="nav-link @(i == 0 ? "active" : null)" data-bs-toggle="tab" data-bs-target="#pane-@t.LanguageCode" type="button">
+                            @t.LanguageCode.ToUpper()
+                        </button>
+                    </li>
+                }
+            </ul>
+            <div class="tab-content border border-top-0 p-3">
+                @for (int i = 0; i < Model.Translations.Count; i++)
+                {
+                    var t = Model.Translations[i];
+                    <div class="tab-pane fade show @(i == 0 ? "active" : null)" id="pane-@t.LanguageCode">
+                        <input type="hidden" name="Translations[@i].LanguageId" value="@t.LanguageId" />
+                        <input type="hidden" name="Translations[@i].LanguageCode" value="@t.LanguageCode" />
+                        <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Slug</label>
+                                <input class="form-control" name="Translations[@i].Slug" value="@t.Slug" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Başlık</label>
+                                <input class="form-control" name="Translations[@i].Title" value="@t.Title" />
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Kısa Açıklama</label>
+                                <textarea class="form-control" name="Translations[@i].Summary" rows="2">@t.Summary</textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">İçerik</label>
+                                <textarea class="form-control" name="Translations[@i].Body" rows="6">@t.Body</textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Kapak Görseli</label>
+                                <input class="form-control" name="Translations[@i].Image" value="@t.Image" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">OG Görseli</label>
+                                <input class="form-control" name="Translations[@i].OgImage" value="@t.OgImage" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Meta Title</label>
+                                <input class="form-control" name="Translations[@i].MetaTitle" value="@t.MetaTitle" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Meta Description</label>
+                                <input class="form-control" name="Translations[@i].MetaDescription" value="@t.MetaDescription" />
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">JsonData (opsiyonel)</label>
+                                <textarea class="form-control" name="Translations[@i].JsonData" rows="2">@t.JsonData</textarea>
+                                <div class="form-text">
+                                    Örn (Campaign): {"badge":"%20 indirim","priceFrom":"120","currency":"EUR","validTo":"2025-12-31"}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" type="submit">Kaydet</button>
+        <a class="btn btn-outline-secondary" href="/admin/pages">Vazgeç</a>
+    </div>
+</form>
+</div></div></div></main>

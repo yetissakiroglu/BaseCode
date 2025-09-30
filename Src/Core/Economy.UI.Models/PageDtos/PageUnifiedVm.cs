@@ -88,7 +88,7 @@ namespace Economy.UI.Models.PageDtos
         public string? SnippetTitle { get; set; }
         public string? SnippetBody { get; set; }
 
-        // Kart listeleri
+        //// Kart listeleri
         public List<PageCardVm>? Rooms { get; set; }       // RoomList
         public List<CampaignCardVm>? Campaigns { get; set; } // CampaignList
         public List<PageCardVm>? Pages { get; set; }       // PageList
