@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using Economy.Application.Dtos.AppTechnicalSettingDtos;
-using Economy.Application.Interfaces;
+using Economy.Application.TenantUI.AppTechnicalSettingDtos;
+using Economy.Application.TenantUI.Interfaces;
+using Economy.Core.Extensions;
 using Economy.Panel.UI.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,16 +24,16 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         public IActionResult Index()
         {
             var res = _panelAppTechnicalSettingService.GetAppTechnicalSetting(false);
-
-            var entity = _mapper.Map<AppTechnicalSettingCreateEditDto>(res.Data);
-
-            return View(entity ?? new AppTechnicalSettingCreateEditDto());
+            var resModel = _mapper.Map<AppTechnicalSettingCreateEditDto>(res.Data);
+            return View(resModel ?? new AppTechnicalSettingCreateEditDto());
         }
 
         [HttpPost("/Tenant/TechnicalSettings")]
         [ValidateAntiForgeryToken]
         public IActionResult TechnicalSettings(AppTechnicalSettingCreateEditDto model)
         {
+            //model.MaintenanceAllowedIpList = MaintenanceAllowedIpListRaw.ToIpList();
+       
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -43,11 +44,9 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
             if (!res.IsSuccess)
             {
-                TempData["Error"] = res.Message ?? "Kayıt sırasında hata oluştu.";
                 return View(model);
             }
 
-            TempData["Success"] = "Ayarlar kaydedildi.";
             return RedirectToAction(nameof(TechnicalSettings));
         }
     }

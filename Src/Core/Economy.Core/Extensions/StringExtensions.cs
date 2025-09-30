@@ -5,6 +5,30 @@ namespace Economy.Core.Extensions
 {
     public static class StringExtensions
     {
+
+        public static IReadOnlyList<string> ToIpList(this string? raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+                return Array.Empty<string>();
+
+            return raw
+                .Replace("\r", "")
+                .Split(new[] { '\n', ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Distinct()
+                .ToList();
+        }
+
+
+
+
+
+
+
+
+
+
         private static string? SanitizeHtml(string? html)
         {
             if (string.IsNullOrWhiteSpace(html)) return html;

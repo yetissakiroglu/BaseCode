@@ -2,7 +2,7 @@
 @model BlockVm
 @{
     string BuildUrl(string lang, string slug) => $"/{lang}/{slug}";
-    var cards = Model.Rooms ?? new List<PageCardVm>();
+    var cards = Model.Pages ?? new List<PageCardVm>();
 }
 <section class="block roomlist">
     @if (!string.IsNullOrWhiteSpace(Model.Title)) { <h2>@Model.Title</h2> }

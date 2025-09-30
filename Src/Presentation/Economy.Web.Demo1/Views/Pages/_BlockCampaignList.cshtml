@@ -2,39 +2,19 @@
 @model BlockVm
 @{
     string BuildUrl(string lang, string slug) => $"/{lang}/{slug}";
-    var cards = Model.Campaigns ?? new List<CampaignCardVm>();
+    var cards = Model.Pages ?? new List<PageCardVm>();
 }
+
 <section class="block campaignlist">
-    @if (!string.IsNullOrWhiteSpace(Model.Title))
-    {
-        <h2>@Model.Title</h2>
-    }
+    @if (!string.IsNullOrWhiteSpace(Model.Title)) { <h2>@Model.Title</h2> }
     <div class="card-grid">
-        @foreach (var card in cards)
-        {
-            var url = string.IsNullOrWhiteSpace(card.Url) ? BuildUrl(Model.Lang, card.Slug) : card.Url;
-            <article class="card">
-                <a href="@url" class="stretched-link">
-                    <div class="card-image">
-                        <img src="@card.Image" alt="@card.Title" />
-                        @if (!string.IsNullOrWhiteSpace(card.Badge))
-                        {
-                            <span class="badge">@card.Badge</span>
-                        }
-                    </div>
-                    <div class="card-body">
-                        <h3>@card.Title</h3>
-                        @if (!string.IsNullOrWhiteSpace(card.Summary))
-                        {
-                            <p>@card.Summary</p>
-                        }
-                        @if (card.PriceFrom.HasValue && !string.IsNullOrWhiteSpace(card.Currency))
-                        {
-                            <p class="price">@card.PriceFrom.Value.ToString("0.##") @card.Currency</p>
-                        }
-                    </div>
-                </a>
-            </article>
-        }
+    @foreach (var card in cards)
+    {
+        var url = string.IsNullOrWhiteSpace(card.Url) ? BuildUrl(Model.Lang, card.Slug) : card.Url;
+        <partial name="_Card" model="new PageCardVm{
+            Id = card.Id, Slug = card.Slug, Title = card.Title,
+            Summary = card.Summary, Image = card.Image, Url = url
+        }" />
+    }
     </div>
 </section>

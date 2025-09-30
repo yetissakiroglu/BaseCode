@@ -350,7 +350,9 @@ namespace Economy.Persistence.PersistenceUI.Services
                       || tplName == nameof(BlockTemplate.CampaignList))
                 {
                     var ids = ReadJsonIntArray(vm.JsonData, "pageIds");
-                    var slugs = ReadJsonStringArray(vm.JsonData, "slugs");
+                    //var roomsids = ReadJsonIntArray(vm.JsonData, "roomIds");
+
+                    //var slugs = ReadJsonStringArray(vm.JsonData, "slugs");
                     var take = ReadJsonInt(vm.JsonData, "take") ?? 12;
 
                     var q = from p in _contentRepo.DataSet
@@ -359,17 +361,50 @@ namespace Economy.Persistence.PersistenceUI.Services
                             where !ttr.IsDeleted && ttr.IsActive && ttr.LanguageId == langId
                             select new { p, ttr };
 
+                    //var qroom = from p in _contentRepo.DataSet
+                    //            where !p.IsDeleted && p.IsActive && p.Type == ContentItemType.Page
+                    //            join ttr in _trRepo.DataSet on p.Id equals ttr.ContentItemId
+                    //            where !ttr.IsDeleted && ttr.IsActive && ttr.LanguageId == langId
+                    //            select new { p, ttr };
+
                     if (ids?.Any() == true) q = q.Where(z => ids.Contains(z.p.Id));
-                    if (slugs?.Any() == true) q = q.Where(z => slugs.Contains(z.ttr.Slug!));
+                    //if (roomsids?.Any() == true) qroom = qroom.Where(z => roomsids.Contains(z.ttr.Id!));
 
                     var list = await q
                         .OrderBy(z => z.p.SortOrder).ThenBy(z => z.p.Id)
                         .Take(take)
                         .ToListAsync(ct);
 
+                    //var listroom = await qroom
+                    //  .OrderBy(z => z.p.SortOrder).ThenBy(z => z.p.Id)
+                    //  .Take(take)
+                    //  .ToListAsync(ct);
+
                     // Parent slug’ları tek seferde çek
                     var parentSlugMap = await GetParentSlugMapAsync(langId, list.Select(z => z.p.OwnerId), ct);
                     var parentTitleMap = await GetParentTitleMapAsync(langId, list.Select(z => z.p.OwnerId), ct);
+                    //vm.Rooms = listroom.Select(z =>
+                    //{
+                    //    parentSlugMap.TryGetValue(z.p.OwnerId ?? 0, out var pSlug);
+                    //    parentTitleMap.TryGetValue(z.p.OwnerId ?? 0, out var pTitle);
+
+                    //    pSlug = pSlug ?? "";
+                    //    pTitle = pTitle ?? "";
+
+                    //    return new PageCardVm
+                    //    {
+                    //        Id = z.p.Id,
+                    //        Slug = z.ttr.Slug ?? "",
+                    //        ParentSlug = string.IsNullOrWhiteSpace(pSlug) ? null : pSlug,
+                    //        ParentTitle = string.IsNullOrWhiteSpace(pTitle) ? null : pTitle,
+                    //        Title = z.ttr.Title ?? "",
+                    //        Summary = z.ttr.Summary,
+                    //        Image = z.ttr.Image,
+                    //        Url = !string.IsNullOrWhiteSpace(pSlug)
+                    //            ? Join3(langCode, pSlug, z.ttr.Slug ?? "")
+                    //            : Join2(langCode, z.ttr.Slug ?? "")
+                    //    };
+                    //}).ToList();
 
                     vm.Pages = list.Select(z =>
                     {

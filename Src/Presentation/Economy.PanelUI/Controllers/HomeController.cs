@@ -19,6 +19,13 @@ public class HomeController : Controller
         _svc = svc;
     }
 
+
+
+
+
+
+
+
     public IActionResult Editor()
     {
         return View();

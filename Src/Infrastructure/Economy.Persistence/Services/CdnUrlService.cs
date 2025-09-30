@@ -1,4 +1,5 @@
 ﻿using Economy.Application.Interfaces;
+using Economy.Application.TenantUI.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
@@ -46,12 +47,12 @@ namespace Economy.Persistence.Services
             var res = _techService.GetAppTechnicalSetting(isDeleted: false);
             var tech = res.Data;
 
-            var useCdn = tech is not null && tech.EnableCDN && !string.IsNullOrWhiteSpace(tech.StaticFileUrl);
+            var useCdn = tech is not null && tech.CdnEnabled && !string.IsNullOrWhiteSpace(tech.CdnBaseUrl);
 
             string baseUrl;
             if (useCdn)
             {
-                baseUrl = tech!.StaticFileUrl!.TrimEnd('/');
+                baseUrl = tech!.CdnBaseUrl!.TrimEnd('/');
             }
             else
             {

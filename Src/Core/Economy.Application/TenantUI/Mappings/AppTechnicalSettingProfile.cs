@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Economy.Application.Dtos.AppTechnicalSettingDtos;
+using Economy.Application.TenantUI.AppTechnicalSettingDtos;
 using Economy.Domain.Entites.EntityAppSettings;
 using Economy.Panel.Application.Dtos.AppSettingDtos;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Economy.Application.Mapping
+namespace Economy.Application.TenantUI.Mappings
 {
 
     public sealed class AppTechnicalSettingProfile : Profile

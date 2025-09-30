@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Economy.Application.Dtos.AppTechnicalSettingDtos;
-using Economy.Application.Interfaces;
+using Economy.Application.TenantUI.AppTechnicalSettingDtos;
+using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Helpers;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools.Result;

@@ -1,16 +1,13 @@
-﻿using Economy.Application.Dtos.AppTechnicalSettingDtos;
+﻿using Economy.Application.TenantUI.AppTechnicalSettingDtos;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 
-namespace Economy.Application.Interfaces
+namespace Economy.Application.TenantUI.Interfaces
 {
     public interface IPanelAppTechnicalSettingService
     {
-
         ServiceResult<AppTechnicalSettingDto> SaveAppTechnicalSetting(AppTechnicalSettingCreateEditDto appSettingDto);
         ServiceResult<AppTechnicalSettingDto> GetAppTechnicalSetting(bool isDeleted);
         ServiceResult<AppTechnicalSettingDto> DeleteAppTechnicalSetting(int Id);
-
-
     }
 }

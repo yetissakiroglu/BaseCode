@@ -64,6 +64,14 @@
 
             @if (IsTenantAdmin())
             {
+                <li class="menu-title"><span>Site Yönetimi</span></li>
+                <li class="no-sub">
+                    <a class="" href="/Tenant/TechnicalSettings">
+                        <i class="iconoir-view-grid"></i>
+                        Teknik Ayarlar
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/tenant/pages">
                         <i class="bi bi-file-text me-2"></i> Sayfalar
@@ -85,13 +93,7 @@
                     </a>
                 </li>
 
-                <li class="menu-title"><span>Site Yönetimi</span></li>
-                <li class="no-sub">
-                    <a class="" href="/Tenant/TechnicalSettings">
-                        <i class="iconoir-view-grid"></i>
-                        Teknik Ayarlar
-                    </a>
-                </li>
+                
                 <li>
                     <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#SiteYonetimi">
                         <i class="iconoir-keyframes-couple"></i> Site Ayarları

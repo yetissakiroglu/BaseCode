@@ -4,9 +4,11 @@ using Economy.Application.Dtos.AppGeneralSettingDtos;
 using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Dtos.AppSecuritySettingDtos;
 using Economy.Application.Dtos.AppSuperAdminUserDtos;
-using Economy.Application.Dtos.AppTechnicalSettingDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Providers;
+using Economy.Application.TenantUI.AppTechnicalSettingDtos;
+using Economy.Application.TenantUI.Interfaces;
+using Economy.Application.TenantUI.Validations;
 using Economy.Application.Validations;
 using Economy.Application.Validations.AppSecuritySettingValidator;
 using Economy.Application.Validations.AppSuperAdminValidator;
@@ -312,7 +314,7 @@ app.MapControllerRoute(
 // MVC, Razor Sayfalarý ve Blazor bileþenleri için routing iþlemleri
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=tenant/Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 // Authorization ve Authentication iþlemleri
 app.UseAuthentication();

@@ -1,9 +1,6 @@
 ﻿using Economy.Application.Interfaces;
 using Economy.Core.Dtos;
-using Economy.Domain.Entites.Identities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace Economy.Panel.UI.Controllers
 {
