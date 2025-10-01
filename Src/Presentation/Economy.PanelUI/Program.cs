@@ -1,17 +1,16 @@
 using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Application.Dtos.AppDtos;
 using Economy.Application.Dtos.AppGeneralSettingDtos;
-using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Dtos.AppSecuritySettingDtos;
 using Economy.Application.Dtos.AppSuperAdminUserDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Providers;
+using Economy.Application.TenantUI.Dtos.AppMenuDtos;
 using Economy.Application.TenantUI.Dtos.AppSettingDtos;
 using Economy.Application.TenantUI.Dtos.AppSettingLogoDtos;
 using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Application.TenantUI.Validations;
-using Economy.Application.Validations;
 using Economy.Application.Validations.AppSecuritySettingValidator;
 using Economy.Application.Validations.AppSuperAdminValidator;
 using Economy.Application.Validations.AppUserValidator;
@@ -188,7 +187,7 @@ builder.Services.AddScoped<IPanelDashboardService, PanelDashboardService>();
 builder.Services.AddScoped<IPanelLoginLogService, PanelLoginLogService>();
 builder.Services.AddScoped<IPanelAppTechnicalSettingService, PanelAppTechnicalSettingService>();
 
-builder.Services.AddScoped<IValidator<MenuItemDto>, MenuItemValidator>();
+builder.Services.AddScoped<IValidator<MenuItemDto>, AppMenuItemValidator>();
 
 builder.Services.AddScoped<IValidator<AppUserCreateDto>, AppUserCreateDtoValidator>();
 

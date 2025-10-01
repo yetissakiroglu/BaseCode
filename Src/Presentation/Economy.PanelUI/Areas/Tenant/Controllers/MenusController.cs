@@ -1,13 +1,11 @@
-﻿using Economy.Application.Dtos.AppMenuDtos;
-using Economy.Application.Interfaces;
+﻿using Economy.Application.Interfaces;
+using Economy.Application.TenantUI.Dtos.AppMenuDtos;
 using Economy.Core.Enums;
-using Economy.Domain.Entites.EntityMenuItems;
 using Economy.Panel.Application.Interfaces;
 using Economy.Panel.UI.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
@@ -90,7 +88,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             return RedirectToAction(nameof(Index), new { location });
         }
 
-        public class ReorderRequest { public List<MenuReorderItem> Items { get; set; } = new(); }
+        public class ReorderRequest { public List<MenuReorderItemDto> Items { get; set; } = new(); }
 
         [ValidateAntiForgeryToken]
         [HttpPost]

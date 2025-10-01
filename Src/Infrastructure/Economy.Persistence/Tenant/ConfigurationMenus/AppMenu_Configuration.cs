@@ -1,8 +1,8 @@
-﻿using Economy.Domain.Entites.EntityMenuItems;
+﻿using Economy.Domain.Entites.TenantEntity.EntityAppMenus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Economy.Persistence.Configurations.ConfigurationMenuItems
+namespace Economy.Persistence.Tenant.ConfigurationMenus
 {
     public class AppMenu_Configuration : IEntityTypeConfiguration<AppMenu>
     {

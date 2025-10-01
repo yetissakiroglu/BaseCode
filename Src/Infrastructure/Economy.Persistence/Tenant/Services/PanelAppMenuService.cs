@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using Economy.Application.Dtos.AppMenuDtos;
 using Economy.Application.Interfaces;
+using Economy.Application.TenantUI.Dtos.AppMenuDtos;
 using Economy.Core.Helpers;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.EntityAppLanguage;
-using Economy.Domain.Entites.EntityAppMenus;
-using Economy.Domain.Entites.EntityMenuItems;
+using Economy.Domain.Entites.TenantEntity.EntityAppMenus;
 using Economy.Panel.Application.Extensions;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -94,7 +93,7 @@ namespace Economy.Persistence.Services
 
         }
 
-        public async Task<ServiceResult<bool>> ReorderAsync(IEnumerable<MenuReorderItem> items, string updatedBy)
+        public async Task<ServiceResult<bool>> ReorderAsync(IEnumerable<MenuReorderItemDto> items, string updatedBy)
         {
             var ids = items.Select(i => i.Id).Distinct().ToList();
             var map = await _repo.DataSet.Where(x => ids.Contains(x.Id)).ToDictionaryAsync(x => x.Id);

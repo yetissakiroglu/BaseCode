@@ -1,13 +1,13 @@
-﻿using Economy.Application.Dtos.AppMenuDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppMenuDtos;
 using FluentValidation;
 
-namespace Economy.Application.Validations
+namespace Economy.Application.TenantUI.Validations
 {
   
 
-    public class MenuItemValidator : AbstractValidator<MenuItemDto>
+    public class AppMenuItemValidator : AbstractValidator<MenuItemDto>
     {
-        public MenuItemValidator()
+        public AppMenuItemValidator()
         {
             RuleFor(x => x.Location).NotEmpty().MaximumLength(50);
             RuleFor(x => x.SortOrder).GreaterThanOrEqualTo(0);

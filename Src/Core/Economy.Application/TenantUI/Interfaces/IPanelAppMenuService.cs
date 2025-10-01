@@ -1,4 +1,4 @@
-﻿using Economy.Application.Dtos.AppMenuDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppMenuDtos;
 using Economy.Core.Tools.Result;
 
 namespace Economy.Application.Interfaces
@@ -8,7 +8,7 @@ namespace Economy.Application.Interfaces
         Task<ServiceResult<List<MenuNodeDto>>> GetTreeAsync(string location, bool onlyActive);
         Task<ServiceResult<MenuItemDto>> UpsertAsync(MenuItemDto dto, string updatedBy);
         Task<ServiceResult<bool>> DeleteAsync(int id);
-        Task<ServiceResult<bool>> ReorderAsync(IEnumerable<MenuReorderItem> items, string updatedBy);
+        Task<ServiceResult<bool>> ReorderAsync(IEnumerable<MenuReorderItemDto> items, string updatedBy);
 
     }
 }

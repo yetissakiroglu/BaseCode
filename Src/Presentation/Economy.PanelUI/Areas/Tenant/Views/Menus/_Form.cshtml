@@ -1,7 +1,7 @@
-﻿@model MenuItemDto
-@using Economy.Application.Dtos.AppMenuDtos
+﻿@using Economy.Application.TenantUI.Dtos.AppMenuDtos
 @using Economy.Panel.Application.Dtos.AppLanguageDtos
-@using Microsoft.AspNetCore.Mvc.Rendering
+@model MenuItemDto
+
 @{
     var parentList = ViewBag.ParentList as List<SelectListItem> ?? new();
     var languages = ViewBag.Languages as List<AppLanguageDto> ?? new();

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Economy.Application.Dtos.AppMenuDtos
+namespace Economy.Application.TenantUI.Dtos.AppMenuDtos
 {
-    public class MenuReorderItem
+    public class MenuReorderItemDto
     {
         public int Id { get; set; }
         public int? ParentId { get; set; }

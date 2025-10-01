@@ -1,8 +1,7 @@
 ﻿using Economy.Core.Enums;
 using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityAppMenus;
 
-namespace Economy.Domain.Entites.EntityMenuItems
+namespace Economy.Domain.Entites.TenantEntity.EntityAppMenus
 {
     /// <summary>
     /// Menü öğelerini temsil eden sınıf.

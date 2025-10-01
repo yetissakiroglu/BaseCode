@@ -1,11 +1,11 @@
-﻿@using Economy.Application.Dtos.AppMenuDtos
+﻿@using Economy.Application.TenantUI.Dtos.AppMenuDtos
 @using Economy.Core.Enums
 @model MenuNodeDto
 @{
     var title = Model.Translations?.FirstOrDefault()?.Title ?? $"#{Model.Id}";
 }
 
-<li class="list-group-item mb-2" data-node-id="@Model.Id">
+<li class="list-group-item" data-node-id="@Model.Id">
     <div class="d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-2">
             <strong>@title</strong>

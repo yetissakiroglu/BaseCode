@@ -1,7 +1,7 @@
 ﻿using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.EntityAppLanguage;
-using Economy.Domain.Entites.EntityMenuItems;
+using Economy.Domain.Entites.TenantEntity.EntityAppMenus;
 using Economy.UI.Models;
 using Microsoft.EntityFrameworkCore;
 

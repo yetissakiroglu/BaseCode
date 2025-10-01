@@ -1,7 +1,7 @@
 ﻿using Economy.Domain.BaseEntities;
 using Economy.Domain.Entites.EntityAppLanguage;
 
-namespace Economy.Domain.Entites.EntityAppMenus
+namespace Economy.Domain.Entites.TenantEntity.EntityAppMenus
 {
     public  class AppMenuTranslation : BaseEntity<int>
     {
