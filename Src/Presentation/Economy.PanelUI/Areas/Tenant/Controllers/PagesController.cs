@@ -291,5 +291,33 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 .ThenBy(t => t.LanguageId)
                 .ToList();
         }
+
+
+
+        public IActionResult CreateTest()
+        {
+            return View(new PageCreateVm());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateTest(PageCreateVm vm)
+        {
+            if (!ModelState.IsValid) return View(vm);
+
+            // TODO: DB kaydı (vm.Title, vm.Content, vm.ImageUrl (kapak), vm.ImageUrls (galeri))
+            TempData["ok"] = "Sayfa oluşturuldu (demo).";
+            return RedirectToAction(nameof(Create));
+        }
+
+        public class PageCreateVm
+        {
+            public string Title { get; set; } = string.Empty;
+            public string? Content { get; set; }
+
+            public string? ImageUrl { get; set; }       // Kapak
+            public List<string> ImageUrls { get; set; } = new(); // Galeri
+        }
+
     }
 }

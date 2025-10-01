@@ -20,10 +20,12 @@ using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Base.Persistence.Providers;
 using Economy.Core.Business;
 using Economy.Core.ContextFactory;
+using Economy.Core.Core;
 using Economy.Core.Helpers;
 using Economy.Core.Helpers.Dtos;
 using Economy.Core.Interfaces;
 using Economy.Core.Interfaces.Economy.Panel.Persistence.Services;
+using Economy.Core.Options;
 using Economy.Core.Services.Providers;
 using Economy.Domain.Entites.Identities;
 using Economy.Infrastructure.Services;
@@ -75,6 +77,10 @@ builder.Services.AddDbContext<HotelDbContext>(options =>
 });
 
 
+// FileManager ayarlarý + storage
+builder.Services.Configure<FileManagerOptions>(
+    builder.Configuration.GetSection("FileManager"));
+builder.Services.AddSingleton<IImageStorage, LocalImageStorage>();
 
 // TokenOption ayarlarýný oku ve DI container'a ekle
 builder.Services.Configure<TokenOption>(

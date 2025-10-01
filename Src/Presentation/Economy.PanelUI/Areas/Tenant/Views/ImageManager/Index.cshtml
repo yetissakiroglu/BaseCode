@@ -1,0 +1,169 @@
+﻿@using Economy.Core.Core
+@model IReadOnlyList<ImageItemDto>
+@{
+    var dir = (string)(ViewBag.CurrentDir ?? "");
+    var publicBase = (string)(ViewBag.PublicBase ?? "/uploads/images");
+}
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- Breadcrumb -->
+       @*  <nav aria-label="breadcrumb" class="mb-2">
+            <ol class="breadcrumb">
+                @foreach (var c in (List<(string label, string? path)>)ViewBag.Breadcrumb)
+                {
+                    if (c.path == (string)ViewBag.CurrentDir)
+                    {
+                        <li class="breadcrumb-item active" aria-current="page">@c.label</li>
+                    }
+                    else
+                    {
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-route-dir="@c.path">@c.label</a></li>
+                    }
+                }
+            </ol>
+        </nav>
+ *@
+        <!-- Arama -->
+        <form method="get" class="row g-2 align-items-center mb-3">
+            <input type="hidden" name="dir" value="@dir" />
+            <div class="col-auto">
+                <input type="text" class="form-control" name="q" value="@((string)ViewBag.Query)" placeholder="Dosya adı ara..." />
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-outline-secondary" type="submit">Ara</button>
+            </div>
+        </form>
+
+        <div class="row">
+            <aside class="col-md-3">
+                <div class="list-group mb-3">
+                    <a class="list-group-item list-group-item-action @(string.IsNullOrEmpty(dir) ? "active" : "")"
+                       asp-action="Index" asp-route-dir="">/ (Root)</a>
+
+                    @foreach (var folder in (IReadOnlyList<string>)ViewBag.Dirs)
+                    {
+                        var next = string.IsNullOrEmpty(dir) ? folder : $"{dir}/{folder}";
+                        <a class="list-group-item list-group-item-action"
+                           asp-action="Index" asp-route-dir="@next">@folder</a>
+                    }
+                </div>
+                <div class="small text-muted">Not: Yüklemeler varsayılan olarak <code>yyyy/MM</code> dizinine düşer.</div>
+            </aside>
+
+            <section class="col-md-9">
+                <form id="uploadForm" method="post" enctype="multipart/form-data" class="border rounded p-3 my-3">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="dir" value="@dir" />
+
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <label class="form-label m-0">Kırpma oranı:</label>
+                        <select id="aspectSelect" class="form-select form-select-sm" style="width:auto">
+                            <option value="">Serbest</option>
+                            <option value="1:1">1:1</option>
+                            <option value="4:3">4:3</option>
+                            <option value="16:9" selected>16:9</option>
+                        </select>
+                    </div>
+           
+
+                    <div id="dropZone" class="p-5 text-center" style="border:2px dashed #ccc; border-radius:8px;">
+                        <p class="m-0">Resimleri buraya <b>sürükleyip bırak</b> veya</p>
+                        <div class="mt-2">
+                            <input type="file" name="files" id="fileInput" multiple accept=".jpg,.jpeg,.png,.webp,.gif" class="form-control" />
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3 mt-2">
+                    @foreach (var it in Model)
+                    {
+                        var url = $"{publicBase}/{it.RelativePath}";
+                        <div class="col">
+                            <div class="card h-100">
+                                <img src="@url" class="card-img-top" alt="@it.Name" loading="lazy" />
+                                <div class="card-body p-2">
+                                    <div class="small text-truncate" title="@it.Name">@it.Name</div>
+                                    <div class="text-muted small">@string.Format("{0:N0} B", it.SizeBytes)</div>
+                                </div>
+                                <div class="card-footer p-2 d-flex justify-content-between">
+                                    <a class="btn btn-sm btn-outline-primary show-btn" data-url="@url" href="#">Göster</a>
+
+@*                                     <a class="btn btn-sm btn-outline-primary" href="@url" target="_blank">Göster</a>
+ *@                                    <form asp-action="Delete" method="post" onsubmit="return confirm('Silinsin mi?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="path" value="@it.RelativePath" />
+                                        <input type="hidden" name="dir" value="@dir" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </section>
+        </div>
+        <!-- Resim Popup -->
+        <div id="imgPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+     background:rgba(0,0,0,.8); z-index:9999; justify-content:center; align-items:center;">
+            <img id="popupImg" src="" alt="" style="max-width:50%; max-height:50%; border:4px solid #fff; border-radius:8px;" />
+        </div>
+
+    </div>
+</main>
+
+
+@section Scripts {
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        const dirVal = document.querySelector('input[name="dir"]').value || '';
+
+        async function uploadFiles(files){
+          if(!files || files.length===0) return;
+          const fd = new FormData();
+          for(const f of files) fd.append('files', f);
+          fd.append('dir', dirVal);
+          const aspect = document.getElementById('aspectSelect').value;
+          fd.append('aspect', aspect);
+
+          const res = await fetch('@Url.Action("UploadAjax", "ImageManager", new { area = "Tenant" })', {
+            method:'POST',
+            headers:{ 'RequestVerificationToken': token },
+            body: fd
+          });
+          if(res.ok){ location.reload(); }
+          else{ alert('Yükleme hatası.'); }
+        }
+
+        ['dragenter','dragover'].forEach(evt=>{
+          dropZone.addEventListener(evt, e=>{ e.preventDefault(); dropZone.style.background='#f8f9fa'; });
+        });
+        ['dragleave','drop'].forEach(evt=>{
+          dropZone.addEventListener(evt, e=>{ e.preventDefault(); dropZone.style.background=''; });
+        });
+        dropZone.addEventListener('drop', e=>{
+          const dt = e.dataTransfer;
+          if(!dt || !dt.files) return;
+          uploadFiles(dt.files);
+        });
+        fileInput.addEventListener('change', ()=> uploadFiles(fileInput.files));
+
+                // Göster butonlarını popup'a bağla
+        document.querySelectorAll('.card .show-btn').forEach(btn=>{
+          btn.addEventListener('click', e=>{
+            e.preventDefault();
+            const url = btn.getAttribute('data-url');
+            const popup = document.getElementById('imgPopup');
+            const img = document.getElementById('popupImg');
+            img.src = url;
+            popup.style.display = 'flex';
+          });
+        });
+                // Popup tıklanınca kapansın
+        document.getElementById('imgPopup').addEventListener('click', ()=>{
+          document.getElementById('imgPopup').style.display='none';
+        });
+    </script>
+}

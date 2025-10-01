@@ -1,0 +1,148 @@
+﻿@using static Economy.Panel.UI.Areas.Tenant.Controllers.PagesController
+@model PageCreateVm
+
+<div class="container py-3">
+    <h4>Sayfa Oluştur</h4>
+    @if (TempData["ok"] is string ok)
+    {
+        <div class="alert alert-success">@ok</div>
+    }
+
+    <form asp-action="CreateTest" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            <label class="form-label">Başlık</label>
+            <input class="form-control" asp-for="Title" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">İçerik</label>
+            <textarea class="form-control" asp-for="Content" rows="6"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Kapak Resmi</label>
+            <div class="input-group">
+                <input class="form-control" asp-for="ImageUrl" id="ImageUrl" placeholder="Seçilen resim URL'i" />
+                <button class="btn btn-outline-secondary" type="button" id="btnPick">Resim Seç</button>
+            </div>
+            <div class="mt-2">
+                <img id="preview" src="" alt="" style="max-height:160px; display:none; border:1px solid #ddd; border-radius:6px;" />
+            </div>
+        </div>
+
+        <div class="text-end">
+            <button class="btn btn-primary" type="submit">Kaydet</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('btnPick').addEventListener('click', ()=>{
+          const w = 1000, h = 700;
+          const y = window.top.outerHeight/2 + window.top.screenY - ( h/2);
+          const x = window.top.outerWidth/2 + window.top.screenX - ( w/2);
+          window.open('@Url.Action("Picker", "ImageManager", new { area = "Tenant" })', 'picker',
+            `popup=yes,width=${w},height=${h},left=${x},top=${y}`);
+        });
+
+        function ensureGalleryContainer(){
+          let gal = document.getElementById('miniGal');
+          if(!gal){
+            gal = document.createElement('div');
+            gal.id = 'miniGal';
+            gal.className = 'mt-2 d-flex flex-wrap gap-2';
+            gal.style.userSelect = 'none';
+            document.getElementById('preview').parentElement.appendChild(gal);
+          }
+          return gal;
+        }
+        function ensureHiddenList(){
+          let wrap = document.getElementById('hiddenImages');
+          if(!wrap){
+            wrap = document.createElement('div');
+            wrap.id = 'hiddenImages';
+            document.querySelector('form').appendChild(wrap);
+          }
+          return wrap;
+        }
+        function rebuildHiddenFromGallery(){
+          const hidden = ensureHiddenList();
+          hidden.innerHTML = '';
+          const thumbs = document.querySelectorAll('#miniGal .thumb');
+          const urls = Array.from(thumbs).map(t => t.getAttribute('data-url'));
+          urls.forEach(u=>{
+            const h = document.createElement('input');
+            h.type = 'hidden';
+            h.name = 'ImageUrls';
+            h.value = u;
+            hidden.appendChild(h);
+          });
+          if (urls.length){
+            document.getElementById('ImageUrl').value = urls[0];
+            document.getElementById('preview').src = urls[0];
+            document.getElementById('preview').style.display = 'inline-block';
+          }
+        }
+        function addThumb(url){
+          const gal = ensureGalleryContainer();
+          const wrap = document.createElement('div');
+          wrap.className = 'thumb';
+          wrap.setAttribute('data-url', url);
+          wrap.setAttribute('draggable', 'true');
+          wrap.style.display='inline-flex';
+          wrap.style.alignItems='center';
+          wrap.style.gap='6px';
+
+          const img = new Image();
+          img.src = url; img.style.height='72px'; img.style.border='1px solid #ddd'; img.style.borderRadius='6px';
+          const del = document.createElement('button');
+          del.type='button'; del.textContent='×'; del.title='Kaldır';
+          del.className='btn btn-sm btn-outline-danger';
+          del.addEventListener('click', ()=>{ wrap.remove(); rebuildHiddenFromGallery(); });
+
+          wrap.addEventListener('dragstart', e=>{
+            wrap.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+          });
+          wrap.addEventListener('dragend', ()=>{
+            wrap.classList.remove('dragging');
+            rebuildHiddenFromGallery();
+          });
+
+          gal.addEventListener('dragover', e=>{
+            e.preventDefault();
+            const dragging = gal.querySelector('.dragging');
+            if(!dragging) return;
+            const afterEl = getDragAfterElement(gal, e.clientX);
+            if(afterEl == null) gal.appendChild(dragging);
+            else gal.insertBefore(dragging, afterEl);
+          });
+
+          function getDragAfterElement(container, x){
+            const els = [...container.querySelectorAll('.thumb:not(.dragging)')];
+            return els.reduce((closest, child)=>{
+              const box = child.getBoundingClientRect();
+              const offset = x - (box.left + box.width/2);
+              if (offset < 0 && offset > closest.offset) return { offset, element: child }
+              else return closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+          }
+
+          wrap.appendChild(img);
+          wrap.appendChild(del);
+          gal.appendChild(wrap);
+        }
+
+        window.addEventListener('message', (ev)=>{
+          if(!ev.data || ev.data.type !== 'image-picked') return;
+          const urls = (ev.data.urls || []).filter(Boolean);
+          if(urls.length === 0) return;
+
+          urls.forEach(addThumb);
+          rebuildHiddenFromGallery();
+        });
+    </script>
+}

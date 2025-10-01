@@ -1,0 +1,270 @@
+﻿@using Economy.Core.Core
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model IReadOnlyList<ImageItemDto>
+@{
+    Layout = null;
+    var dir = (string)(ViewBag.CurrentDir ?? "");
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Görsel Seç</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+            margin: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+            gap: 12px;
+            padding: 12px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .card img {
+                width: 100%;
+                height: 140px;
+                object-fit: cover;
+                background: #f3f3f3;
+            }
+
+        .meta {
+            padding: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .actions {
+            padding: 8px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            font-size: 12px;
+            border: 1px solid #888;
+            background: #fff;
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            background: #fff;
+        }
+
+        .right {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .card.selected {
+            outline: 3px solid #0d6efd;
+        }
+
+        .bottombar {
+            position: sticky;
+            bottom: 0;
+            border-top: 1px solid #ddd;
+            background: #fff;
+            padding: 8px 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .counter {
+            margin-right: auto;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        aside {
+            padding: 8px;
+            border-right: 1px solid #eee;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="topbar">
+        <strong>Görsel Seç</strong>
+        <div class="right">
+            <form id="searchForm" method="get" style="display:flex;gap:6px;align-items:center;">
+                <input type="hidden" name="dir" value="@dir" />
+                <input type="text" name="q" value="@((string)ViewBag.Query)" placeholder="Ara..." class="btn" />
+                <button class="btn" type="submit">Ara</button>
+            </form>
+
+            <form id="uploadForm" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="file" name="files" id="fileInput" multiple accept=".jpg,.jpeg,.png,.webp,.gif" />
+                <select id="aspect" class="btn">
+                    <option value="">Serbest</option>
+                    <option value="1:1">1:1</option>
+                    <option value="4:3">4:3</option>
+                    <option value="16:9" selected>16:9</option>
+                </select>
+                <button class="btn" id="btnUpload" type="button">Yükle</button>
+            </form>
+
+            <button class="btn" onclick="window.close()">Kapat</button>
+        </div>
+    </div>
+
+    <div style="padding:6px 12px; font-size:12px;">
+        @foreach (var c in (List<(string label, string? path)>)ViewBag.Breadcrumb)
+        {
+            if (c.path == (string)ViewBag.CurrentDir)
+            {
+                @:<b>@c.label</b>
+            }
+                else
+                {
+
+                    <a href="@Url.Action("Picker", "ImageManager", new { area = "Tenant", dir = c.path, q = (string)ViewBag.Query })">@c.label</a>
+                }
+        @: /
+        }
+        
+    </div>
+
+    <div class="layout">
+        <aside>
+            <div style="font-size:12px; margin-bottom:8px; opacity:.8;">Klasörler</div>
+            <div><a href="@Url.Action("Picker", "ImageManager", new { area = "Tenant", dir = "", q = (string)ViewBag.Query })">/ (Root)</a></div>
+            @foreach (var folder in (IReadOnlyList<string>)ViewBag.Dirs)
+            {
+                var next = string.IsNullOrEmpty(dir) ? folder : $"{dir}/{folder}";
+                <div><a href="@Url.Action("Picker", "ImageManager", new { area = "Tenant", dir = next, q = (string)ViewBag.Query })">@folder</a></div>
+            }
+
+            <div class="bottombar">
+                <div class="counter"><span id="selCount">0</span> seçildi</div>
+                <button class="btn" id="btnSend">Seçilenleri Gönder</button>
+            </div>
+        </aside>
+
+        <div class="grid" id="grid">
+            @foreach (var it in Model)
+            {
+                <div class="card" data-rel="@it.RelativePath">
+                    <img src="@Url.Content($"~/uploads/images/{it.RelativePath}")" alt="@it.Name" loading="lazy" />
+                    <div class="meta" title="@it.Name">@it.Name</div>
+                    <div class="actions">
+                        <button class="btn select-one">Seç</button>
+                        <button class="btn toggle">İşaretle</button>
+                        <a class="btn show-btn" data-url="/uploads/images/@it.RelativePath" href="#">Göster</a>
+
+@*                         <a class="btn" href="@Url.Content($"~/uploads/images/{it.RelativePath}")" target="_blank">Göster</a>
+ *@                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Resim Popup -->
+    <div id="imgPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+     background:rgba(0,0,0,.8); z-index:9999; justify-content:center; align-items:center;">
+        <img id="popupImg" src="" alt="" style="max-width:90%; max-height:90%; border:4px solid #fff; border-radius:8px;" />
+    </div>
+
+    <script>
+        function buildUrl(rel){ return `${window.location.origin}/uploads/images/${rel}`; }
+        function postPicked(urls){ if(window.opener){ window.opener.postMessage({ type:'image-picked', urls }, '*'); } }
+        function updateCounter(){ document.getElementById('selCount').textContent = document.querySelectorAll('.card.selected').length; }
+
+        document.querySelectorAll('.select-one').forEach(btn=>{
+          btn.addEventListener('click', e=>{
+            const card = e.target.closest('.card');
+            const rel = card.getAttribute('data-rel');
+            postPicked([buildUrl(rel)]);
+            window.close();
+          });
+        });
+        document.querySelectorAll('.toggle').forEach(btn=>{
+          btn.addEventListener('click', e=>{
+            e.preventDefault();
+            const card = e.target.closest('.card');
+            card.classList.toggle('selected');
+            updateCounter();
+          });
+        });
+
+        document.getElementById('btnSend').addEventListener('click', ()=>{
+          const selected = Array.from(document.querySelectorAll('.card.selected')).map(c=> buildUrl(c.getAttribute('data-rel')));
+          if(selected.length===0){ alert('Seçim yok.'); return; }
+          postPicked(selected);
+        });
+
+        // AJAX upload
+        document.getElementById('btnUpload').addEventListener('click', async ()=>{
+          const inp = document.getElementById('fileInput');
+          if (!inp.files || inp.files.length === 0) return;
+
+          const fd = new FormData();
+          for (const f of inp.files) fd.append('files', f);
+
+          const aspect = document.getElementById('aspect').value;
+          fd.append('aspect', aspect);
+
+          const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+          const res = await fetch('@Url.Action("UploadAjax", "ImageManager", new { area = "Tenant" })', {
+            method:'POST',
+            headers:{ 'RequestVerificationToken': token },
+            body: fd
+          });
+          if (res.ok){ location.reload(); }
+          else { alert('Yükleme başarısız.'); }
+        });
+
+
+                // Göster butonlarını popup'a bağla
+        document.querySelectorAll('.card .show-btn').forEach(btn=>{
+          btn.addEventListener('click', e=>{
+            e.preventDefault();
+            const url = btn.getAttribute('data-url');
+            const popup = document.getElementById('imgPopup');
+            const img = document.getElementById('popupImg');
+            img.src = url;
+            popup.style.display = 'flex';
+          });
+        });
+
+        // Popup tıklanınca kapansın
+        document.getElementById('imgPopup').addEventListener('click', ()=>{
+          document.getElementById('imgPopup').style.display='none';
+        });
+
+    </script>
+</body>
+</html>
