@@ -65,14 +65,17 @@
                             <option value="16:9" selected>16:9</option>
                         </select>
                     </div>
-           
+                    <div id="dropArea" class="border border-2 border-secondary rounded p-4 text-center bg-light mb-3" style="cursor:pointer;">
+                        <p class="mb-0">📂 Resimleri buraya sürükleyip bırak veya tıklayarak seç</p>
+                        <input type="file" id="fileInput" name="files" multiple accept=".jpg,.jpeg,.png,.webp,.gif" hidden />
+                    </div>
 
-                    <div id="dropZone" class="p-5 text-center" style="border:2px dashed #ccc; border-radius:8px;">
+             @*        <div id="dropZone" class="p-5 text-center" style="border:2px dashed #ccc; border-radius:8px;">
                         <p class="m-0">Resimleri buraya <b>sürükleyip bırak</b> veya</p>
                         <div class="mt-2">
                             <input type="file" name="files" id="fileInput" multiple accept=".jpg,.jpeg,.png,.webp,.gif" class="form-control" />
                         </div>
-                    </div>
+                    </div> *@
                 </form>
 
                 <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3 mt-2">
@@ -103,6 +106,21 @@
                 </div>
             </section>
         </div>
+
+
+        <div id="uploadStatus" class="mt-3" style="display:none;">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                <span>Yükleniyor...</span>
+            </div>
+            <div class="progress w-100">
+                <div id="uploadProgress" class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                     role="progressbar" style="width: 0%">
+                    0%
+                </div>
+            </div>
+        </div>
+
         <!-- Resim Popup -->
         <div id="imgPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
      background:rgba(0,0,0,.8); z-index:9999; justify-content:center; align-items:center;">
@@ -115,55 +133,75 @@
 
 @section Scripts {
     <script>
-        const dropZone = document.getElementById('dropZone');
+                const dropArea = document.getElementById('dropArea');
         const fileInput = document.getElementById('fileInput');
-        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-        const dirVal = document.querySelector('input[name="dir"]').value || '';
+        const statusDiv = document.getElementById('uploadStatus');
+        const progressBar = document.getElementById('uploadProgress');
 
-        async function uploadFiles(files){
-          if(!files || files.length===0) return;
-          const fd = new FormData();
-          for(const f of files) fd.append('files', f);
-          fd.append('dir', dirVal);
-          const aspect = document.getElementById('aspectSelect').value;
-          fd.append('aspect', aspect);
+        // Drop area tıklayınca input aç
+        dropArea.addEventListener('click', ()=> fileInput.click());
 
-          const res = await fetch('@Url.Action("UploadAjax", "ImageManager", new { area = "Tenant" })', {
-            method:'POST',
-            headers:{ 'RequestVerificationToken': token },
-            body: fd
-          });
-          if(res.ok){ location.reload(); }
-          else{ alert('Yükleme hatası.'); }
-        }
-
+        // Sürükle efektleri
         ['dragenter','dragover'].forEach(evt=>{
-          dropZone.addEventListener(evt, e=>{ e.preventDefault(); dropZone.style.background='#f8f9fa'; });
+          dropArea.addEventListener(evt, e=>{
+            e.preventDefault(); e.stopPropagation();
+            dropArea.classList.add('border-primary', 'bg-white');
+          });
         });
         ['dragleave','drop'].forEach(evt=>{
-          dropZone.addEventListener(evt, e=>{ e.preventDefault(); dropZone.style.background=''; });
-        });
-        dropZone.addEventListener('drop', e=>{
-          const dt = e.dataTransfer;
-          if(!dt || !dt.files) return;
-          uploadFiles(dt.files);
-        });
-        fileInput.addEventListener('change', ()=> uploadFiles(fileInput.files));
-
-                // Göster butonlarını popup'a bağla
-        document.querySelectorAll('.card .show-btn').forEach(btn=>{
-          btn.addEventListener('click', e=>{
-            e.preventDefault();
-            const url = btn.getAttribute('data-url');
-            const popup = document.getElementById('imgPopup');
-            const img = document.getElementById('popupImg');
-            img.src = url;
-            popup.style.display = 'flex';
+          dropArea.addEventListener(evt, e=>{
+            e.preventDefault(); e.stopPropagation();
+            dropArea.classList.remove('border-primary', 'bg-white');
           });
         });
-                // Popup tıklanınca kapansın
-        document.getElementById('imgPopup').addEventListener('click', ()=>{
-          document.getElementById('imgPopup').style.display='none';
+
+        // Dosya bırakma
+        dropArea.addEventListener('drop', e=>{
+          fileInput.files = e.dataTransfer.files;
+          uploadFiles(fileInput.files);
         });
+
+        // Dosya seçilince otomatik yükle
+        fileInput.addEventListener('change', e=>{
+          if(fileInput.files.length > 0) uploadFiles(fileInput.files);
+        });
+
+        async function uploadFiles(files){
+          const fd = new FormData();
+          for(const f of files) fd.append('files', f);
+
+          const aspect = document.getElementById('aspect')?.value ?? "";
+          fd.append('aspect', aspect);
+
+          const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+          statusDiv.style.display='block';
+          progressBar.style.width = '0%';
+          progressBar.textContent = '0%';
+
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST','/Tenant/ImageManager/UploadAjax');
+          xhr.setRequestHeader('RequestVerificationToken', token);
+
+          xhr.upload.addEventListener("progress", e=>{
+            if(e.lengthComputable){
+              const percent = Math.round((e.loaded / e.total) * 100);
+              progressBar.style.width = percent + '%';
+              progressBar.textContent = percent + '%';
+            }
+          });
+
+          xhr.onload = ()=>{
+            statusDiv.style.display='none';
+            if(xhr.status === 200){
+              location.reload();
+            } else {
+              alert('Yükleme başarısız!');
+            }
+          };
+
+          xhr.send(fd);
+        }
+
     </script>
 }
