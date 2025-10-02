@@ -240,7 +240,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Services
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICdnUrlService, CdnUrlService>();
+//builder.Services.AddScoped<ICdnUrlService, CdnUrlService>();
 
 builder.Services.AddScoped<TenantProvider>();
 builder.Services.AddScoped<MigrationService>();
