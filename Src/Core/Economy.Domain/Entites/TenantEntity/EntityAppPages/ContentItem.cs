@@ -1,6 +1,5 @@
 ﻿using Economy.Core.Enums;
 using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityAppNewPages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,6 +22,12 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
 
         public bool IsHomepage { get; set; } = true;
 
+        // Görsel/Buton/SEO
+        [MaxLength(500)]
+        public string? Image { get; set; }
+
+        [MaxLength(500)]
+        public string? OgImage { get; set; }
 
         // Listeleme/SEO
         public bool IsActive { get; set; } = true;
@@ -32,6 +37,7 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
         // Snippet çağırma kodu (örn: "PET_POLICY_NOTE")
         [MaxLength(100)]
         public string? Code { get; set; }
+        public string? JsonData { get; set; }
 
         // Navigations
         public ICollection<ContentItemTranslation> Translations { get; set; } = new List<ContentItemTranslation>();

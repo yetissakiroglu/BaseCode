@@ -1,7 +1,7 @@
 ﻿using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
 using FluentValidation;
 
-namespace Economy.Application.TenantUI.Validations
+namespace Economy.Application.TenantUI.Validations.AppTechnicalSettingValidator
 {
  
     public sealed class AppTechnicalSettingCreateEditDtoValidator : AbstractValidator<AppTechnicalSettingCreateEditDto>

@@ -1,4 +1,4 @@
-﻿namespace Economy.Panel.Application.Dtos.AppLanguageDtos
+﻿namespace Economy.Application.TenantUI.Dtos.AppLanguageDtos
 {
     public class AppLanguageDto
     {

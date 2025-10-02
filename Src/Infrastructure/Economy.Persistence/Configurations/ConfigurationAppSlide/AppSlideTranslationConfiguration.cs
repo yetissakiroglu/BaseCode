@@ -1,4 +1,4 @@
-﻿using Economy.Domain.Entites.EntitySlides;
+﻿using Economy.Domain.Entites.TenantEntity.EntityAppSlides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

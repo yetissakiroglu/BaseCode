@@ -1,8 +1,7 @@
 ﻿using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Core.Enums;
 using Economy.Core.Interfaces;
-using Economy.Domain.Entites.EntityAppLanguage;
-using Economy.Domain.Entites.EntityAppNewPages;
+using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.UI.Models.PageDtos;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +47,7 @@ namespace Economy.Persistence.PersistenceUI.Services
             var hit = await (from ci in _contentRepo.DataSet
                              where !ci.IsDeleted && ci.IsActive && ci.Type == ContentItemType.Page
                              join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId
-                             where !tr.IsDeleted && tr.IsActive && tr.LanguageId == langId && tr.Slug == slug
+                             where !tr.IsDeleted && tr.LanguageId == langId && tr.Slug == slug
                              select new { ci, tr })
                             .FirstOrDefaultAsync(ct);
 
@@ -91,7 +90,7 @@ namespace Economy.Persistence.PersistenceUI.Services
             var hit = await (from ci in _contentRepo.DataSet
                              where !ci.IsDeleted && ci.IsActive && ci.Type == ContentItemType.Page && ci.IsHomepage==true
                              join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId
-                             where !tr.IsDeleted && tr.IsActive && tr.LanguageId == langId
+                             where !tr.IsDeleted && tr.LanguageId == langId
                              select new { ci, tr })
                             .FirstOrDefaultAsync(ct);
 
@@ -126,7 +125,7 @@ namespace Economy.Persistence.PersistenceUI.Services
             if (ids.Count == 0) return new Dictionary<int, string>();
 
             return await _trRepo.DataSet
-                .Where(t => !t.IsDeleted && t.IsActive && t.LanguageId == langId && ids.Contains(t.ContentItemId))
+                .Where(t => !t.IsDeleted && t.LanguageId == langId && ids.Contains(t.ContentItemId))
                 .GroupBy(t => t.ContentItemId)
                 .Select(g => new { Id = g.Key, Slug = g.Select(x => x.Slug).FirstOrDefault() })
                 .ToDictionaryAsync(x => x.Id, x => x.Slug ?? "", ct);
@@ -138,7 +137,7 @@ namespace Economy.Persistence.PersistenceUI.Services
             return await (from ci in _contentRepo.DataSet
                           join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId
                           where !ci.IsDeleted && ci.IsActive
-                                && !tr.IsDeleted && tr.IsActive
+                                && !tr.IsDeleted
                                 && tr.LanguageId == langId
                                 && ownerIds.Contains(ci.Id)
                           select new { ci.Id, tr.Title })
@@ -158,7 +157,7 @@ namespace Economy.Persistence.PersistenceUI.Services
                                      && ci.OwnerType == ContentOwnerType.Content
                                      && ci.OwnerId == headerCi.Id
                                join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId
-                               where !tr.IsDeleted && tr.IsActive && tr.LanguageId == langId
+                               where !tr.IsDeleted && tr.LanguageId == langId
                                orderby ci.SortOrder, ci.Id
                                select new PageListItemVm
                                {
@@ -167,7 +166,7 @@ namespace Economy.Persistence.PersistenceUI.Services
                                    ParentSlug = listSlug,                           // <-- parent sabit
                                    Title = tr.Title ?? "",
                                    Summary = tr.Summary,
-                                   Image = tr.Image,
+                                   Image = ci.Image,
                                    PublishAtUtc = ci.PublishAtUtc,
                                    IsActive = ci.IsActive,
                                    Url = Join3(langCode, listSlug, tr.Slug ?? "")  // <-- /lang/parent/child
@@ -175,7 +174,7 @@ namespace Economy.Persistence.PersistenceUI.Services
                               .ToListAsync(ct);
 
             var hreflangs = await (from t in _trRepo.DataSet
-                                   where !t.IsDeleted && t.IsActive && t.ContentItemId == headerCi.Id
+                                   where !t.IsDeleted && t.ContentItemId == headerCi.Id
                                    join la in _langRepo.DataSet on t.LanguageId equals la.Id
                                    where !la.IsDeleted && la.IsActive
                                    orderby la.Code
@@ -201,7 +200,7 @@ namespace Economy.Persistence.PersistenceUI.Services
                 Title = string.IsNullOrWhiteSpace(headerTr.Title) ? headerTr.Slug : headerTr.Title,
                 Summary = headerTr.Summary,
                 Body = headerTr.Body,
-                Image = headerTr.Image,
+                Image = headerCi.Image,
 
                 MetaTitle = string.IsNullOrWhiteSpace(headerTr.MetaTitle) ? headerTr.Title : headerTr.MetaTitle,
                 MetaDescription = headerTr.MetaDescription,
@@ -223,7 +222,7 @@ namespace Economy.Persistence.PersistenceUI.Services
             if (ci.OwnerType == ContentOwnerType.Content && ci.OwnerId.HasValue)
             {
                 var parentTrs = await _trRepo.DataSet
-                    .Where(x => !x.IsDeleted && x.IsActive && x.ContentItemId == ci.OwnerId.Value)
+                    .Where(x => !x.IsDeleted && x.ContentItemId == ci.OwnerId.Value)
                     .OrderBy(x => x.LanguageId)
                     .Select(x => new { x.LanguageId, x.Slug, x.Title })
                     .ToListAsync(ct);
@@ -243,7 +242,7 @@ namespace Economy.Persistence.PersistenceUI.Services
 
             // (2) Hreflangs (parent’ın aynı dil slug’ını da ekle)
             var hreflangs = await (from t in _trRepo.DataSet
-                                   where !t.IsDeleted && t.IsActive && t.ContentItemId == ci.Id
+                                   where !t.IsDeleted && t.ContentItemId == ci.Id
                                    join la in _langRepo.DataSet on t.LanguageId equals la.Id
                                    where !la.IsDeleted && la.IsActive
                                    join pt in _trRepo.DataSet
@@ -294,17 +293,19 @@ namespace Economy.Persistence.PersistenceUI.Services
                                        b.Id,
                                        b.BlockTemplate,
                                        b.SortOrder,
+                                       b.Image,
+                                       b.OgImage,
+                                       b.JsonData,
+
                                        T = _trRepo.DataSet
-                                           .Where(t => !t.IsDeleted && t.IsActive && t.ContentItemId == b.Id && t.LanguageId == langId)
+                                           .Where(t => !t.IsDeleted && t.ContentItemId == b.Id && t.LanguageId == langId)
                                            .Select(t => new
                                            {
                                                t.Title,
                                                t.Summary,
                                                t.Body,
-                                               t.Image,
                                                t.ButtonText,
                                                t.ButtonUrl,
-                                               t.JsonData
                                            })
                                            .FirstOrDefault()
                                    })
@@ -324,10 +325,11 @@ namespace Economy.Persistence.PersistenceUI.Services
                     Title = x.T?.Title,
                     Summary = x.T?.Summary,
                     Body = x.T?.Body,
-                    Image = x.T?.Image,
+                    Image = x?.Image,
+                    OgImage = x?.OgImage,
                     ButtonText = x.T?.ButtonText,
                     ButtonUrl = x.T?.ButtonUrl,
-                    JsonData = x.T?.JsonData
+                    JsonData = x.JsonData
                 };
 
                 if (tplName == nameof(BlockTemplate.IncludeSnippet))
@@ -338,7 +340,7 @@ namespace Economy.Persistence.PersistenceUI.Services
                         var sn = await (from s in _contentRepo.DataSet
                                         where !s.IsDeleted && s.IsActive && s.Type == ContentItemType.Snippet && s.Code == code
                                         join ttr in _trRepo.DataSet on s.Id equals ttr.ContentItemId
-                                        where !ttr.IsDeleted && ttr.IsActive && ttr.LanguageId == langId
+                                        where !ttr.IsDeleted && ttr.LanguageId == langId
                                         select new { ttr.Title, ttr.Body })
                                        .FirstOrDefaultAsync(ct);
                         vm.SnippetTitle = sn?.Title;
@@ -358,7 +360,7 @@ namespace Economy.Persistence.PersistenceUI.Services
                     var q = from p in _contentRepo.DataSet
                             where !p.IsDeleted && p.IsActive && p.Type == ContentItemType.Page
                             join ttr in _trRepo.DataSet on p.Id equals ttr.ContentItemId
-                            where !ttr.IsDeleted && ttr.IsActive && ttr.LanguageId == langId
+                            where !ttr.IsDeleted && ttr.LanguageId == langId
                             select new { p, ttr };
 
                     //var qroom = from p in _contentRepo.DataSet
@@ -422,7 +424,7 @@ namespace Economy.Persistence.PersistenceUI.Services
                             ParentTitle = string.IsNullOrWhiteSpace(pTitle) ? null : pTitle,
                             Title = z.ttr.Title ?? "",
                             Summary = z.ttr.Summary,
-                            Image = z.ttr.Image,
+                            Image = z.p.Image,
                             Url = !string.IsNullOrWhiteSpace(pSlug)
                                 ? Join3(langCode, pSlug, z.ttr.Slug ?? "")
                                 : Join2(langCode, z.ttr.Slug ?? "")
@@ -453,10 +455,10 @@ namespace Economy.Persistence.PersistenceUI.Services
                 Title = tr.Title,
                 Summary = tr.Summary,
                 Body = tr.Body,
-                Image = tr.Image,
+                Image = ci.Image,
                 MetaTitle = string.IsNullOrWhiteSpace(tr.MetaTitle) ? tr.Title : tr.MetaTitle,
                 MetaDescription = tr.MetaDescription,
-                OgImage = tr.OgImage,
+                OgImage = ci.OgImage,
 
                 Hreflangs = hreflangs,
                 Gallery = gallery,

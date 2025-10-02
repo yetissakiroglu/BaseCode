@@ -1,7 +1,7 @@
-﻿using Economy.Core.Tools.Result;
-using Economy.Panel.Application.Dtos.AppLanguageDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppLanguageDtos;
+using Economy.Core.Tools.Result;
 
-namespace Economy.Panel.Application.Interfaces
+namespace Economy.Application.TenantUI.Interfaces
 {
     public interface IPanelAppLanguageService
     {

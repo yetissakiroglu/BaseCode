@@ -1,6 +1,6 @@
-﻿using Economy.Domain.Entites.EntitySlides;
-using Economy.Panel.Application.Dtos.AppSlideDtos;
-using Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppSlideDtos;
+using Economy.Application.TenantUI.Dtos.AppSlideDtos.SlideTranslationDtos;
+using Economy.Domain.Entites.TenantEntity.EntityAppSlides;
 
 namespace Economy.Panel.Persistence.Extensions
 {

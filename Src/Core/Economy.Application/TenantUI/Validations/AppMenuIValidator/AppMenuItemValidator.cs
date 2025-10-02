@@ -1,7 +1,7 @@
 ﻿using Economy.Application.TenantUI.Dtos.AppMenuDtos;
 using FluentValidation;
 
-namespace Economy.Application.TenantUI.Validations
+namespace Economy.Application.TenantUI.Validations.AppMenuIValidator
 {
   
 

@@ -1,7 +1,6 @@
 ﻿using Economy.Core.Enums;
 using Economy.Core.Interfaces;
-using Economy.Domain.Entites.EntityAppLanguage;
-using Economy.Domain.Entites.EntityAppNewPages;
+using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Panel.UI.Areas.Tenant.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -83,7 +82,10 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 Type = ContentItemType.Block,
                 OwnerType = ContentOwnerType.Content,
                 OwnerId = vm.PageId,
-                BlockTemplate = vm.BlockTemplate
+                BlockTemplate = vm.BlockTemplate,
+                Image = vm.Image,
+                OgImage = vm.OgImage,
+                JsonData = vm.JsonData,
             };
             await _contentRepo.DataSet.AddAsync(b, ct);
             await _uow.SaveHotelChangesAsync();
@@ -92,15 +94,12 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             {
                 ContentItemId = b.Id,
                 LanguageId = vm.LanguageId,
-                IsActive = true,
                 IsDeleted = false,
                 Title = vm.Title,
                 Summary = vm.Summary,
                 Body = vm.Body,
-                Image = vm.Image,
                 ButtonText = vm.ButtonText,
                 ButtonUrl = vm.ButtonUrl,
-                JsonData = vm.JsonData
             };
             await _trRepo.DataSet.AddAsync(tr, ct);
             await _uow.SaveHotelChangesAsync();
@@ -133,10 +132,10 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 Title = tr?.Title,
                 Summary = tr?.Summary,
                 Body = tr?.Body,
-                Image = tr?.Image,
+                Image = b?.Image,
                 ButtonText = tr?.ButtonText,
                 ButtonUrl = tr?.ButtonUrl,
-                JsonData = tr?.JsonData
+                JsonData = b?.JsonData
             };
             return View(vm);
         }
@@ -150,6 +149,9 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             b.SortOrder = vm.SortOrder;
             b.IsActive = vm.IsActive;
             b.BlockTemplate = vm.BlockTemplate;
+            b.Image = vm.Image;
+            b.OgImage = vm.OgImage;
+            b.JsonData = vm.JsonData;
 
             var tr = await _trRepo.DataSet
                 .FirstOrDefaultAsync(t => !t.IsDeleted && t.ContentItemId == id && t.LanguageId == vm.LanguageId, ct);
@@ -160,7 +162,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 {
                     ContentItemId = id,
                     LanguageId = vm.LanguageId,
-                    IsActive = true,
                     IsDeleted = false
                 };
                 await _trRepo.DataSet.AddAsync(tr, ct);
@@ -169,10 +170,8 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             tr.Title = vm.Title;
             tr.Summary = vm.Summary;
             tr.Body = vm.Body;
-            tr.Image = vm.Image;
             tr.ButtonText = vm.ButtonText;
             tr.ButtonUrl = vm.ButtonUrl;
-            tr.JsonData = vm.JsonData;
 
             await _uow.SaveHotelChangesAsync();
             return RedirectToAction(nameof(Index), new { pageId = vm.PageId });

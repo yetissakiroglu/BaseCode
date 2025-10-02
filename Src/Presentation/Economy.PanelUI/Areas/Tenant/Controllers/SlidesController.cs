@@ -1,4 +1,4 @@
-﻿using Economy.Panel.Application.Interfaces;
+﻿using Economy.Application.TenantUI.Interfaces;
 using Economy.Panel.UI.Controllers;
 using Economy.Panel.UI.Extensions;
 using Economy.Panel.UI.Models.SlideViewModels;

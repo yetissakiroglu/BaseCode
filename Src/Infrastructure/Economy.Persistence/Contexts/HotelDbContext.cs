@@ -1,10 +1,9 @@
 ﻿using Economy.Base.Persistence.Configurations.ConfigurationAppSettings;
-using Economy.Domain.Entites.EntityAppLanguage;
-using Economy.Domain.Entites.EntityAppNewPages;
-using Economy.Domain.Entites.EntitySlides;
+using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppMenus;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
+using Economy.Domain.Entites.TenantEntity.EntityAppSlides;
 using Economy.Persistence.Configurations.ConfigurationAppLanguage;
 using Microsoft.EntityFrameworkCore;
 

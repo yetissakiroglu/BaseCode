@@ -1,7 +1,7 @@
-﻿using Economy.Core.Tools.Result;
-using Economy.Panel.Application.Dtos.AppSlideDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppSlideDtos;
+using Economy.Core.Tools.Result;
 
-namespace Economy.Panel.Application.Interfaces
+namespace Economy.Application.TenantUI.Interfaces
 {
     public interface IPanelAppSlideService
     {

@@ -1,10 +1,10 @@
-﻿using Economy.Core.Helpers;
+﻿using Economy.Application.TenantUI.Dtos.AppSlideDtos;
+using Economy.Application.TenantUI.Interfaces;
+using Economy.Core.Helpers;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools.Result;
-using Economy.Domain.Entites.EntitySlides;
-using Economy.Panel.Application.Dtos.AppSlideDtos;
+using Economy.Domain.Entites.TenantEntity.EntityAppSlides;
 using Economy.Panel.Application.Extensions;
-using Economy.Panel.Application.Interfaces;
 using Economy.Panel.Persistence.Extensions;
 using FluentValidation;
 using System.Net;

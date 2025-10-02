@@ -1,7 +1,7 @@
-﻿using Economy.Panel.Application.Dtos.AppLanguageDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppLanguageDtos;
 using FluentValidation;
 
-namespace Economy.Panel.Application.Validations.AppLanguageValidator
+namespace Economy.Application.TenantUI.Validations.AppLanguageValidator
 {
     public class AppLanguageCreateEditDtoValidator : AbstractValidator<AppLanguageCreateEditDto>
     {

@@ -1,4 +1,4 @@
-﻿namespace Economy.Panel.Application.Dtos.AppSlideDtos
+﻿namespace Economy.Application.TenantUI.Dtos.AppSlideDtos
 {
     public class AppSlidePagingDto
     {

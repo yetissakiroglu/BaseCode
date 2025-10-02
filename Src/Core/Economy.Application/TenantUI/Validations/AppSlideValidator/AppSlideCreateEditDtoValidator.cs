@@ -1,7 +1,7 @@
-﻿using Economy.Panel.Application.Dtos.AppSlideDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppSlideDtos;
 using FluentValidation;
 
-namespace Economy.Panel.Application.Validations.AppSlideValidator
+namespace Economy.Application.TenantUI.Validations.AppSlideValidator
 {
     public class AppSlideCreateEditDtoValidator : AbstractValidator<AppSlideCreateEditDto>
     {

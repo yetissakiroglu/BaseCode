@@ -66,6 +66,25 @@
                                     <label class="form-check-label">Aktif</label>
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Kapak Görseli</label>
+                                <input class="form-control" asp-for="Image" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">OG Görseli</label>
+                                <input class="form-control" asp-for="OgImage" />
+
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">JsonData (opsiyonel)</label>
+                                <textarea class="form-control" name="JsonData" rows="2">@Model.JsonData</textarea>
+                                <div class="form-text">
+                                    Örn (Campaign): {"badge":"%20 indirim","priceFrom":"120","currency":"EUR","validTo":"2025-12-31"}
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -109,14 +128,7 @@
                                                 <label class="form-label">İçerik</label>
                                                 <textarea class="form-control" name="Translations[@i].Body" rows="6">@t.Body</textarea>
                                             </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">Kapak Görseli</label>
-                                                <input class="form-control" name="Translations[@i].Image" value="@t.Image" />
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">OG Görseli</label>
-                                                <input class="form-control" name="Translations[@i].OgImage" value="@t.OgImage" />
-                                            </div>
+                                      
                                             <div class="col-md-6">
                                                 <label class="form-label">Meta Title</label>
                                                 <input class="form-control" name="Translations[@i].MetaTitle" value="@t.MetaTitle" />
@@ -125,13 +137,7 @@
                                                 <label class="form-label">Meta Description</label>
                                                 <input class="form-control" name="Translations[@i].MetaDescription" value="@t.MetaDescription" />
                                             </div>
-                                            <div class="col-md-12">
-                                                <label class="form-label">JsonData (opsiyonel)</label>
-                                                <textarea class="form-control" name="Translations[@i].JsonData" rows="2">@t.JsonData</textarea>
-                                                <div class="form-text">
-                                                    Örn (Campaign): {"badge":"%20 indirim","priceFrom":"120","currency":"EUR","validTo":"2025-12-31"}
-                                                </div>
-                                            </div>
+                                            
                                         </div>
                                     </div>
                                 }

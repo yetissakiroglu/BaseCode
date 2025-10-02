@@ -1,7 +1,6 @@
 ﻿using Economy.Core.Enums;
 using Economy.Core.Interfaces;
-using Economy.Domain.Entites.EntityAppLanguage;
-using Economy.Domain.Entites.EntityAppNewPages;
+using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Panel.UI.Areas.Tenant.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -80,7 +79,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                     LanguageId = t.LanguageId,
                     Title = t.Title,
                     Body = t.Body,
-                    IsActive = true,
                     IsDeleted = false
                 };
                 await _trRepo.DataSet.AddAsync(tr, ct);
@@ -140,7 +138,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                         LanguageId = t.LanguageId,
                         Title = t.Title,
                         Body = t.Body,
-                        IsActive = true,
                         IsDeleted = false
                     };
                     await _trRepo.DataSet.AddAsync(tr, ct);

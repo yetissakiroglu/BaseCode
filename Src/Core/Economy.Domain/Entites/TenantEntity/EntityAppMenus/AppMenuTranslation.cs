@@ -1,5 +1,5 @@
 ﻿using Economy.Domain.BaseEntities;
-using Economy.Domain.Entites.EntityAppLanguage;
+using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 
 namespace Economy.Domain.Entites.TenantEntity.EntityAppMenus
 {

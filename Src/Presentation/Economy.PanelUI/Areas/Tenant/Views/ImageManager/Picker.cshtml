@@ -198,7 +198,7 @@
     </div>
 
     <script>
-        function buildUrl(rel){ return `${window.location.origin}/uploads/images/${rel}`; }
+        function buildUrl(rel){ return `/uploads/images/${rel}`; }
         function postPicked(urls){ if(window.opener){ window.opener.postMessage({ type:'image-picked', urls }, '*'); } }
         function updateCounter(){ document.getElementById('selCount').textContent = document.querySelectorAll('.card.selected').length; }
 

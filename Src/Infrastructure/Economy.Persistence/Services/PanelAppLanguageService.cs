@@ -1,9 +1,9 @@
-﻿using Economy.Core.Tools.Result;
-using Economy.Domain.Entites.EntityAppLanguage;
-using Economy.Panel.Application.Dtos.AppLanguageDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppLanguageDtos;
+using Economy.Application.TenantUI.Interfaces;
+using Economy.Application.TenantUI.Validations.AppLanguageValidator;
+using Economy.Core.Tools.Result;
+using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Panel.Application.Extensions;
-using Economy.Panel.Application.Interfaces;
-using Economy.Panel.Application.Validations.AppLanguageValidator;
 using FluentValidation.Results;
 using System.Net;
 

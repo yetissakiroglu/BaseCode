@@ -1,6 +1,6 @@
-﻿using Economy.Panel.Application.Dtos.AppLanguageDtos;
-using Economy.Panel.Application.Dtos.AppSlideDtos;
-using Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppLanguageDtos;
+using Economy.Application.TenantUI.Dtos.AppSlideDtos;
+using Economy.Application.TenantUI.Dtos.AppSlideDtos.SlideTranslationDtos;
 using Economy.Panel.UI.Models.SlideViewModels;
 using Economy.Panel.UI.Models.SlideViewModels.AppSlideLanguageViewModels;
 

@@ -1,7 +1,6 @@
 ﻿using Economy.Core.Enums;
 using Economy.Core.Interfaces;
-using Economy.Domain.Entites.EntityAppLanguage;
-using Economy.Domain.Entites.EntityAppNewPages;
+using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Panel.UI.Areas.Tenant.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -101,17 +100,13 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 {
                     ContentItemId = ci.Id,
                     LanguageId = t.LanguageId,
-                    IsActive = true,
                     IsDeleted = false,
                     Slug = t.Slug,
                     Title = t.Title,
                     Summary = t.Summary,
                     Body = t.Body,
-                    Image = t.Image,
                     MetaTitle = t.MetaTitle,
                     MetaDescription = t.MetaDescription,
-                    OgImage = t.OgImage,
-                    JsonData = t.JsonData
                 };
                 await _trRepo.DataSet.AddAsync(tr, ct);
             }
@@ -155,11 +150,8 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 t.Title = hit.Title;
                 t.Summary = hit.Summary;
                 t.Body = hit.Body;
-                t.Image = hit.Image;
                 t.MetaTitle = hit.MetaTitle;
                 t.MetaDescription = hit.MetaDescription;
-                t.OgImage = hit.OgImage;
-                t.JsonData = hit.JsonData;
             }
 
             ViewBag.Parents = await GetParentOptionsAsync(ct, excludeId: ci.Id);
@@ -200,17 +192,13 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                     {
                         ContentItemId = id,
                         LanguageId = t.LanguageId,
-                        IsActive = true,
                         IsDeleted = false,
                         Slug = t.Slug,
                         Title = t.Title,
                         Summary = t.Summary,
                         Body = t.Body,
-                        Image = t.Image,
                         MetaTitle = t.MetaTitle,
                         MetaDescription = t.MetaDescription,
-                        OgImage = t.OgImage,
-                        JsonData = t.JsonData
                     };
                     await _trRepo.DataSet.AddAsync(tr, ct);
                 }
@@ -220,11 +208,8 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                     ex.Title = t.Title;
                     ex.Summary = t.Summary;
                     ex.Body = t.Body;
-                    ex.Image = t.Image;
                     ex.MetaTitle = t.MetaTitle;
                     ex.MetaDescription = t.MetaDescription;
-                    ex.OgImage = t.OgImage;
-                    ex.JsonData = t.JsonData;
                 }
             }
 

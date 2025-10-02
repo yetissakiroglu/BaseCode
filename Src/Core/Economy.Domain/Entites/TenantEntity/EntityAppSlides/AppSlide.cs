@@ -1,7 +1,7 @@
 ﻿using Economy.Core.Enums;
 using Economy.Domain.BaseEntities;
 
-namespace Economy.Domain.Entites.EntitySlides;
+namespace Economy.Domain.Entites.TenantEntity.EntityAppSlides;
 
 public class AppSlide : BaseEntity<int>
 {

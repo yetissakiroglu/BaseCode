@@ -1,4 +1,4 @@
-﻿using Economy.Domain.Entites.EntityAppLanguage;
+﻿using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Persistence.Contexts;
 
 namespace Economy.Persistence.Seeds

@@ -80,6 +80,8 @@ namespace Economy.UI.Models.PageDtos
         public string? Summary { get; set; }
         public string? Body { get; set; }
         public string? Image { get; set; }
+        public string? OgImage { get; set; }
+
         public string? ButtonText { get; set; }
         public string? ButtonUrl { get; set; }
         public string? JsonData { get; set; }

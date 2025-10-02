@@ -29,11 +29,8 @@ namespace Economy.Panel.UI.Areas.Tenant.Models
         public string? Title { get; set; }
         public string? Summary { get; set; }
         public string? Body { get; set; }
-        public string? Image { get; set; }
         public string? MetaTitle { get; set; }
         public string? MetaDescription { get; set; }
-        public string? OgImage { get; set; }
-        public string? JsonData { get; set; }
     }
 
     public sealed class PageEditVm
@@ -45,6 +42,9 @@ namespace Economy.Panel.UI.Areas.Tenant.Models
         public int SortOrder { get; set; }
         public short Type { get; set; } = 1;        // Page
         public byte OwnerType { get; set; } = 1;    // Content
+        public string? Image { get; set; }
+        public string? OgImage { get; set; }
+        public string? JsonData { get; set; }
 
         public List<PageTranslationVm> Translations { get; set; } = new();
     }
@@ -73,6 +73,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Models
         public string? Summary { get; set; }
         public string? Body { get; set; }
         public string? Image { get; set; }
+        public string? OgImage { get; set; }
         public string? ButtonText { get; set; }
         public string? ButtonUrl { get; set; }
         public string? JsonData { get; set; }

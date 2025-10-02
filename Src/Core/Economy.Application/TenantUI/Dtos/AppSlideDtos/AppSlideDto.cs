@@ -1,6 +1,6 @@
-﻿using Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppSlideDtos.SlideTranslationDtos;
 
-namespace Economy.Panel.Application.Dtos.AppSlideDtos
+namespace Economy.Application.TenantUI.Dtos.AppSlideDtos
 {
     public class AppSlideDto
     {

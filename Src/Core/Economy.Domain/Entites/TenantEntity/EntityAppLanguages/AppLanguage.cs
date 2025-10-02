@@ -1,6 +1,6 @@
 ﻿using Economy.Domain.BaseEntities;
 
-namespace Economy.Domain.Entites.EntityAppLanguage
+namespace Economy.Domain.Entites.TenantEntity.EntityAppLanguages
 {
     public class AppLanguage:BaseEntity<int>
     {

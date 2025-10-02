@@ -2,7 +2,7 @@
 using Economy.Application.TenantUI.Dtos.AppSettingLogoDtos;
 using FluentValidation;
 
-namespace Economy.Application.TenantUI.Validations
+namespace Economy.Application.TenantUI.Validations.AppSettingLogoValidator
 {
  
     public sealed class AppSettingLogoCreateEditDtoValidator : AbstractValidator<AppSettingLogoCreateEditDto>

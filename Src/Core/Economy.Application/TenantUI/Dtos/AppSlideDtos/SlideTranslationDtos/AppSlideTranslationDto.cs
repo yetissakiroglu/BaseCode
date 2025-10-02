@@ -1,6 +1,6 @@
-﻿namespace Economy.Panel.Application.Dtos.AppSlideDtos.SlideTranslationDtos
+﻿namespace Economy.Application.TenantUI.Dtos.AppSlideDtos.SlideTranslationDtos
 {
-    public class AppSlideTranslationCreateEditDto
+    public class AppSlideTranslationDto
     {
         public int Id { get; set; }
         public int AppSlideId { get; set; }

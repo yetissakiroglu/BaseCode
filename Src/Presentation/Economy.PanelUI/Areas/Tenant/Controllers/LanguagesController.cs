@@ -1,5 +1,5 @@
-﻿using Economy.Panel.Application.Dtos.AppLanguageDtos;
-using Economy.Panel.Application.Interfaces;
+﻿using Economy.Application.TenantUI.Dtos.AppLanguageDtos;
+using Economy.Application.TenantUI.Interfaces;
 using Economy.Panel.UI.Controllers;
 using Economy.Panel.UI.Models.LanguageViewModels;
 using Microsoft.AspNetCore.Authorization;

@@ -4,10 +4,8 @@ using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Enums;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools.Result;
-using Economy.Domain.Entites.EntityAppLanguage;
-using Economy.Domain.Entites.EntityAppNewPages;
+using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
-using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
 using Microsoft.EntityFrameworkCore;
 
 namespace Economy.Persistence.Tenant.Services

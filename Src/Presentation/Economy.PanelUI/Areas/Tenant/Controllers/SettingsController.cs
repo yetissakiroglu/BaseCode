@@ -1,6 +1,5 @@
 ﻿using Economy.Application.TenantUI.Dtos.AppSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
-using Economy.Panel.Application.Interfaces;
 using Economy.Panel.UI.Controllers;
 using Economy.Panel.UI.Models.SettingViewModels;
 using Microsoft.AspNetCore.Authorization;
