@@ -1,0 +1,60 @@
+﻿@using Economy.Application.TenantUI.Dtos.AppMenuDtos
+@using Economy.Panel.Application.Dtos.AppLanguageDtos
+@model MenuItemDto
+
+@{
+    ViewData["Title"] = "Menu Yönetimi";
+    var tree = ViewBag.Tree as List<MenuNodeDto> ?? new();
+    var languages = ViewBag.Languages as List<AppLanguageDto> ?? new();
+}
+<main>
+    <div class="container-fluid">
+        <!-- Breadcrumb start -->
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- Breadcrumb end -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Hoverable Table start -->
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5> Kayıtlar </h5>
+                        <p>
+                            Aşağıda kayıtlı bilgiler bulunmaktadır.
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="Save" method="post">
+                            @Html.AntiForgeryToken()
+                            @await Html.PartialAsync("_Form", Model)
+                            <hr class="my-4" />
+                            <div class="mt-4 text-end">
+                                <button class="btn btn-primary" type="submit">Kaydet</button>
+                                <a class="btn btn-outline-secondary" asp-action="Menus">Yenile</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+
+
+
+@section Scripts {
+
+}

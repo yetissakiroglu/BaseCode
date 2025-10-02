@@ -25,8 +25,4 @@
     <ProjectReference Include="..\..\Core\Economy.Application\Economy.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Tenant\Configurations\" />
-  </ItemGroup>
-
 </Project>

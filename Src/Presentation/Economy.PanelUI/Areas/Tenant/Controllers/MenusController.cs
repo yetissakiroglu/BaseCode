@@ -1,5 +1,6 @@
 ﻿using Economy.Application.Interfaces;
 using Economy.Application.TenantUI.Dtos.AppMenuDtos;
+using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Enums;
 using Economy.Panel.Application.Interfaces;
 using Economy.Panel.UI.Controllers;
@@ -16,15 +17,47 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
     {
         private readonly IPanelAppMenuService _svc;
         private readonly IPanelAppLanguageService _panelAppLanguageService;
-
-        public MenusController(IPanelAppMenuService svc, IPanelAppLanguageService panelAppLanguageService)
+        private readonly IPanelAppPageService _panelAppPageService;
+        public MenusController(IPanelAppMenuService svc, IPanelAppLanguageService panelAppLanguageService, IPanelAppPageService panelAppPageService)
         {
             _svc = svc;
             _panelAppLanguageService = panelAppLanguageService;
+            _panelAppPageService = panelAppPageService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string location = "main")
+        public async Task<IActionResult> IndexMain()
+        {
+            var treeRes = await _svc.GetTreeAsync("main", onlyActive: false);
+            if (!treeRes.IsSuccess && treeRes.StatusCode >= 500)
+            {
+                return View(DefaultModel("main"));
+            }
+
+            var tree = treeRes.Data ?? new List<MenuNodeDto>();
+            ViewBag.Tree = tree;
+
+            // Parent dropdown için düz liste
+            var flat = Flatten(tree);
+            ViewBag.ParentList = flat.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Path }).ToList();
+
+            // Diller
+            var langs = _panelAppLanguageService.GetAllLanguage(false, true);
+            ViewBag.Languages = langs.Data;
+
+            var pages = await _panelAppPageService.GetMiniPageItemAsync(true);
+            ViewBag.Pages = pages.Data;
+
+
+            // Form için boş model (dillerle)
+            var model = DefaultModel("main", langs.Data.Select(l => l.Id));
+            return View(model);
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> Create(string location = "main")
         {
             var treeRes = await _svc.GetTreeAsync(location, onlyActive: false);
             if (!treeRes.IsSuccess && treeRes.StatusCode >= 500)
@@ -44,10 +77,16 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             var langs = _panelAppLanguageService.GetAllLanguage(false, true);
             ViewBag.Languages = langs.Data;
 
+            var pages = await _panelAppPageService.GetMiniPageItemAsync(true);
+            ViewBag.Pages = pages.Data;
+
+
             // Form için boş model (dillerle)
             var model = DefaultModel(location, langs.Data.Select(l => l.Id));
             return View(model);
         }
+
+
 
         [ValidateAntiForgeryToken]
         [HttpPost]
@@ -70,13 +109,13 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                     ViewBag.ParentList = Flatten(tree).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Path }).ToList();
                     //ViewBag.Languages = await _db.AppLanguages.AsNoTracking().OrderBy(x => x.Id).ToListAsync();
 
-                    return View("Index", model);
+                    return View("IndexMain", model);
                 }
                 TempData["error"] = res.Message;
             }
             else TempData["ok"] = res.Message;
 
-            return RedirectToAction(nameof(Index), new { location = model.Location });
+            return RedirectToAction(nameof(IndexMain));
         }
 
         [ValidateAntiForgeryToken]

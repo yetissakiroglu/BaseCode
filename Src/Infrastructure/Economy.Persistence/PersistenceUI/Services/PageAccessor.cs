@@ -3,9 +3,9 @@ using Economy.Core.Enums;
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Domain.Entites.EntityAppNewPages;
+using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.UI.Models.PageDtos;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace Economy.Persistence.PersistenceUI.Services
 {

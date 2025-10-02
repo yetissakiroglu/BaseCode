@@ -40,7 +40,7 @@ namespace Economy.Web.Demo1.Services
                 }
                 else if (x.PageId.HasValue)
                 {
-                    //todo: sayfa linki
+                   // todo: sayfa linki
                     //var p = await _pages.GetAsync(appId, lang, x.PageId.Value);
                     //if (p != null) url = $"/{p.Lang}/{p.SectionKey}/{p.Slug}";
                 }

@@ -2,6 +2,7 @@
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Domain.Entites.EntityAppNewPages;
+using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Panel.UI.Areas.Tenant.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -316,6 +317,8 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             public string? Content { get; set; }
 
             public string? ImageUrl { get; set; }       // Kapak
+            public string? OgImageUrl { get; set; }       // Kapak
+
             public List<string> ImageUrls { get; set; } = new(); // Galeri
         }
 

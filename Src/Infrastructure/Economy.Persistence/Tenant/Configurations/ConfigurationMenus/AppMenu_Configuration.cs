@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Economy.Persistence.Tenant.ConfigurationMenus
+namespace Economy.Persistence.Tenant.Configurations.ConfigurationMenus
 {
     public class AppMenu_Configuration : IEntityTypeConfiguration<AppMenu>
     {

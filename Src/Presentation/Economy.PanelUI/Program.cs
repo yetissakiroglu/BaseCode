@@ -219,6 +219,7 @@ builder.Services.AddScoped<IPanelAuditLogService, PanelAuditLogService>();
 builder.Services.AddScoped<IPanelErrorLogService, PanelErrorLogService>();
 builder.Services.AddScoped<IDatabaseBackupService, DatabaseBackupService>();
 builder.Services.AddScoped<IPanelAppAccountService, PanelAppAccountService>();
+builder.Services.AddScoped<IPanelAppPageService, PanelAppPageService>();
 
 
 

@@ -2,6 +2,7 @@
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.EntityAppLanguage;
 using Economy.Domain.Entites.EntityAppNewPages;
+using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Panel.UI.Areas.Tenant.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
