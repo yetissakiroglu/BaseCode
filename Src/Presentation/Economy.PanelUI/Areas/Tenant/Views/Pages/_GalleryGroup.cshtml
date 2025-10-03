@@ -1,0 +1,49 @@
+﻿@using Economy.Core.Dtos.Custom
+@model (int Index, GalleryGroupVm Group)
+
+<div class="mb-4 gallery-group" data-group-index="@Model.Index">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <label class="form-label m-0">@Model.Group.Label</label>
+        <button type="button"
+                class="btn btn-outline-secondary btn-pick-gallery"
+                data-group-index="@Model.Index">
+            Resim Ekle
+        </button>
+    </div>
+
+    <input type="hidden"
+           name="Galleries[@Model.Index].CoverUrl"
+           id="Galleries_@(Model.Index)_CoverUrl"
+           value="@Model.Group.CoverUrl" />
+
+    <input type="hidden" name="Galleries[@Model.Index].Key" value="@Model.Group.Key" />
+    <input type="hidden" name="Galleries[@Model.Index].Label" value="@Model.Group.Label" />
+
+    <div id="gal_@(Model.Index)" class="row">
+        @for (int j = 0; j < Model.Group.Items.Count; j++)
+        {
+            var url = Model.Group.Items[j];
+            var checkedAttr = Model.Group.CoverUrl == url ? "checked" : "";
+            <div class="col-sm-6 col-xl-3 mb-3">
+                <label class="form-checkimage w-100">
+                    <input class="checkimage-input"
+                           type="radio"
+                           name="gallerycover_@(Model.Index)"
+                           value="@url"
+                           @checkedAttr
+                           data-url="@url"
+                           data-group="@Model.Index" />
+                    <span class="check-box radiobox">
+                        <img src="@url" alt="" class="checkbox-image w-100 rounded shadow-sm" />
+                    </span>
+                    <button type="button"
+                            class="btn btn-sm btn-outline-danger mt-1 btn-del"
+                            data-url="@url" data-group="@Model.Index">
+                        Sil
+                    </button>
+                </label>
+                <input type="hidden" name="Galleries[@Model.Index].Items" value="@url" />
+            </div>
+        }
+    </div>
+</div>

@@ -227,7 +227,7 @@
           for (const f of files) fd.append('files', f);
 
           // (Varsa) kırpma oranı alanı
-          const aspect = document.getElementById('aspect')?.value ?? "";
+          const aspect = document.getElementById('aspectSelect')?.value ?? "";
           fd.append('aspect', aspect);
 
           // Anti-forgery token (Form içinde __RequestVerificationToken input’u olmalı)

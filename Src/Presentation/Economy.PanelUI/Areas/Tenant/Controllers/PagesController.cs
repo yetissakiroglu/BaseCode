@@ -1,4 +1,5 @@
-﻿using Economy.Core.Enums;
+﻿using Economy.Core.Dtos.Custom;
+using Economy.Core.Enums;
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
@@ -282,7 +283,20 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
         public IActionResult CreateTest()
         {
-            return View(new PageCreateVm());
+            var vm = new PageCreateVm
+            {
+                Singles =
+            {
+                new ImageFieldVm { Key="KapakImage", Label="Kapak Görseli" },
+                new ImageFieldVm { Key="OgKapakImage", Label="OG Kapak Görseli" }
+            },
+                Galleries =
+            {
+                new GalleryGroupVm { Key="galeri", Label="Galeri Fotoğrafları" },
+                new GalleryGroupVm { Key="oda", Label="Oda Fotoğrafları" }
+            }
+            };
+            return View(vm);
         }
 
         [HttpPost]
@@ -305,6 +319,10 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             public string? OgImageUrl { get; set; }       // Kapak
 
             public List<string> ImageUrls { get; set; } = new(); // Galeri
+
+
+            public List<ImageFieldVm> Singles { get; set; } = new();
+            public List<GalleryGroupVm> Galleries { get; set; } = new();
         }
 
     }
