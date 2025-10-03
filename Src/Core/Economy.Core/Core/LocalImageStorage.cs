@@ -4,6 +4,9 @@ using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Processing;
+using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Economy.Core.Core
@@ -129,6 +132,77 @@ namespace Economy.Core.Core
                 await img.SaveAsync(webpPath, encoder, ct);
             }
         }
+        // Türkçe karakterleri sadeleştirip ASCII-slug üretir
+        private static string Slugify(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return "image";
+
+            // Basit TR harf haritalaması
+            var map = new Dictionary<char, char>
+            {
+                ['Ç'] = 'c',
+                ['ç'] = 'c',
+                ['Ğ'] = 'g',
+                ['ğ'] = 'g',
+                ['İ'] = 'i',
+                ['I'] = 'i',
+                ['ı'] = 'i',
+                ['Ö'] = 'o',
+                ['ö'] = 'o',
+                ['Ş'] = 's',
+                ['ş'] = 's',
+                ['Ü'] = 'u',
+                ['ü'] = 'u'
+            };
+            var sb = new StringBuilder(input.Length);
+            foreach (var ch in input)
+                sb.Append(map.TryGetValue(ch, out var rep) ? rep : ch);
+
+            // Aksanları at
+            var normalized = sb.ToString().Normalize(NormalizationForm.FormD);
+            var sb2 = new StringBuilder(normalized.Length);
+            foreach (var ch in normalized)
+                if (CharUnicodeInfo.GetUnicodeCategory(ch) != UnicodeCategory.NonSpacingMark)
+                    sb2.Append(ch);
+            var ascii = sb2.ToString().Normalize(NormalizationForm.FormC);
+
+            // a-z0-9 dışını '-' yap
+            var res = new StringBuilder(ascii.Length);
+            foreach (var ch in ascii.ToLowerInvariant())
+                res.Append((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') ? ch : '-');
+
+            // '-' tekrarlarını kıs ve kırp
+            var slug = Regex.Replace(res.ToString(), "-{2,}", "-").Trim('-');
+            return string.IsNullOrEmpty(slug) ? "image" : slug;
+        }
+
+        // Rastgele kısa ek (8 hex = 4 byte)
+        private static string RandomToken(int bytes = 4)
+        {
+            Span<byte> buf = stackalloc byte[bytes];
+            RandomNumberGenerator.Fill(buf);
+            var sb = new StringBuilder(bytes * 2);
+            foreach (var b in buf) sb.Append(b.ToString("x2"));
+            return sb.ToString(); // ör: "9f2a3c1b"
+        }
+
+        // Benzersiz tam yol döndür (çakışma varsa yeni token dener)
+        private string BuildUniqueFullPath(string destDirFull, string baseSlug, string ext)
+        {
+            var safeBase = baseSlug.Length > 60 ? baseSlug[..60] : baseSlug;
+            while (true)
+            {
+                var candidate = $"{safeBase}-{RandomToken()}{ext}";
+                var full = Path.Combine(destDirFull, candidate);
+                if (!File.Exists(full)) return full;
+            }
+        }
+
+        // Root’tan relative türet
+        private static string RelFromFull(string rootFull, string full)
+        {
+            return Path.GetRelativePath(rootFull, full).Replace('\\', '/').TrimStart('/');
+        }
 
         public async Task<string> UploadAsync(string relativeDir, IFormFile file, string? aspect = null, CancellationToken ct = default)
         {
@@ -144,19 +218,25 @@ namespace Economy.Core.Core
             var maxBytes = _opt.MaxUploadSizeMB * 1024L * 1024L;
             if (file.Length > maxBytes) throw new InvalidOperationException($"Maksimum boyut: {_opt.MaxUploadSizeMB} MB.");
 
-            var safeName = Path.GetFileName(file.FileName);
-            EnsureSafeFileName(safeName);
+            // Orijinal adın güvenliği (sadece isim parçası)
+            var originalName = Path.GetFileNameWithoutExtension(file.FileName);
+            EnsureSafeFileName(originalName); // istersen kaldırabilirsin; ekstra sıkılık
 
-            // Yıl/Ay klasörü
+            // Slug + rasgele ek
+            var slug = Slugify(originalName);
+
+            // Yıl/Ay klasörü (veya verilen dir)
             var stamp = DateTime.UtcNow;
             relativeDir = Normalize(string.IsNullOrEmpty(relativeDir) ? $"{stamp:yyyy}/{stamp:MM}" : relativeDir);
 
             var destDir = CombineUnderRoot(relativeDir);
             Directory.CreateDirectory(destDir);
 
-            var destRel = $"{relativeDir}/{safeName}".Replace('\\', '/');
-            var destFull = CombineUnderRoot(destRel);
+            // Benzersiz tam yol ve relative path
+            var destFull = BuildUniqueFullPath(destDir, slug, ext);
+            var destRel = RelFromFull(_rootFullPath, destFull);
 
+            // Yaz (CreateNew istersen çakışmayı OS seviyesinde de engeller)
             using (var fs = new FileStream(destFull, FileMode.Create, FileAccess.Write, FileShare.None))
                 await file.CopyToAsync(fs, ct);
 
