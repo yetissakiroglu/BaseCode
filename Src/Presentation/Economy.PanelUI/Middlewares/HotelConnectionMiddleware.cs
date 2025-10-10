@@ -15,9 +15,6 @@ namespace Economy.Panel.UI.Middlewares
         public async Task InvokeAsync(HttpContext context, IUnitOfWork unitOfWork, TenantProvider tenantProvider)
         {
             var user = context.User;
-
-
-
             if (user.Identity?.IsAuthenticated == true)
             {
                 var connectionString = await tenantProvider.GetConnectionStringAsync();

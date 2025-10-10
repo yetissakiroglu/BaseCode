@@ -20,15 +20,6 @@ namespace Economy.Core.Extensions
                 .ToList();
         }
 
-
-
-
-
-
-
-
-
-
         private static string? SanitizeHtml(string? html)
         {
             if (string.IsNullOrWhiteSpace(html)) return html;

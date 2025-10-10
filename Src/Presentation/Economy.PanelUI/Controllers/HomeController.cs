@@ -1,23 +1,19 @@
-using Economy.Application.Dtos.DashboardSummaryDtos;
-using Economy.Application.Interfaces;
-using Economy.PanelUI.Models;
+using Economy.Panel.UI.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace Economy.PanelUI.Controllers;
 
-[Authorize]  // Bu, sadece giriþ yapmýþ kullanýcýlarýn eriþmesini saðlar
-public class HomeController : Controller
+[Authorize]
+public class HomeController : BaseController
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly IPanelDashboardService _svc;
-
-    public HomeController(ILogger<HomeController> logger, IPanelDashboardService svc)
+    public IActionResult Index()
     {
-        _logger = logger;
-        _svc = svc;
+        var target = RoleLandingUrl(CurrentUserRoles);
+        return Redirect(target);
     }
+
+
 
 
 
@@ -39,9 +35,5 @@ public class HomeController : Controller
         return View();
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
+
 }

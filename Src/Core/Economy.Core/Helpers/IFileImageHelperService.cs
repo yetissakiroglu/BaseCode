@@ -1,7 +1,5 @@
 ﻿using Economy.Core.Helpers.Dtos;
-using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
-using Microsoft.AspNetCore.Http;
 
 namespace Economy.Core.Helpers
 {

@@ -21,18 +21,14 @@ using Economy.Application.Validations.AppSuperAdminValidator;
 using Economy.Application.Validations.AppUserValidator;
 using Economy.Application.Validations.AppValidator;
 using Economy.Base.Application.Dtos.BaseModels;
-using Economy.Base.Persistence.Providers;
-using Economy.Core.Business;
 using Economy.Core.ContextFactory;
 using Economy.Core.Core;
 using Economy.Core.Helpers;
-using Economy.Core.Helpers.Dtos;
 using Economy.Core.Interfaces;
 using Economy.Core.Interfaces.Economy.Panel.Persistence.Services;
 using Economy.Core.Options;
 using Economy.Core.Services.Providers;
 using Economy.Domain.Entites.Identities;
-using Economy.Infrastructure.Services;
 using Economy.Panel.Application.Interfaces;
 using Economy.Panel.Persistence.Services;
 using Economy.Panel.UI;
@@ -45,7 +41,6 @@ using Economy.Persistence.Services;
 using Economy.Persistence.Tenant.Services;
 using Economy.Persistence.UnitOfWorks;
 using FluentValidation;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -84,23 +79,6 @@ builder.Services.Configure<FileManagerOptions>(
     builder.Configuration.GetSection("FileManager"));
 builder.Services.AddSingleton<IImageStorage, LocalImageStorage>();
 
-// TokenOption ayarlarýný oku ve DI container'a ekle
-builder.Services.Configure<TokenOption>(
-    builder.Configuration.GetSection("TokenOption"));
-
-// TokenOption doðrudan kullanýlacaksa (örneðin TokenService içinde ctor ile)
-var tokenOptions = builder.Configuration.GetSection("TokenOption").Get<TokenOption>();
-builder.Services.AddSingleton(tokenOptions);
-
-//  ayarlarýný oku ve DI container'a ekle
-builder.Services.Configure<FileUploadConfiguration>(
-    builder.Configuration.GetSection("FileUploadConfiguration"));
-
-//  doðrudan kullanýlacaksa (örneðin TokenService içinde ctor ile)
-var fileUploadOptions = builder.Configuration.GetSection("FileUploadConfiguration").Get<FileUploadConfiguration>();
-builder.Services.AddSingleton(fileUploadOptions);
-
-
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
 {
     //options.SignIn.RequireConfirmedAccount =false;
@@ -137,32 +115,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 });
 
-//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-//    .AddCookie(options =>
-//    {
-//        options.LoginPath = new PathString("/Account/Login");
-//options.LogoutPath = new PathString("/Account/Logout");
-//options.Cookie.Name = "DijitalPanel";
-//options.SlidingExpiration = true;
-//options.ExpireTimeSpan = TimeSpan.FromDays(7);
-//    });
-
-
-//builder.Services.ConfigureApplicationCookie(options =>
-//{
-//    options.LoginPath = new PathString("/Account/Login");
-//    options.LogoutPath = new PathString("/Account/Logout");
-//    options.Cookie = new CookieBuilder
-//    {
-//        Name = "DijitalPanel",
-//        HttpOnly = true,
-//        SameSite = SameSiteMode.Strict,
-//        SecurePolicy = CookieSecurePolicy.SameAsRequest // Always
-//    };
-//    options.SlidingExpiration = true;
-//    options.ExpireTimeSpan = System.TimeSpan.FromDays(7);
-//    options.AccessDeniedPath = new PathString($"/Error/{HttpStatusCode.Forbidden}");
-//});
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IAppSettingsProvider, AppSettingsProvider>();
 // Repository'leri otomatik olarak ekle
@@ -201,13 +153,8 @@ builder.Services.AddScoped<IValidator<AppSecuritySettingCreateDto>, AppSecurityS
 builder.Services.AddScoped<IValidator<AppSecuritySettingEditDto>, AppSecuritySettingEditDtoValidator>();
 builder.Services.AddScoped<IValidator<AppTechnicalSettingCreateEditDto>, AppTechnicalSettingCreateEditDtoValidator>();
 builder.Services.AddScoped<IValidator<AppSettingCreateEditDto>, AppSettingCreateEditDtoValidator>();
-
-
-
 builder.Services.AddScoped<IValidator<AppSlideCreateEditDto>, AppSlideCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppSettingLogoCreateEditDto>, AppSettingLogoCreateEditDtoValidator>();
-
-
 
 builder.Services.AddTransient<IValidator<AppCreateEditDto>, AppCreateEditDtoValidator>();
 
@@ -224,32 +171,21 @@ builder.Services.AddScoped<IDatabaseBackupService, DatabaseBackupService>();
 builder.Services.AddScoped<IPanelAppAccountService, PanelAppAccountService>();
 builder.Services.AddScoped<IPanelAppPageService, PanelAppPageService>();
 
-
-
-// Token service kaydýný yapalým.
-builder.Services.AddScoped<ITokenService, TokenService>(); // Token service kaydý
-
 builder.Services.AddScoped<IFileImageHelperService, FileImageHelperService>(); // Token service kaydý
-
 
 // Diðer servisler (örneðin AutoMapper)
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-
-
 
 // Services
 builder.Services.AddHttpContextAccessor();
 //builder.Services.AddScoped<ICdnUrlService, CdnUrlService>();
 
 builder.Services.AddScoped<TenantProvider>();
-builder.Services.AddScoped<MigrationService>();
 
-
-builder.Services.Configure<FormOptions>(options =>
-{
-    options.MultipartBodyLengthLimit = 104857600; // 100 MB gibi büyük bir limit
-});
+//builder.Services.Configure<FormOptions>(options =>
+//{
+//    options.MultipartBodyLengthLimit = 104857600; // 100 MB gibi büyük bir limit
+//});
 
 
 
@@ -258,8 +194,7 @@ var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 
-var fileProvider = new PhysicalFileProvider(
-    Path.Combine(Directory.GetCurrentDirectory(), "Files"));
+var fileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files"));
 
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -272,18 +207,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
-
-// Uygulama baþlatýldýðýnda migrasyonlarý çalýþtýrmak için örneðin þöyle bir iþlev ekleyebilirsiniz:
-using (var scope = app.Services.CreateScope())
-{
-    var migrationService = scope.ServiceProvider.GetRequiredService<MigrationService>();
-
-    // Master veritabaný migrasyonunu baþlatma
-    await migrationService.MigrateMasterDbAsync();
-
-    // Ýstenirse her bir tenant için de migrasyon yapýlabilir
-    // await migrationService.MigrateTenantAsync(tenantId);
-}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -128,6 +128,19 @@ namespace Economy.Panel.UI.Controllers
                 return $"{firstName} {lastName}".Trim();
             }
         }
+        protected List<string> CurrentUserRoles
+        {
+            get => User.Claims
+                        .Where(c => c.Type == ClaimTypes.Role)
+                        .Select(c => c.Value)
+                        .ToList();
+        }
+        protected static string RoleLandingUrl(IList<string> roles)
+        {
+            if (roles.Contains("Super Admin")) return "/admin/home";
+            if (roles.Contains("Tenant Admin")) return "/tenant/home";
+            return "/"; // default
+        }
     }
 }
 
