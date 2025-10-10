@@ -12,7 +12,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationAppSettings
 
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.SiteTitle).HasMaxLength(200);
+            builder.Property(x => x.Title).HasMaxLength(200);
             builder.Property(x => x.Description).HasMaxLength(300);
             builder.Property(x => x.MetaTitle).HasMaxLength(200);
             builder.Property(x => x.MetaDescription).HasMaxLength(300);
@@ -26,7 +26,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationAppSettings
                     Id = 1,
                     AppSettingId = 1,
                     AppLanguageId = 1, // Türkçe
-                    SiteTitle = "Site Başlığı - TR",
+                    Title = "Site Başlığı - TR",
                     Description = "Site açıklaması Türkçe",
                     MetaTitle = "Meta Başlık - TR",
                     MetaDescription = "Meta açıklaması Türkçe"
@@ -36,7 +36,7 @@ namespace Economy.Base.Persistence.Configurations.ConfigurationAppSettings
                     Id = 2,
                     AppSettingId = 1,
                     AppLanguageId = 2, // İngilizce
-                    SiteTitle = "Site Title - EN",
+                    Title = "Site Title - EN",
                     Description = "Site description in English",
                     MetaTitle = "Meta Title - EN",
                     MetaDescription = "Meta description in English"

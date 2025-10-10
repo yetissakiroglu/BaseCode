@@ -25,7 +25,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Hoverable Table start -->
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
@@ -39,8 +38,7 @@
                             <div class="col-md-8 offset-md-2">
                                 <form asp-action="TechnicalSettings" method="post">
                                     @Html.AntiForgeryToken()
-                                    @* Id gizli tutulabilir, Create için genelde gerekmez *@
-                                    <input asp-for="Id" type="hidden" />
+                                    <input type="hidden" asp-for="@Model.Id" />
 
                                     <div class="row g-3">
                                         <div class="col-md-6">

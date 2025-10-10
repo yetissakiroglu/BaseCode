@@ -1,9 +1,13 @@
-﻿using Economy.Application.TenantUI.Dtos.AppSettingDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppPageDtos;
+using Economy.Application.TenantUI.Dtos.AppSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
+using Economy.Panel.UI.Areas.Tenant.Models;
 using Economy.Panel.UI.Controllers;
 using Economy.Panel.UI.Models.SettingViewModels;
+using Economy.Persistence.Tenant.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
@@ -20,89 +24,47 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(CancellationToken ct)
         {
-            var allLanguages = _panelAppLanguageService.GetAllLanguage(false, true);
-            if(!allLanguages.HasData)
+            var appSettingResult = await _panelAppSettingService.GetAppSettingAsync(false, ct);
+            var vm = new AppSettingCreateEditDto();
+            if (!appSettingResult.HasData)
             {
-                AddMessage(allLanguages);
-                return View(new AppSettingViewModel());
+                await _panelAppSettingService.FillLanguagesAsync(vm, ct);
+                return View(vm);
             }
-
-            var appSetting = _panelAppSettingService.GetAppSetting(false);
-
-            // DİL VARSA: her dil için mevcut çeviriyi (varsa) eşleştir
-            var translations = allLanguages.Data.Select(lang =>
+            vm.Id = appSettingResult.Data.Id;
+            await _panelAppSettingService.FillLanguagesAsync(vm, ct);
+            foreach (var t in vm.Translations)
             {
-                var existing = appSetting?.Data?.Translations?
-                    .FirstOrDefault(p => p.AppLanguageId == lang.Id);
-
-                return new SettingLanguageViewModel
-                {
-                    Id = existing?.Id,
-                    Code = lang.Code,
-                    Icon = lang.Icon,
-                    IsRTL = lang.IsRTL,
-                    Name = lang.Name,
-                    Description = existing?.Description,
-                    MetaDescription = existing?.MetaDescription,
-                    AppLanguageId = lang.Id,
-                    // Çeviride yoksa bile AppSetting Id’sini ver; o da yoksa 0
-                    AppSettingId = existing?.AppSettingId ?? (appSetting?.Data?.Id ?? 0),
-                    MetaTitle = existing?.MetaTitle,
-                    SiteTitle = existing?.SiteTitle
-                };
-            }).ToList();
-
-            var vm = new AppSettingViewModel
-            {
-                Id = appSetting?.Data?.Id ?? 0,
-                Translations = translations
-            };
+                var hit = appSettingResult.Data.Translations.FirstOrDefault(x => x.AppLanguageId == t.AppLanguageId);
+                if (hit is null) continue;
+                t.Id = hit.Id;
+                t.MetaTitle = hit.MetaTitle;
+                t.MetaDescription = hit.MetaDescription;
+                t.Description = hit.Description;
+                t.Title = hit.Title;
+                t.MetaSlogan = hit.MetaSlogan;
+            }
             return View(vm);
         }
 
-        [HttpPost]
-        public IActionResult SaveSetting(AppSettingViewModel viewModel)
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveSetting(AppSettingCreateEditDto viewModel, CancellationToken ct)
         {
-            var createEditModel = new AppSettingCreateEditDto();
-            createEditModel.Id = viewModel.Id;
-
-            foreach (var translation in viewModel.Translations)
+            var result = await _panelAppSettingService.GetAppSettingAsync(false, ct);
+            if (!result.HasData)
             {
-                var existingLang = viewModel.Translations.FirstOrDefault(p => p.AppLanguageId == translation.Id);
-
-                if (existingLang != null)
-                {
-                    createEditModel.Translations.Add(new AppSettingTranslationDto()
-                    {
-                        Description = translation.Description,
-                        MetaDescription = translation.MetaDescription,
-                        AppLanguageId = translation.AppLanguageId,
-                        AppSettingId = translation.AppSettingId,
-                        Id = translation.Id,
-                        MetaTitle = translation.MetaTitle,
-                        SiteTitle = translation.SiteTitle,
-                    });
-                }
-                else
-                {
-                    createEditModel.Translations.Add(new AppSettingTranslationDto()
-                    {
-                        Description = translation.Description,
-                        MetaDescription = translation.MetaDescription,
-                        AppLanguageId = translation.AppLanguageId,
-                        AppSettingId = translation.AppSettingId,
-                        Id = translation.Id,
-                        MetaTitle = translation.MetaTitle,
-                        SiteTitle = translation.SiteTitle,
-                    });
-                }
-
+                var createModel = await _panelAppSettingService.Create(viewModel, ct);
+                AddValidationErrorsToModelState(result.ValidationErrors);
+                AddMessage(result);
             }
-
-            var saveModel = _panelAppSettingService.SaveAppSetting(createEditModel);
-            AddMessage(saveModel);
+            else
+            {
+                var editModel = await _panelAppSettingService.Edit(result.Data.Id, viewModel, ct);
+                AddValidationErrorsToModelState(result.ValidationErrors);
+                AddMessage(result);
+            }
             return RedirectToAction(nameof(Index));
         }
     }

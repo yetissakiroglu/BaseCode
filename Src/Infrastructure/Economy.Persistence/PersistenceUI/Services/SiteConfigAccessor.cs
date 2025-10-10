@@ -73,7 +73,7 @@ namespace Economy.Persistence.PersistenceUI.Services
 
                 settingDto = new SiteSettingDto
                 {
-                    SiteTitle = tr?.SiteTitle,
+                    SiteTitle = tr?.Title,
                     Description = tr?.Description,
                     LogoPath = logoSite.LogoPath,
                     MetaDescription = tr.MetaDescription,

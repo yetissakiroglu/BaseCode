@@ -9,7 +9,7 @@
         public string MetaTitle { get; set; }
         public string MetaDescription { get; set; }
 
-        public int? AppLanguageId { get; set; }
+        public int AppLanguageId { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
         public bool IsRTL { get; set; }

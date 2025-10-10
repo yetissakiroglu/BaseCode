@@ -5,4 +5,5 @@
         public int Id { get; set; }
         public List<AppSettingTranslationDto> Translations { get; set; } = new();
     }
+
 }

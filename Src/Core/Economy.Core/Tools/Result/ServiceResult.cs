@@ -2,7 +2,7 @@
 {
     public sealed class ServiceResult<T>
     {
-        public T? Data { get; }
+        public T Data { get; }
         public bool IsSuccess { get; }
         public bool HasData
         {
@@ -31,7 +31,7 @@
 
         private ServiceResult(
             bool isSuccess,
-            T? data,
+            T data,
             string message,
             IEnumerable<string>? errors = null,
             string? errorCode = null,

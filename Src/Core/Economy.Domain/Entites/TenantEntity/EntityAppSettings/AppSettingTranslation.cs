@@ -13,7 +13,7 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppSettings
         public AppLanguage AppLanguage { get; set; }   // 🔹 navigasyon
         // Çeviri alanları
         [MaxLength(200)]
-        public string? SiteTitle { get; set; }
+        public string? Title { get; set; }
 
         [MaxLength(300)]
         public string? Description { get; set; }
