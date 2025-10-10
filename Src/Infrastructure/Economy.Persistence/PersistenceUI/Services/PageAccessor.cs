@@ -57,7 +57,6 @@ namespace Economy.Persistence.PersistenceUI.Services
             var childCount = await _contentRepo.DataSet
                 .Where(x => !x.IsDeleted && x.IsActive
                             && x.Type == ContentItemType.Page
-                            && x.OwnerType == ContentOwnerType.Content
                             && x.OwnerId == hit.ci.Id)
                 .CountAsync(ct);
 
@@ -100,7 +99,6 @@ namespace Economy.Persistence.PersistenceUI.Services
             var childCount = await _contentRepo.DataSet
                 .Where(x => !x.IsDeleted && x.IsActive
                             && x.Type == ContentItemType.Page
-                            && x.OwnerType == ContentOwnerType.Content
                             && x.OwnerId == hit.ci.Id)
                 .CountAsync(ct);
 
@@ -154,7 +152,6 @@ namespace Economy.Persistence.PersistenceUI.Services
             var items = await (from ci in _contentRepo.DataSet
                                where !ci.IsDeleted && ci.IsActive
                                      && ci.Type == ContentItemType.Page
-                                     && ci.OwnerType == ContentOwnerType.Content
                                      && ci.OwnerId == headerCi.Id
                                join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId
                                where !tr.IsDeleted && tr.LanguageId == langId
@@ -219,7 +216,7 @@ namespace Economy.Persistence.PersistenceUI.Services
             string? parentSlug = null;
             string? parentTitle = null;
 
-            if (ci.OwnerType == ContentOwnerType.Content && ci.OwnerId.HasValue)
+            if (ci.OwnerId.HasValue)
             {
                 var parentTrs = await _trRepo.DataSet
                     .Where(x => !x.IsDeleted && x.ContentItemId == ci.OwnerId.Value)
@@ -264,7 +261,6 @@ namespace Economy.Persistence.PersistenceUI.Services
             // (3) Gallery
             var gallery = await (from m in _mediaRepo.DataSet
                                  where !m.IsDeleted && m.IsActive
-                                       && m.OwnerType == MediaOwnerType.Content
                                        && m.OwnerId == ci.Id
                                  orderby m.SortOrder, m.Id
                                  select new MediaVm
@@ -285,7 +281,6 @@ namespace Economy.Persistence.PersistenceUI.Services
             var rawBlocks = await (from b in _contentRepo.DataSet
                                    where !b.IsDeleted && b.IsActive
                                          && b.Type == ContentItemType.Block
-                                         && b.OwnerType == ContentOwnerType.Content
                                          && b.OwnerId == ci.Id
                                    orderby b.SortOrder, b.Id
                                    select new

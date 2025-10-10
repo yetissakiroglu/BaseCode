@@ -33,7 +33,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
             var list = await (from m in _mediaRepo.DataSet
                               where !m.IsDeleted && m.IsActive
-                                    && m.OwnerType == MediaOwnerType.Content
                                     && m.OwnerId == pageId
                               orderby m.SortOrder, m.Id
                               select new MediaListItemVm
@@ -70,7 +69,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
             var m = new ContentMedia
             {
-                OwnerType = MediaOwnerType.Content,
                 OwnerId = vm.PageId,
                 Url = vm.Url,
                 SortOrder = vm.SortOrder,

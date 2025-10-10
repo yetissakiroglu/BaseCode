@@ -34,7 +34,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             var list = await (from b in _contentRepo.DataSet
                               where !b.IsDeleted && b.IsActive
                                     && b.Type == ContentItemType.Block
-                                    && b.OwnerType == ContentOwnerType.Content
                                     && b.OwnerId == pageId
                               join tr in _trRepo.DataSet on b.Id equals tr.ContentItemId into trx
                               from tr in trx.Where(t => !t.IsDeleted && t.LanguageId == defLangId).DefaultIfEmpty()
@@ -80,7 +79,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 IsActive = vm.IsActive,
                 SortOrder = vm.SortOrder,
                 Type = ContentItemType.Block,
-                OwnerType = ContentOwnerType.Content,
                 OwnerId = vm.PageId,
                 BlockTemplate = vm.BlockTemplate,
                 Image = vm.Image,

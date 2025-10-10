@@ -1,4 +1,6 @@
-﻿using Economy.Core.Dtos.Custom;
+﻿using Economy.Application.TenantUI.Dtos.AppPageDtos;
+using Economy.Application.TenantUI.Interfaces;
+using Economy.Core.Dtos.Custom;
 using Economy.Core.Enums;
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
@@ -18,54 +20,30 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         private readonly IEntityRepository<ContentItem, int> _contentRepo;
         private readonly IEntityRepository<ContentItemTranslation, int> _trRepo;
         private readonly IEntityRepository<AppLanguage, int> _langRepo;
-
-        public PagesController(IUnitOfWork uow)
+        private readonly IPanelAppPageService _panelAppPageService;
+        public PagesController(IUnitOfWork uow, IPanelAppPageService panelAppPageService)
         {
             _uow = uow;
             _contentRepo = uow.HotelEntityRepository<ContentItem>();
             _trRepo = uow.HotelEntityRepository<ContentItemTranslation>();
             _langRepo = uow.HotelEntityRepository<AppLanguage>();
+            _panelAppPageService = panelAppPageService;
         }
 
         // LIST
         public async Task<IActionResult> Index(CancellationToken ct)
         {
-            var defLangId = await _langRepo.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
-                .Select(l => l.Id).FirstOrDefaultAsync(ct);
-
-            if (defLangId == 0)
-                defLangId = await _langRepo.DataSet.Where(l => !l.IsDeleted && l.IsActive)
-                    .Select(l => l.Id).FirstOrDefaultAsync(ct);
-
-            var list = await (from ci in _contentRepo.DataSet
-                              where !ci.IsDeleted && ci.Type == ContentItemType.Page
-                              join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId into trx
-                              from tr in trx.Where(t => !t.IsDeleted && t.LanguageId == defLangId).DefaultIfEmpty()
-                              join ptr in _trRepo.DataSet on ci.OwnerId equals ptr.ContentItemId into ptx
-                              from ptr in ptx.Where(p => !p.IsDeleted && p.LanguageId == defLangId).DefaultIfEmpty()
-                              orderby ci.SortOrder, ci.Id
-                              select new PageListItemAdminVm
-                              {
-                                  Id = ci.Id,
-                                  ParentTitle = ptr.Title,
-                                  Title = tr.Title,
-                                  Slug = tr.Slug,
-                                  IsActive = ci.IsActive,
-                                  PublishAtUtc = ci.PublishAtUtc,
-                                  SortOrder = ci.SortOrder
-                              })
-                              .ToListAsync(ct);
-
-            return View(list);
+            var pageModel = await _panelAppPageService.GetPageListsync();
+            return View(pageModel.Data);
         }
 
         // CREATE
         [HttpGet]
         public async Task<IActionResult> Create(CancellationToken ct)
         {
-            var vm = new PageEditVm();
-            await FillLanguagesAsync(vm, ct);
-            ViewBag.Parents = await GetParentOptionsAsync(ct);
+            var vm = new PageEditDto();
+            await _panelAppPageService.FillLanguagesAsync(vm, ct);
+            ViewBag.Parents = (await _panelAppPageService.GetParentOptionsAsync(ct)).Data;
             return View(vm);
         }
 
@@ -86,7 +64,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 PublishAtUtc = vm.PublishAtUtc,
                 SortOrder = vm.SortOrder,
                 Type = ContentItemType.Page,
-                OwnerType = ContentOwnerType.Content,
                 OwnerId = vm.OwnerId
             };
             await _contentRepo.DataSet.AddAsync(ci, ct);
@@ -132,7 +109,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 PublishAtUtc = ci.PublishAtUtc,
                 SortOrder = ci.SortOrder,
                 Type = (short)ci.Type,
-                OwnerType = (byte)ci.OwnerType
             };
 
             await FillLanguagesAsync(vm, ct);

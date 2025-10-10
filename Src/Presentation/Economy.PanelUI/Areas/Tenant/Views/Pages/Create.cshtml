@@ -1,4 +1,5 @@
-﻿@model Economy.Panel.UI.Areas.Tenant.Models.PageEditVm
+﻿@using Economy.Application.TenantUI.Dtos.AppPageDtos
+@model PageEditDto
 @{
     bool isEdit = Model.Id.HasValue;
     ViewBag.Title = isEdit ? "Sayfa Düzenle" : "Yeni Sayfa";
@@ -74,15 +75,6 @@
                             <div class="col-md-6">
                                 <label class="form-label">OG Görseli</label>
                                 <input class="form-control" asp-for="OgImage" />
-
-                            </div>
-
-                            <div class="col-md-12">
-                                <label class="form-label">JsonData (opsiyonel)</label>
-                                <textarea class="form-control" name="JsonData" rows="2">@Model.JsonData</textarea>
-                                <div class="form-text">
-                                    Örn (Campaign): {"badge":"%20 indirim","priceFrom":"120","currency":"EUR","validTo":"2025-12-31"}
-                                </div>
                             </div>
 
                         </div>

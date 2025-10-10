@@ -6,10 +6,8 @@ using System.ComponentModel.DataAnnotations;
 namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
 {
     // İçeriğe bağlı medya (galeri/kapak)
-    [Index(nameof(OwnerType), nameof(OwnerId))]
     public class ContentMedia : BaseEntity<int>
     {
-        public MediaOwnerType OwnerType { get; set; } = MediaOwnerType.Content;
         public int OwnerId { get; set; }
 
         [Required, MaxLength(500)]

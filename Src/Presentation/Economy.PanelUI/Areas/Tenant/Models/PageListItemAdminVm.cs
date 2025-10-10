@@ -41,11 +41,8 @@ namespace Economy.Panel.UI.Areas.Tenant.Models
         public DateTime? PublishAtUtc { get; set; }
         public int SortOrder { get; set; }
         public short Type { get; set; } = 1;        // Page
-        public byte OwnerType { get; set; } = 1;    // Content
         public string? Image { get; set; }
         public string? OgImage { get; set; }
-        public string? JsonData { get; set; }
-
         public List<PageTranslationVm> Translations { get; set; } = new();
     }
 

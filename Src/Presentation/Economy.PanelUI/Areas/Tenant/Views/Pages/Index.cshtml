@@ -1,4 +1,5 @@
-﻿@model List<Economy.Panel.UI.Areas.Tenant.Models.PageListItemAdminVm>
+﻿@using Economy.Application.TenantUI.Dtos.AppPageDtos
+@model List<PageListDto>
 @{
     ViewBag.Title = "Sayfalar";
 }
@@ -58,7 +59,7 @@
                                                 <td>@(r.Title ?? "(başlık yok)")</td>
                                                 <td>@r.Slug</td>
                                                 <td>@r.ParentTitle</td>
-                                                <td>@(r.IsActive ? "Evet" : "Hayır")</td>
+                                                <td>@(r.IsActive.ToTurkishYesNo())</td>
                                                 <td>@(r.PublishAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
                                                 <td>@r.SortOrder</td>
                                                 <td class="text-end">

@@ -7,14 +7,11 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
 {
     // İçerik ana kaydı: Page / Snippet / Block
     [Index(nameof(Type))]
-    [Index(nameof(OwnerType), nameof(OwnerId))]
     [Index(nameof(Code))] // Snippet çağırma kodu için
     public class ContentItem : BaseEntity<int>
     {
         public ContentItemType Type { get; set; } = ContentItemType.Page;
 
-        // Sahiplik (Block için Content’e bağlanır; opsiyonel Room/Campaign)
-        public ContentOwnerType OwnerType { get; set; } = ContentOwnerType.None;
         public int? OwnerId { get; set; }
 
         // Sadece Block’larda anlamlı

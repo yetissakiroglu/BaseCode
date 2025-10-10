@@ -9,6 +9,5 @@ namespace Economy.Application.Interfaces
         Task<ServiceResult<MenuItemDto>> UpsertAsync(MenuItemDto dto, string updatedBy);
         Task<ServiceResult<bool>> DeleteAsync(int id);
         Task<ServiceResult<bool>> ReorderAsync(IEnumerable<MenuReorderItemDto> items, string updatedBy);
-
     }
 }
