@@ -142,7 +142,146 @@
                         <a class="btn btn-outline-secondary" href="/tenant/pages">Vazgeç</a>
                     </div>
                 </form>
+
+                @if (isEdit)
+                {
+                    <div class="card mb-3" id="page-blocks-card" data-page-id="@Model.Id">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Sayfa Blokları</span>
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-outline-secondary" href="/tenant/blocks/index">Blokları Yönet</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="row g-2 align-items-end mb-3">
+                                <div class="col-md-8">
+                                    <label class="form-label">Blok Ekle (Aday Listesi)</label>
+                                    <select class="form-select" id="block-candidates"></select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-success w-100" id="btnAttach">Ekle</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <input class="form-control" id="candidateSearch" placeholder="Ara..." />
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:40px;"></th>
+                                            <th>Başlık</th>
+                                            <th>Kolon</th>
+                                            <th>Aktif</th>
+                                            <th style="width:140px;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pb-list"></tbody>
+                                </table>
+                            </div>
+
+                            <small class="text-muted">Sürükle-bırak ile sıralayabilir; “Kaldır” ile sayfa–blok ilişkisinin pivot kaydını silebilirsin.</small>
+                        </div>
+                    </div>
+                }
+
             </div>
         </div>
     </div>
 </main>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <script>
+        (function(){
+          const host = '/tenant/pageblocks';
+          const card = document.getElementById('page-blocks-card');
+          if(!card) return;
+
+          const pageId = card.getAttribute('data-page-id');
+          const tbody = document.getElementById('pb-list');
+          const sel = document.getElementById('block-candidates');
+          const btnAttach = document.getElementById('btnAttach');
+          const txtSearch = document.getElementById('candidateSearch');
+
+          function colText(n){ return n ? (n + ' kolon') : 'Auto'; }
+          function rowHtml(it){
+            return `
+              <tr data-id="${it.id}">
+                <td class="text-muted" style="cursor:grab">↕</td>
+                <td>${it.title ?? ''}</td>
+                <td>${colText(it.columns)}</td>
+                <td>${it.isActive ? 'Evet' : 'Hayır'}</td>
+                <td class="text-end">
+                  <a class="btn btn-sm btn-outline-secondary" href="/tenant/blocks/edit/${it.id}">Düzenle</a>
+                  <button class="btn btn-sm btn-outline-danger ms-1" data-detach="${it.id}">Kaldır</button>
+                </td>
+              </tr>`;
+          }
+
+          async function loadList(){
+            const res = await fetch(`${host}/list?pageId=${pageId}`);
+            const data = await res.json();
+            tbody.innerHTML = data.map(rowHtml).join('');
+          }
+
+          async function loadCandidates(q){
+            const url = new URL(`${host}/candidates`, window.location.origin);
+            url.searchParams.set('pageId', pageId);
+            if(q) url.searchParams.set('q', q);
+            const res = await fetch(url);
+            const data = await res.json();
+            sel.innerHTML = data.map(x => `<option value="${x.id}">${x.title}</option>`).join('');
+          }
+
+          btnAttach?.addEventListener('click', async ()=>{
+            const id = sel.value;
+            if(!id) return;
+            const fd = new FormData();
+            fd.append('pageId', pageId);
+            fd.append('blockGroupId', id);
+            const res = await fetch(`${host}/attach`, { method: 'POST', body: fd });
+            if(res.ok){ await loadList(); await loadCandidates(txtSearch.value); }
+          });
+
+          tbody.addEventListener('click', async (e)=>{
+            const btn = e.target.closest('[data-detach]');
+            if(!btn) return;
+            if(!confirm('Bu sayfadan kaldırmak istiyor musunuz?')) return;
+            const id = btn.getAttribute('data-detach');
+            const fd = new FormData();
+            fd.append('pageId', pageId);
+            fd.append('blockGroupId', id);
+            const res = await fetch(`${host}/detach`, { method: 'POST', body: fd });
+            if(res.ok){ await loadList(); await loadCandidates(txtSearch.value); }
+          });
+
+          new Sortable(tbody, {
+            animation: 150,
+            handle: 'td:first-child',
+            onEnd: async ()=>{
+              const rows = [];
+              tbody.querySelectorAll('tr').forEach((tr, idx)=>{
+                rows.push({ blockGroupId: parseInt(tr.getAttribute('data-id')), sortOrder: idx });
+              });
+              await fetch(`${host}/sort?pageId=${pageId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(rows)
+              });
+            }
+          });
+
+          txtSearch?.addEventListener('input', async ()=>{
+            await loadCandidates(txtSearch.value.trim());
+          });
+
+          // initial
+          loadList();
+          loadCandidates();
+        })();
+    </script>
+}

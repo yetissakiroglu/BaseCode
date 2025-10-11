@@ -142,6 +142,7 @@ builder.Services.AddScoped<IValidator<MenuItemDto>, AppMenuItemValidator>();
 
 
 builder.Services.AddScoped<IBlockService, BlockService>();
+builder.Services.AddScoped<IPageBlockService, PageBlockService>();
 
 
 builder.Services.AddTransient<IValidator<BlockGroupDto>, BlockGroupDtoValidator>();
