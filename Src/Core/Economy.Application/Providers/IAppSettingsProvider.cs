@@ -1,4 +1,4 @@
-﻿using Economy.Application.Dtos.AppGeneralSettingDtos;
+﻿using Economy.Application.AdminUI.Dtos.AppGeneralSettingDtos;
 
 namespace Economy.Application.Providers
 {

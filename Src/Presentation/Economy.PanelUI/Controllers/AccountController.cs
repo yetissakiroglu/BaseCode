@@ -1,5 +1,5 @@
-﻿using Economy.Application.Interfaces;
-using Economy.Core.Dtos;
+﻿using Economy.Application.AdminUI.Dtos.AppAccountDtos;
+using Economy.Application.AdminUI.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Economy.Panel.UI.Controllers
@@ -18,32 +18,29 @@ namespace Economy.Panel.UI.Controllers
         {
             return View();
         }
-  
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(SignIn model, string? returnUrl = null)
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(AppSignInDto model, string? returnUrl = null)
         {
-            if (!ModelState.IsValid) return View(model);
-            var loginResult = await _panelAppAccountService.LoginAsync(model, returnUrl, HttpContext, ModelState);
+            var loginResult = await _panelAppAccountService.LoginAsync(model, returnUrl, HttpContext);
+            AddValidationErrorsToModelState(loginResult.ValidationErrors);
+            AddMessage(loginResult);
             if (loginResult.IsSuccess)
             {
-                if (loginResult.Data.User.Roles.Contains("Super Admin"))
-                    return RedirectToAction("Index", "Home", new { area = "Admin" });
-
-                if (loginResult.Data.User.Roles.Contains("Tenant Admin"))
-                    return RedirectToAction("Index", "Home", new { area = "Tenant" });
-
-                return Redirect(loginResult.RedirectUrl);
+                var target = RoleLandingUrl(CurrentUserRoles);
+                return Redirect(string.IsNullOrWhiteSpace(loginResult.RedirectUrl) ?  target : loginResult.RedirectUrl);
             }
             return View(model);
         }
 
         public async Task<IActionResult> Logout()
         {
-             var logoutResult = await _panelAppAccountService.LogoutAsync(HttpContext);
-            if (logoutResult.IsSuccess) {
-                return Redirect(logoutResult.RedirectUrl);
+            var logoutResult = await _panelAppAccountService.LogoutAsync(HttpContext);
+            if (logoutResult.IsSuccess)
+            {
+                return Redirect("/");
             }
+            AddMessage(logoutResult);
             return Redirect("/");
         }
     }

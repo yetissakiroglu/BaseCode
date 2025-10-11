@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Economy.Application.Extensions;
 using Economy.Application.Interfaces;
 using Economy.Application.TenantUI.Dtos.AppMenuDtos;
 using Economy.Core.Helpers;
@@ -6,7 +7,6 @@ using Economy.Core.Interfaces;
 using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppMenus;
-using Economy.Panel.Application.Extensions;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;

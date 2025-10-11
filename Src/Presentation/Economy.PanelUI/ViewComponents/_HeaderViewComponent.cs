@@ -1,29 +1,29 @@
-﻿using Economy.Panel.Application.Interfaces;
+﻿using Economy.Application.AdminUI.Interfaces;
 using Economy.Panel.UI.Models.ProfileViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.ViewComponents
 {
     public class _HeaderViewComponent : ViewComponent
     {
-        // Bu metod, kullanıcının giriş yapıp yapmadığını kontrol eder
-        private readonly IPanelAppUserService _panelAppUserService;
+        private readonly IPanelSuperAdminService _panelSuperAdminService;
 
-        public _HeaderViewComponent(IPanelAppUserService panelAppUserService)
+        public _HeaderViewComponent(IPanelSuperAdminService panelAppUserService)
         {
-            _panelAppUserService = panelAppUserService;
+            _panelSuperAdminService = panelAppUserService;
         }
 
         public IViewComponentResult Invoke()
         {
             var claimsPrincipal = User as ClaimsPrincipal;
             var CurrentUserId = claimsPrincipal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = _panelAppUserService.GetUser(Convert.ToInt32(CurrentUserId),false);
+            var user = (_panelSuperAdminService.GetUserAsync(Convert.ToInt32(CurrentUserId))).Result;
             var model = new HeaderUserViewModel
             {
-                FullName = user.Result?.Data.FirstName + " " + user.Result?.Data.LastName  ?? "Kullanıcı Adı", // Gerçek veri varsa claim'e ekle
-                Email = user.Result.Data.Email,
+                FullName = user?.Data.FirstName + " " + user?.Data.LastName  ?? "Kullanıcı Adı", // Gerçek veri varsa claim'e ekle
+                Email = user.Data.Email,
                 PhotoUrl = "/assets/images/avtar/woman.jpg" // Gerçek veri varsa claim'e ekle
             };
 

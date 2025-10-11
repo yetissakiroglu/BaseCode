@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Economy.Application.Extensions;
 using Economy.Application.TenantUI.Dtos.AppSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Enums;
@@ -8,7 +9,6 @@ using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
-using Economy.Panel.Application.Extensions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 

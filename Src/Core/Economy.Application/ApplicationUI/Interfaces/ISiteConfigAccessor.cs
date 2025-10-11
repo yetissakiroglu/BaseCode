@@ -1,5 +1,4 @@
-﻿using Economy.Domain.Entites.AppEntities;
-using Economy.UI.Models;
+﻿using Economy.UI.Models;
 
 namespace Economy.Application.ApplicationUI.Interfaces
 {
@@ -8,9 +7,4 @@ namespace Economy.Application.ApplicationUI.Interfaces
         Task<List<SlideVm>> GetSlidesAsync(string lang);
         (SiteSettingDto? Setting, SiteTechnicalDto? Technical) GetAsync(string lang);
     }
-
-
-
-
-
 }

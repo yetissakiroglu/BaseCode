@@ -4,19 +4,6 @@
     ViewData["Title"] = "Genel Ayarlar";
 }
 
-<h3 class="mb-3">Genel Ayarlar</h3>
-
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
-
-
-
 <main>
     <div class="container-fluid">
         <!-- Breadcrumb start -->
@@ -51,10 +38,9 @@
                     <div class="card-body">
                         <div class="row p-2">
                             <div class="col-md-10 offset-md-1">
-                                <form asp-action="General" asp-controller="Settings" method="post" enctype="multipart/form-data" class="card card-body">
+                                <form asp-action="General" asp-controller="SystemSettings" method="post" enctype="multipart/form-data">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" asp-for="Id" />
-
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label asp-for="SiteName" class="form-label"></label>
@@ -127,8 +113,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- tables-end  -->
     </div>
 </main>
 

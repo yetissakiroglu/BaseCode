@@ -1,5 +1,4 @@
 ﻿using Economy.Core.Enums;
-using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -9,36 +8,6 @@ namespace Economy.Panel.UI.Controllers
 {
     public class BaseController : Controller
     {
-        protected void AddMessage<T>(ResponseModel<T> response)
-        {
-            if (response?.Message == null || !response.Message.Messages.Any())
-            {
-                return; // Eğer mesajlar null veya boşsa, fonksiyon sonlanır
-            }
-
-            var messageBuilder = new StringBuilder();
-
-            // Mesajları birleştir
-            foreach (var item in response.Message.Messages)
-            {
-                messageBuilder.AppendLine(item);
-            }
-
-            // TempData'yı ayarla
-            TempData["MessageNotification"] = messageBuilder.ToString();
-            TempData["TypeNotification"] = response.Notification;
-
-            // Mesaj başlığını notificationType'a göre ayarla
-            TempData["TitleNotification"] = response.Notification switch
-            {
-                NotificationType.Success => "Başarılı",
-                NotificationType.Information => "Bilgi",
-                NotificationType.Warning => "Uyarı",
-                NotificationType.Danger => "Hata",
-                _ => "Bildirim"
-            };
-        }
-
         protected void AddMessage<T>(ServiceResult<T> response)
         {
             if (response == null)
@@ -88,8 +57,8 @@ namespace Economy.Panel.UI.Controllers
                     {
                         ModelState.AddModelError("UserName", message);
                     }
-                
-                    if (key== "DuplicateEmail")
+
+                    if (key == "DuplicateEmail")
                     {
                         ModelState.AddModelError("Email", message);
                     }
@@ -137,7 +106,7 @@ namespace Economy.Panel.UI.Controllers
         }
         protected static string RoleLandingUrl(IList<string> roles)
         {
-            if (roles.Contains("Super Admin")) return "/admin/home";
+            if (roles.Contains("Super Admin")) return "/admin/dashboard";
             if (roles.Contains("Tenant Admin")) return "/tenant/home";
             return "/"; // default
         }

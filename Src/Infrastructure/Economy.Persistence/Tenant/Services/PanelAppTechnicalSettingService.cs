@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
+using Economy.Application.Extensions;
 using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Helpers;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
-using Economy.Panel.Application.Extensions;
 using FluentValidation;
 
 namespace Economy.Persistence.Tenant.Services

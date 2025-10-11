@@ -1,6 +1,5 @@
-﻿using Economy.Application.Dtos.AppDtos;
-using Economy.Application.Interfaces;
-using Economy.Panel.Application.Interfaces;
+﻿using Economy.Application.AdminUI.Dtos.AppDtos;
+using Economy.Application.AdminUI.Interfaces;
 using Economy.Panel.UI.Controllers;
 using Economy.Panel.UI.Models.AppViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -13,19 +12,19 @@ namespace Economy.Panel.UI.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize]
-    //[Route("[area]/[controller]")]
     public class SystemAppsController : BaseController
     {
         private readonly IPanelAppService _panelAppService;
-        private readonly IPanelAppUserService _panelAppUserService;
         private readonly IPanelAppManagerService _panelAppManagerService;
         private readonly IConnectionTesterService _connectionTesterService;
-        public SystemAppsController(IPanelAppService panelAppService, IPanelAppUserService panelAppUserService, IPanelAppManagerService panelAppManagerService, IConnectionTesterService connectionTesterService)
+        private readonly IPanelSuperAdminService _panelSuperAdminService;
+
+        public SystemAppsController(IPanelAppService panelAppService, IPanelAppManagerService panelAppManagerService, IConnectionTesterService connectionTesterService, IPanelSuperAdminService panelSuperAdminService)
         {
             _panelAppService = panelAppService;
-            _panelAppUserService = panelAppUserService;
             _panelAppManagerService = panelAppManagerService;
             _connectionTesterService = connectionTesterService;
+            _panelSuperAdminService = panelSuperAdminService;
         }
 
         public IActionResult AppList()
@@ -200,7 +199,7 @@ namespace Economy.Panel.UI.Areas.Admin.Controllers
             var app = _panelAppService.GetAppById(id).Result;
             if (app == null) return NotFound();
 
-            var allManagers = _panelAppUserService.GetAllManagers().Result.Data
+            var allManagers = (await _panelSuperAdminService.GetUserListAsync()).Data
                 .Select(u => new ManagerItem
                 {
                     Id = u.Id,

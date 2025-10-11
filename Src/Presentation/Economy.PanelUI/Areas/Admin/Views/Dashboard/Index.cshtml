@@ -1,0 +1,66 @@
+﻿@model DashboardSummaryDto
+@using System.Text.Json
+@using Economy.Application.AdminUI.Dtos.DashboardSummaryDtos
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<main>
+    <div class="container-fluid">
+        <!-- Breadcrumb start -->
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- Breadcrumb end -->
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted small">Toplam Kullanıcı</div>
+                        <div class="fs-3 fw-semibold">@Model.TotalUsers</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted small">Aktif Kullanıcı</div>
+                        <div class="fs-3 fw-semibold">@Model.ActiveUsers</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted small">Kilitli Kullanıcı</div>
+                        <div class="fs-3 fw-semibold">@Model.LockedOutUsers</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted small">2FA Açık</div>
+                        <div class="fs-3 fw-semibold">@Model.TwoFactorEnabledUsers</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted small">Son Yedek</div>
+                        <div class="fs-6 fw-semibold">
+                            @(Model.LastBackupUtc.HasValue
+                                                        ? Model.LastBackupUtc.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
+                                                        : "—")
+                        </div>
+                        <a class="btn btn-sm btn-outline-secondary mt-2" href="/Database/Backup">Yedek Al</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+
+}

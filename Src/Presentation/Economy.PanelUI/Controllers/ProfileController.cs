@@ -1,5 +1,5 @@
-﻿using Economy.Domain.Entites.Identities;
-using Economy.Panel.Application.Interfaces;
+﻿using Economy.Application.AdminUI.Interfaces;
+using Economy.Domain.Entites.AdminEntity.EntityAppUsers;
 using Economy.Panel.UI.Models.ProfileViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,22 +8,21 @@ namespace Economy.Panel.UI.Controllers
 {
     public class ProfileController : BaseController
     {
-        private readonly IPanelAppUserService _panelAppUserService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IPanelSuperAdminService _panelSuperAdminService;
 
-
-        public ProfileController(IPanelAppUserService panelAppUserService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public ProfileController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IPanelSuperAdminService panelSuperAdminService)
         {
-            _panelAppUserService = panelAppUserService;
             _userManager = userManager;
             _signInManager = signInManager;
+            _panelSuperAdminService = panelSuperAdminService;
         }
 
         public async Task<IActionResult> Index()
         {
 
-            var profil = await _panelAppUserService.GetUser(CurrentUserId, false);
+            var profil = await _panelSuperAdminService.GetUserAsync(CurrentUserId);
             if (!profil.HasData)
             {
                 AddMessage(profil);
@@ -35,10 +34,9 @@ namespace Economy.Panel.UI.Controllers
                 FullName = $"{profil?.Data?.FirstName} {profil?.Data?.LastName}",
                 JobTitle = profil?.Data?.JobTitle,
                 Phone = profil?.Data?.PhoneNumber,
-                Roles = profil?.Data?.Roles?.ToList() ?? new List<string>()
+                Roles = profil?.Data?.RolesName
             };
-            return View(resılt);
-          
+            return View(resılt);       
         }
 
 

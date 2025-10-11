@@ -29,7 +29,6 @@
                         <li><a href="/Admin/SystemUsers/List">Kullanıcı Listesi</a></li>
                         <li><a href="/Admin/SystemUsers/Create">Yeni Kullanıcı Ekle</a></li>
                         <li><a href="/Admin/SystemUsers/Roles">Rol & Yetki Yönetimi</a></li>
-                        <li><a href="/Admin/SystemUserLogs/LoginLogs">Giriş Kayıtları</a></li>
                     </ul>
                 </li>
 
@@ -45,22 +44,19 @@
                     </ul>
                 </li>
 
-
-
-
                 <!-- Sistem Ayarları -->
                 <li class="menu-title"><span>Sistem Ayarları</span></li>
-                <li><a href="/Admin/SystemSettings/General"><i class="iconoir-settings"></i> Genel Ayarlar</a></li>
-                <li><a href="/Admin/SystemSettings/Security"><i class="iconoir-shield"></i> Güvenlik Ayarları</a></li>
-
-                <!-- Log Yönetimi -->
-                <li class="menu-title"><span>Log Yönetimi</span></li>
-                <li><a href="/Admin/SystemLogs/Audit"><i class="iconoir-report-columns"></i> İşlem Logları</a></li>
-                <li><a href="/Admin/SystemLogs/Error"><i class="iconoir-warning-triangle"></i> Hata Logları</a></li>
+                <li class="no-sub">
+                    <a href="/Admin/SystemSettings/General">
+                        <i class="iconoir-settings"></i> Genel Ayarlar
+                    </a>
+                </li>
 
                 <!-- Veritabanı -->
                 <li class="menu-title"><span>Veritabanı</span></li>
-                <li><a href="/Admin/SystemDatabases/Backup"><i class="iconoir-database"></i> Yedekleme / Geri Yükleme</a></li>
+                <li class="no-sub">
+                    <a href="/Admin/SystemDatabases/Backup"><i class="iconoir-database"></i> Yedekleme / Geri Yükleme</a>
+                </li>
 
             }
 
@@ -104,7 +100,7 @@
                         <li><a href="/Tenant/Menus/IndexMain">Üst Menüler</a></li>
                     </ul>
                 </li>
-              
+
                 <li>
                     <a aria-expanded="false" class="" data-bs-toggle="collapse" href="#PageYonetimi">
                         <i class="iconoir-keyframes-couple"></i>Sayfa Yönetimi
@@ -123,6 +119,7 @@
                     </a>
                 </li>
             }
+
         </ul>
     </div>
 

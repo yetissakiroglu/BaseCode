@@ -13,16 +13,16 @@ namespace Economy.Persistence
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, string connectionString)
         {
             // AutoMapper'ı ekle
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            //services.AddAutoMapper(Assembly.GetExecutingAssembly());
           
 
-            services.AddDbContext<DefaultDbContext>(options =>
-            {
-                options.UseSqlServer(connectionString, configure =>
-                {
-                    configure.MigrationsAssembly("AppWeb");
-                });
-            });
+            //services.AddDbContext<DefaultDbContext>(options =>
+            //{
+            //    options.UseSqlServer(connectionString, configure =>
+            //    {
+            //        configure.MigrationsAssembly("AppWeb");
+            //    });
+            //});
 
 
 

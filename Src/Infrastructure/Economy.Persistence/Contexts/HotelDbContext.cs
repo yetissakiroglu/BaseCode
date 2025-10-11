@@ -1,10 +1,10 @@
-﻿using Economy.Base.Persistence.Configurations.ConfigurationAppSettings;
-using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
+﻿using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppMenus;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
 using Economy.Domain.Entites.TenantEntity.EntityAppSlides;
-using Economy.Persistence.Configurations.ConfigurationAppLanguage;
+using Economy.Persistence.Tenant.Configurations.ConfigurationAppLanguage;
+using Economy.Persistence.Tenant.Configurations.ConfigurationAppSettings;
 using Microsoft.EntityFrameworkCore;
 
 namespace Economy.Persistence.Contexts
@@ -24,9 +24,6 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppSetting> AppSettings { get; set; }
         public DbSet<AppSettingTranslation> AppSettingTranslations { get; set; }
         public DbSet<AppSettingLogo> AppSettingLogos { get; set; }
-     
-        
-        
         public DbSet<AppLanguage> AppLanguages { get; set; }
 
 

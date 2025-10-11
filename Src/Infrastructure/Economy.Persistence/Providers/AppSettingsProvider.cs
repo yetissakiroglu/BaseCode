@@ -1,12 +1,7 @@
-﻿using Economy.Application.Dtos.AppGeneralSettingDtos;
-using Economy.Application.Interfaces;
+﻿using Economy.Application.AdminUI.Dtos.AppGeneralSettingDtos;
+using Economy.Application.AdminUI.Interfaces;
 using Economy.Application.Providers;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Economy.Persistence.Providers
 {

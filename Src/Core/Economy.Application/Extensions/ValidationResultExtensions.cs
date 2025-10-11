@@ -1,7 +1,7 @@
 ﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 
-namespace Economy.Panel.Application.Extensions
+namespace Economy.Application.Extensions
 {
     public static class ValidationResultExtensions
     {

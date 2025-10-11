@@ -1,9 +1,4 @@
 ﻿using Economy.Application.ApplicationUI.Interfaces;
-using Economy.Core.Interfaces;
-using Economy.Core.Services.Providers;
-using Economy.Persistence.PersistenceUI.Services;
-using Economy.Persistence.UnitOfWorks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Economy.Panel.UI.Areas.Api

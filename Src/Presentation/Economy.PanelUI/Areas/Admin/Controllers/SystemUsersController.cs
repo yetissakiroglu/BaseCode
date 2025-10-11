@@ -1,5 +1,5 @@
-﻿using Economy.Application.Dtos.AppSuperAdminUserDtos;
-using Economy.Application.Interfaces;
+﻿using Economy.Application.AdminUI.Dtos.AppSuperAdminUserDtos;
+using Economy.Application.AdminUI.Interfaces;
 using Economy.Panel.UI.Controllers;
 using Economy.Panel.UI.Models.SuperAdminViewModels;
 using Microsoft.AspNetCore.Authorization;

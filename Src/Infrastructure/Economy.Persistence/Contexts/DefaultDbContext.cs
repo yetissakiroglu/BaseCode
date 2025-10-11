@@ -1,12 +1,8 @@
-﻿using Economy.Base.Persistence.Configurations.ConfigurationApps;
-using Economy.Domain.Entites.AppEntities;
-using Economy.Domain.Entites.Identities;
-using Economy.Domain.Entities.Identity;
-using Economy.Persistence.Configurations.ConfigurationApps;
-using Economy.Persistence.Configurations.ConfigurationAppSlide;
+﻿using Economy.Domain.Entites.AdminEntity.EntityApp;
+using Economy.Domain.Entites.AdminEntity.EntityAppUsers;
+using Economy.Persistence.Admin.Configurations.ConfigurationApps;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace Economy.Persistence.Contexts
 {
@@ -28,9 +24,6 @@ namespace Economy.Persistence.Contexts
         public DbSet<App> Apps { get; set; }
         public DbSet<AppManager> AppManagers { get; set; }
         public DbSet<AppGeneralSetting> AppGeneralSettings { get; set; }
-        public DbSet<AppSecuritySetting> AppSecuritySettings { get; set; }
-        public DbSet<AppAuditLog> AppAuditLogs { get; set; }
-        public DbSet<AppErrorLog> AppErrorLogs { get; set; }
         public DbSet<AppDatabaseBackupLog> AppDatabaseBackupLogs { get; set; }
 
         
@@ -45,11 +38,7 @@ namespace Economy.Persistence.Contexts
             modelBuilder.ApplyConfiguration(new App_Configuration()); // ← Burası önemli
             modelBuilder.ApplyConfiguration(new App_AppManagerConfiguration()); // ← Burası önemli
             modelBuilder.ApplyConfiguration(new App_GeneralSettingsConfiguration()); // ← Burası önemli
-            modelBuilder.ApplyConfiguration(new App_AppSecuritySettingConfiguration()); // ← Burası önemli
-            modelBuilder.ApplyConfiguration(new App_AppAuditLogConfiguration()); // ← Burası önemli
-            modelBuilder.ApplyConfiguration(new App_AppErrorLogConfiguration()); // ← Burası önemli
-
-            
+           
 
 
             modelBuilder.ApplyConfiguration(new AppRoleConfiguration()); // ← Burası önemli

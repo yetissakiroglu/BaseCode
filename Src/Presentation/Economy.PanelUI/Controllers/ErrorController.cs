@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Economy.PanelUI.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace Economy.Panel.UI.Controllers
 {
@@ -17,6 +19,12 @@ namespace Economy.Panel.UI.Controllers
         public IActionResult General()
         {
             return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

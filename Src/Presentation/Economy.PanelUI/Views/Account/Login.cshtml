@@ -1,6 +1,7 @@
-﻿@using Economy.Core.Dtos
+﻿@using Economy.Application.AdminUI.Dtos.AppAccountDtos
+@using Economy.Core.Dtos
 
-@model SignIn
+@model AppSignInDto
 
 @{
     Layout = "_LayoutLogin";
@@ -20,21 +21,20 @@
                     <form class="app-form rounded-control needs-validation" asp-action="Login" method="post" novalidate>
                         <div class="mb-3 text-center">
                             <h3 class="text-primary-dark">Hesabınıza Giriş Yapın</h3>
-                            <p class="f-s-12 text-secondary">
-                                Uygulamamızı kullanmaya başlamak için hemen bir hesap oluşturun
-                                ve deneyimin tadını çıkarın.
-                            </p>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="Email">E-Posta</label>
                             <input class="form-control" asp-for="Email" placeholder="E-Posta Adresinizi Girin"
                                    type="text" required>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+
                         </div>
                         <div class="mb-3">
                             <div class="mb-3">
                                 <label class="form-label" for="password">Şifre</label>
                                 <input class="form-control" asp-for="Password" placeholder="Şifrenizi Girin"
                                        type="password" required>
+                                <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="mb-3 form-check">
@@ -46,9 +46,7 @@
                                 Giriş Yap
                             </button>
                         </div>
-                        <div class="app-divider-v justify-content-center">
-                            <p>VEYA</p>
-                        </div>
+        
                     </form>
                 </div>
 
@@ -56,3 +54,4 @@
         </div>
     </div>
 </div>
+

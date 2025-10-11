@@ -1,8 +1,12 @@
+using Economy.Application.AdminUI.Dtos.AppAccountDtos;
+using Economy.Application.AdminUI.Dtos.AppDtos;
+using Economy.Application.AdminUI.Dtos.AppGeneralSettingDtos;
+using Economy.Application.AdminUI.Dtos.AppSuperAdminUserDtos;
+using Economy.Application.AdminUI.Interfaces;
+using Economy.Application.AdminUI.Validations.AppSuperAdminValidator;
+using Economy.Application.AdminUI.Validations.AppValidator;
+using Economy.Application.AdminUI.Validations.PanelAppAccountValidator;
 using Economy.Application.ApplicationUI.Interfaces;
-using Economy.Application.Dtos.AppDtos;
-using Economy.Application.Dtos.AppGeneralSettingDtos;
-using Economy.Application.Dtos.AppSecuritySettingDtos;
-using Economy.Application.Dtos.AppSuperAdminUserDtos;
 using Economy.Application.Interfaces;
 using Economy.Application.Providers;
 using Economy.Application.TenantUI.Dtos.AppMenuDtos;
@@ -16,30 +20,23 @@ using Economy.Application.TenantUI.Validations.AppSettingLogoValidator;
 using Economy.Application.TenantUI.Validations.AppSettingValidator;
 using Economy.Application.TenantUI.Validations.AppSlideValidator;
 using Economy.Application.TenantUI.Validations.AppTechnicalSettingValidator;
-using Economy.Application.Validations.AppSecuritySettingValidator;
-using Economy.Application.Validations.AppSuperAdminValidator;
-using Economy.Application.Validations.AppUserValidator;
-using Economy.Application.Validations.AppValidator;
-using Economy.Base.Application.Dtos.BaseModels;
 using Economy.Core.ContextFactory;
 using Economy.Core.Core;
 using Economy.Core.Helpers;
 using Economy.Core.Interfaces;
-using Economy.Core.Interfaces.Economy.Panel.Persistence.Services;
 using Economy.Core.Options;
 using Economy.Core.Services.Providers;
-using Economy.Domain.Entites.Identities;
-using Economy.Panel.Application.Interfaces;
-using Economy.Panel.Persistence.Services;
+using Economy.Domain.Entites.AdminEntity.EntityAppUsers;
 using Economy.Panel.UI;
 using Economy.Panel.UI.Filters;
 using Economy.Panel.UI.Middlewares;
+using Economy.Persistence.Admin.Services;
 using Economy.Persistence.Contexts;
 using Economy.Persistence.PersistenceUI.Services;
 using Economy.Persistence.Providers;
+using Economy.Persistence.Repositories.UnitOfWork;
 using Economy.Persistence.Services;
 using Economy.Persistence.Tenant.Services;
-using Economy.Persistence.UnitOfWorks;
 using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -125,7 +122,6 @@ builder.Services.AddScoped<IHotelDbContextFactory, HotelDbContextFactory>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Service kaydýný yapalým.
-builder.Services.AddScoped<IPanelAppUserService, PanelAppUserService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppManagerService, PanelAppManagerService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelSuperAdminService, PanelSuperAdminService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IValidator<AppSuperAdminUserCreateDto>, SuperAdminCreateDtoValidator>();
@@ -137,26 +133,23 @@ builder.Services.AddScoped<IMenuAccessor, MenuAccessor>(); //
 builder.Services.AddScoped<IPageAccessor, PageAccessor>();
 
 builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IAuditLogWriter, AuditLogWriter>();
 builder.Services.AddScoped<IPanelDashboardService, PanelDashboardService>();
-builder.Services.AddScoped<IPanelLoginLogService, PanelLoginLogService>();
 builder.Services.AddScoped<IPanelAppTechnicalSettingService, PanelAppTechnicalSettingService>();
 
 builder.Services.AddScoped<IValidator<MenuItemDto>, AppMenuItemValidator>();
 
-builder.Services.AddScoped<IValidator<AppUserCreateDto>, AppUserCreateDtoValidator>();
 
 builder.Services.AddScoped<IValidator<AppGeneralSettingCreateDto>, AppGeneralSettingCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<AppGeneralSettingEditDto>, AppGeneralSettingEditDtoValidator>();
-
-builder.Services.AddScoped<IValidator<AppSecuritySettingCreateDto>, AppSecuritySettingCreateDtoValidator>();
-builder.Services.AddScoped<IValidator<AppSecuritySettingEditDto>, AppSecuritySettingEditDtoValidator>();
 builder.Services.AddScoped<IValidator<AppTechnicalSettingCreateEditDto>, AppTechnicalSettingCreateEditDtoValidator>();
 builder.Services.AddScoped<IValidator<AppSettingCreateEditDto>, AppSettingCreateEditDtoValidator>();
 builder.Services.AddScoped<IValidator<AppSlideCreateEditDto>, AppSlideCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppSettingLogoCreateEditDto>, AppSettingLogoCreateEditDtoValidator>();
 
 builder.Services.AddTransient<IValidator<AppCreateEditDto>, AppCreateEditDtoValidator>();
+builder.Services.AddTransient<IValidator<AppSignInDto>, AppSignInDtoValidator>();
+
+
 
 builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSettingService, PanelAppSettingService>(); // Service sýnýfý kaydediliyor.
@@ -164,9 +157,6 @@ builder.Services.AddScoped<IPanelAppLanguageService, PanelAppLanguageService>();
 builder.Services.AddScoped<IPanelAppSettingLogoService, PanelAppSettingLogoService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSlideService, PanelAppSlideService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppGeneralSettingService, PanelAppGeneralSettingService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelAppSecuritySettingService, PanelAppSecuritySettingService>();
-builder.Services.AddScoped<IPanelAuditLogService, PanelAuditLogService>();
-builder.Services.AddScoped<IPanelErrorLogService, PanelErrorLogService>();
 builder.Services.AddScoped<IDatabaseBackupService, DatabaseBackupService>();
 builder.Services.AddScoped<IPanelAppAccountService, PanelAppAccountService>();
 builder.Services.AddScoped<IPanelAppPageService, PanelAppPageService>();
