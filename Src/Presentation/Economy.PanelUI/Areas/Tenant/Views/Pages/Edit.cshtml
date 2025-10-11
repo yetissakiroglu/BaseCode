@@ -7,7 +7,7 @@
 <main>
     <div class="container-fluid">
         @await Html.PartialAsync("_breadcrumbs")
-        <div class="row m-1">
+        <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
@@ -23,24 +23,13 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h3>@ViewBag.Title</h3>
-                    @if (isEdit)
-                    {
-                        <div class="btn-group">
-                            <a class="btn btn-outline-secondary" href="/tenant/gallery/index?pageId=@Model.Id">Galeri</a>
-                            <a class="btn btn-outline-secondary" href="/tenant/blocks/index?pageId=@Model.Id">Bloklar</a>
-                        </div>
-                    }
-                </div>
 
-                <form method="post">
-                    @Html.AntiForgeryToken()
-                    <div class="card mb-3">
-                        <div class="card-header">Genel</div>
+            <div class="col-12">
+                <div class="card mb-3">
+                    <div class="card-header">Genel</div>
+                    <form method="post">
+                        @Html.AntiForgeryToken()
+
                         <div class="card-body row g-3">
                             <div class="col-md-4">
                                 <label class="form-label">Üst Sayfa</label>
@@ -78,12 +67,9 @@
                             </div>
 
                         </div>
-                    </div>
 
-                    <div class="card mb-3">
-                        <div class="card-header">İçerik (Diller)</div>
                         <div class="card-body">
-                            <ul class="nav nav-tabs" role="tablist">
+                            <ul class="nav nav-tabs tab-light-secondary" role="tablist">
                                 @for (int i = 0; i < Model.Translations.Count; i++)
                                 {
                                     var t = Model.Translations[i];
@@ -134,22 +120,23 @@
                                     </div>
                                 }
                             </div>
+                            <hr class="my-4" />
+                            <div class="mt-4 text-end">
+                                <button class="btn btn-primary" type="submit">Kaydet</button>
+                                <a class="btn btn-outline-secondary" href="/tenant/pages">Vazgeç</a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-primary" type="submit">Kaydet</button>
-                        <a class="btn btn-outline-secondary" href="/tenant/pages">Vazgeç</a>
-                    </div>
-                </form>
 
+                    </form>
+                </div>
                 @if (isEdit)
                 {
                     <div class="card mb-3" id="page-blocks-card" data-page-id="@Model.Id">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Sayfa Blokları</span>
                             <div class="d-flex gap-2">
-                                <a class="btn btn-outline-secondary" href="/tenant/blocks/index">Blokları Yönet</a>
+                                <a class="btn btn-outline-secondary" href="/tenant/blockgroups/index">Blokları Yönet</a>
                             </div>
                         </div>
                         <div class="card-body">
@@ -168,14 +155,14 @@
                             </div>
 
                             <div class="table-responsive">
-                                <table class="table table-sm align-middle">
+                                <table class="table table-sm table-bottom-border table-hover align-middle mb-0">
                                     <thead>
                                         <tr>
                                             <th style="width:40px;"></th>
                                             <th>Başlık</th>
                                             <th>Kolon</th>
                                             <th>Aktif</th>
-                                            <th style="width:140px;"></th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody id="pb-list"></tbody>

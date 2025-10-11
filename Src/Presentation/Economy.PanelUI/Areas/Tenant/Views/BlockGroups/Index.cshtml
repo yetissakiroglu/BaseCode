@@ -1,14 +1,13 @@
 ﻿@using Economy.Application.TenantUI.Dtos
 @model List<BlockGroupDto>
 @{
-    ViewData["Title"] = "Block Groups";
+    ViewData["Title"] = "Sayfa Blokları";
 }
-
 
 <main>
     <div class="container-fluid">
         @await Html.PartialAsync("_breadcrumbs")
-        <div class="row m-1">
+        <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
@@ -18,38 +17,49 @@
                             <div>
                                 <div class="app-btn-list">
                                     <a class="btn btn-primary" asp-action="Index">Tüm Kayıtlar</a>
+                                    <a class="btn btn-danger" asp-action="Create">Yeni Ekle</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <h4>Block Groups</h4>
-                <p><a class="btn btn-primary" asp-action="Create">Yeni Grup</a></p>
-                <table class="table table-sm">
-                    <thead><tr><th>Id</th><th>Code</th><th>Title</th><th>Items</th><th></th></tr></thead>
-                    <tbody>
-                        @foreach (var g in Model)
-                        {
-                            <tr>
-                                <td>@g.Id</td>
-                                <td>@g.Code</td>
-                                <td>@g.Title</td>
-                                <td>@g.Items?.Count</td>
-                                <td>
-                                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@g.Id">Düzenle</a>
-                                    <form asp-action="Delete" asp-route-id="@g.Id" method="post" style="display:inline">
-                                        <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Silinsin mi?')">Sil</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
 
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bottom-border table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Code</th>
+                                        <th>Title</th>
+                                        <th>Items</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var g in Model)
+                                    {
+                                        <tr>
+                                            <td>@g.Id</td>
+                                            <td>@g.Code</td>
+                                            <td>@g.Title</td>
+                                            <td>@g.Items?.Count</td>
+                                            <td>
+                                                <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@g.Id">Düzenle</a>
+                                                <form asp-action="Delete" asp-route-id="@g.Id" method="post" style="display:inline">
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Silinsin mi?')">Sil</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
