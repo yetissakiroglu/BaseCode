@@ -1,5 +1,4 @@
 ﻿using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
-using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 
 namespace Economy.Application.TenantUI.Interfaces

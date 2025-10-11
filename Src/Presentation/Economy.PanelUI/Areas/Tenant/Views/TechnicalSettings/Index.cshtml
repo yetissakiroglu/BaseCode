@@ -11,7 +11,7 @@
         @await Html.PartialAsync("_breadcrumbs")
         <!-- Breadcrumb end -->
         <div class="row">
-            <div class="col-12">
+         @*    <div class="col-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
@@ -24,7 +24,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> *@
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
@@ -39,82 +39,128 @@
                                 <form asp-action="TechnicalSettings" method="post">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" asp-for="@Model.Id" />
+                                    <div class="row g-4">
+                                        <!-- Genel -->
+                                        <div class="col-12">
+                                            <div class="card shadow-sm">
+                                                <div class="card-header d-flex align-items-center gap-2">
+                                                    <i class="bi bi-gear"></i>
+                                                    <strong>Genel</strong>
+                                                </div>
+                                                <div class="card-body row g-3">
+                                                    <div class="col-md-6">
+                                                        <label asp-for="DomainName" class="form-label">Alan Adı</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">https://</span>
+                                                            <input asp-for="DomainName" class="form-control" placeholder="ornek.com" />
+                                                        </div>
+                                                        <div class="form-text">Alt alan adı kullanıyorsan: <code>app.ornek.com</code></div>
+                                                        <span asp-validation-for="DomainName" class="text-danger"></span>
+                                                    </div>
 
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label asp-for="DomainName" class="form-label"></label>
-                                            <input asp-for="DomainName" class="form-control" placeholder="ornek.com" />
-                                            <span asp-validation-for="DomainName" class="text-danger"></span>
-                                        </div>
+                                                    <div class="col-md-6 d-flex align-items-center">
+                                                        <div class="form-check form-switch ms-1">
+                                                            <input asp-for="ForceSSL" class="form-check-input" />
+                                                            <label asp-for="ForceSSL" class="form-check-label">HTTPS’e zorla (HSTS önerilir)</label>
+                                                        </div>
+                                                    </div>
 
-                                        <div class="col-md-6 d-flex align-items-center pt-4">
-                                            <div class="form-check">
-                                                <input asp-for="ForceSSL" class="form-check-input" />
-                                                <label asp-for="ForceSSL" class="form-check-label"></label>
+                                                    <div class="col-md-6 d-flex align-items-center">
+                                                        <div class="form-check form-switch ms-1">
+                                                            <input asp-for="EnableDebugMode" class="form-check-input" />
+                                                            <label asp-for="EnableDebugMode" class="form-check-label">Hata/Debug bilgilerini aç</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6 d-flex align-items-center">
+                                                        <div class="form-check form-switch ms-1">
+                                                            <input asp-for="CookieBannerEnabled" class="form-check-input" />
+                                                            <label asp-for="CookieBannerEnabled" class="form-check-label">Çerez bilgilendirme banner’ı</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
-                                            <label asp-for="CdnBaseUrl" class="form-label"></label>
-                                            <input asp-for="CdnBaseUrl" class="form-control" placeholder="https://cdn.ornek.com" />
-                                            <span class="form-text">Boş bırakılırsa CDN kullanılmaz.</span>
-                                            <span asp-validation-for="CdnBaseUrl" class="text-danger"></span>
-                                        </div>
+                                        <!-- CDN -->
+                                        <div class="col-12">
+                                            <div class="card shadow-sm">
+                                                <div class="card-header d-flex align-items-center gap-2">
+                                                    <i class="bi bi-cloud-arrow-up"></i>
+                                                    <strong>CDN</strong>
+                                                </div>
+                                                <div class="card-body row g-3">
+                                                    <div class="col-md-8">
+                                                        <label asp-for="CdnBaseUrl" class="form-label">CDN Temel URL</label>
+                                                        <input asp-for="CdnBaseUrl" class="form-control" placeholder="https://cdn.ornek.com" id="CdnBaseUrl" />
+                                                        <div class="form-text">Boş bırakılırsa CDN devre dışı kabul edilir.</div>
+                                                        <span asp-validation-for="CdnBaseUrl" class="text-danger"></span>
+                                                    </div>
 
-                                        <div class="col-md-6 d-flex align-items-center pt-4">
-                                            <div class="form-check">
-                                                <input asp-for="CdnEnabled" class="form-check-input" />
-                                                <label asp-for="CdnEnabled" class="form-check-label"></label>
+                                                    <div class="col-md-4 d-flex align-items-end">
+                                                        <div class="form-check form-switch ms-1">
+                                                            <input asp-for="CdnEnabled" class="form-check-input" id="CdnEnabled" />
+                                                            <label asp-for="CdnEnabled" class="form-check-label">CDN’i Etkinleştir</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6 d-flex align-items-center">
-                                            <div class="form-check">
-                                                <input asp-for="EnableDebugMode" class="form-check-input" />
-                                                <label asp-for="EnableDebugMode" class="form-check-label"></label>
+                                        <!-- Bakım Modu -->
+                                        <div class="col-12">
+                                            <div class="card shadow-sm">
+                                                <div class="card-header d-flex align-items-center gap-2">
+                                                    <i class="bi bi-cone-striped"></i>
+                                                    <strong>Bakım Modu</strong>
+                                                </div>
+                                                <div class="card-body row g-3">
+                                                    <div class="col-12 d-flex align-items-center">
+                                                        <div class="form-check form-switch ms-1">
+                                                            <input asp-for="MaintenanceModeEnabled" class="form-check-input" id="chkMaintenance" />
+                                                            <label asp-for="MaintenanceModeEnabled" class="form-check-label">Bakım modunu aç</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-12" id="maintenanceMessageWrap" style="display:none;">
+                                                        <label asp-for="MaintenanceMessage" class="form-label">Bakım Mesajı</label>
+                                                        <textarea asp-for="MaintenanceMessage" class="form-control" rows="2" placeholder="Kısa bakım mesajı..."></textarea>
+                                                        <span asp-validation-for="MaintenanceMessage" class="text-danger"></span>
+                                                    </div>
+
+                                                    <div class="col-md-12" id="maintenanceIpWrap" style="display:none;">
+                                                        <label asp-for="MaintenanceAllowedIpListRaw" class="form-label">İzinli IP Listesi</label>
+                                                        <textarea asp-for="MaintenanceAllowedIpListRaw" class="form-control" rows="4"
+                                                                  placeholder="Her satıra bir IP (örn: 1.2.3.4)"></textarea>
+                                                        <div class="form-text">Bakım modunda yalnızca bu IP’ler siteyi görebilir.</div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6 d-flex align-items-center">
-                                            <div class="form-check">
-                                                <input asp-for="CookieBannerEnabled" class="form-check-input" />
-                                                <label asp-for="CookieBannerEnabled" class="form-check-label"></label>
+                                        <!-- Önbellek -->
+                                        <div class="col-12">
+                                            <div class="card shadow-sm">
+                                                <div class="card-header d-flex align-items-center gap-2">
+                                                    <i class="bi bi-lightning-charge"></i>
+                                                    <strong>Output Cache</strong>
+                                                </div>
+                                                <div class="card-body row g-3">
+                                                    <div class="col-md-6 d-flex align-items-center">
+                                                        <div class="form-check form-switch ms-1">
+                                                            <input asp-for="EnableOutputCache" class="form-check-input" id="EnableOutputCache" />
+                                                            <label class="form-check-label" for="EnableOutputCache">Etkin</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label asp-for="OutputCacheTtlSeconds" class="form-label">TTL (sn)</label>
+                                                        <input asp-for="OutputCacheTtlSeconds" type="number" min="0" class="form-control" id="OutputCacheTtlSeconds" />
+                                                        <div class="form-text">Örnek: 300 = 5 dakika.</div>
+                                                        <span asp-validation-for="OutputCacheTtlSeconds" class="text-danger"></span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-
-                                        <div class="col-12 d-flex align-items-center">
-                                            <div class="form-check">
-                                                <input asp-for="MaintenanceModeEnabled" class="form-check-input" id="chkMaintenance" />
-                                                <label asp-for="MaintenanceModeEnabled" class="form-check-label"></label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12" id="maintenanceMessageWrap" style="display:none;">
-                                            <label asp-for="MaintenanceMessage" class="form-label"></label>
-                                            <textarea asp-for="MaintenanceMessage" class="form-control" rows="2" placeholder="Kısa bakım mesajı..."></textarea>
-                                            <span asp-validation-for="MaintenanceMessage" class="text-danger"></span>
-                                        </div>
-
-                                        <div class="col-md-12" id="maintenanceIpWrap" style="display:none;">
-                                            <label asp-for="MaintenanceAllowedIpListRaw" class="form-label"></label>
-                                            <textarea asp-for="MaintenanceAllowedIpListRaw" class="form-control" rows="4"
-                                                      placeholder="Her satıra bir IP (örn: 1.2.3.4)"></textarea>
-                                            <span class="form-text">Bakım modunda sadece bu IP’ler siteyi görebilir.</span>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <label asp-for="EnableOutputCache" class="form-label d-block"></label>
-                                            <div class="form-check form-switch">
-                                                <input asp-for="EnableOutputCache" class="form-check-input" />
-                                                <label class="form-check-label" for="EnableOutputCache">Aktif/Pasif</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <label asp-for="OutputCacheTtlSeconds" class="form-label"></label>
-                                            <input asp-for="OutputCacheTtlSeconds" type="number" min="0" class="form-control" />
-                                            <span class="form-text">Saniye cinsinden (örn: 300 = 5 dk).</span>
-                                            <span asp-validation-for="OutputCacheTtlSeconds" class="text-danger"></span>
                                         </div>
                                     </div>
 
@@ -135,20 +181,46 @@
 </main>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
     <script>
         (function () {
-            const chk = document.getElementById('chkMaintenance');
-            const msg = document.getElementById('maintenanceMessageWrap');
-            const ipw = document.getElementById('maintenanceIpWrap');
+            const byId = (id) => document.getElementById(id);
 
-            function toggle() {
-                const show = chk.checked;
-                msg.style.display = show ? '' : 'none';
-                ipw.style.display = show ? '' : 'none';
+            // Bakım modu alanlarını aç/kapat
+            const chkMaintenance = byId('chkMaintenance');
+            const maintenanceMsg = byId('maintenanceMessageWrap');
+            const maintenanceIp = byId('maintenanceIpWrap');
+
+            function syncMaintenance() {
+                const on = chkMaintenance?.checked;
+                maintenanceMsg.style.display = on ? '' : 'none';
+                maintenanceIp.style.display = on ? '' : 'none';
             }
-            chk.addEventListener('change', toggle);
-            toggle(); // sayfa yüklenince ilk durum
+            chkMaintenance?.addEventListener('change', syncMaintenance);
+            syncMaintenance();
+
+            // CDN: URL boşsa switch pasif olsun
+            const cdnUrl = byId('CdnBaseUrl');
+            const cdnEnabled = byId('CdnEnabled');
+
+            function syncCdn() {
+                const hasUrl = (cdnUrl?.value || '').trim().length > 0;
+                cdnEnabled.disabled = !hasUrl;
+                if (!hasUrl) cdnEnabled.checked = false;
+            }
+            cdnUrl?.addEventListener('input', syncCdn);
+            syncCdn();
+
+            // OutputCache: Kapalıysa TTL pasif
+            const outCache = byId('EnableOutputCache');
+            const ttl = byId('OutputCacheTtlSeconds');
+
+            function syncCache() {
+                const on = outCache?.checked;
+                ttl.disabled = !on;
+                if (!on) ttl.value = ttl.value || 0;
+            }
+            outCache?.addEventListener('change', syncCache);
+            syncCache();
         })();
     </script>
 }
