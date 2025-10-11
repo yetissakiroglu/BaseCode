@@ -204,6 +204,12 @@ namespace Economy.Core.Core
             return Path.GetRelativePath(rootFull, full).Replace('\\', '/').TrimStart('/');
         }
 
+
+
+
+
+
+
         public async Task<string> UploadAsync(string relativeDir, IFormFile file, string? aspect = null, CancellationToken ct = default)
         {
             if (file is null || file.Length == 0) throw new InvalidOperationException("Dosya boş.");

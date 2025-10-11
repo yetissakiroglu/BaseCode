@@ -56,7 +56,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Create(string location = "main")
+        public async Task<IActionResult> CreateMain(string location = "main")
         {
             var treeRes = await _svc.GetTreeAsync(location, onlyActive: false);
             if (!treeRes.IsSuccess && treeRes.StatusCode >= 500)

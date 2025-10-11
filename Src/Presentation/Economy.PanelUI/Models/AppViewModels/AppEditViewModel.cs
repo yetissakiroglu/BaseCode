@@ -23,17 +23,14 @@ namespace Economy.Panel.UI.Models.AppViewModels
         [DisplayName("Veritabanı Adı")]
         public string DatabaseName { get; set; }
 
-        //[Required(ErrorMessage = "Kullanıcı adı gereklidir.")]
-        [MaxLength(100)]
         [DisplayName("Kullanıcı Adı")]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         [DisplayName("Şifre Var mı?")]
         public bool IsPassword { get; set; }
 
-        [MaxLength(100)]
         [DisplayName("Şifre")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         [MaxLength(250)]
         [DisplayName("Domain")]

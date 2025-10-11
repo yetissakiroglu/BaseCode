@@ -191,6 +191,10 @@ namespace Economy.Persistence.Admin.Services
             result.IsPassword = model.IsPassword;
             result.Password = model.Password;
             result.Domain = model.Domain;
+            result.AccessMode = model.AccessMode;
+            result.ApiKey = model.ApiKey;
+            result.Theme = model.Theme;
+
             _panelAppRepository.Update(result);
             _unitOfWork.SaveDefaultChanges();
             var appDto = new AppDto
@@ -203,6 +207,9 @@ namespace Economy.Persistence.Admin.Services
                 IsPassword = result.IsPassword,
                 Password = result.Password,
                 Domain = result.Domain,
+                AccessMode = result.AccessMode,
+                ApiKey = result.ApiKey,
+                Theme = result.Theme
             };
             return Task.FromResult(ServiceResult<AppDto>.Success(appDto)); ;
 
@@ -225,6 +232,7 @@ namespace Economy.Persistence.Admin.Services
                 IsPassword = result.IsPassword,
                 Password = result.Password,
                 Domain = result.Domain,
+                ApiKey =result.ApiKey
             };
             return ServiceResult<AppDto>.Success(appDto);
         }

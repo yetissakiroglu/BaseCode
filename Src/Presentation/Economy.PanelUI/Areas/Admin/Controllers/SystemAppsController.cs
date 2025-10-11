@@ -93,8 +93,7 @@ namespace Economy.Panel.UI.Areas.Admin.Controllers
                 Domain = result.Data.Domain,
                 AccessMode = result.Data.AccessMode,
                 Theme = result.Data.Theme,
-                ApiKey = result.Data.ApiKey
-
+                ApiKey = string.IsNullOrWhiteSpace(result.Data.ApiKey) ? GenerateApiKey() : result.Data.ApiKey
             };
             return View(editDto);
         }

@@ -72,7 +72,7 @@
                                                                 </li>
                                                                 <li>
                                                                     <a class="dropdown-item" asp-action="DetailsApp" asp-route-id="@item.Id">
-                                                                        <i class="ti ti-trash text-danger"></i> İncele
+                                                                        <i class="ti ti-view text-danger"></i> İncele
                                                                     </a>
                                                                 </li>
                                                                 <li>
@@ -141,7 +141,7 @@
         $(document).ready(function () {
             $(document).on("click", "#appTestEt", function () {
                 let appId = $(this).data("appid");
-                let actionURL = "/SystemApps/TestConnection"; // Controller Action URL
+                let actionURL = "/admin/SystemApps/TestConnection"; // Controller Action URL
                 let actionData = { id: appId };
                 postDataResponse(
                     actionURL,
