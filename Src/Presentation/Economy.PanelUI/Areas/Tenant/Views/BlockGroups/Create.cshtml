@@ -1,0 +1,54 @@
+﻿@using Economy.Application.TenantUI.Dtos
+@model BlockGroupDto
+@{
+    ViewData["Title"] = "Yeni Block Group";
+}
+
+
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
+        <div class="row m-1">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                                <div class="app-btn-list">
+                                    <a class="btn btn-primary" asp-action="Index">Tüm Kayıtlar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+
+                <h4>Yeni Block Group</h4>
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label">Code</label>
+                        <input asp-for="Code" class="form-control" />
+                        @Html.ValidationMessageFor(m => m.Code)
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input asp-for="Title" class="form-control" />
+                        @Html.ValidationMessageFor(m => m.Title)
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                         <textarea asp-for="Description" class="form-control"></textarea>
+                    </div>
+                    <button class="btn btn-primary">Kaydet</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</main>

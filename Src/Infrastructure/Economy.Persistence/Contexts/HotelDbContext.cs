@@ -1,4 +1,5 @@
-﻿using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
+﻿using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
+using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppMenus;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
@@ -27,8 +28,10 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppLanguage> AppLanguages { get; set; }
 
 
+        public DbSet<BlockGroup> BlockGroups => Set<BlockGroup>();
+        public DbSet<BlockItem> BlockItems => Set<BlockItem>();
+        public DbSet<BlockItemImage> BlockItemImages => Set<BlockItemImage>();
 
-        
 
 
 

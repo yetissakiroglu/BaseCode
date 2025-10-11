@@ -1,0 +1,181 @@
+﻿@using Economy.Application.TenantUI.Dtos
+@using Economy.Core.Enums
+@model BlockGroupDto
+@{
+    ViewData["Title"] = "Block Group Düzenle";
+}
+
+
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
+        <div class="row m-1">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                                <div class="app-btn-list">
+                                    <a class="btn btn-primary" asp-action="Index">Tüm Kayıtlar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+
+
+                <h4>Block Group Düzenle</h4>
+                @if (TempData["ok"] is string ok)
+                {
+                    <div class="alert alert-success">@ok</div>
+                }
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Code</label>
+                            <input asp-for="Code" class="form-control" />
+                            @Html.ValidationMessageFor(m => m.Code)
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Title</label>
+                            <input asp-for="Title" class="form-control" />
+                            @Html.ValidationMessageFor(m => m.Title)
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Columns</label>
+                            <select asp-for="Columns" class="form-select" asp-items="Html.GetEnumSelectList<BlockColumns>()"></select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Description</label>
+<textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-3 form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="ShowTitle" />
+                            <label class="form-check-label">Show Title</label>
+                        </div>
+                        <div class="col-md-3 form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="ShowDescription" />
+                            <label class="form-check-label">Show Description</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Default Image Mode</label>
+                            <select asp-for="DefaultImageMode" class="form-select" asp-items="Html.GetEnumSelectList<ImageMode>()"></select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">PageId (opsiyonel)</label>
+                            <input asp-for="PageId" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-primary">Kaydet</button>
+                    </div>
+                </form>
+
+
+
+                <hr />
+                <h5>Items</h5>
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th>Sort</th>
+                            <th>Title</th>
+                            <th>Cover</th>
+                            <th>Link</th>
+                            <th>Active</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var it in Model.Items.OrderBy(x => x.SortOrder))
+                        {
+                            <tr>
+                                <td>@it.SortOrder</td>
+                                <td>@it.Title</td>
+                                <td><code>@it.CoverImage</code></td>
+                                <td>@it.LinkType</td>
+                                <td>@it.IsActive</td>
+                                <td>
+                                    <form asp-action="DeleteItem" method="post" style="display:inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="groupId" value="@Model.Id" />
+                                        <input type="hidden" name="itemId" value="@it.Id" />
+                                        <button class="btn btn-sm btn-outline-danger">Sil</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+
+
+                <h6>Yeni Item</h6>
+                <form asp-action="AddItem" method="post" class="row g-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="groupId" value="@Model.Id" />
+
+
+                    <div class="col-md-3">
+                        <input class="form-control" name="Title" placeholder="Title" />
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control" name="CoverImage" placeholder="/img/cover.jpg" />
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="LinkType">
+                            <option value="0">None</option>
+                            <option value="1">InternalPage</option>
+                            <option value="2">ExternalUrl</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input class="form-control" name="LinkedPageId" placeholder="PageId" />
+                    </div>
+                    <div class="col-md-2">
+                        <input class="form-control" name="ExternalUrl" placeholder="https://..." />
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="ImageModeOverride">
+                            <option value="">(inherit)</option>
+                            <option value="0">CoverOnly</option>
+                            <option value="1">Gallery</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="ColumnsOverride">
+                            <option value="">(inherit)</option>
+                            @foreach (var val in Enum.GetValues(typeof(BlockColumns)))
+                            {
+                                <option value="@((int)val)">@val</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input class="form-control" name="SortOrder" value="0" />
+                    </div>
+                    <div class="col-md-2 form-check">
+                        <input type="checkbox" class="form-check-input" name="IsActive" checked />
+                        <label class="form-check-label">Active</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input class="form-control" name="Gallery" placeholder="/img/1.jpg, /img/2.jpg" />
+                        <small class="text-muted">Virgülle ayırarak çoklu görsel URL’leri gir.</small>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-success">Ekle</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</main>

@@ -9,12 +9,14 @@ using Economy.Application.AdminUI.Validations.PanelAppAccountValidator;
 using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Application.Interfaces;
 using Economy.Application.Providers;
+using Economy.Application.TenantUI.Dtos;
 using Economy.Application.TenantUI.Dtos.AppMenuDtos;
 using Economy.Application.TenantUI.Dtos.AppSettingDtos;
 using Economy.Application.TenantUI.Dtos.AppSettingLogoDtos;
 using Economy.Application.TenantUI.Dtos.AppSlideDtos;
 using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
+using Economy.Application.TenantUI.Validations;
 using Economy.Application.TenantUI.Validations.AppMenuIValidator;
 using Economy.Application.TenantUI.Validations.AppSettingLogoValidator;
 using Economy.Application.TenantUI.Validations.AppSettingValidator;
@@ -138,6 +140,12 @@ builder.Services.AddScoped<IPanelAppTechnicalSettingService, PanelAppTechnicalSe
 
 builder.Services.AddScoped<IValidator<MenuItemDto>, AppMenuItemValidator>();
 
+
+builder.Services.AddScoped<IBlockService, BlockService>();
+
+
+builder.Services.AddTransient<IValidator<BlockGroupDto>, BlockGroupDtoValidator>();
+builder.Services.AddTransient<IValidator<BlockItemDto>, BlockItemDtoValidator>();
 
 builder.Services.AddScoped<IValidator<AppGeneralSettingCreateDto>, AppGeneralSettingCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<AppGeneralSettingEditDto>, AppGeneralSettingEditDtoValidator>();
