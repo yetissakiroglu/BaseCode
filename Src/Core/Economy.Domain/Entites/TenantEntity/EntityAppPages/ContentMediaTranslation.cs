@@ -16,11 +16,5 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
 
         [MaxLength(300)]
         public string? Caption { get; set; }
-
-        public bool IsActive { get; set; } = true;
-
-        // Navigations (opsiyonel)
-        // public ContentMedia? ContentMedia { get; set; }
-        // public AppLanguage? Language { get; set; }
     }
 }

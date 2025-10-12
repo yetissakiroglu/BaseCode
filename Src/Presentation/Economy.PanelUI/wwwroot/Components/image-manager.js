@@ -48,7 +48,7 @@ window.addEventListener('message', ev => {
 function addImageToGallery(gi, url) {
     const gal = document.getElementById(`gal_${gi}`);
     const col = document.createElement('div');
-    col.className = "col-sm-6 col-xl-3 mb-3";
+    col.className = "col-sm-2 col-xl-2 mb-3";
     col.innerHTML = `
         <label class="form-checkimage w-100">
             <input class="checkimage-input" type="radio" 
@@ -56,7 +56,7 @@ function addImageToGallery(gi, url) {
                    value="${url}" 
                    data-url="${url}" data-group="${gi}">
             <span class="check-box radiobox">
-              <img src="${url}" alt="" class="checkbox-image w-100 rounded shadow-sm" />
+              <img src="${url}" alt="" class="checkbox-image w-100 rounded shadow-sm" width="230" height="150" />
             </span>
             <button type="button" class="btn btn-sm btn-outline-danger mt-1 btn-del"
                     data-url="${url}" data-group="${gi}">Sil</button>
@@ -80,10 +80,10 @@ document.addEventListener('click', e => {
     if (e.target.classList.contains('btn-del')) {
         const url = e.target.dataset.url;
         const gi = e.target.dataset.group;
-        const col = e.target.closest('.col-sm-6, .col-xl-3');
+        const col = e.target.closest('.col-sm-2, .col-xl-2');
         if (col) col.remove();
         document.querySelectorAll(`input[name="Galleries[${gi}].Items"][value="${url}"]`).forEach(x => x.remove());
-        const cover = document.getElementById(`Galleries_${gi}__CoverUrl`);
+        const cover = document.getElementById(`Galleries_${gi}_CoverUrl`);
         if (cover.value === url) cover.value = '';
     }
 });

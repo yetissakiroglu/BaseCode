@@ -29,53 +29,88 @@
                     <div class="card-header">Genel</div>
                     <form method="post">
                         @Html.AntiForgeryToken()
-                        <div class="card-body row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label">Üst Sayfa</label>
-                                <select class="form-select" asp-for="OwnerId">
-                                    <option value="">(Yok)</option>
-                                    @foreach (var p in parents)
-                                    {
-                                        <option value="@p.Id" selected="@(Model.OwnerId == p.Id ? "selected" : null)">@p.Title</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Sıra</label>
-                                <input class="form-control" asp-for="SortOrder" />
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Yayın (UTC)</label>
-                                <input class="form-control" asp-for="PublishAtUtc" type="datetime-local" />
-                            </div>
-                            <div class="col-md-3 d-flex align-items-center">
-                                <div class="form-check mt-4">
-                                    <input class="form-check-input" type="checkbox" asp-for="IsActive" />
-                                    <label class="form-check-label">Aktif</label>
+                        <div class="card-body">
+                            <div class="row g-3 align-items-end">
+
+                                <div class="col-md-4">
+                                    <label asp-for="OwnerId" class="form-label fw-semibold">Üst Sayfa</label>
+                                    <select asp-for="OwnerId" class="form-select">
+                                        <option value="">(Yok)</option>
+                                        @foreach (var p in parents)
+                                        {
+                                            <option value="@p.Id" selected="@(Model.OwnerId == p.Id ? "selected" : null)">
+                                                @p.Title
+                                            </option>
+                                        }
+                                    </select>
                                 </div>
-                            </div>
 
-                            <div class="col-md-6">
-                                <label class="form-label">Kapak Görseli</label>
-                                <input class="form-control" asp-for="Image" />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">OG Görseli</label>
-                                <input class="form-control" asp-for="OgImage" />
-                            </div>
+                                <div class="col-md-2">
+                                    <label asp-for="SortOrder" class="form-label fw-semibold">Sıra</label>
+                                    <input asp-for="SortOrder" class="form-control" type="number" min="0" />
+                                </div>
 
+                                <div class="col-md-3">
+                                    <label asp-for="PublishAtUtc" class="form-label fw-semibold">Yayın Tarihi (UTC)</label>
+                                    <input asp-for="PublishAtUtc" class="form-control" type="datetime-local" />
+                                </div>
+
+                                <div class="col-md-3 d-flex gap-4">
+                                    <div class="form-check mt-3">
+                                        <input asp-for="IsActive" class="form-check-input" type="checkbox" id="chkActive" />
+                                        <label class="form-check-label" for="chkActive">Aktif</label>
+                                    </div>
+                                    <div class="form-check mt-3">
+                                        <input asp-for="IsHomepage" class="form-check-input" type="checkbox" id="chkHome" />
+                                        <label class="form-check-label" for="chkHome">Anasayfa mı?</label>
+                                    </div>
+                                </div>
+
+
+                                @for (int i = 0; i < Model.Singles.Count; i++)
+                                {
+                                    @await Html.PartialAsync("_ImagePicker", (i, Model.Singles[i]))
+                                }
+
+                                <hr />
+                                <!-- Galeri grupları -->
+
+                                <div class="col-lg-12">
+                                    <div class="card project-total-card">
+                                        <div class="card-body">
+                                            @for (int gi = 0; gi < Model.Galleries.Count; gi++)
+                                            {
+                                                @await Html.PartialAsync("_GalleryGroup", (gi, Model.Galleries[gi]))
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                        <hr class="custom-divider"/>
+                        <hr class="custom-divider" />
                         <div class="card-body">
                             <ul class="nav nav-tabs tab-light-secondary" role="tablist">
                                 @for (int i = 0; i < Model.Translations.Count; i++)
                                 {
                                     var t = Model.Translations[i];
-                                    <li class="nav-item">
-                                        <button class="nav-link @(i == 0 ? "active" : null)" data-bs-toggle="tab" data-bs-target="#pane-@t.LanguageCode" type="button">
-                                            @t.LanguageCode.ToUpper()
-                                        </button>
-                                    </li>
+                                    var code = (t.LanguageCode ?? "xx").ToLower();       // güvenli
+                                    var tabId = $"tab-{code}-{i}";                        // benzersiz
+                                    var paneId = $"pane-{code}-{i}";                      // benzersiz
+                                                                                          <li class="nav-item" role="presentation">
+                                                                                              <button class="gap-2 nav-link @(i == 0 ? "active" : null)"
+                                                                                                      id="@tabId"
+                                                                                                      type="button"
+                                                                                                      role="tab"
+                                                                                                      data-bs-toggle="tab"
+                                                                                                      data-bs-target="#@paneId"
+                                                                                                      aria-controls="@paneId"
+                                                                                                      aria-selected="@(i == 0 ? "true" : "false")">
+                                                                                                  <i class="@t.LanguageIcon?.ToLower()"></i>
+                                                                                                  @t.LanguageCode?.ToUpper()
+                                                                                              </button>
+                                                                                          </li>
                                 }
                             </ul>
                             <div class="tab-content border border-top-0 p-3">
@@ -130,3 +165,7 @@
         </div>
     </div>
 </main>
+
+@section Scripts {
+    <script src="~/components/image-manager.js"></script>
+}

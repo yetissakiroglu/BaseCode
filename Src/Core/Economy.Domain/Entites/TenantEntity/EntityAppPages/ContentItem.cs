@@ -7,17 +7,13 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
 {
     // İçerik ana kaydı: Page / Snippet / Block
     [Index(nameof(Type))]
-    [Index(nameof(Code))] // Snippet çağırma kodu için
     public class ContentItem : BaseEntity<int>
     {
         public ContentItemType Type { get; set; } = ContentItemType.Page;
 
         public int? OwnerId { get; set; }
 
-        // Sadece Block’larda anlamlı
-        public BlockTemplate? BlockTemplate { get; set; }
-
-        public bool IsHomepage { get; set; } = true;
+        public bool IsHomepage { get; set; } = false;
 
         // Görsel/Buton/SEO
         [MaxLength(500)]
@@ -30,11 +26,7 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
         public bool IsActive { get; set; } = true;
         public int SortOrder { get; set; } = 0;
         public DateTime? PublishAtUtc { get; set; }
-
-        // Snippet çağırma kodu (örn: "PET_POLICY_NOTE")
-        [MaxLength(100)]
-        public string? Code { get; set; }
-        public string? JsonData { get; set; }
+        
 
         // Navigations
         public ICollection<ContentItemTranslation> Translations { get; set; } = new List<ContentItemTranslation>();

@@ -1,6 +1,4 @@
-﻿using Economy.Core.Enums;
-using Economy.Domain.BaseEntities;
-using Microsoft.EntityFrameworkCore;
+﻿using Economy.Domain.BaseEntities;
 using System.ComponentModel.DataAnnotations;
 
 namespace Economy.Domain.Entites.TenantEntity.EntityAppPages

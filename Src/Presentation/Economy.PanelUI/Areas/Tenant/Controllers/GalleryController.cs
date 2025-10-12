@@ -41,10 +41,10 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                                   Url = m.Url,
                                   SortOrder = m.SortOrder,
                                   Alt = _mediaTrRepo.DataSet
-                                       .Where(t => !t.IsDeleted && t.IsActive && t.ContentMediaId == m.Id && t.LanguageId == def)
+                                       .Where(t => !t.IsDeleted && t.ContentMediaId == m.Id && t.LanguageId == def)
                                        .Select(t => t.Alt).FirstOrDefault(),
                                   Caption = _mediaTrRepo.DataSet
-                                       .Where(t => !t.IsDeleted && t.IsActive && t.ContentMediaId == m.Id && t.LanguageId == def)
+                                       .Where(t => !t.IsDeleted && t.ContentMediaId == m.Id && t.LanguageId == def)
                                        .Select(t => t.Caption).FirstOrDefault()
                               }).ToListAsync(ct);
 
@@ -84,7 +84,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 LanguageId = vm.LanguageId,
                 Alt = vm.Alt,
                 Caption = vm.Caption,
-                IsActive = true,
                 IsDeleted = false
             };
             await _mediaTrRepo.DataSet.AddAsync(tr, ct);

@@ -25,7 +25,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> IndexMain()
+        public async Task<IActionResult> IndexMain(CancellationToken ct)
         {
             var treeRes = await _svc.GetTreeAsync("main", onlyActive: false);
             if (!treeRes.IsSuccess && treeRes.StatusCode >= 500)
@@ -44,7 +44,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             var langs = _panelAppLanguageService.GetAllLanguage(false, true);
             ViewBag.Languages = langs.Data;
 
-            var pages = await _panelAppPageService.GetMiniPageItemAsync(true);
+            var pages = await _panelAppPageService.GetPageMiniListAsync(true, ct);
             ViewBag.Pages = pages.Data;
 
 
@@ -56,7 +56,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> CreateMain(string location = "main")
+        public async Task<IActionResult> CreateMain(CancellationToken ct, string location = "main")
         {
             var treeRes = await _svc.GetTreeAsync(location, onlyActive: false);
             if (!treeRes.IsSuccess && treeRes.StatusCode >= 500)
@@ -76,7 +76,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             var langs = _panelAppLanguageService.GetAllLanguage(false, true);
             ViewBag.Languages = langs.Data;
 
-            var pages = await _panelAppPageService.GetMiniPageItemAsync(true);
+            var pages = await _panelAppPageService.GetPageMiniListAsync(true, ct);
             ViewBag.Pages = pages.Data;
 
 

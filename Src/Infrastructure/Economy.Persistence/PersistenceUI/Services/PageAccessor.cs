@@ -269,10 +269,10 @@ namespace Economy.Persistence.PersistenceUI.Services
                                      Url = m.Url,
                                      SortOrder = m.SortOrder,
                                      Alt = _mediaTrRepo.DataSet
-                                         .Where(t => !t.IsDeleted && t.IsActive && t.ContentMediaId == m.Id && t.LanguageId == langId)
+                                         .Where(t => !t.IsDeleted && t.ContentMediaId == m.Id && t.LanguageId == langId)
                                          .Select(t => t.Alt).FirstOrDefault(),
                                      Caption = _mediaTrRepo.DataSet
-                                         .Where(t => !t.IsDeleted && t.IsActive && t.ContentMediaId == m.Id && t.LanguageId == langId)
+                                         .Where(t => !t.IsDeleted && t.ContentMediaId == m.Id && t.LanguageId == langId)
                                          .Select(t => t.Caption).FirstOrDefault()
                                  })
                                 .ToListAsync(ct);
@@ -286,11 +286,9 @@ namespace Economy.Persistence.PersistenceUI.Services
                                    select new
                                    {
                                        b.Id,
-                                       b.BlockTemplate,
                                        b.SortOrder,
                                        b.Image,
                                        b.OgImage,
-                                       b.JsonData,
 
                                        T = _trRepo.DataSet
                                            .Where(t => !t.IsDeleted && t.ContentItemId == b.Id && t.LanguageId == langId)
@@ -310,7 +308,7 @@ namespace Economy.Persistence.PersistenceUI.Services
 
             foreach (var x in rawBlocks)
             {
-                var tplName = x.BlockTemplate.HasValue ? x.BlockTemplate.Value.ToString() : "Custom";
+                var tplName = "Custom";
                 var vm = new BlockVm
                 {
                     Id = x.Id,
@@ -324,16 +322,15 @@ namespace Economy.Persistence.PersistenceUI.Services
                     OgImage = x?.OgImage,
                     ButtonText = x.T?.ButtonText,
                     ButtonUrl = x.T?.ButtonUrl,
-                    JsonData = x.JsonData
                 };
 
-                if (tplName == nameof(BlockTemplate.IncludeSnippet))
+                if (tplName == "")
                 {
                     var code = ReadJsonString(vm.JsonData, "snippetCode");
                     if (!string.IsNullOrWhiteSpace(code))
                     {
                         var sn = await (from s in _contentRepo.DataSet
-                                        where !s.IsDeleted && s.IsActive && s.Type == ContentItemType.Snippet && s.Code == code
+                                        where !s.IsDeleted && s.IsActive && s.Type == ContentItemType.Snippet
                                         join ttr in _trRepo.DataSet on s.Id equals ttr.ContentItemId
                                         where !ttr.IsDeleted && ttr.LanguageId == langId
                                         select new { ttr.Title, ttr.Body })
@@ -342,9 +339,7 @@ namespace Economy.Persistence.PersistenceUI.Services
                         vm.SnippetBody = sn?.Body;
                     }
                 }
-                else if (tplName == nameof(BlockTemplate.PageList)
-                      || tplName == nameof(BlockTemplate.RoomList)
-                      || tplName == nameof(BlockTemplate.CampaignList))
+                else 
                 {
                     var ids = ReadJsonIntArray(vm.JsonData, "pageIds");
                     //var roomsids = ReadJsonIntArray(vm.JsonData, "roomIds");

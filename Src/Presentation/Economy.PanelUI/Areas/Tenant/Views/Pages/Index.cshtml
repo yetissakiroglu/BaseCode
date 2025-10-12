@@ -45,6 +45,7 @@
                                             <th>Başlık</th>
                                             <th>Slug</th>
                                             <th>Üst</th>
+                                            <th>Anasayfa mi?</th>
                                             <th>Aktif</th>
                                             <th>Yayın</th>
                                             <th>Sıra</th>
@@ -59,6 +60,7 @@
                                                 <td>@(r.Title ?? "(başlık yok)")</td>
                                                 <td>@r.Slug</td>
                                                 <td>@r.ParentTitle</td>
+                                                <td>@(r.IsHomepage.ToTurkishYesNo())</td>
                                                 <td>@(r.IsActive.ToTurkishYesNo())</td>
                                                 <td>@(r.PublishAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
                                                 <td>@r.SortOrder</td>
