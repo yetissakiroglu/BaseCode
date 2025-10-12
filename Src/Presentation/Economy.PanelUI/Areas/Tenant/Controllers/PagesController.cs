@@ -1,4 +1,5 @@
 ﻿using Economy.Application.TenantUI.Dtos.AppPageDtos;
+using Economy.Application.TenantUI.Dtos.AppPageMediaDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Dtos.Custom;
 using Economy.Core.Interfaces;
@@ -15,18 +16,12 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
     [Authorize]
     public sealed class PagesController : BaseController
     {
-        private readonly IUnitOfWork _uow;
-        private readonly IEntityRepository<ContentItem, int> _contentRepo;
-        private readonly IEntityRepository<ContentItemTranslation, int> _trRepo;
-        private readonly IEntityRepository<AppLanguage, int> _langRepo;
         private readonly IPanelAppPageService _panelAppPageService;
-        public PagesController(IUnitOfWork uow, IPanelAppPageService panelAppPageService)
+        private readonly IPanelAppPageMediaService _panelAppPageMediaService;
+        public PagesController(IUnitOfWork uow, IPanelAppPageService panelAppPageService, IPanelAppPageMediaService panelAppPageMediaService)
         {
-            _uow = uow;
-            _contentRepo = uow.HotelEntityRepository<ContentItem>();
-            _trRepo = uow.HotelEntityRepository<ContentItemTranslation>();
-            _langRepo = uow.HotelEntityRepository<AppLanguage>();
             _panelAppPageService = panelAppPageService;
+            _panelAppPageMediaService = panelAppPageMediaService;
         }
 
         public async Task<IActionResult> Index(CancellationToken ct)
@@ -72,6 +67,23 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 return RedirectToAction(nameof(Create), vm);
             }
 
+            var galeri = vm.Galleries.FirstOrDefault(x => x.Key == "GenelImages");
+            foreach (var item in galeri.Items)
+            {
+                if (item.Id == 0)
+                {
+                    var mediaResult = await _panelAppPageMediaService.Create(new PageMediaEditDto
+                    {
+                        IsCover = galeri.CoverUrl == item.MediaUrl ? false : true,
+                        ContentItemId = result.Data.Id,
+                        MediaUrl = item.MediaUrl,
+                    }, ct);
+                }
+            }
+
+
+
+
             return RedirectToAction(nameof(Edit), new { id = result.Data.Id });
         }
 
@@ -84,6 +96,11 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             {
                 AddMessage(result);
             }
+
+
+
+
+
             ViewBag.Parents = (await _panelAppPageService.GetParentOptionsAsync(ct, excludeId: result.Data.Id)).Data;
             return View(result.Data);
         }
@@ -100,6 +117,10 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
             var resultEdit = await _panelAppPageService.Edit(id, vm, ct);
             AddMessage(resultEdit);
+
+
+
+
             return RedirectToAction(nameof(Edit), new { id });
         }
 

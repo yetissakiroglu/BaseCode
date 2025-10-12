@@ -261,12 +261,12 @@ namespace Economy.Persistence.PersistenceUI.Services
             // (3) Gallery
             var gallery = await (from m in _mediaRepo.DataSet
                                  where !m.IsDeleted && m.IsActive
-                                       && m.OwnerId == ci.Id
+                                       && m.ContentItemId == ci.Id
                                  orderby m.SortOrder, m.Id
                                  select new MediaVm
                                  {
                                      Id = m.Id,
-                                     Url = m.Url,
+                                     Url = m.MediaUrl,
                                      SortOrder = m.SortOrder,
                                      Alt = _mediaTrRepo.DataSet
                                          .Where(t => !t.IsDeleted && t.ContentMediaId == m.Id && t.LanguageId == langId)

@@ -169,6 +169,9 @@ builder.Services.AddScoped<IPanelAppGeneralSettingService, PanelAppGeneralSettin
 builder.Services.AddScoped<IDatabaseBackupService, DatabaseBackupService>();
 builder.Services.AddScoped<IPanelAppAccountService, PanelAppAccountService>();
 builder.Services.AddScoped<IPanelAppPageService, PanelAppPageService>();
+builder.Services.AddScoped<IPanelAppPageMediaService, PanelAppPageMediaService>();
+
+
 
 builder.Services.AddScoped<IFileImageHelperService, FileImageHelperService>(); // Token service kaydý
 
@@ -231,7 +234,7 @@ app.MapControllerRoute(
 // Authorization ve Authentication iþlemleri
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<ErrorLoggingMiddleware>();
+//app.UseMiddleware<ErrorLoggingMiddleware>();
 
 // Custom middleware
 app.UseMiddleware<HotelConnectionMiddleware>();

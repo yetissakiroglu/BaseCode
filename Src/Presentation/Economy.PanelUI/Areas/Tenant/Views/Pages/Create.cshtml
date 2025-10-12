@@ -117,9 +117,15 @@
                                 @for (int i = 0; i < Model.Translations.Count; i++)
                                 {
                                     var t = Model.Translations[i];
-                                    <div class="tab-pane fade show @(i == 0 ? "active" : null)" id="pane-@t.LanguageCode">
+                                    var code = (t.LanguageCode ?? "xx").ToLower();
+                                    var tabId = $"tab-{code}-{i}";
+                                    var paneId = $"pane-{code}-{i}";
+
+                                    <div id="@paneId" class="tab-pane fade @(i == 0 ? "show active" : null)" role="tabpanel" aria-labelledby="@tabId">
+
                                         <input type="hidden" name="Translations[@i].LanguageId" value="@t.LanguageId" />
                                         <input type="hidden" name="Translations[@i].LanguageCode" value="@t.LanguageCode" />
+                                        <input type="hidden" name="Translations[@i].LanguageIcon" value="@t.LanguageIcon" />
                                         <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
 
                                         <div class="row g-3">

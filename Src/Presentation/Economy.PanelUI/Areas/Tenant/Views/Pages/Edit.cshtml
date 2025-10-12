@@ -73,7 +73,20 @@
                                 {
                                     @await Html.PartialAsync("_ImagePicker", (i, Model.Singles[i]))
                                 }
+                                <hr />
+                                <!-- Galeri grupları -->
 
+                                <div class="col-lg-12">
+                                    <div class="card project-total-card">
+                                        <div class="card-body">
+                                            @for (int gi = 0; gi < Model.Galleries.Count; gi++)
+                                            {
+                                                @await Html.PartialAsync("_GalleryGroup", (gi, Model.Galleries[gi]))
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <hr class="custom-divider" />

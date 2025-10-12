@@ -33,12 +33,12 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
             var list = await (from m in _mediaRepo.DataSet
                               where !m.IsDeleted && m.IsActive
-                                    && m.OwnerId == pageId
+                                    && m.ContentItemId == pageId
                               orderby m.SortOrder, m.Id
                               select new MediaListItemVm
                               {
                                   Id = m.Id,
-                                  Url = m.Url,
+                                  Url = m.MediaUrl,
                                   SortOrder = m.SortOrder,
                                   Alt = _mediaTrRepo.DataSet
                                        .Where(t => !t.IsDeleted && t.ContentMediaId == m.Id && t.LanguageId == def)
@@ -69,8 +69,8 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
             var m = new ContentMedia
             {
-                OwnerId = vm.PageId,
-                Url = vm.Url,
+                ContentItemId = vm.PageId,
+                MediaUrl = vm.Url,
                 SortOrder = vm.SortOrder,
                 IsActive = vm.IsActive,
                 IsDeleted = false

@@ -13,5 +13,7 @@ namespace Economy.Application.TenantUI.Interfaces
         Task<ServiceResult<NoContent>> Create(PageMediaEditDto vm, CancellationToken ct);
         Task<ServiceResult<NoContent>> Edit(int id, PageMediaEditDto vm, CancellationToken ct);
         Task<ServiceResult<NoContent>> Delete(int id, CancellationToken ct);
+        Task<ServiceResult<NoContent>> Delete(List<int> excludeIds, int ContentItemId, CancellationToken ct);
+
     }
 }

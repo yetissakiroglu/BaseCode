@@ -22,19 +22,22 @@
     <div id="gal_@(Model.Index)" class="row">
         @for (int j = 0; j < Model.Group.Items.Count; j++)
         {
-            var url = Model.Group.Items[j];
-            var checkedAttr = Model.Group.CoverUrl == url ? "checked" : "";
-            <div class="col-sm-6 col-xl-3 mb-3">
+            var item = Model.Group.Items[j];
+            var url = item.MediaUrl;
+            var id = item.Id;
+            var key = $"k{id}_{j}"; // benzersiz ve stabil bir key
+
+            <div class="col-sm-2 col-xl-2 mb-3">
                 <label class="form-checkimage w-100">
                     <input class="checkimage-input"
                            type="radio"
                            name="gallerycover_@(Model.Index)"
                            value="@url"
-                           @checkedAttr
+                           checked="@(Model.Group.CoverUrl == url ? "checked" : null)"
                            data-url="@url"
                            data-group="@Model.Index" />
                     <span class="check-box radiobox">
-                        <img src="@url" alt="" class="checkbox-image rounded shadow-sm" width="150" height="50" />
+                        <img src="@url" alt="" class="checkbox-image rounded shadow-sm" width="230" height="150" />
                     </span>
                     <button type="button"
                             class="btn btn-sm btn-outline-danger mt-1 btn-del"
@@ -42,7 +45,11 @@
                         Sil
                     </button>
                 </label>
-                <input type="hidden" name="Galleries[@Model.Index].Items" value="@url" />
+
+                <!-- .Index eşleşmesi -->
+                <input type="hidden" name="Galleries[@Model.Index].Items.Index" value="@key" />
+                <input type="hidden" name="Galleries[@Model.Index].Items[@key].Id" value="@id" />
+                <input type="hidden" name="Galleries[@Model.Index].Items[@key].MediaUrl" value="@url" />
             </div>
         }
     </div>

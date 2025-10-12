@@ -19,13 +19,15 @@ namespace Economy.Persistence.Tenant.Services
         private readonly IEntityRepository<ContentItemTranslation, int> _trRepo;
         private readonly IEntityRepository<AppLanguage, int> _entityLanguageRepository;
         private readonly IMapper _mapper;
-        public PanelAppPageService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IPanelAppPageMediaService _panelAppPageMediaService;
+        public PanelAppPageService(IUnitOfWork unitOfWork, IMapper mapper, IPanelAppPageMediaService panelAppPageMediaService)
         {
             _unitOfWork = unitOfWork;
             _entityPageRepository = unitOfWork.HotelEntityRepository<ContentItem>();
             _entityLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
             _trRepo = unitOfWork.HotelEntityRepository<ContentItemTranslation>();
             _mapper = mapper;
+            _panelAppPageMediaService = panelAppPageMediaService;
         }
         public async Task<ServiceResult<NoContent>> Create(PageEditDto vm, CancellationToken ct)
         {
@@ -137,17 +139,21 @@ namespace Economy.Persistence.Tenant.Services
             }
 
             await _unitOfWork.SaveHotelChangesAsync();
+
+            var ids = vm.Galleries.FirstOrDefault(x => x.Key == "GenelImages").Items.Select(x => x.Id).ToList();
+            _panelAppPageMediaService.Delete(ids, (int)vm.Id, ct);
+
             return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
         }
         public async Task<ServiceResult<NoContent>> EnsureLanguageTabsAsync(PageEditDto vm, CancellationToken ct)
         {
             var exist = vm.Translations.Select(t => t.LanguageId).ToHashSet();
             var langs = await _entityLanguageRepository.DataSet.Where(x => !x.IsDeleted && x.IsActive)
-                .Select(x => new { x.Id, x.Code }).ToListAsync(ct);
+                .Select(x => new { x.Id, x.Code ,x.Icon}).ToListAsync(ct);
 
             foreach (var l in langs)
                 if (!exist.Contains(l.Id))
-                    vm.Translations.Add(new PageTranslationDto { LanguageId = l.Id, LanguageCode = l.Code });
+                    vm.Translations.Add(new PageTranslationDto { LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon });
 
             vm.Translations = vm.Translations
                 .OrderByDescending(t => t.LanguageCode == "tr")
@@ -274,6 +280,34 @@ namespace Economy.Persistence.Tenant.Services
                 new ImageFieldVm { Key = "KapakImage", Label = "Kapak Görseli",Url = ci.Image },
                 new ImageFieldVm { Key ="OGImage", Label="OG Görseli", Url = ci.OgImage}
             };
+
+
+            vm.Galleries = new List<GalleryGroupVm>()
+            {
+                new GalleryGroupVm { Key = "GenelImages", Label = "Galeri Fotoğrafları" },
+            };
+
+            var galeri = await _panelAppPageMediaService.GetPageMediaListAsync(ci.Id, ct);
+            if (galeri.IsSuccess)
+            {
+                var gal = vm.Galleries.FirstOrDefault(x => x.Key == "GenelImages");
+                if (gal != null)
+                {
+                    foreach (var item in galeri.Data)
+                    {
+                        if (item.IsCover)
+                        {
+                            gal.CoverUrl = item.MediaUrl;
+                        }
+                    }
+                    gal.Items = galeri.Data.Select(x => new MediaItem
+                    {
+                        Id = x.Id,
+                        MediaUrl = x.MediaUrl,
+                    }).ToList();
+                }
+            }
+
 
 
             await FillLanguagesAsync(vm, ct);

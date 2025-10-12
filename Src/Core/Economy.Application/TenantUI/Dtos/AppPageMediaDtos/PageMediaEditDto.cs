@@ -10,9 +10,11 @@ namespace Economy.Application.TenantUI.Dtos.AppPageMediaDtos
     public class PageMediaEditDto
     {
         public int? Id { get; set; }                // ContentItem.Id
-        public int OwnerId { get; set; }           // Parent
+        public int ContentItemId { get; set; }           // Parent
         public bool IsActive { get; set; } = true;
-        public string? Url { get; set; }
+        public bool IsCover { get; set; } = false; 
+        public int SortOrder { get; set; } = 0;
+        public string MediaUrl { get; set; }
         public List<PageMediaTranslationDto> Translations { get; set; } = new();
     }
 

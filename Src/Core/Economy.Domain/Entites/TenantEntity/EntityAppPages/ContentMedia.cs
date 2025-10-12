@@ -6,11 +6,12 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
     // İçeriğe bağlı medya (galeri/kapak)
     public class ContentMedia : BaseEntity<int>
     {
-        public int OwnerId { get; set; }
+        public int ContentItemId { get; set; }
 
         [Required, MaxLength(500)]
-        public string Url { get; set; } = "";
+        public string MediaUrl { get; set; } = "";
 
+        public bool IsCover { get; set; } = false;
         public int SortOrder { get; set; } = 0;
         public bool IsActive { get; set; } = true;
 
