@@ -116,7 +116,25 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             }
 
             var resultEdit = await _panelAppPageService.Edit(id, vm, ct);
+
+
             AddMessage(resultEdit);
+
+            var galeri = vm.Galleries.FirstOrDefault(x => x.Key == "GenelImages");
+            foreach (var item in galeri.Items)
+            {
+                if (item.Id == 0)
+                {
+                    var mediaResult = await _panelAppPageMediaService.Create(new PageMediaEditDto
+                    {
+                        IsCover = galeri.CoverUrl == item.MediaUrl ? false : true,
+                        ContentItemId = resultEdit.Data.Id,
+                        MediaUrl = item.MediaUrl,
+                    }, ct);
+                }
+            }
+
+
 
 
 

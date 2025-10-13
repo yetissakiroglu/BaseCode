@@ -217,18 +217,31 @@ namespace Economy.Persistence.Tenant.Services
 
         public async Task<ServiceResult<NoContent>> Delete(List<int> excludeIds,int ContentItemId, CancellationToken ct)
         {
-            var ci = await _entityPageMediaRepository.DataSet
+            try
+            {
+                var ci = await _entityPageMediaRepository.DataSet
                 .Where(x => !x.IsDeleted
-                         && !excludeIds.Contains(x.Id)  
+                         && !excludeIds.Contains(x.Id)
                          && x.ContentItemId == ContentItemId)
                 .ToListAsync(ct);
-            
-            if (ci is null)
-            {
-                return ServiceResult<NoContent>.Empty();
-            }
 
-            _entityPageMediaRepository.DataSet.RemoveRange(ci);
+                if (ci is null)
+                {
+                    return ServiceResult<NoContent>.Empty();
+                }
+                foreach (var item in ci)
+                {
+                    item.IsDeleted = true;
+
+                }
+            }
+            catch(Exception ex)
+            {
+
+
+            }
+           
+
 
             await _unitOfWork.SaveHotelChangesAsync();
             return ServiceResult<NoContent>.Success(null);

@@ -141,7 +141,7 @@ namespace Economy.Persistence.Tenant.Services
             await _unitOfWork.SaveHotelChangesAsync();
 
             var ids = vm.Galleries.FirstOrDefault(x => x.Key == "GenelImages").Items.Select(x => x.Id).ToList();
-            _panelAppPageMediaService.Delete(ids, (int)vm.Id, ct);
+           await _panelAppPageMediaService.Delete(ids, (int)vm.Id, ct);
 
             return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
         }
