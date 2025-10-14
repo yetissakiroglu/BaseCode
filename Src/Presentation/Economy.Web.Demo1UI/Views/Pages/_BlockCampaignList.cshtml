@@ -2,7 +2,7 @@
 @model BlockVm
 @{
     string BuildUrl(string lang, string slug) => $"/{lang}/{slug}";
-    var cards = Model.Campaigns ?? new List<CampaignCardVm>();
+    // var cards = Model.Campaigns ?? new List<CampaignCardVm>();
 }
 <section class="block campaignlist">
     @if (!string.IsNullOrWhiteSpace(Model.Title))
@@ -10,7 +10,7 @@
         <h2>@Model.Title</h2>
     }
     <div class="card-grid">
-        @foreach (var card in cards)
+ @*        @foreach (var card in cards)
         {
             var url = string.IsNullOrWhiteSpace(card.Url) ? BuildUrl(Model.Lang, card.Slug) : card.Url;
             <article class="card">
@@ -36,5 +36,6 @@
                 </a>
             </article>
         }
+  *@
     </div>
 </section>

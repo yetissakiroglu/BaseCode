@@ -1,0 +1,315 @@
+﻿@using Economy.Application.TenantUI.Dtos.AppPageDtos
+@model PageEditDto
+@{
+    bool isEdit = Model.Id.HasValue;
+    ViewBag.Title = isEdit ? "Sayfa Düzenle" : "Yeni Sayfa";
+    var parents = (List<PageParentOptionDto>)ViewBag.Parents!;
+}
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                                <div class="app-btn-list">
+                                    <a class="btn btn-primary" asp-action="Index">Tüm Kayıtlar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+
+                <div class="card mb-3">
+                    <div class="card-header">Genel</div>
+                    <form method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="card-body">
+                            <div class="row g-3 align-items-end">
+
+                                <div class="col-md-4">
+                                    <label asp-for="OwnerId" class="form-label fw-semibold">Üst Sayfa</label>
+                                    <select asp-for="OwnerId" class="form-select">
+                                        <option value="">(Yok)</option>
+                                        @foreach (var p in parents)
+                                        {
+                                            <option value="@p.Id" selected="@(Model.OwnerId == p.Id ? "selected" : null)">
+                                                @p.Title
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label asp-for="SortOrder" class="form-label fw-semibold">Sıra</label>
+                                    <input asp-for="SortOrder" class="form-control" type="number" min="0" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label asp-for="PublishAtUtc" class="form-label fw-semibold">Yayın Tarihi (UTC)</label>
+                                    <input asp-for="PublishAtUtc" class="form-control" type="datetime-local" />
+                                </div>
+
+                                <div class="col-md-3 d-flex gap-4">
+                                    <div class="form-check mt-3">
+                                        <input asp-for="IsActive" class="form-check-input" type="checkbox" id="chkActive" />
+                                        <label class="form-check-label" for="chkActive">Aktif</label>
+                                    </div>
+                                    <div class="form-check mt-3">
+                                        <input asp-for="IsHomepage" class="form-check-input" type="checkbox" id="chkHome" />
+                                        <label class="form-check-label" for="chkHome">Anasayfa mı?</label>
+                                    </div>
+                                </div>
+
+
+                                @for (int i = 0; i < Model.Singles.Count; i++)
+                                {
+                                    @await Html.PartialAsync("_ImagePicker", (i, Model.Singles[i]))
+                                }
+                                <hr />
+                                <!-- Galeri grupları -->
+
+                                <div class="col-lg-12">
+                                    <div class="card project-total-card">
+                                        <div class="card-body">
+                                            @for (int gi = 0; gi < Model.Galleries.Count; gi++)
+                                            {
+                                                @await Html.PartialAsync("_GalleryGroup", (gi, Model.Galleries[gi]))
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="custom-divider" />
+                        <div class="card-body">
+                            <ul class="nav nav-tabs tab-light-secondary" role="tablist">
+                                @for (int i = 0; i < Model.Translations.Count; i++)
+                                {
+                                    var t = Model.Translations[i];
+                                    var code = (t.LanguageCode ?? "xx").ToLower();       // güvenli
+                                    var tabId = $"tab-{code}-{i}";                        // benzersiz
+                                    var paneId = $"pane-{code}-{i}";                      // benzersiz
+                                    <li class="nav-item" role="presentation">
+                                        <button class="gap-2 nav-link @(i == 0 ? "active" : null)"
+                                                id="@tabId"
+                                                type="button"
+                                                role="tab"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#@paneId"
+                                                aria-controls="@paneId"
+                                                aria-selected="@(i == 0 ? "true" : "false")">
+                                            <i class="@t.LanguageIcon?.ToLower()"></i>
+                                            @t.LanguageCode?.ToUpper()
+                                        </button>
+                                    </li>
+                                }
+                            </ul>
+                            <div class="tab-content border border-top-0 p-3">
+                                @for (int i = 0; i < Model.Translations.Count; i++)
+                                {
+                                    var t = Model.Translations[i];
+                                    var code = (t.LanguageCode ?? "xx").ToLower();
+                                    var tabId = $"tab-{code}-{i}";
+                                    var paneId = $"pane-{code}-{i}";
+
+                                    <div id="@paneId" class="tab-pane fade @(i == 0 ? "show active" : null)" role="tabpanel" aria-labelledby="@tabId">
+
+                                        <input type="hidden" name="Translations[@i].LanguageId" value="@t.LanguageId" />
+                                        <input type="hidden" name="Translations[@i].LanguageCode" value="@t.LanguageCode" />
+                                        <input type="hidden" name="Translations[@i].LanguageIcon" value="@t.LanguageIcon" />
+                                        <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
+
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Slug</label>
+                                                <input class="form-control" name="Translations[@i].Slug" value="@t.Slug" />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Başlık</label>
+                                                <input class="form-control" name="Translations[@i].Title" value="@t.Title" />
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="form-label">Kısa Açıklama</label>
+                                                <textarea class="form-control" name="Translations[@i].Summary" rows="2">@t.Summary</textarea>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="form-label">İçerik</label>
+                                                <textarea class="form-control" name="Translations[@i].Body" rows="6">@t.Body</textarea>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label">Meta Title</label>
+                                                <input class="form-control" name="Translations[@i].MetaTitle" value="@t.MetaTitle" />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Meta Description</label>
+                                                <input class="form-control" name="Translations[@i].MetaDescription" value="@t.MetaDescription" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <hr class="my-4" />
+                            <div class="mt-4 text-end">
+                                <button class="btn btn-primary" type="submit">Kaydet</button>
+                                <a class="btn btn-outline-secondary" href="/tenant/pages">Vazgeç</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                @if (isEdit)
+                {
+                    <div class="card mb-3" id="page-blocks-card" data-page-id="@Model.Id">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Sayfa Blokları</span>
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-outline-secondary" href="/tenant/blockgroups/index">Blokları Yönet</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="row g-2 align-items-end mb-3">
+                                <div class="col-md-8">
+                                    <label class="form-label">Blok Ekle (Aday Listesi)</label>
+                                    <select class="form-select" id="block-candidates"></select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-success w-100" id="btnAttach">Ekle</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <input class="form-control" id="candidateSearch" placeholder="Ara..." />
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bottom-border table-hover align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:40px;"></th>
+                                            <th>Başlık</th>
+                                            <th>Kolon</th>
+                                            <th>Aktif</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pb-list"></tbody>
+                                </table>
+                            </div>
+
+                            <small class="text-muted">Sürükle-bırak ile sıralayabilir; “Kaldır” ile sayfa–blok ilişkisinin pivot kaydını silebilirsin.</small>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</main>
+
+
+@section Scripts {
+
+    <script src="~/components/image-manager.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <script>
+        (function(){
+          const host = '/tenant/pageblocks';
+          const card = document.getElementById('page-blocks-card');
+          if(!card) return;
+
+          const pageId = card.getAttribute('data-page-id');
+          const tbody = document.getElementById('pb-list');
+          const sel = document.getElementById('block-candidates');
+          const btnAttach = document.getElementById('btnAttach');
+          const txtSearch = document.getElementById('candidateSearch');
+
+          function colText(n){ return n ? (n + ' kolon') : 'Auto'; }
+          function rowHtml(it){
+            return `
+              <tr data-id="${it.id}">
+                <td class="text-muted" style="cursor:grab">↕</td>
+                <td>${it.title ?? ''}</td>
+                <td>${colText(it.columns)}</td>
+                <td>${it.isActive ? 'Evet' : 'Hayır'}</td>
+                <td class="text-end">
+                  <a class="btn btn-sm btn-outline-secondary" href="/tenant/blocks/edit/${it.id}">Düzenle</a>
+                  <button class="btn btn-sm btn-outline-danger ms-1" data-detach="${it.id}">Kaldır</button>
+                </td>
+              </tr>`;
+          }
+
+          async function loadList(){
+            const res = await fetch(`${host}/list?pageId=${pageId}`);
+            const data = await res.json();
+            tbody.innerHTML = data.map(rowHtml).join('');
+          }
+
+          async function loadCandidates(q){
+            const url = new URL(`${host}/candidates`, window.location.origin);
+            url.searchParams.set('pageId', pageId);
+            if(q) url.searchParams.set('q', q);
+            const res = await fetch(url);
+            const data = await res.json();
+            sel.innerHTML = data.map(x => `<option value="${x.id}">${x.title}</option>`).join('');
+          }
+
+          btnAttach?.addEventListener('click', async ()=>{
+            const id = sel.value;
+            if(!id) return;
+            const fd = new FormData();
+            fd.append('pageId', pageId);
+            fd.append('blockGroupId', id);
+            const res = await fetch(`${host}/attach`, { method: 'POST', body: fd });
+            if(res.ok){ await loadList(); await loadCandidates(txtSearch.value); }
+          });
+
+          tbody.addEventListener('click', async (e)=>{
+            const btn = e.target.closest('[data-detach]');
+            if(!btn) return;
+            if(!confirm('Bu sayfadan kaldırmak istiyor musunuz?')) return;
+            const id = btn.getAttribute('data-detach');
+            const fd = new FormData();
+            fd.append('pageId', pageId);
+            fd.append('blockGroupId', id);
+            const res = await fetch(`${host}/detach`, { method: 'POST', body: fd });
+            if(res.ok){ await loadList(); await loadCandidates(txtSearch.value); }
+          });
+
+          new Sortable(tbody, {
+            animation: 150,
+            handle: 'td:first-child',
+            onEnd: async ()=>{
+              const rows = [];
+              tbody.querySelectorAll('tr').forEach((tr, idx)=>{
+                rows.push({ blockGroupId: parseInt(tr.getAttribute('data-id')), sortOrder: idx });
+              });
+              await fetch(`${host}/sort?pageId=${pageId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(rows)
+              });
+            }
+          });
+
+          txtSearch?.addEventListener('input', async ()=>{
+            await loadCandidates(txtSearch.value.trim());
+          });
+
+          // initial
+          loadList();
+          loadCandidates();
+        })();
+    </script>
+}

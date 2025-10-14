@@ -1,4 +1,5 @@
 ﻿using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
+using Economy.Domain.Entites.TenantEntity.EntityAppContents;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppMenus;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
@@ -26,6 +27,22 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppSettingTranslation> AppSettingTranslations { get; set; }
         public DbSet<AppSettingLogo> AppSettingLogos { get; set; }
         public DbSet<AppLanguage> AppLanguages { get; set; }
+
+        /*-------------------------*/
+        public DbSet<AppPage> AppPages => Set<AppPage>();
+        public DbSet<AppPageTranslation> AppPageTranslations => Set<AppPageTranslation>();
+        public DbSet<AppPageBlock> AppPageBlocks => Set<AppPageBlock>();
+        public DbSet<AppPageBlockTranslation> AppPageBlockTranslations => Set<AppPageBlockTranslation>();
+    
+        /*-------------------------*/
+
+
+
+
+
+
+
+
 
 
         public DbSet<BlockGroup> BlockGroups => Set<BlockGroup>();
@@ -59,20 +76,38 @@ namespace Economy.Persistence.Contexts
      
         // diğer otel tabloları...
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder b)
         {
-        
 
 
-            modelBuilder.ApplyConfiguration(new AppLanguage_Configuration()); // ← Burası önemli
+            b.Entity<AppPage>().HasIndex(x => new { x.Slug }).IsUnique();
+
+            b.Entity<AppPageTranslation>()
+                .HasIndex(x => new { x.AppPageId, x.AppLanguageId }).IsUnique();
+
+            b.Entity<PageBlock>().HasIndex(x => new { x.PageId, x.SortOrder });
+
+            b.Entity<AppBlockLibrary>()
+                .HasIndex(x => new { x.Name });
+
+            b.Entity<AppBlockLibraryTranslation>()
+                .HasIndex(x => new { x.AppBlockLibraryId, x.AppLanguageId }).IsUnique();
+
+            b.Entity<AppPageBlock>().Property(x => x.SharedJson).HasColumnType("nvarchar(max)");
+            b.Entity<AppPageBlockTranslation>().Property(x => x.LocalizedJson).HasColumnType("nvarchar(max)");
+            b.Entity<AppBlockLibrary>().Property(x => x.SharedJson).HasColumnType("nvarchar(max)");
+            b.Entity<AppBlockLibraryTranslation>().Property(x => x.LocalizedJson).HasColumnType("nvarchar(max)");
+
+
+            b.ApplyConfiguration(new AppLanguage_Configuration()); // ← Burası önemli
             //modelBuilder.ApplyConfiguration(new AppSetting_Configuration()); // ← Burası önemli
             //modelBuilder.ApplyConfiguration(new AppSettingTranslation_Configuration()); // ← Burası önemli
-            modelBuilder.ApplyConfiguration(new AppSettingLogoConfiguration()); // ← Burası önemli
+            b.ApplyConfiguration(new AppSettingLogoConfiguration()); // ← Burası önemli
             //modelBuilder.ApplyConfiguration(new AppSlideConfiguration());
             //modelBuilder.ApplyConfiguration(new AppSlideTranslationConfiguration());
       
 
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(b);
         }
     }
 }

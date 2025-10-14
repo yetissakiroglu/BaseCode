@@ -1,0 +1,85 @@
+﻿@using Economy.Domain.Entites.TenantEntity.EntityAppLanguages
+@using Economy.Panel.UI.Areas.Tenant.Models.AppPageViewModels
+@model PageBlockVm
+
+@{
+    var langs = (List<AppLanguage>)ViewBag.Languages;
+
+    // Prefix'ten index'i çıkar (Blocks[3] gibi)
+    var prefix = ViewData.TemplateInfo.HtmlFieldPrefix; // "Blocks[3]"
+    var open = prefix?.IndexOf('[') ?? -1;
+    var close = prefix?.IndexOf(']') ?? -1;
+    var idx = (open >= 0 && close > open) ? prefix.Substring(open + 1, close - open - 1) : "0";
+}
+<!-- 🔴 Koleksiyon bağlama için şart -->
+
+<input type="hidden" name="Blocks.Index" value="@idx" />
+
+<div class="col">
+    <div class="card block-card" draggable="true">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div><strong>@Model.Type</strong></div>
+            <div class="d-flex align-items-center gap-2">
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="IsActive" />
+                    <label class="form-check-label">Active</label>
+                </div>
+                <select class="form-select form-select-sm" asp-for="Stage" style="width:130px">
+                    <option value="0">Draft</option>
+                    <option value="1">Published</option>
+                    <option value="2">Archived</option>
+                </select>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Type" />
+                <input type="hidden" asp-for="SortOrder" />
+            </div>
+        </div>
+
+        <div class="card-body">
+            <label class="form-label">Shared JSON</label>
+            <textarea class="form-control mb-2" asp-for="SharedJson" rows="4"></textarea>
+
+            <div class="mb-2">
+                <label class="form-label">LibraryBlockId (optional)</label>
+                <input class="form-control form-control-sm" asp-for="LibraryBlockId" />
+                <div class="form-check mt-1">
+                    <input class="form-check-input" asp-for="IsLinkedToLibrary" />
+                    <label class="form-check-label">Linked to Library</label>
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs" role="tablist">
+                @for (int i = 0; i < Model.Translations.Count; i++)
+                {
+                    var lid = Model.Translations[i].LanguageId;
+                    var lang = langs.First(l => l.Id == lid);
+                    <li class="nav-item">
+                        <button class="nav-link @(i == 0 ? "active" : "")" data-bs-toggle="tab" data-bs-target="#t-@Model.GetHashCode()-@lid" type="button">@lang.Code.ToUpper()</button>
+                    </li>
+                }
+            </ul>
+            <div class="tab-content border p-2">
+                @for (int i = 0; i < Model.Translations.Count; i++)
+                {
+                    var lid = Model.Translations[i].LanguageId;
+                    <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="t-@Model.GetHashCode()-@lid">
+                        <input type="hidden" asp-for="Translations[i].Id" />
+                        <input type="hidden" asp-for="Translations[i].LanguageId" />
+                        <label class="form-label">Localized JSON</label>
+                        <textarea class="form-control" asp-for="Translations[i].LocalizedJson" rows="5"></textarea>
+                        <div class="mt-1">
+                            @if (Model.Id.HasValue)
+                            {
+                                <a class="btn btn-sm btn-outline-secondary" href='@Url.Action("EditPageBlock", "BlockEditor", new { area = "Tenant", pageBlockId = Model.Id.Value, languageId = lid })'>Type-specific editor</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Kaydettikten sonra tip-özel editör açılır.</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

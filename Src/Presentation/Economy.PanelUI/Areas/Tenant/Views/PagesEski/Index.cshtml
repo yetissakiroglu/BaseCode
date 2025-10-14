@@ -1,0 +1,89 @@
+﻿@using Economy.Application.TenantUI.Dtos.AppPageDtos
+@model List<PageListDto>
+@{
+    ViewBag.Title = "Sayfalar";
+}
+
+<main>
+    <div class="container-fluid">
+        <!-- Breadcrumb start -->
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- Breadcrumb end -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                                <div class="app-btn-list">
+                                    <a class="btn btn-primary" asp-action="Create">Yeni Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Hoverable Table start -->
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5> Kayıtlar </h5>
+                        <p>
+                            Aşağıda kayıtlı bilgiler bulunmaktadır.
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row p-2">
+                            <div class="col-lg-12">
+                            
+                                <table class="table table-striped align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Başlık</th>
+                                            <th>Slug</th>
+                                            <th>Üst</th>
+                                            <th>Anasayfa mi?</th>
+                                            <th>Aktif</th>
+                                            <th>Yayın</th>
+                                            <th>Sıra</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var r in Model)
+                                        {
+                                            <tr>
+                                                <td>@r.Id</td>
+                                                <td>@(r.Title ?? "(başlık yok)")</td>
+                                                <td>@r.Slug</td>
+                                                <td>@r.ParentTitle</td>
+                                                <td>@(r.IsHomepage.ToTurkishYesNo())</td>
+                                                <td>@(r.IsActive.ToTurkishYesNo())</td>
+                                                <td>@(r.PublishAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                                                <td>@r.SortOrder</td>
+                                                <td class="text-end">
+                                                    <a class="btn btn-sm btn-outline-secondary" href="/Tenant/pages/edit/@r.Id">Düzenle</a>
+                                                    <form method="post" action="/Tenant/pages/delete/@r.Id" style="display:inline" onsubmit="return confirm('Silinsin mi?');">
+                                                        @Html.AntiForgeryToken()
+                                                        <button class="btn btn-sm btn-outline-danger">Sil</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
