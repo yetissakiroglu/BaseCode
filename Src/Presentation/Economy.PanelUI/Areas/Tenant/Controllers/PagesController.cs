@@ -94,10 +94,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 AddMessage(result);
             }
 
-
-
-
-
             ViewBag.Parents = (await _panelAppPageService.GetParentOptionsAsync(ct, excludeId: result.Data.Id)).Data;
             return View(result.Data);
         }

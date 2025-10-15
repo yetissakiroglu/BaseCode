@@ -2,6 +2,7 @@
 using Economy.Application.TenantUI.Dtos;
 using Economy.Application.TenantUI.Dtos.AppPageDtos;
 using Economy.Application.TenantUI.Interfaces;
+using Economy.Core.Dtos.Custom;
 using Economy.Core.Enums;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools;
@@ -228,7 +229,7 @@ namespace Economy.Persistence.Tenant.Services
                                   Description = tr != null ? tr.Description : null,
                                   Title = tr != null ? tr.Title : null,
                               })
-                              .ToListAsync();
+                              .ToListAsync(ct);
 
             return ServiceResult<List<BlockGroupListDto>>.Success(list);
         }
@@ -262,12 +263,98 @@ namespace Economy.Persistence.Tenant.Services
                 if (!exist.Contains(l.Id))
                     vm.Translations.Add(new BlockGroupTranslationDto { LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon });
 
-            vm.Translations = vm.Translations
+            vm.Translations = [.. vm.Translations
                 .OrderByDescending(t => t.LanguageCode == "tr")
-                .ThenBy(t => t.LanguageId)
-                .ToList();
+                .ThenBy(t => t.LanguageId)];
 
             return ServiceResult<NoContent>.Success(null);
+        }
+
+        public async Task<ServiceResult<BlockGroupDto>> GetGroupAsync(int id, CancellationToken ct)
+        {
+            var ci = await _blockGroupRepository.DataSet.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
+            if (ci is null)
+            {
+                return ServiceResult<BlockGroupDto>.Empty();
+            }
+
+            var vm = new BlockGroupDto
+            {
+                Id = ci.Id,
+                DefaultImageMode = ci.DefaultImageMode,
+                ShowDescription = ci.ShowDescription,
+                Columns = ci.Columns,
+                ShowTitle = ci.ShowTitle,
+                PageId = ci.PageId,
+            };
+
+
+
+
+            await FillLanguagesAsync(vm, ct);
+
+            var trs = await _trRepo.DataSet
+                .Where(t => !t.IsDeleted && t.BlockGroupId == ci.Id)
+                .ToListAsync(ct);
+
+            foreach (var t in vm.Translations)
+            {
+                var hit = trs.FirstOrDefault(x => x.AppLanguageId == t.LanguageId);
+                if (hit is null) continue;
+
+                t.Id = hit.Id;
+                t.Title = hit.Title;
+                t.Description = hit.Description;
+            }
+
+            return ServiceResult<BlockGroupDto>.Success(vm);
+        }
+
+        public async Task<ServiceResult<NoContent>> UpdateGroupAsync(int id, BlockGroupDto vm, CancellationToken ct)
+        {
+            var ci = await _blockGroupRepository.DataSet.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
+            if (ci is null)
+            {
+                return ServiceResult<NoContent>.Empty();
+            }
+
+
+            ci.DefaultImageMode = vm.DefaultImageMode;
+            ci.ShowDescription = vm.ShowDescription;
+            ci.Columns = vm.Columns;
+            ci.ShowTitle = vm.ShowTitle;
+            ci.PageId = vm.PageId;
+           
+
+            var existing = await _trRepo.DataSet
+                .Where(t => !t.IsDeleted && t.BlockGroupId == id)
+                .ToListAsync(ct);
+
+            foreach (var t in vm.Translations)
+            {
+                var ex = existing.FirstOrDefault(x => x.AppLanguageId == t.LanguageId);
+                if (ex is null)
+                {
+                    var tr = new BlockGroupTranslation
+                    {
+                        BlockGroupId = id,
+                        AppLanguageId = t.LanguageId,
+                        IsDeleted = false,
+                        Title = t.Title,
+                        Description = t.Description
+                    };
+                    await _trRepo.DataSet.AddAsync(tr, ct);
+                }
+                else
+                {
+                    ex.Description = t.Description;
+                    ex.Title = t.Title;
+               
+                }
+            }
+
+            await _unitOfWork.SaveHotelChangesAsync();
+            return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
         }
     }
 }

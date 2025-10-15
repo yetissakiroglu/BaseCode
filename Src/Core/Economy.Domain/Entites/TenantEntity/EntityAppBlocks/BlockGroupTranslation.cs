@@ -9,7 +9,7 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppBlocks
         public BlockGroup BlockGroup { get; set; }
         public int AppLanguageId { get; set; }
         public AppLanguage AppLanguage { get; set; }
-        public string Title { get; set; }
+        public string? Title { get; set; }
         public string? Description { get; set; }
     }
 }

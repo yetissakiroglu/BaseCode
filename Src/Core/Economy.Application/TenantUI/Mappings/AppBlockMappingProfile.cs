@@ -13,8 +13,8 @@ namespace Economy.Application.TenantUI.Mappings
     {
         public AppBlockMappingProfile()
         {
-            CreateMap<BlockGroup, BlockGroupDto>()
-            .ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items.OrderBy(i => i.SortOrder)));
+            CreateMap<BlockGroup, BlockGroupDto>().ReverseMap();
+            //.ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items.OrderBy(i => i.SortOrder)));
 
 
             CreateMap<BlockItem, BlockItemDto>()
