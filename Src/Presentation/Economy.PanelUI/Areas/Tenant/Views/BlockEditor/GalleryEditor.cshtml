@@ -36,7 +36,6 @@
                     var gid = Guid.NewGuid().ToString("N");   // Satırın tek anahtarı
 
                     <div class="row g-2 align-items-end image-row mb-2">
-                        <input type="hidden" name="Images.Index" value="@gid" />
 
                         <div class="col-md-7">
                             <label class="form-label">Image Url</label>
@@ -66,7 +65,6 @@
           const key = crypto.randomUUID().replace(/-/g,""); // veya artan sayı
           container.insertAdjacentHTML('beforeend', `
             <div class="row g-2 align-items-end image-row mb-2">
-              <input type="hidden" name="Images.Index" value="${key}" />
               <div class="col-md-7">
                 <label class="form-label">Image Url</label>
                 <input class="form-control" name="Images[${key}].Url" />
