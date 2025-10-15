@@ -24,6 +24,8 @@ namespace Economy.Application.TenantUI.Mappings
             CreateMap<BlockGroupDto, BlockGroup>()
             .ForMember(d => d.Items, opt => opt.Ignore()); // item’ları servis katmanında yönet
 
+            CreateMap<BlockGroupTranslationDto, BlockGroupTranslation>().ReverseMap();
+
 
             CreateMap<BlockItemDto, BlockItem>()
             .ForMember(d => d.Gallery, opt => opt.Ignore());

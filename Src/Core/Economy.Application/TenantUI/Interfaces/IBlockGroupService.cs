@@ -1,12 +1,22 @@
 ﻿using Economy.Application.TenantUI.Dtos;
+using Economy.Application.TenantUI.Dtos.AppPageDtos;
+using Economy.Core.Tools;
+using Economy.Core.Tools.Result;
 
 namespace Economy.Application.TenantUI.Interfaces
 {
-    public interface IBlockService
+    public interface IBlockGroupService
     {
+      
+        Task<ServiceResult<List<BlockGroupListDto>>> GetGroupsListAsync(CancellationToken ct);
+        Task<ServiceResult<NoContent>> FillLanguagesAsync(BlockGroupDto vm, CancellationToken ct);
+        Task<ServiceResult<NoContent>> EnsureLanguageTabsAsync(BlockGroupDto vm, CancellationToken ct);
+        Task<ServiceResult<NoContent>> CreateGroupAsync(BlockGroupDto vm, CancellationToken ct);
+
+
+
         Task<List<BlockGroupDto>> GetGroupsAsync(bool includeItems = true);
         Task<BlockGroupDto?> GetGroupAsync(int id, bool includeItems = true);
-        Task<int> CreateGroupAsync(BlockGroupDto dto);
         Task UpdateGroupAsync(int id, BlockGroupDto dto);
         Task DeleteGroupAsync(int id);
 

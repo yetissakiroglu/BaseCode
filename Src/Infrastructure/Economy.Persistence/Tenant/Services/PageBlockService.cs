@@ -42,7 +42,7 @@ namespace Economy.Persistence.Tenant.Services
                           select new BlockGroupMiniDto
                           {
                               Id = g.Id,
-                              Title = g.Title,
+                              //Title = g.Title,
                               Columns = (int)g.Columns,
                               IsActive = g.IsActive,
                               SortOrder = pb.SortOrder
@@ -58,17 +58,17 @@ namespace Economy.Persistence.Tenant.Services
             var baseQ = _blockGroupRepository.DataSet
                 .Where(g => !g.IsDeleted && g.IsActive && !usedIds.Contains(g.Id));
 
-            if (!string.IsNullOrWhiteSpace(q))
-                baseQ = baseQ.Where(g => g.Title.Contains(q));
+            //if (!string.IsNullOrWhiteSpace(q))
+            //    baseQ = baseQ.Where(g => g.Title.Contains(q));
 
             var based = baseQ.ToList();
 
             return await baseQ
-                .OrderBy(g => g.Title)
+                //.OrderBy(g => g.Title)
                 .Select(g => new BlockGroupMiniDto
                 {
                     Id = g.Id,
-                    Title = g.Title,
+                    //Title = g.Title,
                     Columns = (int)g.Columns,
                     IsActive = g.IsActive,
                     SortOrder = 0

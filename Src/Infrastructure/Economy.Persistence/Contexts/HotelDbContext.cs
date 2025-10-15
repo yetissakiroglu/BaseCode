@@ -29,6 +29,10 @@ namespace Economy.Persistence.Contexts
 
 
         public DbSet<BlockGroup> BlockGroups => Set<BlockGroup>();
+        public DbSet<BlockGroupTranslation> BlockGroupTranslations => Set<BlockGroupTranslation>();
+
+        
+
         public DbSet<BlockItem> BlockItems => Set<BlockItem>();
         public DbSet<BlockItemImage> BlockItemImages => Set<BlockItemImage>();
         public DbSet<PageBlock> PageBlocks => Set<PageBlock>();

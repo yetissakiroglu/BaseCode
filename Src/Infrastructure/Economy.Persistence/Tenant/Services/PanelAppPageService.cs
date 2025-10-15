@@ -68,9 +68,6 @@ namespace Economy.Persistence.Tenant.Services
                 await _trRepo.DataSet.AddAsync(tr, ct);
             }
 
-
-
-
             await _unitOfWork.SaveHotelChangesAsync();
             return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
         }

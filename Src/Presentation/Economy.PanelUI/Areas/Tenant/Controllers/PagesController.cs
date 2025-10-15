@@ -3,12 +3,9 @@ using Economy.Application.TenantUI.Dtos.AppPageMediaDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Dtos.Custom;
 using Economy.Core.Interfaces;
-using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
-using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Panel.UI.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {

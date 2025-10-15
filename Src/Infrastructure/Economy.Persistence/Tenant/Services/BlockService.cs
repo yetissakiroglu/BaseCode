@@ -1,21 +1,32 @@
 ﻿using AutoMapper;
 using Economy.Application.TenantUI.Dtos;
+using Economy.Application.TenantUI.Dtos.AppPageDtos;
 using Economy.Application.TenantUI.Interfaces;
+using Economy.Core.Enums;
 using Economy.Core.Interfaces;
+using Economy.Core.Tools;
+using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
+using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
+using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace Economy.Persistence.Tenant.Services
 {
-    public class BlockService : IBlockService
+    public class BlockService : IBlockGroupService
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEntityRepository<BlockGroup, int> _blockGroupRepository;
+        private readonly IEntityRepository<BlockGroupTranslation, int> _trRepo;
+
+
+
         private readonly IEntityRepository<BlockItem, int> _blockItemRepository;
         private readonly IEntityRepository<BlockItemImage, int> _blockItemImageRepository;
+        private readonly IEntityRepository<AppLanguage, int> _entityLanguageRepository;
 
-        
+
 
         public BlockService(IMapper mapper, IUnitOfWork unitOfWork)
         {
@@ -23,6 +34,8 @@ namespace Economy.Persistence.Tenant.Services
             _blockGroupRepository = unitOfWork.HotelEntityRepository<BlockGroup>();
             _blockItemRepository = unitOfWork.HotelEntityRepository<BlockItem>();
             _blockItemImageRepository = unitOfWork.HotelEntityRepository<BlockItemImage>();
+            _entityLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
+            _trRepo = unitOfWork.HotelEntityRepository<BlockGroupTranslation>();
             _mapper = mapper;
         }
         public async Task<List<BlockGroupDto>> GetGroupsAsync(bool includeItems = true)
@@ -32,7 +45,7 @@ namespace Economy.Persistence.Tenant.Services
                 q = q.Include(x => x.Items).ThenInclude(i => i.Gallery);
 
 
-            var list = await q.OrderBy(x => x.SortOrder).ToListAsync();
+            var list = await q.OrderBy(x => x.ShowTitle).ToListAsync();
             return _mapper.Map<List<BlockGroupDto>>(list);
         }
 
@@ -49,13 +62,38 @@ namespace Economy.Persistence.Tenant.Services
         }
 
 
-        public async Task<int> CreateGroupAsync(BlockGroupDto dto)
+        public async Task<ServiceResult<NoContent>> CreateGroupAsync(BlockGroupDto vm, CancellationToken ct)
         {
-            var ent = _mapper.Map<BlockGroup>(dto);
-            // Items servis katmanında teker teker eklenecek
-            _blockGroupRepository.DataSet.Add(ent);
+
+            var ci = new BlockGroup
+            {
+                IsDeleted = false,
+                DefaultImageMode = ImageMode.CoverOnly,
+                ShowDescription = false,
+                Columns = BlockColumns.One,
+                IsActive = false,
+                ShowTitle = false,
+            };
+
+            await _blockGroupRepository.DataSet.AddAsync(ci, ct);
             await _unitOfWork.SaveHotelChangesAsync();
-            return ent.Id;
+
+            foreach (var t in vm.Translations)
+            {
+
+                var tr = new BlockGroupTranslation
+                {
+                    BlockGroupId = ci.Id,
+                    AppLanguageId = t.LanguageId,
+                    IsDeleted = false,
+                    Title = t.Title,
+                    Description = t.Description,
+                };
+                await _trRepo.DataSet.AddAsync(tr, ct);
+            }
+
+            await _unitOfWork.SaveHotelChangesAsync();
+            return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
         }
 
         public async Task UpdateGroupAsync(int id, BlockGroupDto dto)
@@ -63,10 +101,6 @@ namespace Economy.Persistence.Tenant.Services
             var ent = await _blockGroupRepository.DataSet.FirstOrDefaultAsync(x => x.Id == id);
             if (ent == null) return;
 
-
-            ent.Code = dto.Code;
-            ent.Title = dto.Title;
-            ent.Description = dto.Description;
             ent.Columns = dto.Columns;
             ent.DefaultImageMode = dto.DefaultImageMode;
             ent.ShowTitle = dto.ShowTitle;
@@ -168,6 +202,72 @@ namespace Economy.Persistence.Tenant.Services
                 if (it != null) it.SortOrder = sort;
             }
             await _unitOfWork.SaveHotelChangesAsync();
+        }
+
+        public async Task<ServiceResult<List<BlockGroupListDto>>> GetGroupsListAsync(CancellationToken ct)
+        {
+            var defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
+               .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            if (defLangId == 0)
+                defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive)
+                    .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            var list = await (from ci in _blockGroupRepository.DataSet
+                              where !ci.IsDeleted
+                              join tr in _trRepo.DataSet on ci.Id equals tr.BlockGroupId into trx
+                              from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
+                              orderby ci.ShowTitle, ci.Id
+                              select new BlockGroupListDto
+                              {
+                                  Id = ci.Id,
+                                  DefaultImageMode = ci.DefaultImageMode,
+                                  ShowDescription = ci.ShowDescription,
+                                  Columns = ci.Columns,
+                                  ShowTitle = ci.ShowTitle,
+                                  Description = tr != null ? tr.Description : null,
+                                  Title = tr != null ? tr.Title : null,
+                              })
+                              .ToListAsync();
+
+            return ServiceResult<List<BlockGroupListDto>>.Success(list);
+        }
+
+        public async Task<ServiceResult<NoContent>> FillLanguagesAsync(BlockGroupDto vm, CancellationToken ct)
+        {
+            var langs = await _entityLanguageRepository.DataSet
+              .Where(x => !x.IsDeleted && x.IsActive)
+              .OrderByDescending(x => x.IsDefault)
+              .ThenBy(x => x.Id)
+              .Select(x => new { x.Id, x.Code, x.Icon })
+              .ToListAsync(ct);
+
+            vm.Translations = langs.Select(l => new BlockGroupTranslationDto
+            {
+                LanguageId = l.Id,
+                LanguageCode = l.Code,
+                LanguageIcon = l.Icon
+            }).ToList();
+
+            return ServiceResult<NoContent>.Success(null);
+        }
+
+        public async Task<ServiceResult<NoContent>> EnsureLanguageTabsAsync(BlockGroupDto vm, CancellationToken ct)
+        {
+            var exist = vm.Translations.Select(t => t.LanguageId).ToHashSet();
+            var langs = await _entityLanguageRepository.DataSet.Where(x => !x.IsDeleted && x.IsActive)
+                .Select(x => new { x.Id, x.Code, x.Icon }).ToListAsync(ct);
+
+            foreach (var l in langs)
+                if (!exist.Contains(l.Id))
+                    vm.Translations.Add(new BlockGroupTranslationDto { LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon });
+
+            vm.Translations = vm.Translations
+                .OrderByDescending(t => t.LanguageCode == "tr")
+                .ThenBy(t => t.LanguageId)
+                .ToList();
+
+            return ServiceResult<NoContent>.Success(null);
         }
     }
 }

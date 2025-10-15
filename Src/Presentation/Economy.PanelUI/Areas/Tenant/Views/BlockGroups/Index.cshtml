@@ -1,5 +1,5 @@
 ﻿@using Economy.Application.TenantUI.Dtos
-@model List<BlockGroupDto>
+@model List<BlockGroupListDto>
 @{
     ViewData["Title"] = "Sayfa Blokları";
 }
@@ -33,9 +33,7 @@
                                 <thead>
                                     <tr>
                                         <th>Id</th>
-                                        <th>Code</th>
                                         <th>Title</th>
-                                        <th>Items</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -44,9 +42,7 @@
                                     {
                                         <tr>
                                             <td>@g.Id</td>
-                                            <td>@g.Code</td>
                                             <td>@g.Title</td>
-                                            <td>@g.Items?.Count</td>
                                             <td>
                                                 <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@g.Id">Düzenle</a>
                                                 <form asp-action="Delete" asp-route-id="@g.Id" method="post" style="display:inline">

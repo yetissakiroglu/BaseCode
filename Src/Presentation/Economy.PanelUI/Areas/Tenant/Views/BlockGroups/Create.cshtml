@@ -32,25 +32,64 @@
 
                         <form asp-action="Create" method="post">
                             @Html.AntiForgeryToken()
-                            <div class="mb-3">
-                                <label class="form-label">Code</label>
-                                <input asp-for="Code" class="form-control" />
-                                @Html.ValidationMessageFor(m => m.Code)
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Title</label>
-                                <input asp-for="Title" class="form-control" />
-                                @Html.ValidationMessageFor(m => m.Title)
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <textarea asp-for="Description" class="form-control"></textarea>
-                            </div>
+                            <hr class="custom-divider" />
+                            <div class="card-body">
+                                <ul class="nav nav-tabs tab-light-secondary" role="tablist">
+                                    @for (int i = 0; i < Model.Translations.Count; i++)
+                                    {
+                                        var t = Model.Translations[i];
+                                        var code = (t.LanguageCode ?? "xx").ToLower();       // güvenli
+                                        var tabId = $"tab-{code}-{i}";                        // benzersiz
+                                        var paneId = $"pane-{code}-{i}";                      // benzersiz
+                                                                                              <li class="nav-item" role="presentation">
+                                                                                                  <button class="gap-2 nav-link @(i == 0 ? "active" : null)"
+                                                                                                          id="@tabId"
+                                                                                                          type="button"
+                                                                                                          role="tab"
+                                                                                                          data-bs-toggle="tab"
+                                                                                                          data-bs-target="#@paneId"
+                                                                                                          aria-controls="@paneId"
+                                                                                                          aria-selected="@(i == 0 ? "true" : "false")">
+                                                                                                      <i class="@t.LanguageIcon?.ToLower()"></i>
+                                                                                                      @t.LanguageCode?.ToUpper()
+                                                                                                  </button>
+                                                                                              </li>
+                                    }
+                                </ul>
+                                <div class="tab-content border border-top-0 p-3">
+                                    @for (int i = 0; i < Model.Translations.Count; i++)
+                                    {
+                                        var t = Model.Translations[i];
+                                        var code = (t.LanguageCode ?? "xx").ToLower();
+                                        var tabId = $"tab-{code}-{i}";
+                                        var paneId = $"pane-{code}-{i}";
 
-                            <hr class="my-4" />
-                            <div class="mt-4 text-end">
-                                <button class="btn btn-primary" type="submit">Kaydet</button>
-                                <a class="btn btn-outline-secondary" href="/tenant/blockgroups">Vazgeç</a>
+                                        <div id="@paneId" class="tab-pane fade @(i == 0 ? "show active" : null)" role="tabpanel" aria-labelledby="@tabId">
+
+                                            <input type="hidden" name="Translations[@i].LanguageId" value="@t.LanguageId" />
+                                            <input type="hidden" name="Translations[@i].LanguageCode" value="@t.LanguageCode" />
+                                            <input type="hidden" name="Translations[@i].LanguageIcon" value="@t.LanguageIcon" />
+                                            <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
+
+                                            <div class="row g-3">
+
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Başlık</label>
+                                                    <input class="form-control" name="Translations[@i].Title" value="@t.Title" />
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label class="form-label">Kısa Açıklama</label>
+                                                    <textarea class="form-control" name="Translations[@i].Description" rows="2">@t.Description</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <hr class="my-4" />
+                                <div class="mt-4 text-end">
+                                    <button class="btn btn-primary" type="submit">Kaydet</button>
+                                    <a class="btn btn-outline-secondary" href="/tenant/blockgroups">Vazgeç</a>
+                                </div>
                             </div>
                         </form>
                     </div>
