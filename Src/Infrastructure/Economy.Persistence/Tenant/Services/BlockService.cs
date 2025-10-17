@@ -324,7 +324,7 @@ namespace Economy.Persistence.Tenant.Services
             ci.Columns = vm.Columns;
             ci.ShowTitle = vm.ShowTitle;
             ci.PageId = vm.PageId;
-           
+
 
             var existing = await _trRepo.DataSet
                 .Where(t => !t.IsDeleted && t.BlockGroupId == id)
@@ -349,12 +349,26 @@ namespace Economy.Persistence.Tenant.Services
                 {
                     ex.Description = t.Description;
                     ex.Title = t.Title;
-               
+
                 }
             }
 
             await _unitOfWork.SaveHotelChangesAsync();
             return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
+        }
+
+        public async Task<ServiceResult<NoContent>> DeleteGroupAsync(int id, CancellationToken ct)
+        {
+            var ent = await _blockGroupRepository.DataSet.Include(x=>x.Translations).Include(x => x.Items).ThenInclude(i => i.Gallery).FirstOrDefaultAsync(x => x.Id == id);
+            if (ent == null)
+            {
+                return ServiceResult<NoContent>.Empty();
+            }
+            
+            _blockGroupRepository.DataSet.Remove(ent);
+            await _unitOfWork.SaveHotelChangesAsync();
+
+            return ServiceResult<NoContent>.Success(new NoContent() { Id = id });
         }
     }
 }

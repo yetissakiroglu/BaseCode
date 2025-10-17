@@ -60,16 +60,17 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 foreach (var e in vr.Errors) ModelState.AddModelError(e.PropertyName, e.ErrorMessage);
                 return View(model);
             }
-           var updateResult =  await _svc.UpdateGroupAsync(id, model, ct);
+            var updateResult = await _svc.UpdateGroupAsync(id, model, ct);
             AddMessage(updateResult);
 
             return RedirectToAction(nameof(Edit), new { id });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
         {
-            await _svc.DeleteGroupAsync(id);
+            var result = await _svc.DeleteGroupAsync(id, ct);
+            AddMessage(result);
             return RedirectToAction(nameof(Index));
         }
 
