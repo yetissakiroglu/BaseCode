@@ -1,0 +1,81 @@
+﻿@using Economy.Panel.UI.Areas.Tenant.Controllers
+@model dynamic
+@{
+    var sh = (BlockEditorController.GallerySharedVm)ViewBag.Shared;
+    int pageBlockId = (int)ViewBag.PageBlockId;
+    int languageId = (int)ViewBag.LanguageId;
+}
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
+
+        <h4>Gallery Editor</h4>
+        <form method="post" action="@Url.Action("SavePageBlock","BlockEditor", new { area="Tenant", pageBlockId, languageId })">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="type" value="ImageGallery" />
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Mode</label>
+                    @{
+                        //Todo Block
+                        var t = sh.Mode == "grid" ? "selected" : "";
+                        var y = sh.Mode == "carousel" ? "selected" : "";
+                    }
+
+
+                    <select class="form-select" name="Mode">
+                        <option value="grid">grid</option>
+                        <option value="carousel">carousel</option>
+                    </select>
+                </div>
+            </div>
+            <hr />
+            <div id="images">
+                @foreach (var it in Model.Images)
+                {
+                    var gid = Guid.NewGuid().ToString("N");   // Satırın tek anahtarı
+
+                    <div class="row g-2 align-items-end image-row mb-2">
+
+                        <div class="col-md-7">
+                            <label class="form-label">Image Url</label>
+                            <input class="form-control" name="Images[@gid].Url" value="@it.Url" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Alt</label>
+                            <input class="form-control" name="Images[@gid].Alt" value="@it.Alt" />
+                        </div>
+                    </div>
+                }
+            </div>
+            <button type="button" class="btn btn-outline-primary" id="btnAdd">Add Image</button>
+            <div class="mt-3">
+                <button class="btn btn-primary">Save</button>
+                <a class="btn btn-outline-secondary" href="@Url.Action("Edit", "PageBlocks", new { area = "Tenant", id = pageBlockId })">Back</a>
+            </div>
+        </form>
+
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+              document.getElementById('btnAdd').addEventListener('click', ()=>{
+          const container = document.getElementById('images');
+          const key = crypto.randomUUID().replace(/-/g,""); // veya artan sayı
+          container.insertAdjacentHTML('beforeend', `
+            <div class="row g-2 align-items-end image-row mb-2">
+              <div class="col-md-7">
+                <label class="form-label">Image Url</label>
+                <input class="form-control" name="Images[${key}].Url" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Alt</label>
+                <input class="form-control" name="Images[${key}].Alt" />
+              </div>
+            </div>`);
+        });
+
+
+    </script>
+}

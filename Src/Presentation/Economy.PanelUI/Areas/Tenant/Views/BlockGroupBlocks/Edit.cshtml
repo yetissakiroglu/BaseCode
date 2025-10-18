@@ -1,0 +1,69 @@
+﻿@using Economy.Application.TenantUI.Dtos
+@using Economy.Domain.Entites.TenantEntity.EntityAppLanguages
+@model BlockGroupBlockVm
+@{
+    ViewBag.Title = $"Edit Block #{Model.Id}";
+    var langs = (List<AppLanguage>)ViewBag.Languages;
+    // var info = (dynamic)ViewBag.PageInfo;
+}
+<main>
+    <div class="container-fluid">
+@await Html.PartialAsync("_breadcrumbs")
+
+<h3>@ViewBag.Title</h3>
+@* <div class="alert alert-light">PageId: @info.PageId </div>
+ *@
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div class="card">
+        <div class="card-header d-flex gap-3 align-items-center">
+            <div><strong>Type:</strong> @Model.Type</div>
+            <div class="form-check"><input class="form-check-input" asp-for="IsActive" /> <label class="form-check-label">Active</label></div>
+            <select class="form-select form-select-sm" asp-for="Stage" style="width:130px">
+                <option value="0">Draft</option>
+                <option value="1">Published</option>
+                <option value="2">Archived</option>
+            </select>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <label class="form-label">Sort</label>
+                    <input class="form-control" asp-for="SortOrder" />
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">Shared JSON</label>
+                    <textarea class="form-control" asp-for="SharedJson" rows="8"></textarea>
+                </div>
+            </div>
+            <hr />
+            <h6>Localized</h6>
+            <div class="row g-3">
+                @for (int i = 0; i < Model.Translations.Count; i++)
+                {
+                    var lid = Model.Translations[i].LanguageId;
+                    var ln = langs.First(x => x.Id == lid);
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header"><strong>@ln.Name (@ln.Code.ToUpper())</strong></div>
+                            <div class="card-body">
+                                <input type="hidden" asp-for="Translations[i].Id" />
+                                <input type="hidden" asp-for="Translations[i].LanguageId" />
+                                <textarea class="form-control" asp-for="Translations[i].LocalizedJson" rows="6"></textarea>
+                                <div class="mt-2">
+                                    <a class="btn btn-sm btn-outline-secondary" href='@Url.Action("EditPageBlock", "BlockEditor", new { area = "Tenant", pageBlockId = Model.Id ?? 0, languageId = lid })'>Type-specific editor</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-primary" type="submit">Save</button>
+            <a class="btn btn-outline-secondary" href="@Url.Action("Index")">Back</a>
+        </div>
+    </div>
+</form>
+</div></main>

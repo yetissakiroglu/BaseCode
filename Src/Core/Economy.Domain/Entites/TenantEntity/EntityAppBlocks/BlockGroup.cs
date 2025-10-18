@@ -12,6 +12,8 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppBlocks
         public bool ShowTitle { get; set; } = true;
         public bool ShowDescription { get; set; } = true;
         public ICollection<BlockGroupTranslation> Translations { get; set; } = new List<BlockGroupTranslation>();
+        public ICollection<BlockGroupBlock> BlockGroupBlocks { get; set; } = [];
+
         public ICollection<BlockItem> Items { get; set; } = new List<BlockItem>();
     }
 }

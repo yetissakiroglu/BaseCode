@@ -1,4 +1,7 @@
 ﻿@using Economy.Application.TenantUI.Dtos
+@using Economy.Application.TenantUI.Dtos.AppLanguageDtos
+@using Economy.Core.Enums
+@using Economy.Domain.Entites.TenantEntity.EntityAppLanguages
 @model BlockGroupDto
 @{
     ViewData["Title"] = "Yeni Block Group";
@@ -86,6 +89,33 @@
                                     }
                                 </div>
                                 <hr class="my-4" />
+
+                                <div class="d-flex align-items-center justify-content-between mt-4">
+                                    <h5>Blocks</h5>
+                                    <div class="d-flex gap-2">
+                                        <select id="newBlockType" class="form-select form-select-sm" style="width:220px">
+                                            <option value="">Block type…</option>
+                                            @foreach (var t in Enum.GetValues(typeof(BlockType)))
+                                            {
+                                                <option value="@((int)t)">@t</option>
+                                            }
+                                        </select>
+                                        <button class="btn btn-sm btn-outline-primary" type="button" id="btnAddNew">Add Block</button>
+                                    </div>
+                                </div>
+
+                                <div id="grid" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3 mt-1">
+                                    @for (int i = 0; i < Model.Blocks.Count; i++)
+                                    {
+                                        <partial name="_BlockCard" for="Blocks[i]" />
+                                    }
+                                </div>
+
+
+
+
+
+                                <hr class="my-4" />
                                 <div class="mt-4 text-end">
                                     <button class="btn btn-primary" type="submit">Kaydet</button>
                                     <a class="btn btn-outline-secondary" href="/tenant/blockgroups">Vazgeç</a>
@@ -98,3 +128,23 @@
         </div>
     </div>
 </main>
+
+
+
+@section Scripts {
+    <script>
+        const langs = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(((List<AppLanguageDto>)ViewBag.Languages).Select(l => l.Id)));
+        document.getElementById('btnAddNew').addEventListener('click', async ()=>{
+          const type = document.getElementById('newBlockType').value;
+          if(!type) return;
+          const idx = document.querySelectorAll('#grid .block-card').length;
+          const url = '@Url.Action("BlockCardPartial", "BlockGroups", new { area = "Tenant" })' + `?type=${type}&index=${idx}` + langs.map(l=>`&languageIds=${l}`).join('');
+          const resp = await fetch(url); const html = await resp.text();
+          document.getElementById('grid').insertAdjacentHTML('beforeend', html);
+          normalizeOrders();
+        });
+         function normalizeOrders(){
+          document.querySelectorAll('#grid .block-card').forEach((el,idx)=>{ const input=el.querySelector('input[name$=".SortOrder"]'); if(input) input.value=idx; });
+        }
+    </script>
+}

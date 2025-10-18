@@ -1,0 +1,55 @@
+﻿@using Economy.Panel.UI.Areas.Tenant.Controllers
+@model dynamic
+@{
+    var sh = (BlockEditorController.FeatureSharedVm)ViewBag.Shared;
+    int pageBlockId = (int)ViewBag.PageBlockId;
+    int languageId = (int)ViewBag.LanguageId;
+}
+<main>
+    <div class="container-fluid">
+@await Html.PartialAsync("_breadcrumbs")
+
+
+<h4>Feature Grid Editor</h4>
+<form method="post" action="@Url.Action("SavePageBlock","BlockEditor", new { area="Tenant", pageBlockId, languageId })">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="type" value="FeatureGrid" />
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label">Columns (2-4)</label>
+            <input class="form-control" name="Columns" type="number" min="2" max="4" value="@sh.Columns" />
+        </div>
+    </div>
+    <hr />
+    <div id="items">
+        @foreach (var it in Model.Items)
+        {
+            <div class="row g-2 align-items-end item-row mb-2">
+                <div class="col-md-3"><label class="form-label">Icon</label><input class="form-control" name="Items[@Guid.NewGuid()].Icon" value="@it.Icon" /></div>
+                <div class="col-md-4"><label class="form-label">Title</label><input class="form-control" name="Items[@Guid.NewGuid()].Title" value="@it.Title" /></div>
+                <div class="col-md-4"><label class="form-label">Description</label><input class="form-control" name="Items[@Guid.NewGuid()].Description" value="@it.Description" /></div>
+            </div>
+        }
+    </div>
+    <button type="button" class="btn btn-outline-primary" id="btnAdd">Add Item</button>
+    <div class="mt-3">
+        <button class="btn btn-primary">Save</button>
+        <a class="btn btn-outline-secondary" href="@Url.Action("Edit", "PageBlocks", new { area = "Tenant", id = pageBlockId })">Back</a>
+    </div>
+</form>
+</div></main>
+
+@section Scripts {
+    <script>
+        document.getElementById('btnAdd').addEventListener('click', ()=>{
+          const container = document.getElementById('items');
+          const gid = crypto.randomUUID();
+          container.insertAdjacentHTML('beforeend', `
+            <div class="row g-2 align-items-end item-row mb-2">
+              <div class="col-md-3"><label class="form-label">Icon</label><input class="form-control" name="Items[${gid}].Icon" /></div>
+              <div class="col-md-4"><label class="form-label">Title</label><input class="form-control" name="Items[${gid}].Title" /></div>
+              <div class="col-md-4"><label class="form-label">Description</label><input class="form-control" name="Items[${gid}].Description" /></div>
+            </div>`);
+        });
+    </script>
+}
