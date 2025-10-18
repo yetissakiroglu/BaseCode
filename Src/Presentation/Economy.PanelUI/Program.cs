@@ -6,21 +6,18 @@ using Economy.Application.AdminUI.Interfaces;
 using Economy.Application.AdminUI.Validations.AppSuperAdminValidator;
 using Economy.Application.AdminUI.Validations.AppValidator;
 using Economy.Application.AdminUI.Validations.PanelAppAccountValidator;
-using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Application.Interfaces;
 using Economy.Application.Providers;
 using Economy.Application.TenantUI.Dtos;
 using Economy.Application.TenantUI.Dtos.AppMenuDtos;
 using Economy.Application.TenantUI.Dtos.AppSettingDtos;
 using Economy.Application.TenantUI.Dtos.AppSettingLogoDtos;
-using Economy.Application.TenantUI.Dtos.AppSlideDtos;
 using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Application.TenantUI.Validations;
 using Economy.Application.TenantUI.Validations.AppMenuIValidator;
 using Economy.Application.TenantUI.Validations.AppSettingLogoValidator;
 using Economy.Application.TenantUI.Validations.AppSettingValidator;
-using Economy.Application.TenantUI.Validations.AppSlideValidator;
 using Economy.Application.TenantUI.Validations.AppTechnicalSettingValidator;
 using Economy.Core.ContextFactory;
 using Economy.Core.Core;
@@ -34,7 +31,6 @@ using Economy.Panel.UI.Filters;
 using Economy.Panel.UI.Middlewares;
 using Economy.Persistence.Admin.Services;
 using Economy.Persistence.Contexts;
-using Economy.Persistence.PersistenceUI.Services;
 using Economy.Persistence.Providers;
 using Economy.Persistence.Repositories.UnitOfWork;
 using Economy.Persistence.Services;
@@ -130,9 +126,6 @@ builder.Services.AddScoped<IValidator<AppSuperAdminUserCreateDto>, SuperAdminCre
 builder.Services.AddScoped<IValidator<AppSuperAdminUserEditDto>, SuperAdminEditDtoValidator>();
 
 builder.Services.AddScoped<IPanelAppMenuService, PanelAppMenuService>();
-builder.Services.AddScoped<ISiteConfigAccessor, SiteConfigAccessor>();
-builder.Services.AddScoped<IMenuAccessor, MenuAccessor>(); //
-builder.Services.AddScoped<IPageAccessor, PageAccessor>();
 
 builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelDashboardService, PanelDashboardService>();
@@ -152,7 +145,6 @@ builder.Services.AddScoped<IValidator<AppGeneralSettingCreateDto>, AppGeneralSet
 builder.Services.AddScoped<IValidator<AppGeneralSettingEditDto>, AppGeneralSettingEditDtoValidator>();
 builder.Services.AddScoped<IValidator<AppTechnicalSettingCreateEditDto>, AppTechnicalSettingCreateEditDtoValidator>();
 builder.Services.AddScoped<IValidator<AppSettingCreateEditDto>, AppSettingCreateEditDtoValidator>();
-builder.Services.AddScoped<IValidator<AppSlideCreateEditDto>, AppSlideCreateEditDtoValidator>();
 builder.Services.AddTransient<IValidator<AppSettingLogoCreateEditDto>, AppSettingLogoCreateEditDtoValidator>();
 
 builder.Services.AddTransient<IValidator<AppCreateEditDto>, AppCreateEditDtoValidator>();
@@ -164,7 +156,6 @@ builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sýný
 builder.Services.AddScoped<IPanelAppSettingService, PanelAppSettingService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppLanguageService, PanelAppLanguageService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppSettingLogoService, PanelAppSettingLogoService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelAppSlideService, PanelAppSlideService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelAppGeneralSettingService, PanelAppGeneralSettingService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IDatabaseBackupService, DatabaseBackupService>();
 builder.Services.AddScoped<IPanelAppAccountService, PanelAppAccountService>();

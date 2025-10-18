@@ -1,10 +1,8 @@
-﻿using Economy.Application.TenantUI.Dtos;
-using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
+﻿using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppMenus;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
-using Economy.Domain.Entites.TenantEntity.EntityAppSlides;
 using Economy.Persistence.Tenant.Configurations.ConfigurationAppLanguage;
 using Economy.Persistence.Tenant.Configurations.ConfigurationAppSettings;
 using Microsoft.EntityFrameworkCore;
@@ -50,8 +48,7 @@ namespace Economy.Persistence.Contexts
 
         public DbSet<AppMenu> AppMenus { get; set; }
         public DbSet<AppMenuTranslation> AppMenuTranslations { get; set; }
-        public DbSet<AppSlide> AppSlides { get; set; }
-        public DbSet<AppSlideTranslation> AppSlideTranslations { get; set; }
+
 
 
         // === İçerik (çekirdek) ===
