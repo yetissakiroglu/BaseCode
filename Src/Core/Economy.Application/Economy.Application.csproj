@@ -14,7 +14,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Economy.Core\Economy.Core.csproj" />
     <ProjectReference Include="..\Economy.Domain\Economy.Domain.csproj" />
-    <ProjectReference Include="..\Economy.UI.Models\Economy.UI.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

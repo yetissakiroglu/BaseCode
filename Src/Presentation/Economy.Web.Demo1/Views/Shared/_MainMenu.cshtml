@@ -1,9 +1,0 @@
-﻿@model List<MenuNode>
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
-    <ul class="listing d-none d-lg-block" id="navigation">
-        @foreach (var it in Model)
-        {
-            @await Html.PartialAsync("_MenuNode", it, new ViewDataDictionary(ViewData) { ["Level"] = 0 })
-        }
-    </ul>
