@@ -3,13 +3,14 @@ using Economy.Core.Enums;
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
     [Area("Tenant")]
-    [Route("tenant/page-blocks")]
+    [Authorize]
     public class BlockGroupBlocksController : Controller
     {
         private readonly IUnitOfWork _uow;
@@ -23,7 +24,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             _apppageblock = uow.HotelEntityRepository<BlockGroupBlock>();
             _langRepo = uow.HotelEntityRepository<AppLanguage>();
         }
-        [HttpGet("")]
         public async Task<IActionResult> Index(int? pageId, BlockType? type, string? q, int page = 1, int size = 20)
         {
             var query = _apppageblock.DataSet.Include(pb => pb.BlockGroup).AsQueryable();

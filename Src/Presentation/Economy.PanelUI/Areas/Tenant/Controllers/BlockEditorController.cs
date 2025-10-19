@@ -2,6 +2,7 @@
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,7 @@ using System.Text.Json;
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
     [Area("Tenant")]
-    [Route("tenant/block-editor")]
+    [Authorize]
     public class BlockEditorController : Controller
     {
         private readonly JsonSerializerOptions _json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true };

@@ -13,10 +13,7 @@ namespace Economy.Application.TenantUI.Interfaces
         Task<ServiceResult<NoContent>> UpdateGroupAsync(int id, BlockGroupDto dto, CancellationToken ct);
         Task<ServiceResult<BlockGroupDto>> GetGroupAsync(int id, CancellationToken ct);
         Task<ServiceResult<NoContent>> DeleteGroupAsync(int id, CancellationToken ct);
-
         Task<ServiceResult<NoContent>> CreateUpdateGroupAndItemsAsync(BlockGroupDto dto, CancellationToken ct);
-
-
 
 
 

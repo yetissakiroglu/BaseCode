@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
-
-
     [Area("Tenant")]
     [Authorize] // demo: sadece login gerekli; istersen Roles="Admin"
     public class ImageManagerController : Controller

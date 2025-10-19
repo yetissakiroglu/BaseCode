@@ -109,8 +109,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             }
 
             var resultEdit = await _panelAppPageService.Edit(id, vm, ct);
-
-
             AddMessage(resultEdit);
 
             var galeri = vm.Galleries.FirstOrDefault(x => x.Key == "GenelImages");
@@ -128,10 +126,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             }
 
 
-
-
-
-
             return RedirectToAction(nameof(Edit), new { id });
         }
 
@@ -143,52 +137,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-
-
-        public IActionResult CreateTest()
-        {
-            var vm = new PageCreateVm
-            {
-                Singles =
-            {
-                new ImageFieldVm { Key="KapakImage", Label="Kapak Görseli" },
-                new ImageFieldVm { Key="OgKapakImage", Label="OG Kapak Görseli" }
-            },
-                Galleries =
-            {
-                new GalleryGroupVm { Key="galeri", Label="Galeri Fotoğrafları" },
-                new GalleryGroupVm { Key="oda", Label="Oda Fotoğrafları" }
-            }
-            };
-            return View(vm);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateTest(PageCreateVm vm)
-        {
-            if (!ModelState.IsValid) return View(vm);
-
-            // TODO: DB kaydı (vm.Title, vm.Content, vm.ImageUrl (kapak), vm.ImageUrls (galeri))
-            TempData["ok"] = "Sayfa oluşturuldu (demo).";
-            return RedirectToAction(nameof(Create));
-        }
-
-        public class PageCreateVm
-        {
-            public string Title { get; set; } = string.Empty;
-            public string? Content { get; set; }
-
-            public string? ImageUrl { get; set; }       // Kapak
-            public string? OgImageUrl { get; set; }       // Kapak
-
-            public List<string> ImageUrls { get; set; } = new(); // Galeri
-
-
-            public List<ImageFieldVm> Singles { get; set; } = new();
-            public List<GalleryGroupVm> Galleries { get; set; } = new();
-        }
 
     }
 }
