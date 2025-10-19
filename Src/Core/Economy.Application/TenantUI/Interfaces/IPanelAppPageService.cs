@@ -14,6 +14,7 @@ namespace Economy.Application.TenantUI.Interfaces
         Task<ServiceResult<List<PageParentOptionDto>>> GetParentOptionsAsync(CancellationToken ct, int? excludeId = null);
         Task<ServiceResult<NoContent>> Create(PageEditDto vm, CancellationToken ct);
         Task<ServiceResult<NoContent>> Edit(int id, PageEditDto vm, CancellationToken ct);
+        Task<ServiceResult<NoContent>> CreateEdit(PageEditDto vm, CancellationToken ct);
         Task<ServiceResult<NoContent>> Delete(int id, CancellationToken ct);
     }
 }

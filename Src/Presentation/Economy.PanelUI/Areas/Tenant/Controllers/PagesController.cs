@@ -1,5 +1,4 @@
 ﻿using Economy.Application.TenantUI.Dtos.AppPageDtos;
-using Economy.Application.TenantUI.Dtos.AppPageMediaDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Dtos.Custom;
 using Economy.Core.Interfaces;
@@ -72,7 +71,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                     var mediaResult = await _panelAppPageMediaService.Create(new PageMediaEditDto
                     {
                         IsCover = galeri.CoverUrl == item.MediaUrl ? false : true,
-                        ContentItemId = result.Data.Id,
+                        AppPageId = result.Data.Id,
                         MediaUrl = item.MediaUrl,
                     }, ct);
                 }
@@ -119,8 +118,9 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                     var mediaResult = await _panelAppPageMediaService.Create(new PageMediaEditDto
                     {
                         IsCover = galeri.CoverUrl == item.MediaUrl ? false : true,
-                        ContentItemId = resultEdit.Data.Id,
+                        AppPageId = resultEdit.Data.Id,
                         MediaUrl = item.MediaUrl,
+                        
                     }, ct);
                 }
             }

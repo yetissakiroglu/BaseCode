@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Economy.Application.TenantUI.Dtos.AppPageMediaDtos;
+using Economy.Application.TenantUI.Dtos.AppPageDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools;
@@ -14,27 +14,27 @@ namespace Economy.Persistence.Tenant.Services
     public class PanelAppPageMediaService : IPanelAppPageMediaService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEntityRepository<ContentMedia, int> _entityPageMediaRepository;
-        private readonly IEntityRepository<ContentMediaTranslation, int> _trRepo;
+        private readonly IEntityRepository<AppPageMedia, int> _entityPageMediaRepository;
+        private readonly IEntityRepository<AppPageMediaTranslation, int> _trRepo;
         private readonly IEntityRepository<AppLanguage, int> _entityLanguageRepository;
         private readonly IMapper _mapper;
         public PanelAppPageMediaService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            _entityPageMediaRepository = unitOfWork.HotelEntityRepository<ContentMedia>();
+            _entityPageMediaRepository = unitOfWork.HotelEntityRepository<AppPageMedia>();
             _entityLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
-            _trRepo = unitOfWork.HotelEntityRepository<ContentMediaTranslation>();
+            _trRepo = unitOfWork.HotelEntityRepository<AppPageMediaTranslation>();
             _mapper = mapper;
         }
         public async Task<ServiceResult<NoContent>> Create(PageMediaEditDto vm, CancellationToken ct)
         {
 
-            var ci = new ContentMedia
+            var ci = new AppPageMedia
             {
                 IsDeleted = false,
                 IsActive = vm.IsActive,
                 SortOrder = vm.SortOrder,
-                ContentItemId = vm.ContentItemId,
+                AppPageId = vm.AppPageId,
                 MediaUrl = vm.MediaUrl,
                 IsCover = vm.IsCover
             };
@@ -47,10 +47,10 @@ namespace Economy.Persistence.Tenant.Services
             foreach (var t in vm.Translations)
             {
 
-                var tr = new ContentMediaTranslation
+                var tr = new AppPageMediaTranslation
                 {
-                    ContentMediaId = ci.Id,
-                    LanguageId = t.LanguageId,
+                    AppPageMediaId = ci.Id,
+                    AppLanguageId = t.AppLanguageId,
                     IsDeleted = false,
                     Alt = t.Alt,
                     Caption = t.Caption
@@ -80,24 +80,24 @@ namespace Economy.Persistence.Tenant.Services
                 return ServiceResult<NoContent>.Empty();
             }
 
-            ci.ContentItemId = vm.ContentItemId;
+            ci.AppPageId = vm.AppPageId;
             ci.IsActive = vm.IsActive;
             ci.SortOrder = vm.SortOrder;
             ci.MediaUrl = vm.MediaUrl;
 
             var existing = await _trRepo.DataSet
-                .Where(t => !t.IsDeleted && t.ContentMediaId == id)
+                .Where(t => !t.IsDeleted && t.AppPageMediaId == id)
                 .ToListAsync(ct);
 
             foreach (var t in vm.Translations)
             {
-                var ex = existing.FirstOrDefault(x => x.LanguageId == t.LanguageId);
+                var ex = existing.FirstOrDefault(x => x.AppLanguageId == t.AppLanguageId);
                 if (ex is null)
                 {
-                    var tr = new ContentMediaTranslation
+                    var tr = new AppPageMediaTranslation
                     {
-                        ContentMediaId = id,
-                        LanguageId = t.LanguageId,
+                        AppPageMediaId = id,
+                        AppLanguageId = t.AppLanguageId,
                         IsDeleted = false,
                         Caption = t.Caption,
                         Alt = t.Alt,
@@ -116,17 +116,17 @@ namespace Economy.Persistence.Tenant.Services
         }
         public async Task<ServiceResult<NoContent>> EnsureLanguageTabsAsync(PageMediaEditDto vm, CancellationToken ct)
         {
-            var exist = vm.Translations.Select(t => t.LanguageId).ToHashSet();
+            var exist = vm.Translations.Select(t => t.AppLanguageId).ToHashSet();
             var langs = await _entityLanguageRepository.DataSet.Where(x => !x.IsDeleted && x.IsActive)
-                .Select(x => new { x.Id, x.Code,x.Icon }).ToListAsync(ct);
+                .Select(x => new { x.Id, x.Code, x.Icon }).ToListAsync(ct);
 
             foreach (var l in langs)
                 if (!exist.Contains(l.Id))
-                    vm.Translations.Add(new PageMediaTranslationDto { LanguageId = l.Id, LanguageCode = l.Code,LanguageIcon =l.Icon });
+                    vm.Translations.Add(new PageMediaTranslationDto { AppLanguageId = l.Id, AppLanguageCode = l.Code, AppLanguageIcon = l.Icon });
 
             vm.Translations = vm.Translations
-                .OrderByDescending(t => t.LanguageCode == "tr")
-                .ThenBy(t => t.LanguageId)
+                .OrderByDescending(t => t.AppLanguageCode == "tr")
+                .ThenBy(t => t.AppLanguageId)
                 .ToList();
 
             return ServiceResult<NoContent>.Success(null);
@@ -142,14 +142,14 @@ namespace Economy.Persistence.Tenant.Services
 
             vm.Translations = langs.Select(l => new PageMediaTranslationDto
             {
-                LanguageId = l.Id,
-                LanguageCode = l.Code,
-                LanguageIcon = l.Icon
+                AppLanguageId = l.Id,
+                AppLanguageCode = l.Code,
+                AppLanguageIcon = l.Icon
             }).ToList();
 
             return ServiceResult<NoContent>.Success(null);
         }
-        public async Task<ServiceResult<List<PageMediaListDto>>> GetPageMediaListAsync(int pageId,CancellationToken ct)
+        public async Task<ServiceResult<List<PageMediaListDto>>> GetPageMediaListAsync(int pageId, CancellationToken ct)
         {
             var defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
                .Select(l => l.Id).FirstOrDefaultAsync(ct);
@@ -159,9 +159,9 @@ namespace Economy.Persistence.Tenant.Services
                     .Select(l => l.Id).FirstOrDefaultAsync(ct);
 
             var list = await (from ci in _entityPageMediaRepository.DataSet
-                              where !ci.IsDeleted && ci.ContentItemId==pageId
-                              join tr in _trRepo.DataSet on ci.Id equals tr.ContentMediaId into trx
-                              from tr in trx.Where(t => !t.IsDeleted && t.LanguageId == defLangId).DefaultIfEmpty()
+                              where !ci.IsDeleted && ci.AppPageId == pageId
+                              join tr in _trRepo.DataSet on ci.Id equals tr.AppPageMediaId into trx
+                              from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
                               orderby ci.SortOrder, ci.Id
                               select new PageMediaListDto
                               {
@@ -189,22 +189,23 @@ namespace Economy.Persistence.Tenant.Services
             var vm = new PageMediaEditDto
             {
                 Id = ci.Id,
-                ContentItemId = ci.ContentItemId,
+                AppPageId = ci.AppPageId,
                 IsActive = ci.IsActive,
                 MediaUrl = ci.MediaUrl,
                 SortOrder = ci.SortOrder,
+                IsCover = ci.IsCover
             };
 
 
             await FillLanguagesAsync(vm, ct);
 
             var trs = await _trRepo.DataSet
-                .Where(t => !t.IsDeleted && t.ContentMediaId == ci.Id)
+                .Where(t => !t.IsDeleted && t.AppPageMediaId == ci.Id)
                 .ToListAsync(ct);
 
             foreach (var t in vm.Translations)
             {
-                var hit = trs.FirstOrDefault(x => x.LanguageId == t.LanguageId);
+                var hit = trs.FirstOrDefault(x => x.AppLanguageId == t.AppLanguageId);
                 if (hit is null) continue;
 
                 t.Id = hit.Id;
@@ -215,14 +216,14 @@ namespace Economy.Persistence.Tenant.Services
             return ServiceResult<PageMediaEditDto>.Success(vm);
         }
 
-        public async Task<ServiceResult<NoContent>> Delete(List<int> excludeIds,int ContentItemId, CancellationToken ct)
+        public async Task<ServiceResult<NoContent>> Delete(List<int> excludeIds, int ContentItemId, CancellationToken ct)
         {
             try
             {
                 var ci = await _entityPageMediaRepository.DataSet
                 .Where(x => !x.IsDeleted
                          && !excludeIds.Contains(x.Id)
-                         && x.ContentItemId == ContentItemId)
+                         && x.AppPageId == ContentItemId)
                 .ToListAsync(ct);
 
                 if (ci is null)
@@ -235,12 +236,12 @@ namespace Economy.Persistence.Tenant.Services
 
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
 
             }
-           
+
 
 
             await _unitOfWork.SaveHotelChangesAsync();

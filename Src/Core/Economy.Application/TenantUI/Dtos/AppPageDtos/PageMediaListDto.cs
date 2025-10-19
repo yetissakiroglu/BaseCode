@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Economy.Application.TenantUI.Dtos.AppPageMediaDtos
+﻿namespace Economy.Application.TenantUI.Dtos.AppPageDtos
 {
     public class PageMediaListDto
     {
         public int Id { get; set; }
-        public string MediaUrl { get; set; }
-
+        public string? MediaUrl { get; set; }
         public bool IsCover { get; set; }
         public string? Alt { get; set; }
         public string? Caption { get; set; }

@@ -15,24 +15,24 @@ namespace Economy.Persistence.Tenant.Services
     public class PanelAppPageService : IPanelAppPageService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEntityRepository<ContentItem, int> _entityPageRepository;
-        private readonly IEntityRepository<ContentItemTranslation, int> _trRepo;
+        private readonly IEntityRepository<AppPage, int> _entityPageRepository;
+        private readonly IEntityRepository<AppPageTranslation, int> _trRepo;
         private readonly IEntityRepository<AppLanguage, int> _entityLanguageRepository;
         private readonly IMapper _mapper;
         private readonly IPanelAppPageMediaService _panelAppPageMediaService;
         public PanelAppPageService(IUnitOfWork unitOfWork, IMapper mapper, IPanelAppPageMediaService panelAppPageMediaService)
         {
             _unitOfWork = unitOfWork;
-            _entityPageRepository = unitOfWork.HotelEntityRepository<ContentItem>();
+            _entityPageRepository = unitOfWork.HotelEntityRepository<AppPage>();
             _entityLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
-            _trRepo = unitOfWork.HotelEntityRepository<ContentItemTranslation>();
+            _trRepo = unitOfWork.HotelEntityRepository<AppPageTranslation>();
             _mapper = mapper;
             _panelAppPageMediaService = panelAppPageMediaService;
         }
         public async Task<ServiceResult<NoContent>> Create(PageEditDto vm, CancellationToken ct)
         {
 
-            var ci = new ContentItem
+            var ci = new AppPage
             {
                 IsDeleted = false,
                 IsActive = vm.IsActive,
@@ -40,9 +40,9 @@ namespace Economy.Persistence.Tenant.Services
                 PublishAtUtc = vm.PublishAtUtc,
                 SortOrder = vm.SortOrder,
                 Type = ContentItemType.Page,
-                OwnerId = vm.OwnerId,
-                Image = vm.Singles.FirstOrDefault(x => x.Key == "KapakImage").Url,
-                OgImage = vm.Singles.FirstOrDefault(x => x.Key == "OGImage").Url,
+                AppPageId = vm.AppPageId,
+                CoverImageUrl = vm.Singles.FirstOrDefault(x => x.Key == "KapakImage").Url,
+                OgImageUrl = vm.Singles.FirstOrDefault(x => x.Key == "OGImage").Url,
             };
 
             await _entityPageRepository.DataSet.AddAsync(ci, ct);
@@ -53,10 +53,10 @@ namespace Economy.Persistence.Tenant.Services
                 if (string.IsNullOrWhiteSpace(t.Slug) && string.IsNullOrWhiteSpace(t.Title))
                     continue;
 
-                var tr = new ContentItemTranslation
+                var tr = new AppPageTranslation
                 {
-                    ContentItemId = ci.Id,
-                    LanguageId = t.LanguageId,
+                    AppPageId = ci.Id,
+                    AppLanguageId = t.AppLanguageId,
                     IsDeleted = false,
                     Slug = t.Slug,
                     Title = t.Title,
@@ -90,30 +90,27 @@ namespace Economy.Persistence.Tenant.Services
                 return ServiceResult<NoContent>.Empty();
             }
 
-            ci.OwnerId = vm.OwnerId;
+            ci.AppPageId = vm.AppPageId;
             ci.IsActive = vm.IsActive;
             ci.IsHomepage = vm.IsHomepage;
             ci.PublishAtUtc = vm.PublishAtUtc;
             ci.SortOrder = vm.SortOrder;
-            ci.Image = vm.Singles.FirstOrDefault(x => x.Key == "KapakImage").Url;
-            ci.OgImage = vm.Singles.FirstOrDefault(x => x.Key == "OGImage").Url;
+            ci.CoverImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "KapakImage")?.Url;
+            ci.OgImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "OGImage")?.Url;
 
-            var existing = await _trRepo.DataSet
-                .Where(t => !t.IsDeleted && t.ContentItemId == id)
-                .ToListAsync(ct);
-
+            var existing = await _trRepo.DataSet.Where(t => !t.IsDeleted && t.AppPageId == id).ToListAsync(ct);
             foreach (var t in vm.Translations)
             {
-                var ex = existing.FirstOrDefault(x => x.LanguageId == t.LanguageId);
+                var ex = existing.FirstOrDefault(x => x.AppLanguageId == t.AppLanguageId);
                 if (ex is null)
                 {
                     if (string.IsNullOrWhiteSpace(t.Slug) && string.IsNullOrWhiteSpace(t.Title))
                         continue;
 
-                    var tr = new ContentItemTranslation
+                    var tr = new AppPageTranslation
                     {
-                        ContentItemId = id,
-                        LanguageId = t.LanguageId,
+                        AppPageId = id,
+                        AppLanguageId = t.AppLanguageId,
                         IsDeleted = false,
                         Slug = t.Slug,
                         Title = t.Title,
@@ -137,24 +134,24 @@ namespace Economy.Persistence.Tenant.Services
 
             await _unitOfWork.SaveHotelChangesAsync();
 
-            var ids = vm.Galleries.FirstOrDefault(x => x.Key == "GenelImages").Items.Select(x => x.Id).ToList();
+            var ids = vm.Galleries?.FirstOrDefault(x => x.Key == "GenelImages")?.Items.Select(x => x.Id).ToList();
            await _panelAppPageMediaService.Delete(ids, (int)vm.Id, ct);
 
             return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
         }
         public async Task<ServiceResult<NoContent>> EnsureLanguageTabsAsync(PageEditDto vm, CancellationToken ct)
         {
-            var exist = vm.Translations.Select(t => t.LanguageId).ToHashSet();
+            var exist = vm.Translations.Select(t => t.AppLanguageId).ToHashSet();
             var langs = await _entityLanguageRepository.DataSet.Where(x => !x.IsDeleted && x.IsActive)
                 .Select(x => new { x.Id, x.Code ,x.Icon}).ToListAsync(ct);
 
             foreach (var l in langs)
                 if (!exist.Contains(l.Id))
-                    vm.Translations.Add(new PageTranslationDto { LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon });
+                    vm.Translations.Add(new PageTranslationDto { AppLanguageId = l.Id, AppLanguageCode = l.Code, AppLanguageIcon = l.Icon });
 
             vm.Translations = vm.Translations
-                .OrderByDescending(t => t.LanguageCode == "tr")
-                .ThenBy(t => t.LanguageId)
+                .OrderByDescending(t => t.AppLanguageCode == "tr")
+                .ThenBy(t => t.AppLanguageId)
                 .ToList();
 
             return ServiceResult<NoContent>.Success(null);
@@ -170,9 +167,9 @@ namespace Economy.Persistence.Tenant.Services
 
             vm.Translations = langs.Select(l => new PageTranslationDto
             {
-                LanguageId = l.Id,
-                LanguageCode = l.Code,
-                LanguageIcon = l.Icon
+                AppLanguageId = l.Id,
+                AppLanguageCode = l.Code,
+                AppLanguageIcon = l.Icon
             }).ToList();
 
             return ServiceResult<NoContent>.Success(null);
@@ -188,10 +185,10 @@ namespace Economy.Persistence.Tenant.Services
 
             var list = await (from ci in _entityPageRepository.DataSet
                               where !ci.IsDeleted && ci.Type == ContentItemType.Page && ci.IsActive == onlyActive
-                              join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId into trx
-                              from tr in trx.Where(t => !t.IsDeleted && t.LanguageId == defLangId).DefaultIfEmpty()
-                              join ptr in _trRepo.DataSet on ci.OwnerId equals ptr.ContentItemId into ptx
-                              from ptr in ptx.Where(p => !p.IsDeleted && p.LanguageId == defLangId).DefaultIfEmpty()
+                              join tr in _trRepo.DataSet on ci.Id equals tr.AppPageId into trx
+                              from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
+                              join ptr in _trRepo.DataSet on ci.AppPageId equals ptr.AppPageId into ptx
+                              from ptr in ptx.Where(p => !p.IsDeleted && p.AppLanguageId == defLangId).DefaultIfEmpty()
                               orderby ci.SortOrder, ci.Id
                               select new PageMiniListDto
                               {
@@ -215,10 +212,10 @@ namespace Economy.Persistence.Tenant.Services
 
             var list = await (from ci in _entityPageRepository.DataSet
                               where !ci.IsDeleted && ci.Type == ContentItemType.Page
-                              join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId into trx
-                              from tr in trx.Where(t => !t.IsDeleted && t.LanguageId == defLangId).DefaultIfEmpty()
-                              join ptr in _trRepo.DataSet on ci.OwnerId equals ptr.ContentItemId into ptx
-                              from ptr in ptx.Where(p => !p.IsDeleted && p.LanguageId == defLangId).DefaultIfEmpty()
+                              join tr in _trRepo.DataSet on ci.Id equals tr.AppPageId into trx
+                              from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
+                              join ptr in _trRepo.DataSet on ci.AppPageId equals ptr.AppPageId into ptx
+                              from ptr in ptx.Where(p => !p.IsDeleted && p.AppLanguageId == defLangId).DefaultIfEmpty()
                               orderby ci.SortOrder, ci.Id
                               select new PageListDto
                               {
@@ -245,8 +242,8 @@ namespace Economy.Persistence.Tenant.Services
                 .Select(l => l.Id).FirstOrDefaultAsync(ct);
 
             var result = await (from ci in q
-                                join tr in _trRepo.DataSet on ci.Id equals tr.ContentItemId
-                                where !tr.IsDeleted && tr.LanguageId == defLangId
+                                join tr in _trRepo.DataSet on ci.Id equals tr.AppPageId
+                                where !tr.IsDeleted && tr.AppLanguageId == defLangId
                                 orderby ci.SortOrder, ci.Id
                                 select new PageParentOptionDto { Id = ci.Id, Title = tr.Title ?? ("#" + ci.Id) })
                          .ToListAsync(ct);
@@ -264,7 +261,7 @@ namespace Economy.Persistence.Tenant.Services
             var vm = new PageEditDto
             {
                 Id = ci.Id,
-                OwnerId = ci.OwnerId,
+                AppPageId = ci.AppPageId,
                 IsActive = ci.IsActive,
                 IsHomepage = ci.IsHomepage,
                 PublishAtUtc = ci.PublishAtUtc,
@@ -274,10 +271,9 @@ namespace Economy.Persistence.Tenant.Services
 
             vm.Singles = new List<ImageFieldVm>()
             {
-                new ImageFieldVm { Key = "KapakImage", Label = "Kapak Görseli",Url = ci.Image },
-                new ImageFieldVm { Key ="OGImage", Label="OG Görseli", Url = ci.OgImage}
+                new ImageFieldVm { Key = "KapakImage", Label = "Kapak Görseli",Url = ci.CoverImageUrl },
+                new ImageFieldVm { Key ="OGImage", Label="OG Görseli", Url = ci.OgImageUrl}
             };
-
 
             vm.Galleries = new List<GalleryGroupVm>()
             {
@@ -310,12 +306,12 @@ namespace Economy.Persistence.Tenant.Services
             await FillLanguagesAsync(vm, ct);
 
             var trs = await _trRepo.DataSet
-                .Where(t => !t.IsDeleted && t.ContentItemId == ci.Id)
+                .Where(t => !t.IsDeleted && t.AppPageId == ci.Id)
                 .ToListAsync(ct);
 
             foreach (var t in vm.Translations)
             {
-                var hit = trs.FirstOrDefault(x => x.LanguageId == t.LanguageId);
+                var hit = trs.FirstOrDefault(x => x.AppLanguageId == t.AppLanguageId);
                 if (hit is null) continue;
 
                 t.Id = hit.Id;
@@ -325,6 +321,7 @@ namespace Economy.Persistence.Tenant.Services
                 t.Body = hit.Body;
                 t.MetaTitle = hit.MetaTitle;
                 t.MetaDescription = hit.MetaDescription;
+                
             }
 
             return ServiceResult<PageEditDto>.Success(vm);

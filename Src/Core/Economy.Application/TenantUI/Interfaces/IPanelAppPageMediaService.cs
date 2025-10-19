@@ -1,4 +1,4 @@
-﻿using Economy.Application.TenantUI.Dtos.AppPageMediaDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppPageDtos;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 

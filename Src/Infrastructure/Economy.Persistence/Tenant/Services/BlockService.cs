@@ -413,8 +413,7 @@ namespace Economy.Persistence.Tenant.Services
                 {
                     DefaultImageMode = vm.DefaultImageMode,
                     IsActive = vm.IsActive,
-                    ShowDescription = vm.ShowDescription
-                 ,
+                    ShowDescription = vm.ShowDescription,
                     Columns = vm.Columns,
                     ShowTitle = vm.ShowTitle,
                     PageId = vm.PageId
@@ -481,8 +480,6 @@ namespace Economy.Persistence.Tenant.Services
             }
             await _unitOfWork.SaveHotelChangesAsync();
             return ServiceResult<NoContent>.Success(new NoContent() { Id = p.Id });
-
-
 
         }
     }

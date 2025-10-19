@@ -25,6 +25,16 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppSettingTranslation> AppSettingTranslations { get; set; }
         public DbSet<AppSettingLogo> AppSettingLogos { get; set; }
         public DbSet<AppLanguage> AppLanguages { get; set; }
+        public DbSet<AppMenu> AppMenus { get; set; }
+        public DbSet<AppMenuTranslation> AppMenuTranslations { get; set; }
+        public DbSet<AppPage> AppPages { get; set; }
+        public DbSet<AppPageTranslation> AppPageTranslations { get; set; }
+        public DbSet<AppPageMedia> AppPageMedias { get; set; }
+        public DbSet<AppPageMediaTranslation> AppPageMediaTranslations { get; set; }
+
+
+
+
 
         public DbSet<BlockGroup> BlockGroups => Set<BlockGroup>();
         public DbSet<BlockGroupTranslation> BlockGroupTranslations => Set<BlockGroupTranslation>();
@@ -46,18 +56,8 @@ namespace Economy.Persistence.Contexts
         //-------------------------
 
 
-        public DbSet<AppMenu> AppMenus { get; set; }
-        public DbSet<AppMenuTranslation> AppMenuTranslations { get; set; }
 
 
-
-        // === İçerik (çekirdek) ===
-        public DbSet<ContentItem> ContentItem { get; set; }
-        public DbSet<ContentItemTranslation> ContentItemTranslation { get; set; }
-
-        // === Medya (galeri) ===
-        public DbSet<ContentMedia> ContentMedia { get; set; }
-        public DbSet<ContentMediaTranslation> ContentMediaTranslation { get; set; }
 
 
 

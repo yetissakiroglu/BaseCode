@@ -35,12 +35,12 @@
                             <div class="row g-3 align-items-end">
 
                                 <div class="col-md-4">
-                                    <label asp-for="OwnerId" class="form-label fw-semibold">Üst Sayfa</label>
-                                    <select asp-for="OwnerId" class="form-select">
+                                    <label asp-for="AppPageId" class="form-label fw-semibold">Üst Sayfa</label>
+                                    <select asp-for="AppPageId" class="form-select">
                                         <option value="">(Yok)</option>
                                         @foreach (var p in parents)
                                         {
-                                            <option value="@p.Id" selected="@(Model.OwnerId == p.Id ? "selected" : null)">
+                                            <option value="@p.Id" selected="@(Model.AppPageId == p.Id ? "selected" : null)">
                                                 @p.Title
                                             </option>
                                         }
@@ -95,7 +95,7 @@
                                 @for (int i = 0; i < Model.Translations.Count; i++)
                                 {
                                     var t = Model.Translations[i];
-                                    var code = (t.LanguageCode ?? "xx").ToLower();       // güvenli
+                                    var code = (t.AppLanguageCode ?? "xx").ToLower();       // güvenli
                                     var tabId = $"tab-{code}-{i}";                        // benzersiz
                                     var paneId = $"pane-{code}-{i}";                      // benzersiz
                                     <li class="nav-item" role="presentation">
@@ -107,8 +107,8 @@
                                                 data-bs-target="#@paneId"
                                                 aria-controls="@paneId"
                                                 aria-selected="@(i == 0 ? "true" : "false")">
-                                            <i class="@t.LanguageIcon?.ToLower()"></i>
-                                            @t.LanguageCode?.ToUpper()
+                                            <i class="@t.AppLanguageIcon?.ToLower()"></i>
+                                            @t.AppLanguageCode?.ToUpper()
                                         </button>
                                     </li>
                                 }
@@ -117,15 +117,15 @@
                                 @for (int i = 0; i < Model.Translations.Count; i++)
                                 {
                                     var t = Model.Translations[i];
-                                    var code = (t.LanguageCode ?? "xx").ToLower();
+                                    var code = (t.AppLanguageCode ?? "xx").ToLower();
                                     var tabId = $"tab-{code}-{i}";
                                     var paneId = $"pane-{code}-{i}";
 
                                     <div id="@paneId" class="tab-pane fade @(i == 0 ? "show active" : null)" role="tabpanel" aria-labelledby="@tabId">
 
-                                        <input type="hidden" name="Translations[@i].LanguageId" value="@t.LanguageId" />
-                                        <input type="hidden" name="Translations[@i].LanguageCode" value="@t.LanguageCode" />
-                                        <input type="hidden" name="Translations[@i].LanguageIcon" value="@t.LanguageIcon" />
+                                        <input type="hidden" name="Translations[@i].AppLanguageId" value="@t.AppLanguageId" />
+                                        <input type="hidden" name="Translations[@i].AppLanguageCode" value="@t.AppLanguageCode" />
+                                        <input type="hidden" name="Translations[@i].AppLanguageIcon" value="@t.AppLanguageIcon" />
                                         <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
 
                                         <div class="row g-3">
