@@ -6,9 +6,11 @@ using Economy.Core.Enums;
 using Economy.Core.Interfaces;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
+using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Imaging;
 
 namespace Economy.Persistence.Tenant.Services
 {
@@ -18,6 +20,8 @@ namespace Economy.Persistence.Tenant.Services
         private readonly IEntityRepository<AppPage, int> _entityPageRepository;
         private readonly IEntityRepository<AppPageTranslation, int> _trRepo;
         private readonly IEntityRepository<AppLanguage, int> _entityLanguageRepository;
+        private readonly IEntityRepository<AppPageMedia, int> _appPageMedia;
+
         private readonly IMapper _mapper;
         private readonly IPanelAppPageMediaService _panelAppPageMediaService;
         public PanelAppPageService(IUnitOfWork unitOfWork, IMapper mapper, IPanelAppPageMediaService panelAppPageMediaService)
@@ -26,6 +30,7 @@ namespace Economy.Persistence.Tenant.Services
             _entityPageRepository = unitOfWork.HotelEntityRepository<AppPage>();
             _entityLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
             _trRepo = unitOfWork.HotelEntityRepository<AppPageTranslation>();
+            _appPageMedia = unitOfWork.HotelEntityRepository<AppPageMedia>();
             _mapper = mapper;
             _panelAppPageMediaService = panelAppPageMediaService;
         }
@@ -135,7 +140,7 @@ namespace Economy.Persistence.Tenant.Services
             await _unitOfWork.SaveHotelChangesAsync();
 
             var ids = vm.Galleries?.FirstOrDefault(x => x.Key == "GenelImages")?.Items.Select(x => x.Id).ToList();
-           await _panelAppPageMediaService.Delete(ids, (int)vm.Id, ct);
+            //await _panelAppPageMediaService.Delete(ids, (int)vm.Id, ct);
 
             return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
         }
@@ -143,7 +148,7 @@ namespace Economy.Persistence.Tenant.Services
         {
             var exist = vm.Translations.Select(t => t.AppLanguageId).ToHashSet();
             var langs = await _entityLanguageRepository.DataSet.Where(x => !x.IsDeleted && x.IsActive)
-                .Select(x => new { x.Id, x.Code ,x.Icon}).ToListAsync(ct);
+                .Select(x => new { x.Id, x.Code, x.Icon }).ToListAsync(ct);
 
             foreach (var l in langs)
                 if (!exist.Contains(l.Id))
@@ -321,10 +326,109 @@ namespace Economy.Persistence.Tenant.Services
                 t.Body = hit.Body;
                 t.MetaTitle = hit.MetaTitle;
                 t.MetaDescription = hit.MetaDescription;
-                
+
             }
 
             return ServiceResult<PageEditDto>.Success(vm);
+        }
+        public async Task<ServiceResult<NoContent>> CreateEdit(PageEditDto vm, CancellationToken ct)
+        {
+            var langs = await _entityLanguageRepository.DataSet
+                .Where(x => x.IsActive && !x.IsDeleted)
+                .ToListAsync(ct);
+
+            if (langs.Count == 0)
+                return ServiceResult<NoContent>.Failure("Aktif dil bulunamadı.");
+
+            var gallery = vm.Galleries?.FirstOrDefault(x => x.Key == "GenelImages");
+            var items = gallery?.Items ?? new List<MediaItem>();
+
+            AppPage page = vm.Id == null
+                ? new AppPage()
+                : await _entityPageRepository.DataSet
+                    .Include(x => x.Translations)
+                    .Include(x => x.Medias).ThenInclude(x => x.Translations)
+                    .FirstOrDefaultAsync(x => x.Id == vm.Id, ct) ?? new AppPage();
+
+            // Ana alanlar
+            page.IsActive = vm.IsActive;
+            page.IsHomepage = vm.IsHomepage;
+            page.CoverImageUrl = vm.CoverImageUrl;
+            page.OgImageUrl = vm.OgImageUrl;
+            page.PublishAtUtc = vm.PublishAtUtc;
+            page.SortOrder = vm.SortOrder;
+            page.Type = ContentItemType.Page;
+
+            // Çeviriler
+            foreach (var l in langs)
+            {
+                var incoming = vm.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
+                var cur = page.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
+                if (cur == null)
+                {
+                    page.Translations.Add(new AppPageTranslation
+                    {
+                        AppLanguageId = l.Id,
+                        Slug = incoming?.Slug,
+                        Title = incoming?.Title,
+                        Summary = incoming?.Summary,
+                        Body = incoming?.Body,
+                        MetaTitle = incoming?.MetaTitle,
+                        MetaDescription = incoming?.MetaDescription
+                    });
+                }
+                else
+                {
+                    cur.Slug = incoming?.Slug;
+                    cur.Title = incoming?.Title;
+                    cur.Summary = incoming?.Summary;
+                    cur.Body = incoming?.Body;
+                    cur.MetaTitle = incoming?.MetaTitle;
+                    cur.MetaDescription = incoming?.MetaDescription;
+                }
+            }
+
+            // Galeri
+            if (gallery != null)
+            {
+                var keepIds = items.Where(i => i.Id.HasValue).Select(i => i.Id!.Value).ToHashSet();
+                var toRemove = page.Medias.Where(m => !keepIds.Contains(m.Id)).ToList();
+                _appPageMedia.DataSet.RemoveRange(toRemove);
+
+                int order = 0;
+                foreach (var m in items.OrderBy(x => x.SortOrder))
+                {
+                    var media = m.Id == null || m.Id ==0
+                        ? new AppPageMedia { MediaUrl = m.MediaUrl }
+                        : page.Medias.FirstOrDefault(x => x.Id == m.Id) ?? new AppPageMedia();
+
+                    media.SortOrder = order++;
+                    media.IsCover = gallery.CoverUrl == m.MediaUrl;
+                    media.MediaUrl = m.MediaUrl;
+
+                    foreach (var l in langs)
+                    {
+                        var mt = m.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
+                        var cur = media.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
+                        if (cur == null)
+                            media.Translations.Add(new AppPageMediaTranslation { AppLanguageId = l.Id, Alt = mt?.Alt, Caption = mt?.Caption });
+                        else
+                        {
+                            cur.Alt = mt?.Alt;
+                            cur.Caption = mt?.Caption;
+                        }
+                    }
+
+                    if (m.Id == null || m.Id ==0)
+                        page.Medias.Add(media);
+                }
+            }
+
+            if (vm.Id == null)
+                _entityPageRepository.DataSet.Add(page);
+
+            await _unitOfWork.SaveHotelChangesAsync();
+            return ServiceResult<NoContent>.Success(new NoContent { Id = page.Id });
         }
     }
 }

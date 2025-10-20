@@ -13,7 +13,6 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppBlocks
         public bool ShowDescription { get; set; } = true;
         public ICollection<BlockGroupTranslation> Translations { get; set; } = new List<BlockGroupTranslation>();
         public ICollection<BlockGroupBlock> BlockGroupBlocks { get; set; } = [];
-
         public ICollection<BlockItem> Items { get; set; } = new List<BlockItem>();
     }
 }

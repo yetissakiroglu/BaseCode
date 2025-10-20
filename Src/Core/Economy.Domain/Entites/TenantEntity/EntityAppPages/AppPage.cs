@@ -14,6 +14,6 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
         public int SortOrder { get; set; } = 0;
         public DateTime? PublishAtUtc { get; set; }
         public ICollection<AppPageTranslation> Translations { get; set; } = new List<AppPageTranslation>();
-        public ICollection<AppPageMedia> Media { get; set; } = new List<AppPageMedia>();
+        public ICollection<AppPageMedia> Medias { get; set; } = new List<AppPageMedia>();
     }
 }

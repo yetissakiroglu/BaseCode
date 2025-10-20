@@ -49,6 +49,9 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PageEditDto vm, CancellationToken ct)
         {
+            vm.CoverImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "KapakImage")?.Url;
+            vm.OgImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "OGImage")?.Url;
+
             if (!ModelState.IsValid)
             {
                 await _panelAppPageService.EnsureLanguageTabsAsync(vm, ct);
@@ -56,31 +59,39 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 return View(vm);
             }
 
-            var result = await _panelAppPageService.Create(vm, ct);
-            AddMessage(result);
-            if (!result.IsSuccess)
+            var resultNew = await _panelAppPageService.CreateEdit(vm, ct);
+            AddMessage(resultNew);
+            if (!resultNew.IsSuccess)
             {
                 return RedirectToAction(nameof(Create), vm);
             }
 
-            var galeri = vm.Galleries.FirstOrDefault(x => x.Key == "GenelImages");
-            foreach (var item in galeri.Items)
-            {
-                if (item.Id == 0)
-                {
-                    var mediaResult = await _panelAppPageMediaService.Create(new PageMediaEditDto
-                    {
-                        IsCover = galeri.CoverUrl == item.MediaUrl ? false : true,
-                        AppPageId = result.Data.Id,
-                        MediaUrl = item.MediaUrl,
-                    }, ct);
-                }
-            }
+
+            //var result = await _panelAppPageService.Create(vm, ct);
+            //AddMessage(result);
+            //if (!result.IsSuccess)
+            //{
+            //    return RedirectToAction(nameof(Create), vm);
+            //}
+
+            //var galeri = vm.Galleries.FirstOrDefault(x => x.Key == "GenelImages");
+            //foreach (var item in galeri.Items)
+            //{
+            //    if (item.Id == 0)
+            //    {
+            //        var mediaResult = await _panelAppPageMediaService.Create(new PageMediaEditDto
+            //        {
+            //            IsCover = galeri.CoverUrl == item.MediaUrl ? false : true,
+            //            AppPageId = result.Data.Id,
+            //            MediaUrl = item.MediaUrl,
+            //        }, ct);
+            //    }
+            //}
 
 
 
 
-            return RedirectToAction(nameof(Edit), new { id = result.Data.Id });
+            return RedirectToAction(nameof(Edit), new { id = resultNew.Data.Id });
         }
 
         [HttpGet]
@@ -100,31 +111,20 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, PageEditDto vm, CancellationToken ct)
         {
+            vm.CoverImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "KapakImage")?.Url;
+            vm.OgImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "OGImage")?.Url;
+
             if (!ModelState.IsValid)
             {
                 await _panelAppPageService.EnsureLanguageTabsAsync(vm, ct);
                 ViewBag.Parents = (await _panelAppPageService.GetParentOptionsAsync(ct, excludeId: id)).Data;
                 return View(vm);
             }
-
-            var resultEdit = await _panelAppPageService.Edit(id, vm, ct);
+            vm.Id = id;
+            var resultEdit = await _panelAppPageService.CreateEdit(vm, ct);
             AddMessage(resultEdit);
 
-            var galeri = vm.Galleries.FirstOrDefault(x => x.Key == "GenelImages");
-            foreach (var item in galeri.Items)
-            {
-                if (item.Id == 0)
-                {
-                    var mediaResult = await _panelAppPageMediaService.Create(new PageMediaEditDto
-                    {
-                        IsCover = galeri.CoverUrl == item.MediaUrl ? false : true,
-                        AppPageId = resultEdit.Data.Id,
-                        MediaUrl = item.MediaUrl,
-                        
-                    }, ct);
-                }
-            }
-
+          
 
             return RedirectToAction(nameof(Edit), new { id });
         }

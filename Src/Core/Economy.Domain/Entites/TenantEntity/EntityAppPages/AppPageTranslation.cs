@@ -1,7 +1,5 @@
 ﻿using Economy.Domain.BaseEntities;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
 {

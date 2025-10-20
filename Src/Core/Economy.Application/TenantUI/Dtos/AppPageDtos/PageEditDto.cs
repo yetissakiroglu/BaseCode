@@ -7,16 +7,15 @@ namespace Economy.Application.TenantUI.Dtos.AppPageDtos
         public int? Id { get; set; }
         public int? AppPageId { get; set; }
         public bool IsActive { get; set; } = true;
-        public bool IsHomepage { get; set; } = false; 
+        public bool IsHomepage { get; set; } = false;
         public DateTime? PublishAtUtc { get; set; }
         public int SortOrder { get; set; }
         public short Type { get; set; } = 1;
         public string? CoverImageUrl { get; set; }
         public string? OgImageUrl { get; set; }
         public List<PageTranslationDto> Translations { get; set; } = new();
-        public List<ImageFieldVm> Singles { get; set; } = new();
         public List<GalleryGroupVm> Galleries { get; set; } = new();
-
+        public List<ImageFieldVm> Singles { get; set; } = new();
     }
 
     public class PageTranslationDto
@@ -32,5 +31,5 @@ namespace Economy.Application.TenantUI.Dtos.AppPageDtos
         public string? MetaTitle { get; set; }
         public string? MetaDescription { get; set; }
     }
-        
+
 }

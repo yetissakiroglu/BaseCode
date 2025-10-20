@@ -4,11 +4,6 @@ using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Economy.Persistence.Tenant.Services
 {
@@ -35,44 +30,52 @@ namespace Economy.Persistence.Tenant.Services
 
         public async Task<IReadOnlyList<BlockGroupMiniDto>> ListForPageAsync(int pageId)
         {
-            return await (from pb in _pageBlock.DataSet
-                          join g in _blockGroupRepository.DataSet on pb.BlockGroupId equals g.Id
+            return await (from pb in _pageBlock.DataSet.AsNoTracking()
+                          join g in _blockGroupRepository.DataSet.AsNoTracking() on pb.BlockGroupId equals g.Id
                           where pb.PageId == pageId
                           orderby pb.SortOrder
                           select new BlockGroupMiniDto
                           {
                               Id = g.Id,
-                              //Title = g.Title,
+                              Title = g.Translations.FirstOrDefault().Title,
                               Columns = (int)g.Columns,
                               IsActive = g.IsActive,
                               SortOrder = pb.SortOrder
-                          }).ToListAsync();
+                          })
+                 .ToListAsync();
         }
 
         public async Task<IReadOnlyList<BlockGroupMiniDto>> ListCandidatesAsync(int pageId, string? q = null)
         {
-            var usedIds = _pageBlock.DataSet
-                             .Where(x => x.PageId == pageId)
-                             .Select(x => x.BlockGroupId);
+            // Bu sayfada zaten kullanılan blok gruplarını bul
+            var usedIds = await _pageBlock.DataSet
+                .Where(x => x.PageId == pageId)
+                .Select(x => x.BlockGroupId)
+                .ToListAsync();
 
-            var baseQ = _blockGroupRepository.DataSet
-                .Where(g => !g.IsDeleted && g.IsActive && !usedIds.Contains(g.Id));
+            // Kullanılmayan aktif blok gruplarını getir
+            var query = _blockGroupRepository.DataSet
+                .Include(x => x.Translations)
+                .Where(x => x.IsActive && !x.IsDeleted && !usedIds.Contains(x.Id));
 
-            //if (!string.IsNullOrWhiteSpace(q))
-            //    baseQ = baseQ.Where(g => g.Title.Contains(q));
+            // Arama yapılacaksa
+            if (!string.IsNullOrWhiteSpace(q))
+                query = query.Where(x => x.Translations.Any(t => t.Title.Contains(q)));
 
-            var based = baseQ.ToList();
-
-            return await baseQ
-                //.OrderBy(g => g.Title)
-                .Select(g => new BlockGroupMiniDto
+            // Listeyi oluştur
+            var list = await query
+                .Select(x => new BlockGroupMiniDto
                 {
-                    Id = g.Id,
-                    //Title = g.Title,
-                    Columns = (int)g.Columns,
-                    IsActive = g.IsActive,
+                    Id = x.Id,
+                    Title = x.Translations.FirstOrDefault()!.Title,
+                    Columns = (int)x.Columns,
+                    IsActive = x.IsActive,
                     SortOrder = 0
-                }).ToListAsync();
+                })
+                .OrderBy(x => x.Title)
+                .ToListAsync();
+
+            return list;
         }
 
         public async Task AttachAsync(int pageId, int blockGroupId)
