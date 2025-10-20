@@ -25,6 +25,7 @@
             var item = Model.Group.Items[j];
             var url = item.MediaUrl;
             var id = item.Id;
+
             var key = $"k{id}_{j}"; // benzersiz ve stabil bir key
 
             <div class="col-sm-2 col-xl-2 mb-3">
@@ -39,6 +40,28 @@
                     <span class="check-box radiobox">
                         <img src="@url" alt="" class="checkbox-image rounded shadow-sm" width="230" height="150" />
                     </span>
+
+                    @foreach (var translater in item.Translations)
+                    {
+                        <small class="text-muted">
+                            <i class="@translater.AppLanguageIcon"></i> @translater.AppLanguageCode.ToUpper()
+                        </small>
+                        <input type="hidden" name="Galleries[@Model.Index].Items[@key].Translations.Index" value="@translater.AppLanguageCode" />
+                        <input type="hidden" name="Galleries[@Model.Index].Items[@key].Translations[@translater.AppLanguageCode].AppLanguageId" value="@translater.AppLanguageId" />
+                        <input type="hidden" name="Galleries[@Model.Index].Items[@key].Translations[@translater.AppLanguageCode].AppLanguageCode" value="@translater.AppLanguageCode" />
+                        <input type="hidden" name="Galleries[@Model.Index].Items[@key].Translations[@translater.AppLanguageCode].AppLanguageIcon" value="@translater.AppLanguageIcon" />
+
+                        <input class="form-control form-control-sm mt-1"
+                               name="Galleries[@Model.Index].Items[@key].Translations[@translater.AppLanguageCode].Alt"
+                               value="@translater.Alt"
+                               placeholder="Alt (@translater.AppLanguageCode)" />
+
+                        <input class="form-control form-control-sm mt-1"
+                               name="Galleries[@Model.Index].Items[@key].Translations[@translater.AppLanguageCode].Caption"
+                               value="@translater.Caption"
+                               placeholder="Caption (@translater.AppLanguageCode)" />
+                    }
+
                     <button type="button"
                             class="btn btn-sm btn-outline-danger mt-1 btn-del"
                             data-url="@url" data-group="@Model.Index">

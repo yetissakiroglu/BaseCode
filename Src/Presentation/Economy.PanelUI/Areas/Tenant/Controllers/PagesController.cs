@@ -123,9 +123,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             vm.Id = id;
             var resultEdit = await _panelAppPageService.CreateEdit(vm, ct);
             AddMessage(resultEdit);
-
-          
-
+         
             return RedirectToAction(nameof(Edit), new { id });
         }
 
