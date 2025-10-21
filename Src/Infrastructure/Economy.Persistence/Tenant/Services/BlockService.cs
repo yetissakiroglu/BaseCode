@@ -24,8 +24,6 @@ namespace Economy.Persistence.Tenant.Services
         {
             _unitOfWork = unitOfWork;
             _blockGroupRepository = unitOfWork.HotelEntityRepository<BlockGroup>();
-            _blockItemRepository = unitOfWork.HotelEntityRepository<BlockItem>();
-            _blockItemImageRepository = unitOfWork.HotelEntityRepository<BlockItemImage>();
             _entityLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
             _trRepo = unitOfWork.HotelEntityRepository<BlockGroupTranslation>();
             _blockGroupBlock = unitOfWork.HotelEntityRepository<BlockGroupBlock>();
@@ -34,10 +32,7 @@ namespace Economy.Persistence.Tenant.Services
         public async Task<List<BlockGroupDto>> GetGroupsAsync(bool includeItems = true)
         {
             var q = _blockGroupRepository.DataSet.AsQueryable();
-            if (includeItems)
-                q = q.Include(x => x.Items).ThenInclude(i => i.Gallery);
-
-
+         
             var list = await q.OrderBy(x => x.ShowTitle).ToListAsync();
             return _mapper.Map<List<BlockGroupDto>>(list);
         }
@@ -46,10 +41,7 @@ namespace Economy.Persistence.Tenant.Services
         public async Task<BlockGroupDto?> GetGroupAsync(int id, bool includeItems = true)
         {
             var q = _blockGroupRepository.DataSet.AsQueryable();
-            if (includeItems)
-                q = q.Include(x => x.Items).ThenInclude(i => i.Gallery);
-
-
+ 
             var ent = await q.FirstOrDefaultAsync(x => x.Id == id);
             return ent == null ? null : _mapper.Map<BlockGroupDto>(ent);
         }
@@ -101,98 +93,14 @@ namespace Economy.Persistence.Tenant.Services
 
         public async Task DeleteGroupAsync(int id)
         {
-            var ent = await _blockGroupRepository.DataSet.Include(x => x.Items).ThenInclude(i => i.Gallery)
+            var ent = await _blockGroupRepository.DataSet
             .FirstOrDefaultAsync(x => x.Id == id);
             if (ent == null) return;
             _blockGroupRepository.DataSet.Remove(ent);
             await _unitOfWork.SaveHotelChangesAsync();
         }
 
-
-        public async Task<int> AddItemAsync(int groupId, BlockItemDto dto)
-        {
-            var group = await _blockGroupRepository.DataSet.FirstOrDefaultAsync(x => x.Id == groupId);
-            if (group == null) return 0;
-
-
-            var item = _mapper.Map<BlockItem>(dto);
-            item.BlockGroupId = groupId;
-            _blockItemRepository.DataSet.Add(item);
-            await _unitOfWork.SaveHotelChangesAsync();
-
-            // Gallery url’lerini kaydet
-            if (dto.Gallery?.Any() == true)
-            {
-                var imgs = dto.Gallery.Select((url, idx) => new BlockItemImage
-                {
-                    BlockItemId = item.Id,
-                    ImageUrl = url,
-                    SortOrder = idx
-                });
-                _blockItemImageRepository.DataSet.AddRange(imgs);
-                await _unitOfWork.SaveHotelChangesAsync();
-            }
-
-
-            return item.Id;
-        }
-        public async Task UpdateItemAsync(int itemId, BlockItemDto dto)
-        {
-            var item = await _blockItemRepository.DataSet.Include(x => x.Gallery).FirstOrDefaultAsync(x => x.Id == itemId);
-            if (item == null) return;
-
-
-            item.Title = dto.Title;
-            item.Summary = dto.Summary;
-            item.CoverImage = dto.CoverImage;
-            item.ImageModeOverride = dto.ImageModeOverride;
-            item.LinkType = dto.LinkType;
-            item.LinkedPageId = dto.LinkedPageId;
-            item.ExternalUrl = dto.ExternalUrl;
-            item.Target = dto.Target;
-            item.ColumnsOverride = dto.ColumnsOverride;
-            item.SortOrder = dto.SortOrder;
-            item.IsActive = dto.IsActive;
-
-
-            // Gallery’yi sıfırla ve yeniden yaz
-            _blockItemImageRepository.DataSet.RemoveRange(item.Gallery);
-            if (dto.Gallery?.Any() == true)
-            {
-                var imgs = dto.Gallery.Select((url, idx) => new BlockItemImage
-                {
-                    BlockItemId = item.Id,
-                    ImageUrl = url,
-                    SortOrder = idx
-                });
-                await _blockItemImageRepository.DataSet.AddRangeAsync(imgs);
-            }
-
-
-            await _unitOfWork.SaveHotelChangesAsync();
-        }
-
-
-        public async Task DeleteItemAsync(int itemId)
-        {
-            var item = await _blockItemRepository.DataSet.Include(x => x.Gallery).FirstOrDefaultAsync(x => x.Id == itemId);
-            if (item == null) return;
-            _blockItemRepository.DataSet.Remove(item);
-            await _unitOfWork.SaveHotelChangesAsync();
-        }
-
-
-        public async Task SortItemsAsync(int groupId, List<(int itemId, int sortOrder)> sortPairs)
-        {
-            var items = await _blockItemRepository.DataSet.Where(x => x.BlockGroupId == groupId).ToListAsync();
-            foreach (var (itemId, sort) in sortPairs)
-            {
-                var it = items.FirstOrDefault(x => x.Id == itemId);
-                if (it != null) it.SortOrder = sort;
-            }
-            await _unitOfWork.SaveHotelChangesAsync();
-        }
-
+   
         public async Task<ServiceResult<List<BlockGroupListDto>>> GetGroupsListAsync(CancellationToken ct)
         {
             var defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
@@ -210,7 +118,6 @@ namespace Economy.Persistence.Tenant.Services
                               select new BlockGroupListDto
                               {
                                   Id = ci.Id,
-                                  DefaultImageMode = ci.DefaultImageMode,
                                   ShowDescription = ci.ShowDescription,
                                   Columns = ci.Columns,
                                   ShowTitle = ci.ShowTitle,
@@ -333,11 +240,9 @@ namespace Economy.Persistence.Tenant.Services
             }
 
 
-            ci.DefaultImageMode = vm.DefaultImageMode;
             ci.ShowDescription = vm.ShowDescription;
             ci.Columns = vm.Columns;
             ci.ShowTitle = vm.ShowTitle;
-            ci.PageId = vm.PageId;
 
 
             var existing = await _trRepo.DataSet
@@ -373,7 +278,7 @@ namespace Economy.Persistence.Tenant.Services
 
         public async Task<ServiceResult<NoContent>> DeleteGroupAsync(int id, CancellationToken ct)
         {
-            var ent = await _blockGroupRepository.DataSet.Include(x => x.Translations).Include(x => x.Items).ThenInclude(i => i.Gallery).FirstOrDefaultAsync(x => x.Id == id);
+            var ent = await _blockGroupRepository.DataSet.Include(x => x.Translations).FirstOrDefaultAsync(x => x.Id == id);
             if (ent == null)
             {
                 return ServiceResult<NoContent>.Empty();
@@ -411,7 +316,7 @@ namespace Economy.Persistence.Tenant.Services
             {
                 p = await _blockGroupRepository.DataSet.Include(x => x.Translations).Include(x => x.BlockGroupBlocks).ThenInclude(x => x.Translations)
                     .FirstAsync(x => x.Id == vm.Id.Value);
-                p.IsActive = vm.IsActive; p.Columns = vm.Columns; p.DefaultImageMode = vm.DefaultImageMode; p.ShowDescription = vm.ShowDescription;
+                p.IsActive = vm.IsActive; p.Columns = vm.Columns; p.ShowDescription = vm.ShowDescription;
 
                 // Sayfa çevirileri
                 foreach (var l in langs)

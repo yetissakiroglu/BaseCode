@@ -20,14 +20,8 @@ namespace Economy.Application.TenantUI.Interfaces
 
 
         Task<List<BlockGroupDto>> GetGroupsAsync(bool includeItems = true);
-        //Task<BlockGroupDto?> GetGroupAsync(int id, bool includeItems = true);
         Task UpdateGroupAsync(int id, BlockGroupDto dto);
         Task DeleteGroupAsync(int id);
 
-
-        Task<int> AddItemAsync(int groupId, BlockItemDto dto);
-        Task UpdateItemAsync(int itemId, BlockItemDto dto);
-        Task DeleteItemAsync(int itemId);
-        Task SortItemsAsync(int groupId, List<(int itemId, int sortOrder)> sortPairs);
     }
 }

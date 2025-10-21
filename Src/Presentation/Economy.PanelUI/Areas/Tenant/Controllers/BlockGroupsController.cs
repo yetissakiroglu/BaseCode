@@ -15,11 +15,10 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
     {
         private readonly IBlockGroupService _svc;
         private readonly IValidator<BlockGroupDto> _groupVal;
-        private readonly IValidator<BlockItemDto> _itemVal;
         private readonly IPanelAppLanguageService _panelAppLanguageService;
-        public BlockGroupsController(IBlockGroupService svc, IValidator<BlockGroupDto> groupVal, IValidator<BlockItemDto> itemVal, IPanelAppLanguageService panelAppLanguageService)
+        public BlockGroupsController(IBlockGroupService svc, IValidator<BlockGroupDto> groupVal, IPanelAppLanguageService panelAppLanguageService)
         {
-            _svc = svc; _groupVal = groupVal; _itemVal = itemVal;
+            _svc = svc; _groupVal = groupVal;
             _panelAppLanguageService = panelAppLanguageService;
         }
         public async Task<IActionResult> Index(CancellationToken ct)
@@ -138,42 +137,42 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
 
         // --- Items ---
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddItem(int groupId, BlockItemDto item)
-        {
-            var vr = await _itemVal.ValidateAsync(item);
-            if (!vr.IsValid)
-            {
-                foreach (var e in vr.Errors) ModelState.AddModelError(e.PropertyName, e.ErrorMessage);
-                return RedirectToAction(nameof(Edit), new { id = groupId });
-            }
-            await _svc.AddItemAsync(groupId, item);
-            return RedirectToAction(nameof(Edit), new { id = groupId });
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> AddItem(int groupId, BlockItemDto item)
+        //{
+        //    var vr = await _itemVal.ValidateAsync(item);
+        //    if (!vr.IsValid)
+        //    {
+        //        foreach (var e in vr.Errors) ModelState.AddModelError(e.PropertyName, e.ErrorMessage);
+        //        return RedirectToAction(nameof(Edit), new { id = groupId });
+        //    }
+        //    await _svc.AddItemAsync(groupId, item);
+        //    return RedirectToAction(nameof(Edit), new { id = groupId });
+        //}
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateItem(int groupId, int itemId, BlockItemDto item)
-        {
-            var vr = await _itemVal.ValidateAsync(item);
-            if (!vr.IsValid)
-            {
-                foreach (var e in vr.Errors) ModelState.AddModelError(e.PropertyName, e.ErrorMessage);
-                return RedirectToAction(nameof(Edit), new { id = groupId });
-            }
-            await _svc.UpdateItemAsync(itemId, item);
-            return RedirectToAction(nameof(Edit), new { id = groupId });
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> UpdateItem(int groupId, int itemId, BlockItemDto item)
+        //{
+        //    var vr = await _itemVal.ValidateAsync(item);
+        //    if (!vr.IsValid)
+        //    {
+        //        foreach (var e in vr.Errors) ModelState.AddModelError(e.PropertyName, e.ErrorMessage);
+        //        return RedirectToAction(nameof(Edit), new { id = groupId });
+        //    }
+        //    await _svc.UpdateItemAsync(itemId, item);
+        //    return RedirectToAction(nameof(Edit), new { id = groupId });
+        //}
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteItem(int groupId, int itemId)
-        {
-            await _svc.DeleteItemAsync(itemId);
-            return RedirectToAction(nameof(Edit), new { id = groupId });
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteItem(int groupId, int itemId)
+        //{
+        //    await _svc.DeleteItemAsync(itemId);
+        //    return RedirectToAction(nameof(Edit), new { id = groupId });
+        //}
     }
 }

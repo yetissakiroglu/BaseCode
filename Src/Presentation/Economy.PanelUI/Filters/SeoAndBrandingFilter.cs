@@ -1,19 +1,15 @@
 ﻿using Economy.Application.Providers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-
 namespace Economy.Panel.UI.Filters
 {
     public class SeoAndBrandingFilter : IAsyncActionFilter
     {
         private readonly IAppSettingsProvider _provider;
-
         public SeoAndBrandingFilter(IAppSettingsProvider provider) => _provider = provider;
-
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var executed = await next();
-
             // Sadece ViewResult'larda çalışalım
             if (executed.Result is ViewResult vr)
             {

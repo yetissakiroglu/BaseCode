@@ -72,8 +72,7 @@ builder.Services.AddDbContext<HotelDbContext>(options =>
 
 
 // FileManager ayarlarý + storage
-builder.Services.Configure<FileManagerOptions>(
-    builder.Configuration.GetSection("FileManager"));
+builder.Services.Configure<FileManagerOptions>(builder.Configuration.GetSection("FileManager"));
 builder.Services.AddSingleton<IImageStorage, LocalImageStorage>();
 
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
@@ -109,7 +108,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
     options.AccessDeniedPath = new PathString($"/Error/{HttpStatusCode.Forbidden}");
-
 });
 
 builder.Services.AddMemoryCache();
@@ -141,7 +139,6 @@ builder.Services.AddScoped<IPageBlockService, PageBlockService>();
 
 
 builder.Services.AddTransient<IValidator<BlockGroupDto>, BlockGroupDtoValidator>();
-builder.Services.AddTransient<IValidator<BlockItemDto>, BlockItemDtoValidator>();
 
 builder.Services.AddScoped<IValidator<AppGeneralSettingCreateDto>, AppGeneralSettingCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<AppGeneralSettingEditDto>, AppGeneralSettingEditDtoValidator>();
@@ -188,10 +185,7 @@ builder.Services.AddScoped<TenantProvider>();
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-
-
 var fileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files"));
-
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = fileProvider,
