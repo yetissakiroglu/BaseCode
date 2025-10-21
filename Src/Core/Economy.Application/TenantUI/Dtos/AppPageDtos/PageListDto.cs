@@ -1,4 +1,6 @@
-﻿namespace Economy.Application.TenantUI.Dtos.AppPageDtos
+﻿using Economy.Core.Enums;
+
+namespace Economy.Application.TenantUI.Dtos.AppPageDtos
 {
     public class PageListDto
     {
@@ -8,6 +10,7 @@
         public required string Slug { get; set; }
         public bool IsHomepage { get; set; }
         public bool IsActive { get; set; }
+        public PageStage Stage { get; set; } = PageStage.Draft;
         public DateTime? PublishAtUtc { get; set; }
         public int SortOrder { get; set; }
     }

@@ -1,9 +1,26 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace Economy.Core.Extensions
 {
     public static class EnumExtensions
     {
+
+        public static IEnumerable<(int Value, string Name)> GetDisplayValues<T>() where T : Enum
+        {
+            return Enum.GetValues(typeof(T))
+                       .Cast<T>()
+                       .Select(e => (
+                           Convert.ToInt32(e),
+                           e.GetType()
+                            .GetMember(e.ToString())
+                            .First()
+                            .GetCustomAttribute<DisplayAttribute>()?.Name ?? e.ToString()
+                       ));
+        }
+
+
         public static string GetDescription(this Enum value)
         {
             var fieldInfo = value.GetType().GetField(value.ToString());

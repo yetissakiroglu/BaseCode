@@ -11,6 +11,7 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
         public string? CoverImageUrl { get; set; }
         public string? OgImageUrl { get; set; }
         public bool IsActive { get; set; } = true;
+        public PageStage Stage { get; set; } = PageStage.Draft;
         public int SortOrder { get; set; } = 0;
         public DateTime? PublishAtUtc { get; set; }
         public ICollection<AppPageTranslation> Translations { get; set; } = new List<AppPageTranslation>();

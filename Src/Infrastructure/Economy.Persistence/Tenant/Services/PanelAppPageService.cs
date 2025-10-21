@@ -37,6 +37,7 @@ namespace Economy.Persistence.Tenant.Services
             {
                 IsDeleted = false,
                 IsActive = vm.IsActive,
+                Stage = vm.Stage,
                 IsHomepage = vm.IsHomepage,
                 PublishAtUtc = vm.PublishAtUtc,
                 SortOrder = vm.SortOrder,
@@ -92,6 +93,7 @@ namespace Economy.Persistence.Tenant.Services
             }
 
             ci.AppPageId = vm.AppPageId;
+            ci.Stage = vm.Stage;
             ci.IsActive = vm.IsActive;
             ci.IsHomepage = vm.IsHomepage;
             ci.PublishAtUtc = vm.PublishAtUtc;
@@ -225,6 +227,7 @@ namespace Economy.Persistence.Tenant.Services
                                   Title = tr.Title,
                                   Slug = tr.Slug,
                                   IsActive = ci.IsActive,
+                                  Stage = ci.Stage,
                                   IsHomepage = ci.IsHomepage,
                                   PublishAtUtc = ci.PublishAtUtc,
                                   SortOrder = ci.SortOrder,
@@ -274,6 +277,7 @@ namespace Economy.Persistence.Tenant.Services
                 Id = page.Id,
                 AppPageId = page.AppPageId,
                 IsActive = page.IsActive,
+                Stage = page.Stage,
                 IsHomepage = page.IsHomepage,
                 PublishAtUtc = page.PublishAtUtc,
                 SortOrder = page.SortOrder,
@@ -363,6 +367,7 @@ namespace Economy.Persistence.Tenant.Services
 
             // Ana alanlar
             page.IsActive = vm.IsActive;
+            page.Stage = vm.Stage;
             page.IsHomepage = vm.IsHomepage;
             page.CoverImageUrl = vm.CoverImageUrl;
             page.OgImageUrl = vm.OgImageUrl;

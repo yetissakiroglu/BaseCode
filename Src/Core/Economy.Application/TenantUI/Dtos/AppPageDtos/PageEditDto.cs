@@ -1,4 +1,5 @@
 ﻿using Economy.Core.Dtos.Custom;
+using Economy.Core.Enums;
 
 namespace Economy.Application.TenantUI.Dtos.AppPageDtos
 {
@@ -7,6 +8,7 @@ namespace Economy.Application.TenantUI.Dtos.AppPageDtos
         public int? Id { get; set; }
         public int? AppPageId { get; set; }
         public bool IsActive { get; set; } = true;
+        public PageStage Stage { get; set; } = PageStage.Draft;
         public bool IsHomepage { get; set; } = false;
         public DateTime? PublishAtUtc { get; set; }
         public int SortOrder { get; set; }
