@@ -6,10 +6,8 @@ namespace Economy.Application.TenantUI.Dtos
     {
         public int? Id { get; set; }
         public BlockColumns Columns { get; set; } = BlockColumns.Three;
-        public ImageMode DefaultImageMode { get; set; } = ImageMode.CoverOnly;
         public bool ShowTitle { get; set; } = true;
         public bool ShowDescription { get; set; } = true;
-        public int? PageId { get; set; }
         public bool IsActive { get; set; } = true;
         public List<BlockGroupTranslationDto> Translations { get; set; } = new();
         public List<BlockGroupBlockVm> Blocks { get; set; } = new();

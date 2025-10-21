@@ -12,18 +12,13 @@ namespace Economy.Persistence.Tenant.Services
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEntityRepository<BlockGroup, int> _blockGroupRepository;
-        private readonly IEntityRepository<BlockItem, int> _blockItemRepository;
-        private readonly IEntityRepository<BlockItemImage, int> _blockItemImageRepository;
         private readonly IEntityRepository<PageBlock, int> _pageBlock;
-
-        
+       
 
         public PageBlockService(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _blockGroupRepository = unitOfWork.HotelEntityRepository<BlockGroup>();
-            _blockItemRepository = unitOfWork.HotelEntityRepository<BlockItem>();
-            _blockItemImageRepository = unitOfWork.HotelEntityRepository<BlockItemImage>();
             _pageBlock = unitOfWork.HotelEntityRepository<PageBlock>();
             _mapper = mapper;
         }

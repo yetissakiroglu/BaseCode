@@ -21,11 +21,13 @@ using Economy.Application.TenantUI.Validations.AppSettingValidator;
 using Economy.Application.TenantUI.Validations.AppTechnicalSettingValidator;
 using Economy.Core.ContextFactory;
 using Economy.Core.Core;
+using Economy.Core.Dtos;
 using Economy.Core.Helpers;
 using Economy.Core.Interfaces;
 using Economy.Core.Options;
 using Economy.Core.Services.Providers;
 using Economy.Domain.Entites.AdminEntity.EntityAppUsers;
+using Economy.Infrastructure;
 using Economy.Panel.UI;
 using Economy.Panel.UI.Filters;
 using Economy.Panel.UI.Middlewares;
@@ -162,7 +164,8 @@ builder.Services.AddScoped<IPanelAppAccountService, PanelAppAccountService>();
 builder.Services.AddScoped<IPanelAppPageService, PanelAppPageService>();
 builder.Services.AddScoped<IPanelAppPageMediaService, PanelAppPageMediaService>();
 
-
+builder.Services.Configure<SeoOptions>(builder.Configuration.GetSection("Seo"));
+builder.Services.AddScoped<ISlugService, SlugService>();
 
 builder.Services.AddScoped<IFileImageHelperService, FileImageHelperService>(); // Token service kaydý
 

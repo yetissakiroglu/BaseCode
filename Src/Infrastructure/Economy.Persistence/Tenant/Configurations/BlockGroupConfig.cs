@@ -10,14 +10,7 @@ namespace Economy.Persistence.Tenant.Configurations
         {
             b.ToTable("BlockGroups");
             b.HasKey(x => x.Id);
-
-            //b.Property(x => x.Title).HasMaxLength(200).IsRequired();
-            //b.Property(x => x.Description).HasMaxLength(1000);
-
-            b.HasMany(x => x.Items)
-            .WithOne(i => i.BlockGroup)
-            .HasForeignKey(i => i.BlockGroupId)
-            .OnDelete(DeleteBehavior.Cascade);
+ 
         }
     }
 }

@@ -31,43 +31,14 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppPageTranslation> AppPageTranslations { get; set; }
         public DbSet<AppPageMedia> AppPageMedias { get; set; }
         public DbSet<AppPageMediaTranslation> AppPageMediaTranslations { get; set; }
-
-
-
-
-
         public DbSet<BlockGroup> BlockGroups => Set<BlockGroup>();
         public DbSet<BlockGroupTranslation> BlockGroupTranslations => Set<BlockGroupTranslation>();
-
         public DbSet<BlockGroupBlock> BlockGroupBlocks => Set<BlockGroupBlock>();
         public DbSet<BlockGroupBlockTranslation> BlockGroupBlockTranslations => Set<BlockGroupBlockTranslation>();
-
-
-
-        
-
-        public DbSet<BlockItem> BlockItems => Set<BlockItem>();
-        public DbSet<BlockItemImage> BlockItemImages => Set<BlockItemImage>();
         public DbSet<PageBlock> PageBlocks => Set<PageBlock>();
-
-        
-
-
-        //-------------------------
-
-
-
-
-
-
-
-
-     
-        // diğer otel tabloları...
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-        
 
 
             modelBuilder.ApplyConfiguration(new AppLanguage_Configuration()); // ← Burası önemli

@@ -4,9 +4,8 @@
 @using Economy.Domain.Entites.TenantEntity.EntityAppLanguages
 @model BlockGroupDto
 @{
-    ViewData["Title"] = "Block Group Düzenle";
+    ViewData["Title"] = "Sayfa Block Grubu Düzenle";
 }
-
 
 <main>
     <div class="container-fluid">
@@ -49,14 +48,7 @@
                                     <input class="form-check-input" type="checkbox" asp-for="ShowDescription" />
                                     <label class="form-check-label">Show Description</label>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Default Image Mode</label>
-                                    <select asp-for="DefaultImageMode" class="form-select" asp-items="Html.GetEnumSelectList<ImageMode>()"></select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">PageId (opsiyonel)</label>
-                                    <input asp-for="PageId" class="form-control" />
-                                </div>
+                      
                             </div>
 
                             <hr class="custom-divider" />

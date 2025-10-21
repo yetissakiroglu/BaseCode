@@ -98,19 +98,19 @@
                                     var code = (t.AppLanguageCode ?? "xx").ToLower();       // güvenli
                                     var tabId = $"tab-{code}-{i}";                        // benzersiz
                                     var paneId = $"pane-{code}-{i}";                      // benzersiz
-                                    <li class="nav-item" role="presentation">
-                                        <button class="gap-2 nav-link @(i == 0 ? "active" : null)"
-                                                id="@tabId"
-                                                type="button"
-                                                role="tab"
-                                                data-bs-toggle="tab"
-                                                data-bs-target="#@paneId"
-                                                aria-controls="@paneId"
-                                                aria-selected="@(i == 0 ? "true" : "false")">
-                                            <i class="@t.AppLanguageIcon?.ToLower()"></i>
-                                            @t.AppLanguageCode?.ToUpper()
-                                        </button>
-                                    </li>
+                                                                                          <li class="nav-item" role="presentation">
+                                                                                              <button class="gap-2 nav-link @(i == 0 ? "active" : null)"
+                                                                                                      id="@tabId"
+                                                                                                      type="button"
+                                                                                                      role="tab"
+                                                                                                      data-bs-toggle="tab"
+                                                                                                      data-bs-target="#@paneId"
+                                                                                                      aria-controls="@paneId"
+                                                                                                      aria-selected="@(i == 0 ? "true" : "false")">
+                                                                                                  <i class="@t.AppLanguageIcon?.ToLower()"></i>
+                                                                                                  @t.AppLanguageCode?.ToUpper()
+                                                                                              </button>
+                                                                                          </li>
                                 }
                             </ul>
                             <div class="tab-content border border-top-0 p-3">
@@ -128,31 +128,34 @@
                                         <input type="hidden" name="Translations[@i].AppLanguageIcon" value="@t.AppLanguageIcon" />
                                         <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
 
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label">Slug</label>
-                                                <input class="form-control" name="Translations[@i].Slug" value="@t.Slug" />
-                                            </div>
+                                        <div class="row slug-row" data-langid="@t.AppLanguageId" data-trid="@t.Id">
                                             <div class="col-md-6">
                                                 <label class="form-label">Başlık</label>
-                                                <input class="form-control" name="Translations[@i].Title" value="@t.Title" />
+                                                <input class="form-control js-title" name="Translations[@i].Title" value="@t.Title" />
                                             </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Slug</label>
+                                                <input class="form-control js-slug" name="Translations[@i].Slug" value="@t.Slug" />
+                                            </div>
+                                        </div>
+
+                                        <div class="row g-3">
                                             <div class="col-md-12">
                                                 <label class="form-label">Kısa Açıklama</label>
                                                 <textarea class="form-control" name="Translations[@i].Summary" rows="2">@t.Summary</textarea>
                                             </div>
                                             <div class="col-md-12">
                                                 <label class="form-label">İçerik</label>
-                                                <textarea class="form-control" name="Translations[@i].Body" rows="6">@t.Body</textarea>
+                                                <textarea class="form-control app-editor" id="editor" name="Translations[@i].Body" rows="6">@t.Body</textarea>
                                             </div>
 
-                                            <div class="col-md-6">
+                                            <div class="col-md-12">
                                                 <label class="form-label">Meta Title</label>
                                                 <input class="form-control" name="Translations[@i].MetaTitle" value="@t.MetaTitle" />
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-12">
                                                 <label class="form-label">Meta Description</label>
-                                                <input class="form-control" name="Translations[@i].MetaDescription" value="@t.MetaDescription" />
+                                                <textarea class="form-control" name="Translations[@i].MetaDescription" rows="3">@t.MetaDescription</textarea>
                                             </div>
 
                                         </div>
@@ -171,9 +174,9 @@
                 {
                     <div class="card mb-3" id="page-blocks-card" data-page-id="@Model.Id">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <span>Sayfa Blokları</span>
+                            <span>Sayfa Blok Grupları</span>
                             <div class="d-flex gap-2">
-                                <a class="btn btn-outline-secondary" href="/tenant/blockgroups/index">Blokları Yönet</a>
+                                <a class="btn btn-outline-secondary" href="/tenant/blockgroups">Blok Gruplarını Yönet</a>
                             </div>
                         </div>
                         <div class="card-body">
@@ -310,6 +313,79 @@
           // initial
           loadList();
           loadCandidates();
+        })();
+    </script>
+
+
+    <script>
+        (function(){
+          const url   = '@Url.Action("Slugify", "Pages")';
+          const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+          document.querySelectorAll('.slug-row').forEach(row => {
+            const title = row.querySelector('.js-title');
+            const slug  = row.querySelector('.js-slug');
+            const languageId = row.dataset.langid;
+            const pageTranslationId = row.dataset.trid || '';
+
+            let manual = false;
+
+            // 1) SLUG alanı değişince:
+            slug.addEventListener('input', () => {
+              // slug boşsa otomatiğe dön; değilse manuelde kal
+              manual = slug.value.trim().length > 0;
+
+              // kullanıcı slug'ı sildi ve title doluysa hemen üret
+              if (!manual && (title.value || '').trim()) {
+                requestNow(); // debounce bekleme
+              }
+            });
+
+            const debounce = (fn, ms)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); } };
+
+            async function doRequest(){
+              if (manual) return;
+              const text = (title.value || '').trim();
+              if (!text){ slug.value=''; return; }
+
+              const body = new URLSearchParams();
+              body.append('text', text);
+              body.append('languageId', languageId);
+              if (pageTranslationId) body.append('pageTranslationId', pageTranslationId);
+              body.append('__RequestVerificationToken', token);
+
+              try{
+                const r = await fetch(url, {
+                  method:'POST',
+                  headers:{ 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8' },
+                  body
+                });
+                const data = await r.json();
+                if (!manual && data && 'slug' in data) slug.value = data.slug;
+              }catch(e){ console.error('Slugify error', e); }
+            }
+
+            const request     = debounce(doRequest, 350);
+            const requestNow  = () => doRequest();
+
+            // 2) TITLE değişince (yazdıkça) otomatik üret
+            //    IME (Çince/Japonca) için composition event'leri de eklendi.
+            let composing = false;
+            title.addEventListener('compositionstart', ()=> composing = true);
+            title.addEventListener('compositionend',   ()=> { composing = false; request(); });
+            title.addEventListener('input', () => { if (!composing) request(); });
+
+            // 3) Sayfa yüklenince: slug boş & title doluysa bir kere üret
+            if ((title.value||'').trim() && !(slug.value||'').trim()) requestNow();
+
+            // 4) İsteğe bağlı: SLUG alanı blur olduğunda boşsa otomatiğe dön
+            slug.addEventListener('blur', () => {
+              if (!slug.value.trim()) {
+                manual = false;
+                if ((title.value||'').trim()) requestNow();
+              }
+            });
+          });
         })();
     </script>
 }

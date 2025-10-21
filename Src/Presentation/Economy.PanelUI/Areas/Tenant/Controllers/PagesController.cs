@@ -1,4 +1,5 @@
-﻿using Economy.Application.TenantUI.Dtos.AppPageDtos;
+﻿using Economy.Application.Interfaces;
+using Economy.Application.TenantUI.Dtos.AppPageDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Dtos.Custom;
 using Economy.Core.Interfaces;
@@ -14,10 +15,12 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
     {
         private readonly IPanelAppPageService _panelAppPageService;
         private readonly IPanelAppPageMediaService _panelAppPageMediaService;
-        public PagesController(IUnitOfWork uow, IPanelAppPageService panelAppPageService, IPanelAppPageMediaService panelAppPageMediaService)
+        private readonly ISlugService _slugService;
+        public PagesController(IPanelAppPageService panelAppPageService, IPanelAppPageMediaService panelAppPageMediaService, ISlugService slugService)
         {
             _panelAppPageService = panelAppPageService;
             _panelAppPageMediaService = panelAppPageMediaService;
+            _slugService = slugService;
         }
 
         public async Task<IActionResult> Index(CancellationToken ct)
@@ -136,5 +139,19 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         }
 
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Slugify([FromForm] string text,
+                                         [FromForm] int languageId,
+                                         [FromForm] int? pageTranslationId)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return Json(new { slug = "" });
+
+            var slug = await _slugService.GenerateForPageTranslationAsync(
+                text, languageId, pageTranslationId);
+
+            return Json(new { slug });
+        }
     }
 }

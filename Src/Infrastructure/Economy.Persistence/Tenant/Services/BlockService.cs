@@ -18,14 +18,7 @@ namespace Economy.Persistence.Tenant.Services
         private readonly IEntityRepository<BlockGroup, int> _blockGroupRepository;
         private readonly IEntityRepository<BlockGroupTranslation, int> _trRepo;
         private readonly IEntityRepository<BlockGroupBlock, int> _blockGroupBlock;
-
-
-
-        private readonly IEntityRepository<BlockItem, int> _blockItemRepository;
-        private readonly IEntityRepository<BlockItemImage, int> _blockItemImageRepository;
         private readonly IEntityRepository<AppLanguage, int> _entityLanguageRepository;
-
-
 
         public BlockService(IMapper mapper, IUnitOfWork unitOfWork)
         {
@@ -68,7 +61,6 @@ namespace Economy.Persistence.Tenant.Services
             var ci = new BlockGroup
             {
                 IsDeleted = false,
-                DefaultImageMode = ImageMode.CoverOnly,
                 ShowDescription = false,
                 Columns = BlockColumns.One,
                 IsActive = false,
@@ -102,11 +94,8 @@ namespace Economy.Persistence.Tenant.Services
             if (ent == null) return;
 
             ent.Columns = dto.Columns;
-            ent.DefaultImageMode = dto.DefaultImageMode;
             ent.ShowTitle = dto.ShowTitle;
             ent.ShowDescription = dto.ShowDescription;
-            ent.PageId = dto.PageId;
-
             await _unitOfWork.SaveHotelChangesAsync();
         }
 
@@ -289,11 +278,9 @@ namespace Economy.Persistence.Tenant.Services
             var vm = new BlockGroupDto
             {
                 Id = ci.Id,
-                DefaultImageMode = ci.DefaultImageMode,
                 ShowDescription = ci.ShowDescription,
                 Columns = ci.Columns,
-                ShowTitle = ci.ShowTitle,
-                PageId = ci.PageId,
+                ShowTitle = ci.ShowTitle
             };
 
             await FillLanguagesAsync(vm, ct);
@@ -411,13 +398,10 @@ namespace Economy.Persistence.Tenant.Services
             {
                 p = new BlockGroup
                 {
-                    DefaultImageMode = vm.DefaultImageMode,
                     IsActive = vm.IsActive,
                     ShowDescription = vm.ShowDescription,
                     Columns = vm.Columns,
                     ShowTitle = vm.ShowTitle,
-                    PageId = vm.PageId
-
                 };
                 foreach (var t in vm.Translations)
                     p.Translations.Add(new BlockGroupTranslation { AppLanguageId = t.LanguageId, Title = t.Title, Description = t.Description });
