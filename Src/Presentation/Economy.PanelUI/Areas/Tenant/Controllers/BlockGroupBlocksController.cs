@@ -105,52 +105,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             return RedirectToAction(nameof(Edit), new { id });
         }
 
-        [HttpPost("clone-to-page")]
-        public async Task<IActionResult> CloneToPage(int id, int targetPageId, bool keepLink = false)
-        {
-            var src = await _apppageblock.DataSet.Include(x => x.Translations).FirstOrDefaultAsync(x => x.Id == id);
-            if (src == null) return NotFound();
-
-            var last = await _apppageblock.DataSet.Where(x => x.BlockGroupId == targetPageId).Select(x => (int?)x.SortOrder).MaxAsync() ?? -1;
-
-            var copy = new BlockGroupBlock
-            {
-                BlockGroupId = targetPageId,
-                Type = src.Type,
-                SortOrder = last + 1,
-                IsActive = src.IsActive,
-                Stage = src.Stage,
-                SharedJson = keepLink ? "{}" : src.SharedJson
-
-            };
-            foreach (var t in src.Translations)
-                copy.Translations.Add(new BlockGroupBlockTranslation { AppLanguageId = t.AppLanguageId, LocalizedJson = keepLink ? "{}" : t.LocalizedJson });
-
-            _apppageblock.DataSet.Add(copy);
-            await _uow.SaveHotelChangesAsync();
-            return Ok(copy.Id);
-        }
-
-        [HttpPost("detach")]
-        public async Task<IActionResult> Detach(int id)
-        {
-            //var b = await _apppageblock.DataSet.Include(x => x.AppBlockLibrary).ThenInclude(l => l.Translations)
-            //    .Include(x => x.Translations).FirstOrDefaultAsync(x => x.Id == id);
-            //if (b == null) return NotFound();
-            //if (b.AppBlockLibraryId == null) return Ok("Zaten bağlı değil");
-
-            //if (string.IsNullOrWhiteSpace(b.SharedJson) || b.SharedJson == "{}")
-            //    b.SharedJson = b.AppBlockLibrary?.SharedJson ?? "{}";
-
-            //foreach (var tr in b.Translations)
-            //{
-            //    var libTr = b.AppBlockLibrary?.Translations.FirstOrDefault(x => x.AppLanguageId == tr.AppLanguageId);
-            //    if (tr.LocalizedJson == "{}" && libTr != null) tr.LocalizedJson = libTr.LocalizedJson;
-            //}
-            //b.AppBlockLibraryId = null; b.IsLinkedToLibrary = false;
-            //await _uow.SaveHotelChangesAsync();
-            return Ok();
-        }
     }
 
 

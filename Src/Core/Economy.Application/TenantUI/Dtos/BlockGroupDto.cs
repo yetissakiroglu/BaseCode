@@ -20,9 +20,7 @@ namespace Economy.Application.TenantUI.Dtos
         public int SortOrder { get; set; }
         public bool IsActive { get; set; } = true;
         public ContentStage Stage { get; set; } = ContentStage.Draft;
-
         public string SharedJson { get; set; } = "{}";
-
         public List<BlockGroupBlockTranslationVm> Translations { get; set; } = new();
     }
 

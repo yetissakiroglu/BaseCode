@@ -1,81 +1,85 @@
-﻿@using Economy.Panel.UI.Areas.Tenant.Controllers
-@model dynamic
+﻿@using Economy.Core.Enums
+@using Economy.Panel.UI.Areas.Tenant.Models
+@model GalleryLocVm
 @{
-    var sh = (BlockEditorController.GallerySharedVm)ViewBag.Shared;
-    int pageBlockId = (int)ViewBag.PageBlockId;
-    int languageId = (int)ViewBag.LanguageId;
+    var shared = ViewBag.Shared as GallerySharedVm ?? new GallerySharedVm { Mode = "grid", ImageUrls = new List<string>() };
+
+    int langId = ViewBag.LanguageId is int lid ? lid : 0;
+    int pageBlockId = ViewBag.PageBlockId is int pbid ? pbid : 0;
+    string? langName = ViewBag.LanguageName as string;
+    string langBadge = !string.IsNullOrWhiteSpace(langName) ? langName : $"Dil ID: {langId}";
+
+    ViewData["Title"] = "Image Gallery Editor";
 }
-<main>
-    <div class="container-fluid">
-        @await Html.PartialAsync("_breadcrumbs")
 
-        <h4>Gallery Editor</h4>
-        <form method="post" action="@Url.Action("SavePageBlock","BlockEditor", new { area="Tenant", pageBlockId, languageId })">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="type" value="ImageGallery" />
+<form asp-action="SaveBlockEditor" asp-controller="BlockEditor" asp-area="Tenant" method="post" id="galleryForm">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="PageBlockId" value="@pageBlockId" />
+    <input type="hidden" name="LanguageId" value="@langId" />
+    <input type="hidden" name="type" value="@((int)BlockType.ImageGallery)" />
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <strong>Image Gallery</strong>
+            <span class="badge bg-primary">@langBadge</span>
+        </div>
+
+        <div class="card-body">
             <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label">Mode</label>
-                    @{
-                        //Todo Block
-                        var t = sh.Mode == "grid" ? "selected" : "";
-                        var y = sh.Mode == "carousel" ? "selected" : "";
-                    }
-
-
-                    <select class="form-select" name="Mode">
-                        <option value="grid">grid</option>
-                        <option value="carousel">carousel</option>
+                <div class="col-md-3">
+                    <label class="form-label">Düzen (mode)</label>
+                    <select class="form-select" name="Shared.Mode">
+                        @{
+                            var mode = shared.Mode ?? "grid";
+                        }
+                        <option value="grid" selected="@(mode == "grid" ? "selected" : null)">grid</option>
+                        <option value="masonry" selected="@(mode == "masonry" ? "selected" : null)">masonry</option>
+                        <option value="slider" selected="@(mode == "slider" ? "selected" : null)">slider</option>
                     </select>
                 </div>
             </div>
-            <hr />
-            <div id="images">
-                @foreach (var it in Model.Images)
-                {
-                    var gid = Guid.NewGuid().ToString("N");   // Satırın tek anahtarı
 
-                    <div class="row g-2 align-items-end image-row mb-2">
-
-                        <div class="col-md-7">
-                            <label class="form-label">Image Url</label>
-                            <input class="form-control" name="Images[@gid].Url" value="@it.Url" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Alt</label>
-                            <input class="form-control" name="Images[@gid].Alt" value="@it.Alt" />
-                        </div>
-                    </div>
-                }
-            </div>
-            <button type="button" class="btn btn-outline-primary" id="btnAdd">Add Image</button>
             <div class="mt-3">
-                <button class="btn btn-primary">Save</button>
-                <a class="btn btn-outline-secondary" href="@Url.Action("Edit", "PageBlocks", new { area = "Tenant", id = pageBlockId })">Back</a>
-            </div>
-        </form>
+                <label class="form-label">Görsel URL’leri (imageUrls)</label>
+                <div id="gal-rows">
+                    @for (int i = 0; i < (shared.ImageUrls?.Count ?? 0); i++)
+                    {
+                        <div class="input-group mb-2 gal-row">
+                            <input class="form-control gal-input" name="Shared.ImageUrls[@i]" value="@shared.ImageUrls[i]" placeholder="https://..." />
+                            <button class="btn btn-outline-danger" type="button" onclick="this.closest('.gal-row').remove()">Sil</button>
+                        </div>
+                    }
+                </div>
 
+                <button class="btn btn-sm btn-outline-primary mt-2" type="button" onclick="addGalleryRow()">Görsel Ekle</button>
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <button type="button" class="btn btn-outline-secondary" onclick="history.back()">← Geri</button>
+            <button type="submit" class="btn btn-primary">Güncelle</button>
+        </div>
     </div>
-</main>
+</form>
 
 @section Scripts {
     <script>
-              document.getElementById('btnAdd').addEventListener('click', ()=>{
-          const container = document.getElementById('images');
-          const key = crypto.randomUUID().replace(/-/g,""); // veya artan sayı
-          container.insertAdjacentHTML('beforeend', `
-            <div class="row g-2 align-items-end image-row mb-2">
-              <div class="col-md-7">
-                <label class="form-label">Image Url</label>
-                <input class="form-control" name="Images[${key}].Url" />
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Alt</label>
-                <input class="form-control" name="Images[${key}].Alt" />
-              </div>
-            </div>`);
+        function addGalleryRow() {
+            const wrapper = document.getElementById('gal-rows');
+            const idx = wrapper.querySelectorAll('.gal-row').length;
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2 gal-row';
+            div.innerHTML = `
+                <input class="form-control gal-input" name="Shared.ImageUrls[${idx}]" placeholder="https://..." />
+                <button type="button" class="btn btn-outline-danger" onclick="this.closest('.gal-row').remove()">Sil</button>
+            `;
+            wrapper.appendChild(div);
+        }
+
+        // Submit öncesi indexleri sıfırdan güncelle
+        document.getElementById('galleryForm').addEventListener('submit', () => {
+            const inputs = Array.from(document.querySelectorAll('#gal-rows .gal-row .gal-input'));
+            inputs.forEach((inp, i) => inp.name = `Shared.ImageUrls[${i}]`);
         });
-
-
     </script>
 }

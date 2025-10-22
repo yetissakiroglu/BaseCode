@@ -2,6 +2,8 @@
 @using Economy.Application.TenantUI.Dtos.AppLanguageDtos
 @using Economy.Core.Enums
 @using Economy.Domain.Entites.TenantEntity.EntityAppLanguages
+@using System.Reflection
+@using System.ComponentModel.DataAnnotations
 @model BlockGroupDto
 @{
     ViewData["Title"] = "Sayfa Block Grubu Düzenle";
@@ -133,9 +135,13 @@
                                 <div class="d-flex gap-2">
                                     <select id="newBlockType" class="form-select form-select-sm" style="width:220px">
                                         <option value="">Block type…</option>
-                                        @foreach (var t in Enum.GetValues(typeof(BlockType)))
+                                        @foreach (var value in Enum.GetValues(typeof(BlockType)))
                                         {
-                                            <option value="@((int)t)">@t</option>
+                                            var fi = typeof(BlockType).GetField(value.ToString());
+                                            var displayAttr = fi?.GetCustomAttribute<DisplayAttribute>();
+                                            var displayName = displayAttr?.Name ?? value.ToString();
+
+                                            <option value="@((int)value)">@displayName</option>
                                         }
                                     </select>
                                     <button class="btn btn-sm btn-outline-primary" type="button" id="btnAddNew">Add Block</button>

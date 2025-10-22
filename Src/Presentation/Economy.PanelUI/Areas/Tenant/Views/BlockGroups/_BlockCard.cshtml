@@ -61,7 +61,7 @@
                         <div class="mt-1">
                             @if (Model.Id.HasValue)
                             {
-                                <a class="btn btn-sm btn-outline-secondary" href='@Url.Action("EditPageBlock", "BlockEditor", new { area = "Tenant", pageBlockId = Model.Id.Value, languageId = lid })'>Type-specific editor</a>
+                                <a class="btn btn-sm btn-outline-secondary" href='@Url.Action("EditBlockEditor", "BlockEditor", new { area = "Tenant", pageBlockId = Model.Id.Value, languageId = lid })'>Type-specific editor</a>
                             }
                             else
                             {

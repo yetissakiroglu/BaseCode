@@ -29,7 +29,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         [HttpGet]
         public async Task<IActionResult> Create(CancellationToken ct)
         {
-            var langs = _panelAppLanguageService.GetAllLanguage(false);
+            var langs = _panelAppLanguageService.GetAllLanguage(false,true);
             ViewBag.Languages = langs.Data;
 
             var vm = new BlockGroupDto();
@@ -96,7 +96,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         [HttpGet("block-card-partial")]
         public IActionResult BlockCardPartial(BlockType type, int index, List<int> languageIds)
         {
-            var langs = _panelAppLanguageService.GetAllLanguage(false,true);
+            var langs = _panelAppLanguageService.GetAllLanguage(false, true);
             ViewBag.Languages = langs.Data;
 
             var vm = new BlockGroupBlockVm
@@ -105,31 +105,56 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 SortOrder = index,
                 IsActive = true,
                 Stage = ContentStage.Draft,
+
                 SharedJson = type switch
                 {
+                    // Hero → Shared: backgroundUrl, verticalAlign
                     BlockType.Hero => """{"backgroundUrl":"/media/hero.jpg","verticalAlign":"center"}""",
-                    BlockType.ImageGallery => """{"mode":"grid"}""",
-                    BlockType.FeatureGrid => """{"columns":4}""",
-                    _ => "{}"
+
+                    // Text → Shared: {}
+                    BlockType.Text => """{}""",
+
+                    // ImageGallery → Shared: mode, imageUrls ([])
+                    BlockType.ImageGallery => """{"mode":"grid","imageUrls":[]}""",
+
+                    // AmenityGroup → Shared: {}
+                    BlockType.AmenityGroup => """{}""",
+
+                    _ => """{}"""
                 },
+
                 Translations = languageIds.Select(lid => new BlockGroupBlockTranslationVm
                 {
                     LanguageId = lid,
                     LocalizedJson = type switch
                     {
-                        BlockType.Hero => """{"heading":"Başlık","subHeading":"Alt başlık","buttonText":"Devam","buttonUrl":"/"}""",
-                        BlockType.Text => """{"heading":"Bölüm","bodyHtml":"<p>Metin…</p>"}""",
-                        BlockType.FeatureGrid => """{"items":[{"icon":"wifi","title":"Ücretsiz Wi-Fi","description":"Tesis genelinde"}]}""",
-                        _ => "{}"
+                        // Hero → Localized: heading, subHeading, buttonText, buttonUrl
+                        BlockType.Hero =>
+                            """{"heading":"Başlık","subHeading":"Alt başlık","buttonText":"Devam","buttonUrl":"/"}""",
+
+                        // Text → Localized: heading, bodyHtml
+                        BlockType.Text =>
+                            """{"heading":"Bölüm","bodyHtml":"<p>Metin…</p>"}""",
+
+                        // ImageGallery → Localized: {}
+                        BlockType.ImageGallery =>
+                            """{}""",
+
+                        // AmenityGroup → Localized: groupTitle, amenities ([])
+                        BlockType.AmenityGroup =>
+                            """{"groupTitle":"Oda Olanakları","amenities":["Ücretsiz Wi-Fi","Klima","TV"]}""",
+
+                        _ => """{}"""
                     }
                 }).ToList()
             };
 
-            // ÖNEMLİ: Koleksiyon prefix’i
+            // Koleksiyon prefix’i
             ViewData.TemplateInfo.HtmlFieldPrefix = $"Blocks[{index}]";
 
             return PartialView("_BlockCard", vm);
         }
+
 
 
 

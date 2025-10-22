@@ -1,0 +1,74 @@
+﻿@using Economy.Core.Enums
+@using Economy.Panel.UI.Areas.Tenant.Models
+@model AmenityLocVm
+@{
+    int langId = ViewBag.LanguageId is int lid ? lid : 0;
+    int pageBlockId = ViewBag.PageBlockId is int pbid ? pbid : 0;
+    string? langName = ViewBag.LanguageName as string;
+    string langBadge = !string.IsNullOrWhiteSpace(langName) ? langName : $"Dil ID: {langId}";
+    ViewData["Title"] = "Amenity Group Editor";
+}
+
+<form asp-action="SaveBlockEditor" asp-controller="BlockEditor" asp-area="Tenant" method="post" id="amenityForm">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="PageBlockId" value="@pageBlockId" />
+    <input type="hidden" name="LanguageId" value="@langId" />
+    <input type="hidden" name="type" value="@((int)BlockType.AmenityGroup)" />
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <strong>Amenity Group</strong>
+            <span class="badge bg-primary">@langBadge</span>
+        </div>
+
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">Grup Başlığı (groupTitle)</label>
+                <input class="form-control" asp-for="GroupTitle" placeholder="Oda Olanakları" />
+            </div>
+
+            <label class="form-label">Olanaklar (amenities)</label>
+            <div id="amen-rows">
+                @for (int i = 0; i < (Model.Amenities?.Count ?? 0); i++)
+                {
+                    <div class="input-group mb-2 amen-row">
+                        <input class="form-control amen-input" name="Amenities[@i]" value="@Model.Amenities[i]" placeholder="Örn: Ücretsiz Wi-Fi" />
+                        <button class="btn btn-outline-danger" type="button" onclick="this.closest('.amen-row').remove()">Sil</button>
+                    </div>
+                }
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary mt-1"
+                    onclick="addAmenityRow()">
+                Özellik Ekle
+            </button>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <button type="button" class="btn btn-outline-secondary" onclick="history.back()">← Geri</button>
+            <button type="submit" class="btn btn-primary">Güncelle</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        // Submit öncesi indexleri 0..N olarak yeniden yaz
+        document.getElementById('amenityForm').addEventListener('submit', function(){
+            const rows = Array.from(document.querySelectorAll('#amen-rows .amen-row .amen-input'));
+            rows.forEach((inp, idx) => { inp.name = `Amenities[${idx}]`; });
+        });
+
+        function addAmenityRow() {
+            const wrapper = document.getElementById('amen-rows');
+            const idx = wrapper.querySelectorAll('.amen-row').length;
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2 amen-row';
+            div.innerHTML = `
+                <input class="form-control amen-input" name="Amenities[${idx}]" placeholder="Örn: Klima" />
+                <button type="button" class="btn btn-outline-danger" onclick="this.closest('.amen-row').remove()">Sil</button>
+            `;
+            wrapper.appendChild(div);
+        }
+    </script>
+}
