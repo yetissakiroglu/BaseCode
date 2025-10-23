@@ -16,13 +16,13 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
     {
         private readonly JsonSerializerOptions _json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true };
         private readonly IUnitOfWork _uow;
-        private readonly IEntityRepository<BlockGroupBlock, int> _apppageblock;
+        private readonly IEntityRepository<AppBlockGroupBlock, int> _apppageblock;
         private readonly IEntityRepository<AppLanguage, int> _langRepo;
 
         public BlockEditorController(IUnitOfWork uow)
         {
             _uow = uow;
-            _apppageblock = uow.HotelEntityRepository<BlockGroupBlock>();
+            _apppageblock = uow.HotelEntityRepository<AppBlockGroupBlock>();
             _langRepo = uow.HotelEntityRepository<AppLanguage>();
         }
 
@@ -43,7 +43,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             var tr = pb.Translations.FirstOrDefault(t => t.AppLanguageId == languageId);
             if (tr == null)
             {
-                tr = new BlockGroupBlockTranslation
+                tr = new AppBlockGroupBlockTranslation
                 {
                     AppLanguageId = languageId,
                     LocalizedJson = "{}"

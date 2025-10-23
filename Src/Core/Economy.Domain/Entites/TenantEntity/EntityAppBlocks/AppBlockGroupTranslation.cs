@@ -3,10 +3,10 @@ using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 
 namespace Economy.Domain.Entites.TenantEntity.EntityAppBlocks
 {
-    public class BlockGroupTranslation : BaseEntity<int>
+    public class AppBlockGroupTranslation : BaseEntity<int>
     {
-        public int BlockGroupId { get; set; }
-        public BlockGroup BlockGroup { get; set; }
+        public int AppBlockGroupId { get; set; }
+        public AppBlockGroup AppBlockGroup { get; set; }
         public int AppLanguageId { get; set; }
         public AppLanguage AppLanguage { get; set; }
         public string? Title { get; set; }

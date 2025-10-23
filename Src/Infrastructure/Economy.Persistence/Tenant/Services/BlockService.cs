@@ -15,18 +15,18 @@ namespace Economy.Persistence.Tenant.Services
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEntityRepository<BlockGroup, int> _blockGroupRepository;
-        private readonly IEntityRepository<BlockGroupTranslation, int> _trRepo;
-        private readonly IEntityRepository<BlockGroupBlock, int> _blockGroupBlock;
+        private readonly IEntityRepository<AppBlockGroup, int> _blockGroupRepository;
+        private readonly IEntityRepository<AppBlockGroupTranslation, int> _trRepo;
+        private readonly IEntityRepository<AppBlockGroupBlock, int> _blockGroupBlock;
         private readonly IEntityRepository<AppLanguage, int> _entityLanguageRepository;
 
         public BlockService(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _blockGroupRepository = unitOfWork.HotelEntityRepository<BlockGroup>();
+            _blockGroupRepository = unitOfWork.HotelEntityRepository<AppBlockGroup>();
             _entityLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
-            _trRepo = unitOfWork.HotelEntityRepository<BlockGroupTranslation>();
-            _blockGroupBlock = unitOfWork.HotelEntityRepository<BlockGroupBlock>();
+            _trRepo = unitOfWork.HotelEntityRepository<AppBlockGroupTranslation>();
+            _blockGroupBlock = unitOfWork.HotelEntityRepository<AppBlockGroupBlock>();
             _mapper = mapper;
         }
         public async Task<List<BlockGroupDto>> GetGroupsAsync(bool includeItems = true)
@@ -50,7 +50,7 @@ namespace Economy.Persistence.Tenant.Services
         public async Task<ServiceResult<NoContent>> CreateGroupAsync(BlockGroupDto vm, CancellationToken ct)
         {
 
-            var ci = new BlockGroup
+            var ci = new AppBlockGroup
             {
                 IsDeleted = false,
                 ShowDescription = false,
@@ -65,9 +65,9 @@ namespace Economy.Persistence.Tenant.Services
             foreach (var t in vm.Translations)
             {
 
-                var tr = new BlockGroupTranslation
+                var tr = new AppBlockGroupTranslation
                 {
-                    BlockGroupId = ci.Id,
+                    AppBlockGroupId = ci.Id,
                     AppLanguageId = t.LanguageId,
                     IsDeleted = false,
                     Title = t.Title,
@@ -112,7 +112,7 @@ namespace Economy.Persistence.Tenant.Services
 
             var list = await (from ci in _blockGroupRepository.DataSet
                               where !ci.IsDeleted
-                              join tr in _trRepo.DataSet on ci.Id equals tr.BlockGroupId into trx
+                              join tr in _trRepo.DataSet on ci.Id equals tr.AppBlockGroupId into trx
                               from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
                               orderby ci.ShowTitle, ci.Id
                               select new BlockGroupListDto
@@ -173,7 +173,7 @@ namespace Economy.Persistence.Tenant.Services
             //var ci = await _blockGroupRepository.DataSet.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
             var ci = await _blockGroupRepository.DataSet
               .Include(x => x.Translations)
-              .Include(x => x.BlockGroupBlocks).ThenInclude(b => b.Translations)
+              .Include(x => x.AppBlockGroupBlocks).ThenInclude(b => b.Translations)
               .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
 
 
@@ -193,7 +193,7 @@ namespace Economy.Persistence.Tenant.Services
             await FillLanguagesAsync(vm, ct);
 
             var trs = await _trRepo.DataSet
-                .Where(t => !t.IsDeleted && t.BlockGroupId == ci.Id)
+                .Where(t => !t.IsDeleted && t.AppBlockGroupId == ci.Id)
                 .ToListAsync(ct);
 
             foreach (var t in vm.Translations)
@@ -206,7 +206,7 @@ namespace Economy.Persistence.Tenant.Services
             }
 
 
-            vm.Blocks = ci.BlockGroupBlocks.OrderBy(b => b.SortOrder).Select(b => new BlockGroupBlockVm
+            vm.Blocks = ci.AppBlockGroupBlocks.OrderBy(b => b.SortOrder).Select(b => new BlockGroupBlockVm
             {
                 Id = b.Id,
                 Type = b.Type,
@@ -242,7 +242,7 @@ namespace Economy.Persistence.Tenant.Services
 
 
             var existing = await _trRepo.DataSet
-                .Where(t => !t.IsDeleted && t.BlockGroupId == id)
+                .Where(t => !t.IsDeleted && t.AppBlockGroupId == id)
                 .ToListAsync(ct);
 
             foreach (var t in vm.Translations)
@@ -250,9 +250,9 @@ namespace Economy.Persistence.Tenant.Services
                 var ex = existing.FirstOrDefault(x => x.AppLanguageId == t.LanguageId);
                 if (ex is null)
                 {
-                    var tr = new BlockGroupTranslation
+                    var tr = new AppBlockGroupTranslation
                     {
-                        BlockGroupId = id,
+                        AppBlockGroupId = id,
                         AppLanguageId = t.LanguageId,
                         IsDeleted = false,
                         Title = t.Title,
@@ -294,10 +294,10 @@ namespace Economy.Persistence.Tenant.Services
                 return ServiceResult<NoContent>.Empty();
             }
 
-            BlockGroup p;
+            AppBlockGroup p;
             if (vm.Id == null)
             {
-                p = new BlockGroup
+                p = new AppBlockGroup
                 {
                     IsActive = vm.IsActive,
                     ShowDescription = vm.ShowDescription,
@@ -305,12 +305,12 @@ namespace Economy.Persistence.Tenant.Services
                     ShowTitle = vm.ShowTitle,
                 };
                 foreach (var t in vm.Translations)
-                    p.Translations.Add(new BlockGroupTranslation { AppLanguageId = t.LanguageId, Title = t.Title, Description = t.Description });
+                    p.Translations.Add(new AppBlockGroupTranslation { AppLanguageId = t.LanguageId, Title = t.Title, Description = t.Description });
                 _blockGroupRepository.DataSet.Add(p);
             }
             else
             {
-                p = await _blockGroupRepository.DataSet.Include(x => x.Translations).Include(x => x.BlockGroupBlocks).ThenInclude(x => x.Translations)
+                p = await _blockGroupRepository.DataSet.Include(x => x.Translations).Include(x => x.AppBlockGroupBlocks).ThenInclude(x => x.Translations)
                     .FirstAsync(x => x.Id == vm.Id.Value);
                 p.IsActive = vm.IsActive; p.Columns = vm.Columns; p.ShowDescription = vm.ShowDescription;
 
@@ -319,13 +319,13 @@ namespace Economy.Persistence.Tenant.Services
                 {
                     var incoming = vm.Translations.First(t => t.LanguageId == l.Id);
                     var cur = p.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
-                    if (cur == null) p.Translations.Add(new BlockGroupTranslation { AppLanguageId = l.Id, Title = incoming.Title, Description = incoming.Description });
+                    if (cur == null) p.Translations.Add(new AppBlockGroupTranslation { AppLanguageId = l.Id, Title = incoming.Title, Description = incoming.Description });
                     else { cur.Title = incoming.Title; cur.Description = incoming.Description; }
                 }
 
                 // Silinen bloklar
                 var keep = vm.Blocks.Where(b => b.Id.HasValue).Select(b => b.Id!.Value).ToHashSet();
-                var toRemove = p.BlockGroupBlocks.Where(x => !keep.Contains(x.Id)).ToList();
+                var toRemove = p.AppBlockGroupBlocks.Where(x => !keep.Contains(x.Id)).ToList();
                 _blockGroupBlock.DataSet.RemoveRange(toRemove);
             }
 
@@ -333,10 +333,10 @@ namespace Economy.Persistence.Tenant.Services
             int order = 0;
             foreach (var bvm in vm.Blocks.OrderBy(x => x.SortOrder))
             {
-                BlockGroupBlock e;
+                AppBlockGroupBlock e;
                 if (bvm.Id == null)
                 {
-                    e = new BlockGroupBlock
+                    e = new AppBlockGroupBlock
                     {
                         Type = bvm.Type,
                         SortOrder = order++,
@@ -346,12 +346,12 @@ namespace Economy.Persistence.Tenant.Services
                         Tag = bvm.Tag,
                     };
                     foreach (var bt in bvm.Translations)
-                        e.Translations.Add(new BlockGroupBlockTranslation { AppLanguageId = bt.LanguageId, LocalizedJson = bt.LocalizedJson });
-                    p.BlockGroupBlocks.Add(e);
+                        e.Translations.Add(new AppBlockGroupBlockTranslation { AppLanguageId = bt.LanguageId, LocalizedJson = bt.LocalizedJson });
+                    p.AppBlockGroupBlocks.Add(e);
                 }
                 else
                 {
-                    e = p.BlockGroupBlocks.First(x => x.Id == bvm.Id.Value);
+                    e = p.AppBlockGroupBlocks.First(x => x.Id == bvm.Id.Value);
                     e.Type = bvm.Type; e.SortOrder = order++; e.IsActive = bvm.IsActive; e.Stage = bvm.Stage; e.SharedJson = bvm.SharedJson; e.Tag = bvm.Tag;
 
 
@@ -359,7 +359,7 @@ namespace Economy.Persistence.Tenant.Services
                     {
                         var incoming = bvm.Translations.First(t => t.LanguageId == l.Id);
                         var cur = e.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
-                        if (cur == null) e.Translations.Add(new BlockGroupBlockTranslation { AppLanguageId = l.Id, LocalizedJson = incoming.LocalizedJson });
+                        if (cur == null) e.Translations.Add(new AppBlockGroupBlockTranslation { AppLanguageId = l.Id, LocalizedJson = incoming.LocalizedJson });
                         else cur.LocalizedJson = incoming.LocalizedJson;
                     }
                 }

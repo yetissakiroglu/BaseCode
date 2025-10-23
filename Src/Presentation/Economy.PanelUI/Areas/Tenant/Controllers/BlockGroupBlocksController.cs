@@ -14,30 +14,30 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
     public class BlockGroupBlocksController : Controller
     {
         private readonly IUnitOfWork _uow;
-        private readonly IEntityRepository<BlockGroup, int> _page;
-        private readonly IEntityRepository<BlockGroupBlock, int> _apppageblock;
+        private readonly IEntityRepository<AppBlockGroup, int> _page;
+        private readonly IEntityRepository<AppBlockGroupBlock, int> _apppageblock;
         private readonly IEntityRepository<AppLanguage, int> _langRepo;
         public BlockGroupBlocksController(IUnitOfWork uow)
         {
             _uow = uow;
-            _page = uow.HotelEntityRepository<BlockGroup>();
-            _apppageblock = uow.HotelEntityRepository<BlockGroupBlock>();
+            _page = uow.HotelEntityRepository<AppBlockGroup>();
+            _apppageblock = uow.HotelEntityRepository<AppBlockGroupBlock>();
             _langRepo = uow.HotelEntityRepository<AppLanguage>();
         }
         public async Task<IActionResult> Index(int? pageId, BlockType? type, string? q, int page = 1, int size = 20)
         {
-            var query = _apppageblock.DataSet.Include(pb => pb.BlockGroup).AsQueryable();
-            if (pageId.HasValue) query = query.Where(x => x.BlockGroupId == pageId.Value);
+            var query = _apppageblock.DataSet.Include(pb => pb.AppBlockGroup).AsQueryable();
+            if (pageId.HasValue) query = query.Where(x => x.AppBlockGroupId == pageId.Value);
             if (type.HasValue) query = query.Where(x => x.Type == type.Value);
             if (!string.IsNullOrWhiteSpace(q)) query = query.Where(x => x.SharedJson.Contains(q));
 
             var total = await query.CountAsync();
-            var items = await query.OrderBy(x => x.BlockGroupId).ThenBy(x => x.SortOrder)
+            var items = await query.OrderBy(x => x.AppBlockGroupId).ThenBy(x => x.SortOrder)
                 .Skip((page - 1) * size).Take(size)
                 .Select(x => new PageBlockListItemVm
                 {
                     Id = x.Id,
-                    BlockGroupId = x.BlockGroupId,
+                    BlockGroupId = x.AppBlockGroupId,
                     Type = x.Type,
                     SortOrder = x.SortOrder,
                     IsActive = x.IsActive,
@@ -61,12 +61,12 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         [HttpGet("edit/{id}")]
         public async Task<IActionResult> Edit(int id)
         {
-            var b = await _apppageblock.DataSet.Include(x => x.Translations).Include(x => x.BlockGroup).FirstOrDefaultAsync(x => x.Id == id);
+            var b = await _apppageblock.DataSet.Include(x => x.Translations).Include(x => x.AppBlockGroup).FirstOrDefaultAsync(x => x.Id == id);
             if (b == null) return NotFound();
 
             var langs = await _langRepo.DataSet.Where(x => x.IsActive).ToListAsync();
             ViewBag.Languages = langs;
-            ViewBag.PageInfo = new { PageId = b.BlockGroupId };
+            ViewBag.PageInfo = new { PageId = b.AppBlockGroupId };
 
             var vm = new BlockGroupBlockVm
             {
@@ -99,7 +99,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             {
                 var incoming = vm.Translations.First(t => t.LanguageId == l.Id);
                 var cur = b.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
-                if (cur == null) b.Translations.Add(new BlockGroupBlockTranslation { AppLanguageId = l.Id, LocalizedJson = incoming.LocalizedJson });
+                if (cur == null) b.Translations.Add(new AppBlockGroupBlockTranslation { AppLanguageId = l.Id, LocalizedJson = incoming.LocalizedJson });
                 else cur.LocalizedJson = incoming.LocalizedJson;
             }
             await _uow.SaveHotelChangesAsync();

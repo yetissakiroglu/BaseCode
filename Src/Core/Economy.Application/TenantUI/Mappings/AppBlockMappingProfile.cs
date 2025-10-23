@@ -8,9 +8,9 @@ namespace Economy.Application.TenantUI.Mappings
     {
         public AppBlockMappingProfile()
         {
-            CreateMap<BlockGroup, BlockGroupDto>().ReverseMap();
-            CreateMap<BlockGroupDto, BlockGroup>().ReverseMap();
-            CreateMap<BlockGroupTranslationDto, BlockGroupTranslation>().ReverseMap();
+            CreateMap<AppBlockGroup, BlockGroupDto>().ReverseMap();
+            CreateMap<BlockGroupDto, AppBlockGroup>().ReverseMap();
+            CreateMap<BlockGroupTranslationDto, AppBlockGroupTranslation>().ReverseMap();
         }
     }
 
