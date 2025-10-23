@@ -16,6 +16,7 @@ namespace Economy.Application.TenantUI.Dtos
     public class BlockGroupBlockVm
     {
         public int? Id { get; set; }
+        public string? Tag { get; set; }
         public BlockType Type { get; set; }
         public int SortOrder { get; set; }
         public bool IsActive { get; set; } = true;
@@ -28,6 +29,8 @@ namespace Economy.Application.TenantUI.Dtos
     {
         public int? Id { get; set; }
         public int LanguageId { get; set; }
+        public string LanguageCode { get; set; } = default!;
+        public string? LanguageIcon { get; set; } = default!;
         public string LocalizedJson { get; set; } = "{}";
     }
 
@@ -44,6 +47,8 @@ namespace Economy.Application.TenantUI.Dtos
     }
     public class PageBlockListItemVm
     {
+        public string Tag { get; set; }
+
         public int Id { get; set; }
         public int BlockGroupId { get; set; }
         public BlockType Type { get; set; }

@@ -27,7 +27,14 @@ namespace Economy.Core.Extensions
             var attributes = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
             return attributes.Length > 0 ? attributes[0].Description : value.ToString();
         }
+        public static string GetDisplayName(this Enum value)
+        {
+            if (value == null) return string.Empty;
 
+            var fieldInfo = value.GetType().GetField(value.ToString());
+            var displayAttr = fieldInfo?.GetCustomAttribute<DisplayAttribute>();
+            return displayAttr?.Name ?? value.ToString();
+        }
         public static string ValueToString(this Enum enumValue)
         {
             var enumType = enumValue.GetType();

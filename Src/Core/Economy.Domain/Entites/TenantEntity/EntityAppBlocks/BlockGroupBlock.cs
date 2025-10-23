@@ -10,6 +10,7 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppBlocks
 {
     public class BlockGroupBlock:BaseEntity<int>
     {
+        public string? Tag { get; set; }
         public int BlockGroupId { get; set; }
         public BlockGroup BlockGroup { get; set; } = null;
         public BlockType Type { get; set; }

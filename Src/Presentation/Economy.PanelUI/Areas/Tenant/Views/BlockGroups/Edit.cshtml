@@ -179,5 +179,22 @@
                function normalizeOrders(){
                 document.querySelectorAll('#grid .block-card').forEach((el,idx)=>{ const input=el.querySelector('input[name$=".SortOrder"]'); if(input) input.value=idx; });
               }
+
+                document.addEventListener('click', function (e) {
+          const btn = e.target.closest('.remove-block');
+          if (!btn) return;
+
+          const card = btn.closest('.col');
+          if (!card) return;
+
+          // Kartın hemen öncesindeki Blocks.Index hidden input'unu yakala
+          let prev = card.previousElementSibling;
+          if (prev && prev.matches('input[type="hidden"][name="Blocks.Index"]')) {
+            prev.remove();
+          }
+
+          // Kartı kaldır
+          card.remove();
+        });
     </script>
 }

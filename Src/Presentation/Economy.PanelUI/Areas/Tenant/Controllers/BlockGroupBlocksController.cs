@@ -41,7 +41,9 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                     Type = x.Type,
                     SortOrder = x.SortOrder,
                     IsActive = x.IsActive,
-                    Stage = x.Stage
+                    Stage = x.Stage,
+                    Tag =x.Tag
+                    
                 }).ToListAsync();
 
             return View(new PageBlockIndexVm

@@ -214,17 +214,13 @@ namespace Economy.Persistence.Tenant.Services
                 IsActive = b.IsActive,
                 Stage = b.Stage,
                 SharedJson = b.SharedJson,
+                Tag =b.Tag,
                 Translations = langs.Select(l =>
                 {
                     var bt = b.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
-                    return new BlockGroupBlockTranslationVm { Id = bt?.Id, LanguageId = l.Id, LocalizedJson = bt?.LocalizedJson ?? "{}" };
+                    return new BlockGroupBlockTranslationVm { Id = bt?.Id, LanguageId = l.Id,LanguageCode =l.Code,LanguageIcon =l.Icon , LocalizedJson = bt?.LocalizedJson ?? "{}" };
                 }).ToList()
             }).ToList();
-
-
-
-
-
 
 
 
@@ -347,6 +343,7 @@ namespace Economy.Persistence.Tenant.Services
                         IsActive = bvm.IsActive,
                         Stage = bvm.Stage,
                         SharedJson = bvm.SharedJson,
+                        Tag = bvm.Tag,
                     };
                     foreach (var bt in bvm.Translations)
                         e.Translations.Add(new BlockGroupBlockTranslation { AppLanguageId = bt.LanguageId, LocalizedJson = bt.LocalizedJson });
@@ -355,7 +352,7 @@ namespace Economy.Persistence.Tenant.Services
                 else
                 {
                     e = p.BlockGroupBlocks.First(x => x.Id == bvm.Id.Value);
-                    e.Type = bvm.Type; e.SortOrder = order++; e.IsActive = bvm.IsActive; e.Stage = bvm.Stage; e.SharedJson = bvm.SharedJson;
+                    e.Type = bvm.Type; e.SortOrder = order++; e.IsActive = bvm.IsActive; e.Stage = bvm.Stage; e.SharedJson = bvm.SharedJson; e.Tag = bvm.Tag;
 
 
                     foreach (var l in langs)

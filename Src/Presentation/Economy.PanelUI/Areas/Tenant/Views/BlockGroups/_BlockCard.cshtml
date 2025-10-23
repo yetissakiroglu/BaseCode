@@ -1,10 +1,10 @@
 ﻿@using Economy.Application.TenantUI.Dtos
 @using Economy.Application.TenantUI.Dtos.AppLanguageDtos
+@using Economy.Core.Enums
 @model BlockGroupBlockVm
 
 @{
     var langs = (List<AppLanguageDto>)ViewBag.Languages;
-
     // Prefix'ten index'i çıkar (Blocks[3] gibi)
     var prefix = ViewData.TemplateInfo.HtmlFieldPrefix; // "Blocks[3]"
     var open = prefix?.IndexOf('[') ?? -1;
@@ -13,21 +13,19 @@
 }
 <!-- 🔴 Koleksiyon bağlama için şart -->
 
-<input type="hidden" name="Blocks.Index" value="@idx" />
 
 <div class="col">
+    <input type="hidden" name="Blocks.Index" value="@idx" />
+
     <div class="card block-card" draggable="true">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <div><strong>@Model.Type</strong></div>
+            <div><strong>@Model.Type.GetDisplayName()</strong></div>
             <div class="d-flex align-items-center gap-2">
-                <div class="form-check">
+       @*          <div class="form-check">
                     <input class="form-check-input" asp-for="IsActive" />
-                    <label class="form-check-label">Active</label>
-                </div>
-                <select class="form-select form-select-sm" asp-for="Stage" style="width:130px">
-                    <option value="0">Draft</option>
-                    <option value="1">Published</option>
-                    <option value="2">Archived</option>
+                    <label class="form-check-label">Durum</label>
+                </div> *@
+                <select asp-for="Stage" class="form-select form-select-sm" asp-items="Html.GetEnumSelectList<PageStage>()" style="width:130px">
                 </select>
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="Type" />
@@ -36,6 +34,10 @@
         </div>
 
         <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">Etiket Başlığı</label>
+                <input class="form-control" asp-for="Tag" />
+            </div>
             <label class="form-label">Shared JSON</label>
             <textarea class="form-control mb-2" asp-for="SharedJson" rows="4"></textarea>
                        
@@ -56,17 +58,27 @@
                     <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="t-@Model.GetHashCode()-@lid">
                         <input type="hidden" asp-for="Translations[i].Id" />
                         <input type="hidden" asp-for="Translations[i].LanguageId" />
+                        <input type="hidden" asp-for="Translations[i].LanguageCode" />
+                        <input type="hidden" asp-for="Translations[i].LanguageIcon" />
+
                         <label class="form-label">Localized JSON</label>
                         <textarea class="form-control" asp-for="Translations[i].LocalizedJson" rows="5"></textarea>
                         <div class="mt-1">
                             @if (Model.Id.HasValue)
                             {
-                                <a class="btn btn-sm btn-outline-secondary" href='@Url.Action("EditBlockEditor", "BlockEditor", new { area = "Tenant", pageBlockId = Model.Id.Value, languageId = lid })'>Type-specific editor</a>
+                                <a class="btn btn-sm btn-outline-secondary" href='@Url.Action("EditBlockEditor", "BlockEditor", new { area = "Tenant", pageBlockId = Model.Id.Value, languageId = lid })'>Blok Tipine Özel Editör</a>
                             }
                             else
                             {
                                 <span class="text-muted">Kaydettikten sonra tip-özel editör açılır.</span>
                             }
+                            <!-- _BlockCard.cshtml header içine ekle -->
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger remove-block"
+                                    title="Kaldır">
+                                Kaldır
+                            </button>
+
                         </div>
                     </div>
                 }

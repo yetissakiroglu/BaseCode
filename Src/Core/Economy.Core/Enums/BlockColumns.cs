@@ -3,19 +3,45 @@
     /// <summary>
     /// Bootstrap grid sistemine göre blok genişliklerini belirtir.
     /// </summary>
+    using System.ComponentModel.DataAnnotations;
+
     public enum BlockColumns
     {
-        One = 1,     // 1 sütun genişlik (örnek: col-1)
-        Two = 2,     // 2 sütun genişlik (örnek: col-2)
-        Three = 3,   // 3 sütun genişlik (örnek: col-3)
-        Four = 4,    // 4 sütun genişlik (örnek: col-4)
-        Five = 5,    // 5 sütun genişlik (örnek: col-5)
-        Six = 6,     // 6 sütun genişlik (örnek: col-6)
-        Seven = 7,   // 7 sütun genişlik (örnek: col-7)
-        Eight = 8,   // 8 sütun genişlik (örnek: col-8)
-        Nine = 9,    // 9 sütun genişlik (örnek: col-9)
-        Ten = 10,    // 10 sütun genişlik (örnek: col-10)
-        Eleven = 11, // 11 sütun genişlik (örnek: col-11)
-        Twelve = 12  // 12 sütun (tam genişlik - örnek: col-12)
+        [Display(Name = "1 Sütun Genişlik (col-1)")]
+        One = 1,
+
+        [Display(Name = "2 Sütun Genişlik (col-2)")]
+        Two = 2,
+
+        [Display(Name = "3 Sütun Genişlik (col-3)")]
+        Three = 3,
+
+        [Display(Name = "4 Sütun Genişlik (col-4)")]
+        Four = 4,
+
+        [Display(Name = "5 Sütun Genişlik (col-5)")]
+        Five = 5,
+
+        [Display(Name = "6 Sütun Genişlik (col-6)")]
+        Six = 6,
+
+        [Display(Name = "7 Sütun Genişlik (col-7)")]
+        Seven = 7,
+
+        [Display(Name = "8 Sütun Genişlik (col-8)")]
+        Eight = 8,
+
+        [Display(Name = "9 Sütun Genişlik (col-9)")]
+        Nine = 9,
+
+        [Display(Name = "10 Sütun Genişlik (col-10)")]
+        Ten = 10,
+
+        [Display(Name = "11 Sütun Genişlik (col-11)")]
+        Eleven = 11,
+
+        [Display(Name = "12 Sütun (Tam Genişlik - col-12)")]
+        Twelve = 12
     }
+
 }
