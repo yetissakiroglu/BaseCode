@@ -17,8 +17,9 @@ namespace Economy.Persistence.Tenant.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEntityRepository<AppBlockGroup, int> _blockGroupRepository;
         private readonly IEntityRepository<AppBlockGroupTranslation, int> _trRepo;
-        private readonly IEntityRepository<AppBlock, int> _blockGroupBlock;
+        private readonly IEntityRepository<AppBlock, int> _block;
         private readonly IEntityRepository<AppLanguage, int> _entityLanguageRepository;
+        private readonly IEntityRepository<AppBlockGroupBlock, int> _blockGroupBlock;
 
         public BlockService(IMapper mapper, IUnitOfWork unitOfWork)
         {
@@ -26,22 +27,111 @@ namespace Economy.Persistence.Tenant.Services
             _blockGroupRepository = unitOfWork.HotelEntityRepository<AppBlockGroup>();
             _entityLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
             _trRepo = unitOfWork.HotelEntityRepository<AppBlockGroupTranslation>();
-            _blockGroupBlock = unitOfWork.HotelEntityRepository<AppBlock>();
+            _block = unitOfWork.HotelEntityRepository<AppBlock>();
+            _blockGroupBlock = unitOfWork.HotelEntityRepository<AppBlockGroupBlock>();
             _mapper = mapper;
         }
+
+
+
+        public async Task<ServiceResult<List<BlockItemDto>>> GetAllBlocksAsync(int? languageId, CancellationToken ct)
+        {
+            var q = await _block.DataSet.AsNoTracking()
+                .Where(x => !x.IsDeleted && x.IsActive)
+                .Select(x => new BlockItemDto(
+                    x.Id,
+                    x.Translations
+                        .Where(t => !t.IsDeleted && (languageId == null || t.AppLanguageId == languageId))
+                        .OrderBy(t => t.AppLanguageId)
+                        .Select(t => x.Tag).FirstOrDefault() ?? $"Block #{x.Id}"
+                ))
+                .OrderBy(x => x.Title).ToListAsync(ct);
+
+            return ServiceResult<List<BlockItemDto>>.Success(q);
+        }
+
+        public async Task<ServiceResult<List<GroupLayoutItemDto>>> GetGroupLayoutAsync(int groupId, CancellationToken ct)
+        {
+            var q = await _blockGroupBlock.DataSet.AsNoTracking()
+                .Where(x => x.AppBlockGroupId == groupId && !x.IsDeleted && x.IsActive)
+                .OrderBy(x => x.SortOrder)
+                .Select(x => new GroupLayoutItemDto(x.AppBlockId, x.SortOrder, x.Column))
+                .ToListAsync(ct);
+
+            return ServiceResult<List<GroupLayoutItemDto>>.Success(q);
+        }
+
+        public async Task<ServiceResult<NoContent>> SaveGroupLayoutAsync(SaveGroupLayoutRequest model, CancellationToken ct)
+        {
+            // 1) Doğrulama
+            if (model.GroupId <= 0) return ServiceResult<NoContent>.Failure("Geçersiz grup.");
+            if (model.Items.Any(i => i.Column < 1 || i.Column > 12))
+                return ServiceResult<NoContent>.Failure("Kolon değeri 1–12 aralığında olmalı.");
+
+            var dupIds = model.Items.GroupBy(i => i.BlockId).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+            if (dupIds.Any()) return ServiceResult<NoContent>.Failure("Aynı blok bir grupta bir kez olabilir.");
+
+            // 2) Mevcutlar
+            var existing = await _blockGroupBlock.DataSet
+                .Where(x => x.AppBlockGroupId == model.GroupId)
+                .ToListAsync(ct);
+            var map = existing.ToDictionary(x => x.AppBlockId, x => x);
+
+            // 3) Ekle/Güncelle
+            for (int i = 0; i < model.Items.Count; i++)
+            {
+                var it = model.Items[i];
+                if (map.TryGetValue(it.BlockId, out var row))
+                {
+                    row.SortOrder = it.SortOrder;
+                    row.Column = it.Column;
+                    row.IsActive = true;
+                    row.IsDeleted = false;
+                }
+                else
+                {
+                    _blockGroupBlock.DataSet.Add(new AppBlockGroupBlock
+                    {
+                        AppBlockGroupId = model.GroupId,
+                        AppBlockId = it.BlockId,
+                        SortOrder = it.SortOrder,
+                        Column = it.Column,
+                        IsActive = true
+                    });
+                }
+            }
+
+            // 4) Listede olmayanları soft-delete
+            var keep = model.Items.Select(i => i.BlockId).ToHashSet();
+            foreach (var row in existing)
+            {
+                if (!keep.Contains(row.AppBlockId))
+                {
+                    row.IsActive = false;
+                    row.IsDeleted = true;
+                }
+            }
+
+            await _unitOfWork.SaveHotelChangesAsync();
+            return ServiceResult<NoContent>.Success(new NoContent { Id = 0 });
+        }
+
+
+
+
+
+
         public async Task<List<BlockGroupDto>> GetGroupsAsync(bool includeItems = true)
         {
             var q = _blockGroupRepository.DataSet.AsQueryable();
-         
+
             var list = await q.OrderBy(x => x.ShowTitle).ToListAsync();
             return _mapper.Map<List<BlockGroupDto>>(list);
         }
-
-
         public async Task<BlockGroupDto?> GetGroupAsync(int id, bool includeItems = true)
         {
             var q = _blockGroupRepository.DataSet.AsQueryable();
- 
+
             var ent = await q.FirstOrDefaultAsync(x => x.Id == id);
             return ent == null ? null : _mapper.Map<BlockGroupDto>(ent);
         }
@@ -100,7 +190,7 @@ namespace Economy.Persistence.Tenant.Services
             await _unitOfWork.SaveHotelChangesAsync();
         }
 
-   
+
         public async Task<ServiceResult<List<BlockGroupListDto>>> GetGroupsListAsync(CancellationToken ct)
         {
             var defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
@@ -214,11 +304,11 @@ namespace Economy.Persistence.Tenant.Services
                 IsActive = b.IsActive,
                 Stage = b.Stage,
                 SharedJson = b.SharedJson,
-                Tag =b.Tag,
+                Tag = b.Tag,
                 Translations = langs.Select(l =>
                 {
                     var bt = b.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
-                    return new BlockGroupBlockTranslationVm { Id = bt?.Id, LanguageId = l.Id,LanguageCode =l.Code,LanguageIcon =l.Icon , LocalizedJson = bt?.LocalizedJson ?? "{}" };
+                    return new BlockGroupBlockTranslationVm { Id = bt?.Id, LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon, LocalizedJson = bt?.LocalizedJson ?? "{}" };
                 }).ToList()
             }).ToList();
 
@@ -326,7 +416,7 @@ namespace Economy.Persistence.Tenant.Services
                 // Silinen bloklar
                 var keep = vm.Blocks.Where(b => b.Id.HasValue).Select(b => b.Id!.Value).ToHashSet();
                 var toRemove = p.AppBlocks.Where(x => !keep.Contains(x.Id)).ToList();
-                _blockGroupBlock.DataSet.RemoveRange(toRemove);
+                _block.DataSet.RemoveRange(toRemove);
             }
 
             // Blok upsert + sıralama

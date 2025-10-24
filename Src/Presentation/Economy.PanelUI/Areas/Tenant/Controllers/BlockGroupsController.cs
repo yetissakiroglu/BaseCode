@@ -1,11 +1,13 @@
 ﻿using Economy.Application.TenantUI.Dtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Enums;
+using Economy.Panel.UI.Areas.Tenant.Models;
 using Economy.Panel.UI.Controllers;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
@@ -155,6 +157,43 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             return PartialView("_BlockCard", vm);
         }
 
+
+        /**/
+
+
+        [HttpGet("Tenant/BlockGroups/Edit1/{id:int}")]
+        public async Task<IActionResult> Edit1(int id, CancellationToken ct)
+        {
+            var group = await _svc.GetGroupAsync(id,ct);
+            if (group is null) return NotFound();
+
+            // Dil ID’n varsa geçir; yoksa null
+            var allBlocks = await _svc.GetAllBlocksAsync(languageId: null, ct);
+            var layout = await _svc.GetGroupLayoutAsync(id, ct);
+
+            var vm = new BlockGroupEditVm
+            {
+                GroupId = id,
+                GroupTitle = group.Data.Translations.Select(t => t.Title).FirstOrDefault() ?? $"Group #{id}",
+                AllBlocks = allBlocks.Data,
+                Selected = layout.Data.OrderBy(x => x.SortOrder).ToList()
+            };
+            return View(vm);
+        }
+
+        [HttpPost("Tenant/BlockGroups/SaveLayout")]
+        public async Task<IActionResult> SaveLayout([FromBody] SaveGroupLayoutRequest model, CancellationToken ct)
+        {
+            if (model is null || model.GroupId <= 0)
+                return BadRequest("Geçersiz veri");
+
+            // SortOrder normalize
+            for (int i = 0; i < model.Items.Count; i++)
+                model.Items[i] = model.Items[i] with { SortOrder = i + 1 };
+
+            var res = await _svc.SaveGroupLayoutAsync(model, ct);
+            return Ok(res);
+        }
 
 
 
