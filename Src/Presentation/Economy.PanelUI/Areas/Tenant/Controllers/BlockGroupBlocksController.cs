@@ -15,13 +15,13 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
     {
         private readonly IUnitOfWork _uow;
         private readonly IEntityRepository<AppBlockGroup, int> _page;
-        private readonly IEntityRepository<AppBlockGroupBlock, int> _apppageblock;
+        private readonly IEntityRepository<AppBlock, int> _apppageblock;
         private readonly IEntityRepository<AppLanguage, int> _langRepo;
         public BlockGroupBlocksController(IUnitOfWork uow)
         {
             _uow = uow;
             _page = uow.HotelEntityRepository<AppBlockGroup>();
-            _apppageblock = uow.HotelEntityRepository<AppBlockGroupBlock>();
+            _apppageblock = uow.HotelEntityRepository<AppBlock>();
             _langRepo = uow.HotelEntityRepository<AppLanguage>();
         }
         public async Task<IActionResult> Index(int? pageId, BlockType? type, string? q, int page = 1, int size = 20)
@@ -99,7 +99,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             {
                 var incoming = vm.Translations.First(t => t.LanguageId == l.Id);
                 var cur = b.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
-                if (cur == null) b.Translations.Add(new AppBlockGroupBlockTranslation { AppLanguageId = l.Id, LocalizedJson = incoming.LocalizedJson });
+                if (cur == null) b.Translations.Add(new AppBlockTranslation { AppLanguageId = l.Id, LocalizedJson = incoming.LocalizedJson });
                 else cur.LocalizedJson = incoming.LocalizedJson;
             }
             await _uow.SaveHotelChangesAsync();

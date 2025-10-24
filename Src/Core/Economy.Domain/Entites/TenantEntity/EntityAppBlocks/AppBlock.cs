@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Economy.Domain.Entites.TenantEntity.EntityAppBlocks
 {
-    public class AppBlockGroupBlock:BaseEntity<int>
+    public class AppBlock:BaseEntity<int>
     {
         public string? Tag { get; set; }
         public int AppBlockGroupId { get; set; }
@@ -18,6 +18,6 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppBlocks
         public bool IsActive { get; set; } = true;
         public ContentStage Stage { get; set; } = ContentStage.Draft;
         public string SharedJson { get; set; } = "{}";
-        public ICollection<AppBlockGroupBlockTranslation> Translations { get; set; } = [];
+        public ICollection<AppBlockTranslation> Translations { get; set; } = [];
     }
 }

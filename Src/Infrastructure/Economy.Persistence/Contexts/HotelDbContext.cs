@@ -33,8 +33,8 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppPageMediaTranslation> AppPageMediaTranslations { get; set; }
         public DbSet<AppBlockGroup> AppBlockGroups => Set<AppBlockGroup>();
         public DbSet<AppBlockGroupTranslation> AppBlockGroupTranslations => Set<AppBlockGroupTranslation>();
-        public DbSet<AppBlockGroupBlock> AppBlockGroupBlocks => Set<AppBlockGroupBlock>();
-        public DbSet<AppBlockGroupBlockTranslation> AppBlockGroupBlockTranslations => Set<AppBlockGroupBlockTranslation>();
+        public DbSet<AppBlock> AppBlocks => Set<AppBlock>();
+        public DbSet<AppBlockTranslation> AppBlockTranslations => Set<AppBlockTranslation>();
         public DbSet<PageBlock> PageBlocks => Set<PageBlock>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
