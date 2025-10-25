@@ -44,6 +44,7 @@
                                             <td>@g.Id</td>
                                             <td>@g.Title</td>
                                             <td>
+                                                <a class="btn btn-sm btn-outline-secondary" asp-action="Edit1" asp-route-id="@g.Id">Blok Düzenle</a>
                                                 <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@g.Id">Düzenle</a>
                                                 <form asp-action="Delete" asp-route-id="@g.Id" method="post" style="display:inline">
                                                     <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Silinsin mi?')">Sil</button>

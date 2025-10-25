@@ -36,19 +36,29 @@ namespace Economy.Persistence.Tenant.Services
 
         public async Task<ServiceResult<List<BlockItemDto>>> GetAllBlocksAsync(int? languageId, CancellationToken ct)
         {
-            var q = await _block.DataSet.AsNoTracking()
-                .Where(x => !x.IsDeleted && x.IsActive)
+            var q = _block.DataSet.AsNoTracking()
+                .Where(b => !b.IsDeleted && b.IsActive)
+                .Select(b => new
+                {
+                    b.Id,
+                    Title = b.Tag
+                });
+
+            var list = await q
+                // null başlıkları sona at, sonra Id ile sabitle
+                .OrderBy(x => x.Title == null)     // true > false, yani null’lar sona
+                .ThenBy(x => x.Title)              // null olmayanları alfabetik
+                .ThenBy(x => x.Id)
                 .Select(x => new BlockItemDto(
                     x.Id,
-                    x.Translations
-                        .Where(t => !t.IsDeleted && (languageId == null || t.AppLanguageId == languageId))
-                        .OrderBy(t => t.AppLanguageId)
-                        .Select(t => x.Tag).FirstOrDefault() ?? $"Block #{x.Id}"
+                    x.Title ?? $"Block #{x.Id}"
                 ))
-                .OrderBy(x => x.Title).ToListAsync(ct);
+                .ToListAsync(ct);
 
-            return ServiceResult<List<BlockItemDto>>.Success(q);
+            
+            return ServiceResult<List<BlockItemDto>>.Success(list);
         }
+
 
         public async Task<ServiceResult<List<GroupLayoutItemDto>>> GetGroupLayoutAsync(int groupId, CancellationToken ct)
         {
