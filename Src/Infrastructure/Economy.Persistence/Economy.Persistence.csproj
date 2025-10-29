@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Economy.Application\Economy.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Economy.Core\Economy.Core.csproj" />
   </ItemGroup>
 
 </Project>

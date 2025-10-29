@@ -160,6 +160,10 @@ builder.Services.AddScoped<IDatabaseBackupService, DatabaseBackupService>();
 builder.Services.AddScoped<IPanelAppAccountService, PanelAppAccountService>();
 builder.Services.AddScoped<IPanelAppPageService, PanelAppPageService>();
 builder.Services.AddScoped<IPanelAppPageMediaService, PanelAppPageMediaService>();
+builder.Services.AddScoped<IPanelAppBlockService, PanelAppBlockService>();
+
+
+
 
 builder.Services.Configure<SeoOptions>(builder.Configuration.GetSection("Seo"));
 builder.Services.AddScoped<ISlugService, SlugService>();

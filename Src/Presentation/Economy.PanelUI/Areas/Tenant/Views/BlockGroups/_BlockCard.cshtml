@@ -25,12 +25,12 @@
                     <input class="form-check-input" asp-for="IsActive" />
                     <label class="form-check-label">Durum</label>
                 </div> *@
-                <select asp-for="Stage" class="form-select form-select-sm" asp-items="Html.GetEnumSelectList<PageStage>()" style="width:130px">
-                </select>
+              @*   <select asp-for="Stage" class="form-select form-select-sm" asp-items="Html.GetEnumSelectList<PageStage>()" style="width:130px">
+                </select> *@
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="Type" />
-                <input type="hidden" asp-for="SortOrder" />
-            </div>
+@*                 <input type="hidden" asp-for="SortOrder" />
+ *@            </div>
         </div>
 
         <div class="card-body">

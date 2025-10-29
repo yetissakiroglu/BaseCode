@@ -273,7 +273,7 @@ namespace Economy.Persistence.Tenant.Services
             //var ci = await _blockGroupRepository.DataSet.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
             var ci = await _blockGroupRepository.DataSet
               .Include(x => x.Translations)
-              .Include(x => x.AppBlocks).ThenInclude(b => b.Translations)
+              //.Include(x => x.AppBlocks).ThenInclude(b => b.Translations)
               .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
 
 
@@ -306,21 +306,21 @@ namespace Economy.Persistence.Tenant.Services
             }
 
 
-            vm.Blocks = ci.AppBlocks.OrderBy(b => b.SortOrder).Select(b => new BlockGroupBlockVm
-            {
-                Id = b.Id,
-                Type = b.Type,
-                SortOrder = b.SortOrder,
-                IsActive = b.IsActive,
-                Stage = b.Stage,
-                SharedJson = b.SharedJson,
-                Tag = b.Tag,
-                Translations = langs.Select(l =>
-                {
-                    var bt = b.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
-                    return new BlockGroupBlockTranslationVm { Id = bt?.Id, LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon, LocalizedJson = bt?.LocalizedJson ?? "{}" };
-                }).ToList()
-            }).ToList();
+            //vm.Blocks = ci.AppBlocks.Select(b => new BlockGroupBlockVm
+            //{
+            //    Id = b.Id,
+            //    Type = b.Type,
+            //    //SortOrder = b.SortOrder,
+            //    IsActive = b.IsActive,
+            //    //Stage = b.Stage,
+            //    SharedJson = b.SharedJson,
+            //    Tag = b.Tag,
+            //    Translations = langs.Select(l =>
+            //    {
+            //        var bt = b.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
+            //        return new BlockGroupBlockTranslationVm { Id = bt?.Id, LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon, LocalizedJson = bt?.LocalizedJson ?? "{}" };
+            //    }).ToList()
+            //}).ToList();
 
 
 
@@ -410,62 +410,67 @@ namespace Economy.Persistence.Tenant.Services
             }
             else
             {
-                p = await _blockGroupRepository.DataSet.Include(x => x.Translations).Include(x => x.AppBlocks).ThenInclude(x => x.Translations)
-                    .FirstAsync(x => x.Id == vm.Id.Value);
-                p.IsActive = vm.IsActive; p.Columns = vm.Columns; p.ShowDescription = vm.ShowDescription;
+                //p = await _blockGroupRepository.DataSet.Include(x => x.Translations).Include(x => x.AppBlocks).ThenInclude(x => x.Translations)
+                //    .FirstAsync(x => x.Id == vm.Id.Value);
+                //p.IsActive = vm.IsActive; p.Columns = vm.Columns; p.ShowDescription = vm.ShowDescription;
 
-                // Sayfa çevirileri
-                foreach (var l in langs)
-                {
-                    var incoming = vm.Translations.First(t => t.LanguageId == l.Id);
-                    var cur = p.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
-                    if (cur == null) p.Translations.Add(new AppBlockGroupTranslation { AppLanguageId = l.Id, Title = incoming.Title, Description = incoming.Description });
-                    else { cur.Title = incoming.Title; cur.Description = incoming.Description; }
-                }
+                //// Sayfa çevirileri
+                //foreach (var l in langs)
+                //{
+                //    var incoming = vm.Translations.First(t => t.LanguageId == l.Id);
+                //    var cur = p.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
+                //    if (cur == null) p.Translations.Add(new AppBlockGroupTranslation { AppLanguageId = l.Id, Title = incoming.Title, Description = incoming.Description });
+                //    else { cur.Title = incoming.Title; cur.Description = incoming.Description; }
+                //}
 
-                // Silinen bloklar
-                var keep = vm.Blocks.Where(b => b.Id.HasValue).Select(b => b.Id!.Value).ToHashSet();
-                var toRemove = p.AppBlocks.Where(x => !keep.Contains(x.Id)).ToList();
-                _block.DataSet.RemoveRange(toRemove);
+                //// Silinen bloklar
+                //var keep = vm.Blocks.Where(b => b.Id.HasValue).Select(b => b.Id!.Value).ToHashSet();
+                ////var toRemove = p.AppBlocks.Where(x => !keep.Contains(x.Id)).ToList();
+                //_block.DataSet.RemoveRange(toRemove);
             }
 
             // Blok upsert + sıralama
             int order = 0;
-            foreach (var bvm in vm.Blocks.OrderBy(x => x.SortOrder))
-            {
-                AppBlock e;
-                if (bvm.Id == null)
-                {
-                    e = new AppBlock
-                    {
-                        Type = bvm.Type,
-                        SortOrder = order++,
-                        IsActive = bvm.IsActive,
-                        Stage = bvm.Stage,
-                        SharedJson = bvm.SharedJson,
-                        Tag = bvm.Tag,
-                    };
-                    foreach (var bt in bvm.Translations)
-                        e.Translations.Add(new AppBlockTranslation { AppLanguageId = bt.LanguageId, LocalizedJson = bt.LocalizedJson });
-                    p.AppBlocks.Add(e);
-                }
-                else
-                {
-                    e = p.AppBlocks.First(x => x.Id == bvm.Id.Value);
-                    e.Type = bvm.Type; e.SortOrder = order++; e.IsActive = bvm.IsActive; e.Stage = bvm.Stage; e.SharedJson = bvm.SharedJson; e.Tag = bvm.Tag;
+            //foreach (var bvm in vm.Blocks)
+            //{
+            //    AppBlock e;
+            //    if (bvm.Id == null)
+            //    {
+            //        e = new AppBlock
+            //        {
+            //            Type = bvm.Type,
+            //            //SortOrder = order++,
+            //            IsActive = bvm.IsActive,
+            //            //Stage = bvm.Stage,
+            //            SharedJson = bvm.SharedJson,
+            //            Tag = bvm.Tag,
+            //        };
+            //        foreach (var bt in bvm.Translations)
+            //            e.Translations.Add(new AppBlockTranslation { AppLanguageId = bt.LanguageId, LocalizedJson = bt.LocalizedJson });
+            //        p.AppBlocks.Add(e);
+            //    }
+            //    else
+            //    {
+            //        e = p.AppBlocks.First(x => x.Id == bvm.Id.Value);
+            //        e.Type = bvm.Type; 
+            //        //e.SortOrder = order++;
+            //        e.IsActive = bvm.IsActive; 
+            //        //e.Stage = bvm.Stage;
+            //        e.SharedJson = bvm.SharedJson; e.Tag = bvm.Tag;
 
 
-                    foreach (var l in langs)
-                    {
-                        var incoming = bvm.Translations.First(t => t.LanguageId == l.Id);
-                        var cur = e.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
-                        if (cur == null) e.Translations.Add(new AppBlockTranslation { AppLanguageId = l.Id, LocalizedJson = incoming.LocalizedJson });
-                        else cur.LocalizedJson = incoming.LocalizedJson;
-                    }
-                }
-            }
-            await _unitOfWork.SaveHotelChangesAsync();
-            return ServiceResult<NoContent>.Success(new NoContent() { Id = p.Id });
+            //        foreach (var l in langs)
+            //        {
+            //            var incoming = bvm.Translations.First(t => t.LanguageId == l.Id);
+            //            var cur = e.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
+            //            if (cur == null) e.Translations.Add(new AppBlockTranslation { AppLanguageId = l.Id, LocalizedJson = incoming.LocalizedJson });
+            //            else cur.LocalizedJson = incoming.LocalizedJson;
+            //        }
+            //    }
+            //}
+            //await _unitOfWork.SaveHotelChangesAsync();
+            //return ServiceResult<NoContent>.Success(new NoContent() { Id = p.Id });
+            return ServiceResult<NoContent>.Success(new NoContent() { Id = 0 });
 
         }
     }

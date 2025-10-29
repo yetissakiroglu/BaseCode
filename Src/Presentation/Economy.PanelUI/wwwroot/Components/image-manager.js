@@ -67,43 +67,6 @@ function addImageToGallery(gi, url) {
     document.getElementById(`gal_${gi}`).appendChild(col);
 }
 
-// Galeriye resim ekleme
-//function addImageToGallery(gi, url) {
-//    const gal = document.getElementById(`gal_${gi}`);
-//    if (!gal) return;
-
-//    // j: bu grupta mevcut item sayısı (MediaUrl hidden'larına bakarak)
-//    const j = gal.querySelectorAll(`input[type="hidden"][name^="Galleries[${gi}].Items"][name$=".MediaUrl"]`).length;
-
-//    const col = document.createElement('div');
-//    col.className = "col-sm-2 col-xl-2 mb-3";
-//    col.innerHTML = `
-//        <label class="form-checkimage w-100">
-//            <input class="checkimage-input" type="radio"
-//                   name="gallerycover_${gi}"
-//                   value="${url}"
-//                   data-url="${url}" data-group="${gi}">
-//            <span class="check-box radiobox">
-//              <img src="${url}" alt="" class="checkbox-image w-100 rounded shadow-sm" width="230" height="150" />
-//            </span>
-//            <button type="button" class="btn btn-sm btn-outline-danger mt-1 btn-del"
-//                    data-url="${url}" data-group="${gi}">Sil</button>
-//        </label>
-
-//        <!-- Model binding için ayrı alanlar -->
-//        <input type="hidden" name="Galleries[${gi}].Items[${j}].Id" value="0" />
-//        <input type="hidden" name="Galleries[${gi}].Items[${j}].MediaUrl" value="${url}" />
-//    `;
-
-//    gal.appendChild(col);
-
-//    // Eğer bu grupta henüz kapak seçili değilse, eklenen ilk öğeyi kapak yap
-//    const anyChecked = gal.querySelector(`input[name="gallerycover_${gi}"]:checked`);
-//    if (!anyChecked) {
-//        const r = col.querySelector('.checkimage-input');
-//        if (r) r.checked = true;
-//    }
-//}
 
 // Radio ile kapak seçimi
 document.addEventListener('change', e => {

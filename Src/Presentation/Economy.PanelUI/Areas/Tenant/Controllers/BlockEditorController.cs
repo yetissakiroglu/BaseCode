@@ -1,4 +1,5 @@
-﻿using Economy.Core.Enums;
+﻿using Economy.Core.Dtos.Custom;
+using Economy.Core.Enums;
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
@@ -6,6 +7,7 @@ using Economy.Panel.UI.Areas.Tenant.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Text.Json;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
@@ -155,7 +157,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
                 default:
                     // Faz-1 dışı tipler için ana editöre dön
-                    return RedirectToAction("Edit", "BlockGroupBlocks", new { area = "Tenant", id = pb.Id });
+                    return RedirectToAction("Edit", "Blocks", new { area = "Tenant", id = pb.Id });
             }
 
             // Lokal helper: hatalı JSON’da bile fallback üreten güvenli deserialize
@@ -166,7 +168,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                 catch { return fallback(); }
             }
         }
-
 
         // Save
         [HttpPost]

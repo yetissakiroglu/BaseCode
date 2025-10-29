@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Economy.Core.Dtos.Custom;
+using System.ComponentModel.DataAnnotations;
 
 namespace Economy.Panel.UI.Areas.Tenant.Models
 {

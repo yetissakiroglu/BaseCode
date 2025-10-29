@@ -104,9 +104,9 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             var vm = new BlockGroupBlockVm
             {
                 Type = type,
-                SortOrder = index,
+                //SortOrder = index,
                 IsActive = true,
-                Stage = ContentStage.Draft,
+                //Stage = ContentStage.Draft,
 
                 SharedJson = type switch
                 {
