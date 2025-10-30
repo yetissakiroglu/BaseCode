@@ -1,0 +1,196 @@
+﻿@model string?
+@{
+    var namePrefix = (ViewData["NamePrefix"] as string) ?? "ImageUrl";
+    var formId = (ViewData["FormId"] as string) ?? "mainForm";
+    var pickerUrl = (ViewData["PickerUrl"] as string) ?? "/Tenant/ImageManager/Picker";
+    var containerId = "imgurl_" + Guid.NewGuid().ToString("N");
+    var url = Model ?? "";
+}
+
+<div id="@containerId" class="imgpick mt-3">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <label class="form-label fw-semibold mb-2">Kapak Görseli</label>
+
+            <!-- Preview -->
+            <div class="position-relative rounded-3 overflow-hidden border bg-light mb-3 preview-wrap">
+                <!-- Checkerboard arka plan: transparan görseller için -->
+                <div class="checkerboard"></div>
+
+                <!-- 16:9 ratio alan -->
+                <div class="ratio ratio-16x9">
+                    <img src="@(string.IsNullOrWhiteSpace(url) ? "" : url)"
+                         alt="Görsel önizleme"
+                         class="img-fluid w-100 h-100 object-fit-cover preview-img @(string.IsNullOrWhiteSpace(url) ? "d-none" : null)">
+                    <!-- boş durumda placeholder -->
+                    <div class="d-flex flex-column align-items-center justify-content-center text-muted gap-1 placeholder-wrap @(string.IsNullOrWhiteSpace(url) ? null : "d-none")">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.5" />
+                            <path d="M4 15l4-4 4 4 4-5 4 5" stroke="currentColor" stroke-width="1.5" fill="none" />
+                            <circle cx="9" cy="8" r="1" fill="currentColor" />
+                        </svg>
+                        <small>Görsel seçilmedi</small>
+                    </div>
+                </div>
+
+                <!-- Hover overlay -->
+                <div class="overlay-actions d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-dark pick-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="me-1">
+                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        Değiştir
+                    </button>
+                    <a href="@(string.IsNullOrWhiteSpace(url) ? "#" : url)" target="_blank"
+                       class="btn btn-sm btn-outline-light open-btn @(string.IsNullOrWhiteSpace(url) ? "disabled" : null)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="me-1">
+                            <path d="M14 3h7v7M21 3l-9 9" stroke="currentColor" stroke-width="2" />
+                            <path d="M5 21h14V11" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        Aç
+                    </a>
+                </div>
+            </div>
+
+            <!-- Input + Butonlar -->
+            <div class="input-group input-group-sm">
+                <span class="input-group-text">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M3 12a5 5 0 015-5h3M13 17h-3a5 5 0 010-10m5 0a5 5 0 010 10h-3" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                </span>
+                <input class="form-control url-input" name="@namePrefix" value="@url" placeholder="https://...">
+                <button class="btn btn-outline-secondary copy-btn" type="button" title="Kopyala">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.5" />
+                        <rect x="4" y="4" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                </button>
+                <a class="btn btn-outline-secondary open-btn" target="_blank" href="@(string.IsNullOrWhiteSpace(url) ? "#" : url)" title="Yeni sekmede aç">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M14 3h7v7M21 3l-9 9" stroke="currentColor" stroke-width="1.5" />
+                        <path d="M5 21h14V11" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                </a>
+                <button class="btn btn-outline-danger clear-btn" type="button" title="Temizle">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M19 6L5 20M5 6l14 14" stroke="currentColor" stroke-width="1.8" />
+                    </svg>
+                </button>
+                <button class="btn btn-primary pick-btn" type="button" title="Dosya Seç">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="me-1">
+                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" />
+                    </svg>
+                    Seç
+                </button>
+            </div>
+            <small class="text-muted d-block mt-2">Öneri: 1600×900 veya 1920×1080, JPG/WEBP.</small>
+        </div>
+    </div>
+</div>
+
+<style>
+    .imgpick .preview-wrap {
+        transition: box-shadow .2s ease
+    }
+
+        .imgpick .preview-wrap:hover {
+            box-shadow: 0 .125rem .5rem rgba(0,0,0,.12)
+        }
+
+    .imgpick .object-fit-cover {
+        object-fit: cover
+    }
+
+    .imgpick .overlay-actions {
+        position: absolute;
+        inset: auto 0 0 0;
+        display: flex;
+        justify-content: center;
+        padding: .5rem;
+        background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.45) 100%);
+        opacity: 0;
+        transition: opacity .2s ease;
+    }
+
+    .imgpick .preview-wrap:hover .overlay-actions {
+        opacity: 1
+    }
+
+    .imgpick .checkerboard {
+        position: absolute;
+        inset: 0;
+        background: conic-gradient(#eee 25%, #fff 0 50%, #eee 0 75%, #fff 0) 0/16px 16px;
+        opacity: .6;
+    }
+</style>
+
+<script>
+    (function () {
+        const id = "@containerId";
+        const pickerUrl = "@pickerUrl";
+        const namePrefix = "@namePrefix";
+        const formId = "@formId";
+
+        const root = document.getElementById(id);
+        if (!root) return;
+
+        const input = root.querySelector(".url-input");
+        const img   = root.querySelector(".preview-img");
+        const openA = root.querySelectorAll(".open-btn");
+        const pick  = root.querySelectorAll(".pick-btn");
+        const clear = root.querySelector(".clear-btn");
+        const placeholder = root.querySelector(".placeholder-wrap");
+
+        function setUrl(u){
+            const val = (u || "").trim();
+            input.value = val;
+            const has = !!val;
+            if (img){
+                img.src = has ? val : "";
+                img.classList.toggle("d-none", !has);
+            }
+            if (placeholder){
+                placeholder.classList.toggle("d-none", has);
+            }
+            openA.forEach(a => {
+                if (!a) return;
+                a.classList.toggle("disabled", !has);
+                a.setAttribute("href", has ? val : "#");
+            });
+        }
+
+        input.addEventListener("input", e => setUrl(e.target.value));
+        clear.addEventListener("click", () => setUrl(""));
+
+        function openPicker(){
+            const w=1000,h=700;
+            const y=window.top.outerHeight/2+window.top.screenY-(h/2);
+            const x=window.top.outerWidth/2+window.top.screenX-(w/2);
+            window.__activeImgEditor = id;
+            window.open(pickerUrl, 'picker', `popup=yes,width=${w},height=${h},left=${x},top=${y}`);
+        }
+        pick.forEach(b => b.addEventListener("click", openPicker));
+
+        if (!window.__singleImgUrlBoundFancy){
+            window.addEventListener("message", ev => {
+                const data = ev.data || {};
+                const isValid = data.type === "image-picked" || data.type === "images-picked";
+                if (!isValid) return;
+                if (window.__activeImgEditor !== id) return;
+
+                const picked = data.url || (Array.isArray(data.urls) && data.urls[0]) || "";
+                if (!picked) return;
+                setUrl(picked);
+            });
+            window.__singleImgUrlBoundFancy = true;
+        }
+
+        // Form submit (isim sabit kalır)
+        let form = formId ? document.getElementById(formId) : null;
+        if(!form) form = root.closest("form");
+        if (form){
+            form.addEventListener("submit", () => { input.name = namePrefix; });
+        }
+    })();
+</script>

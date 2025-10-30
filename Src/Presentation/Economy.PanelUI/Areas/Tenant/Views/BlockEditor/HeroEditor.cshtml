@@ -53,7 +53,13 @@
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label class="form-label">Arkaplan URL</label>
-                                    <input class="form-control" name="Shared.BackgroundUrl" value="@shared.BackgroundUrl" />
+                                    @await Html.PartialAsync("PartialViews/_ImageUrlEditor", shared.BackgroundUrl, new ViewDataDictionary(ViewData)
+                                    {
+                                        { "NamePrefix", "Shared.BackgroundUrl" },
+                                                                        { "FormId", "mainForm" },
+                                                                        { "PickerUrl", "/Tenant/ImageManager/Picker" }
+                                    })
+
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Dikey Hizalama</label>
