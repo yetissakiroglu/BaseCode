@@ -72,21 +72,9 @@
                             </div>
                             <div class="mt-3">
                                 <label class="form-label">Görsel URL’leri (imageUrls)</label>
-                                @await Html.PartialAsync(
-                                "_ImageUrlsEditor",
-                                                                urls,
-                                                                new ViewDataDictionary(ViewData)
-                                                                {
-                                                                    ["NamePrefix"] = "Shared.ImageUrls",
-                                                                    ["FormId"] = "galleryForm",
-                                                                    ["PickerUrl"] = "/Tenant/ImageManager/Picker"
-                                                                })
-
-
+                                @await Html.PartialAsync("PartialViews/_ImageUrlsEditor",urls,new ViewDataDictionary(ViewData){["NamePrefix"] = "Shared.ImageUrls",["FormId"] = "galleryForm",["PickerUrl"] = "/Tenant/ImageManager/Picker"})
                             </div>
-
                         </div>
-
                         <div class="card-footer d-flex justify-content-between">
                             <button type="button" class="btn btn-outline-secondary" onclick="history.back()">← Geri</button>
                             <button type="submit" class="btn btn-primary">Güncelle</button>
