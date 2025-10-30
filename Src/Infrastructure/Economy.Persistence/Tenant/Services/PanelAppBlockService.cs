@@ -15,11 +15,11 @@ namespace Economy.Persistence.Tenant.Services
     public class PanelAppBlockService : IPanelAppBlockService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
         private readonly IEntityRepository<AppLanguage, int> _appLanguage;
         private readonly IEntityRepository<AppBlock, int> _appBlock;
         private readonly IEntityRepository<AppBlockTranslation, int> _appBlockTranslation;
         private readonly IEntityRepository<AppBlockGroupBlock, int> _appBlockGroupBlock;
+        private readonly IMapper _mapper;
         public PanelAppBlockService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
