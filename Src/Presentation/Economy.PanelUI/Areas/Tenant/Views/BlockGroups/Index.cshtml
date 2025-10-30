@@ -1,7 +1,7 @@
-﻿@using Economy.Application.TenantUI.Dtos
-@model List<BlockGroupListDto>
+﻿@using Economy.Application.TenantUI.Dtos.AppBlockGroupDtos
+@model List<AppBlockGroupListDto>
 @{
-    ViewData["Title"] = "Sayfa Blok Grupları";
+    ViewData["Title"] = "Blok Grupları";
 }
 
 <main>
@@ -33,7 +33,10 @@
                                 <thead>
                                     <tr>
                                         <th>Id</th>
-                                        <th>Title</th>
+                                        <th>Başlık</th>
+                                        <th>Durum</th>
+                                        <th>Klon</th>
+                                        <th>Blok Sayısı</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -43,6 +46,9 @@
                                         <tr>
                                             <td>@g.Id</td>
                                             <td>@g.Title</td>
+                                            <td>@g.IsActive.GetAktifPasifText()</td>
+                                            <td>@g.Columns.GetDisplayName()</td>
+                                            <td>@g.BlockCount</td>
                                             <td>
                                                 <a class="btn btn-sm btn-outline-secondary" asp-action="Edit1" asp-route-id="@g.Id">Blok Düzenle</a>
                                                 <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@g.Id">Düzenle</a>

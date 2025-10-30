@@ -134,7 +134,7 @@ builder.Services.AddScoped<IPanelAppTechnicalSettingService, PanelAppTechnicalSe
 builder.Services.AddScoped<IValidator<MenuItemDto>, AppMenuItemValidator>();
 
 
-builder.Services.AddScoped<IBlockGroupService, BlockService>();
+builder.Services.AddScoped<IPanelAppBlockGroupService, PanelAppBlockGroupService>();
 builder.Services.AddScoped<IPageBlockService, PageBlockService>();
 
 

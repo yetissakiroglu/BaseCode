@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Economy.Application.TenantUI.Dtos;
+using Economy.Application.TenantUI.Dtos.AppBlockGroupDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Enums;
 using Economy.Core.Interfaces;
@@ -15,21 +16,57 @@ namespace Economy.Persistence.Tenant.Services
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEntityRepository<AppBlockGroup, int> _blockGroupRepository;
-        private readonly IEntityRepository<AppBlockGroupTranslation, int> _trRepo;
-        private readonly IEntityRepository<AppBlock, int> _block;
-        private readonly IEntityRepository<AppLanguage, int> _entityLanguageRepository;
-        private readonly IEntityRepository<AppBlockGroupBlock, int> _blockGroupBlock;
+        private readonly IEntityRepository<AppBlockGroup, int> _appBlockGroup;
+        private readonly IEntityRepository<AppBlockGroupTranslation, int> _appBlockGroupTranslation;
+        private readonly IEntityRepository<AppBlockGroupBlock, int> _appBlockGroupBlock;
+
+        private readonly IEntityRepository<AppLanguage, int> _appLanguage;
 
         public PanelAppBlockGroupService(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _blockGroupRepository = unitOfWork.HotelEntityRepository<AppBlockGroup>();
-            _entityLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
-            _trRepo = unitOfWork.HotelEntityRepository<AppBlockGroupTranslation>();
-            _block = unitOfWork.HotelEntityRepository<AppBlock>();
-            _blockGroupBlock = unitOfWork.HotelEntityRepository<AppBlockGroupBlock>();
+            _appBlockGroup = unitOfWork.HotelEntityRepository<AppBlockGroup>();
+            _appLanguage = unitOfWork.HotelEntityRepository<AppLanguage>();
+            _appBlockGroupTranslation = unitOfWork.HotelEntityRepository<AppBlockGroupTranslation>();
+            _appBlockGroupBlock = unitOfWork.HotelEntityRepository<AppBlockGroupBlock>();
             _mapper = mapper;
+        }
+
+        public async Task<ServiceResult<List<AppBlockGroupListDto>>> GetAllBlockGroupsListAsync(CancellationToken ct)
+        {
+            var defLangId = await _appLanguage.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
+               .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            if (defLangId == 0)
+                defLangId = await _appLanguage.DataSet.Where(l => !l.IsDeleted && l.IsActive)
+                    .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            var list = await (from ci in _appBlockGroup.DataSet
+                              where !ci.IsDeleted
+                              join tr in _appBlockGroupTranslation.DataSet on ci.Id equals tr.AppBlockGroupId into trx
+                              from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
+                              orderby ci.ShowTitle, ci.Id
+                              select new AppBlockGroupListDto
+                              {
+                                  Id = ci.Id,
+                                  ShowDescription = ci.ShowDescription,
+                                  Columns = ci.Columns,
+                                  ShowTitle = ci.ShowTitle,
+                                  Description = tr != null ? tr.Description : null,
+                                  Title = tr != null ? tr.Title : null,
+                                  IsActive = ci.IsActive
+                              })
+                              .ToListAsync(ct);
+
+
+            foreach (var item in list)
+            {
+                var count = _appBlockGroupBlock.DataSet.Where(x => x.IsActive && !x.IsDeleted && x.AppBlockGroupId == item.Id).Count();
+                item.BlockCount = count;
+            }
+
+
+            return ServiceResult<List<AppBlockGroupListDto>>.Success(list);
         }
 
 
@@ -77,7 +114,7 @@ namespace Economy.Persistence.Tenant.Services
         //        ))
         //        .ToListAsync(ct);
 
-            
+
         //    return ServiceResult<List<BlockItemDto>>.Success(list);
         //}
 

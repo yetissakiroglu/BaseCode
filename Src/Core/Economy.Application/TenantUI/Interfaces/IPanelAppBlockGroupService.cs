@@ -1,11 +1,14 @@
-﻿namespace Economy.Application.TenantUI.Interfaces
+﻿using Economy.Application.TenantUI.Dtos.AppBlockGroupDtos;
+using Economy.Core.Tools.Result;
+
+namespace Economy.Application.TenantUI.Interfaces
 {
     public interface IPanelAppBlockGroupService
     {
+        Task<ServiceResult<List<AppBlockGroupListDto>>> GetAllBlockGroupsListAsync(CancellationToken ct);
 
 
 
-        //Task<ServiceResult<List<BlockGroupListDto>>> GetGroupsListAsync(CancellationToken ct);
         //Task<ServiceResult<NoContent>> FillLanguagesAsync(BlockGroupDto vm, CancellationToken ct);
         //Task<ServiceResult<NoContent>> EnsureLanguageTabsAsync(BlockGroupDto vm, CancellationToken ct);
         //Task<ServiceResult<NoContent>> CreateGroupAsync(BlockGroupDto vm, CancellationToken ct);
