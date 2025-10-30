@@ -59,7 +59,6 @@ namespace Economy.Persistence.Tenant.Services
             await _unitOfWork.SaveHotelChangesAsync();
             return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
         }
-
         public async Task<ServiceResult<NoContent>> DeleteBlockAsync(int blockId, CancellationToken ct)
         {
             var deletedBlocks = _appBlock.DataSet.Where(x => x.Id == blockId);
@@ -67,13 +66,69 @@ namespace Economy.Persistence.Tenant.Services
             await _unitOfWork.SaveHotelChangesAsync();
             return ServiceResult<NoContent>.Success(new NoContent { Id = blockId });
         }
+        public async Task<ServiceResult<NoContent>> EditBlockAsync(int blockId, AppBlockDto vm, CancellationToken ct)
+        {
+            var ci = await _appBlock.DataSet.FirstOrDefaultAsync(x => x.Id == blockId && !x.IsDeleted, ct);
+            if (ci is null)
+            {
+                return ServiceResult<NoContent>.Empty();
+            }
+
+            ci.IsActive = vm.IsActive;
+            ci.SharedJson = vm.SharedJson;
+            ci.Tag = vm.Tag;
+            ci.Type = vm.Type;
+
+            var existing = await _appBlockTranslation.DataSet
+                .Where(t => !t.IsDeleted && t.AppBlockId == blockId)
+                .ToListAsync(ct);
+
+            foreach (var t in vm.Translations)
+            {
+                var ex = existing.FirstOrDefault(x => x.AppLanguageId == t.LanguageId);
+                if (ex is null)
+                {
+                    var tr = new AppBlockTranslation
+                    {
+                        AppBlockId = blockId,
+                        AppLanguageId = t.LanguageId,
+                        LocalizedJson = t.LocalizedJson
+                    };
+                    await _appBlockTranslation.DataSet.AddAsync(tr, ct);
+                }
+                else
+                {
+                    ex.LocalizedJson = t.LocalizedJson;
+                }
+            }
+
+            await _unitOfWork.SaveHotelChangesAsync();
+            return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
+        }
+        public async Task<ServiceResult<NoContent>> EnsureLanguageTabsAsync(AppBlockDto vm, CancellationToken ct)
+        {
+            var exist = vm.Translations.Select(t => t.LanguageId).ToHashSet();
+            var langs = await _appLanguage.DataSet.Where(x => !x.IsDeleted && x.IsActive)
+                .Select(x => new { x.Id, x.Code, x.Icon, x.Name }).ToListAsync(ct);
+
+            foreach (var l in langs)
+                if (!exist.Contains(l.Id))
+                    vm.Translations.Add(new AppBlockTranslationDto { LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon, LanguageName = l.Name, LocalizedJson = vm.Type.GetLocalizedJson() });
+
+            vm.Translations = vm.Translations
+                .OrderByDescending(t => t.LanguageCode == "tr")
+                .ThenBy(t => t.LanguageId)
+                .ToList();
+
+            return ServiceResult<NoContent>.Success(null);
+        }
         public async Task<ServiceResult<NoContent>> FillLanguagesAsync(AppBlockDto vm, CancellationToken ct)
         {
             var langs = await _appLanguage.DataSet
                .Where(x => !x.IsDeleted && x.IsActive)
                .OrderByDescending(x => x.IsDefault)
                .ThenBy(x => x.Id)
-               .Select(x => new { x.Id, x.Code, x.Icon,x.Name })
+               .Select(x => new { x.Id, x.Code, x.Icon, x.Name })
                .ToListAsync(ct);
 
             vm.Translations = langs.Select(l => new AppBlockTranslationDto
@@ -154,11 +209,11 @@ namespace Economy.Persistence.Tenant.Services
                 Type = b.Type,
                 IsActive = b.IsActive,
                 SharedJson = b.SharedJson,
-                Tag =b.Tag,
+                Tag = b.Tag,
                 Translations = langs.Select(l =>
                 {
                     var bt = b.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
-                    return new AppBlockTranslationDto { Id = bt?.Id, LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon, LocalizedJson = bt?.LocalizedJson ?? "{}" };
+                    return new AppBlockTranslationDto { Id = bt?.Id, LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon,LanguageName=l.Name, LocalizedJson = bt?.LocalizedJson ?? b.Type.GetLocalizedJson() };
                 }).ToList()
             };
 

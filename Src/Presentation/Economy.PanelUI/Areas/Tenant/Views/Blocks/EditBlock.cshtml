@@ -3,7 +3,6 @@
 @model AppBlockDto
 @{
     ViewBag.Title = $"Blok Düzenle #{Model.Tag}";
-    var langs = (List<AppLanguageDto>)ViewBag.Languages;
 }
 <main>
     <div class="container-fluid">
@@ -27,6 +26,9 @@
             <div class="col-12">
                 <form method="post">
                     @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Type" />
+
                     <div class="card">
                         <div class="card-header d-flex gap-3 align-items-center">
                             <div><strong>Tipi:</strong> @Model.Type.GetDisplayName()</div>
@@ -49,10 +51,10 @@
                             <div class="row g-3">
                                 @for (int i = 0; i < Model.Translations.Count; i++)
                                 {
+                                    var trans = Model.Translations[i];
                                     var lid = Model.Translations[i].LanguageId;
-                                    var ln = langs.First(x => x.Id == lid);
                                     <div class="col-md-6">
-                                        <label class="form-label"><strong>@ln.Name (@ln.Code.ToUpper())</strong> </label>
+                                        <label class="form-label"><strong>@trans.LanguageName (@trans.LanguageCode.ToUpper())</strong> </label>
                                         <input type="hidden" asp-for="Translations[i].Id" />
                                         <input type="hidden" asp-for="Translations[i].LanguageId" />
                                         <input type="hidden" asp-for="Translations[i].LanguageCode" />

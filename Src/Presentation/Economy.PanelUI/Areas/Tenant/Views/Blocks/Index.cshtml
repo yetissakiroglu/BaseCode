@@ -20,11 +20,14 @@
                                 <form method="get" class="row g-2">
                                     <div class="col-auto">
                                         <select class="form-select" name="type">
-                                            <option value="">Type</option>
-                                            @foreach (var t in Enum.GetValues(typeof(BlockType)))
+                                            <option value="">Block Tipi</option>
+                                            @foreach (var t in Enum.GetValues(typeof(BlockType)).Cast<BlockType>())
                                             {
                                                 var v = (int)t;
-                                                <option value="@v" selected="@(Model.FilterType.HasValue && (int)Model.FilterType.Value == v)">@t</option>
+                                                var display = t.GetDisplayName(); // extension metodun çağrısı
+                                                <option value="@v" selected="@(Model.FilterType.HasValue && (int)Model.FilterType.Value == v)">
+                                                    @display
+                                                </option>
                                             }
                                         </select>
                                     </div>
@@ -34,12 +37,9 @@
                             </div>
                             <div>
                                 <div class="app-btn-list">
-                            
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#apiModel">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#blockModel">
                                         Yeni Blok
                                     </button>
-                                    
-                              
                                 </div>
                             </div>
                         </div>
@@ -82,12 +82,12 @@
 </main>
 <!-- modal start -->
 <!-- Modal -->
-<div class="modal fade" id="apiModel" tabindex="-1" aria-labelledby="apiModelLabel" aria-hidden="true">
+<div class="modal fade" id="blockModel" tabindex="-1" aria-labelledby="blockModelLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="get" action='@Url.Action("CreateBlock", "Blocks")'>
                 <div class="modal-header border-0">
-                    <h1 class="modal-title fs-6" id="apiModelLabel">Blok Oluştur</h1>
+                    <h1 class="modal-title fs-6" id="blockModelLabel">Blok Oluştur</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
                 </div>
 

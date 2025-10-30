@@ -12,7 +12,9 @@ namespace Economy.Application.TenantUI.Interfaces
         Task<ServiceResult<NoContent>> DeleteBlockAsync(int blockId, CancellationToken ct);
         Task<ServiceResult<NoContent>> FillLanguagesAsync(AppBlockDto vm, CancellationToken ct);
         Task<ServiceResult<NoContent>> FillLanguagesAsync(AppBlockDto vm, BlockType type, CancellationToken ct);
+        Task<ServiceResult<NoContent>> EnsureLanguageTabsAsync(AppBlockDto vm, CancellationToken ct);
         Task<ServiceResult<NoContent>> CreateBlockAsync(AppBlockDto vm, CancellationToken ct);
+        Task<ServiceResult<NoContent>> EditBlockAsync(int blockId, AppBlockDto vm, CancellationToken ct);
 
     }
 }
