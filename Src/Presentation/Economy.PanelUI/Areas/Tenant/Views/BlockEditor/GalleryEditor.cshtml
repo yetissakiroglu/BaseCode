@@ -3,6 +3,7 @@
 @model GalleryLocVm
 @{
     var shared = ViewBag.Shared as GallerySharedVm ?? new GallerySharedVm { Mode = "grid", ImageUrls = new List<string>() };
+    var urls = shared.ImageUrls ?? new List<string>();
 
     int langId = ViewBag.LanguageId is int lid ? lid : 0;
     int pageBlockId = ViewBag.PageBlockId is int pbid ? pbid : 0;
@@ -11,6 +12,18 @@
 
     ViewData["Title"] = "Image Gallery Editor";
 }
+<style>
+    .gal-thumb {
+        width: 100px;
+        height: 66px;
+        object-fit: cover;
+    }
+
+    .gal-row .form-control {
+        min-width: 260px;
+    }
+</style>
+
 <main>
     <div class="container-fluid">
         @await Html.PartialAsync("_breadcrumbs")
@@ -57,21 +70,21 @@
                                     </select>
                                 </div>
                             </div>
-
                             <div class="mt-3">
                                 <label class="form-label">Görsel URL’leri (imageUrls)</label>
-                                <div id="gal-rows">
-                                    @for (int i = 0; i < (shared.ImageUrls?.Count ?? 0); i++)
-                                    {
-                                        <div class="input-group mb-2 gal-row">
-                                            <input class="form-control gal-input" name="Shared.ImageUrls[@i]" value="@shared.ImageUrls[i]" placeholder="https://..." />
-                                            <button class="btn btn-outline-danger" type="button" onclick="this.closest('.gal-row').remove()">Sil</button>
-                                        </div>
-                                    }
-                                </div>
+                                @await Html.PartialAsync(
+                                "_ImageUrlsEditor",
+                                                                urls,
+                                                                new ViewDataDictionary(ViewData)
+                                                                {
+                                                                    ["NamePrefix"] = "Shared.ImageUrls",
+                                                                    ["FormId"] = "galleryForm",
+                                                                    ["PickerUrl"] = "/Tenant/ImageManager/Picker"
+                                                                })
 
-                                <button class="btn btn-sm btn-outline-primary mt-2" type="button" onclick="addGalleryRow()">Görsel Ekle</button>
+
                             </div>
+
                         </div>
 
                         <div class="card-footer d-flex justify-content-between">
@@ -84,24 +97,9 @@
         </div>
     </div>
 </main>
-@section Scripts {
-    <script>
-        function addGalleryRow() {
-            const wrapper = document.getElementById('gal-rows');
-            const idx = wrapper.querySelectorAll('.gal-row').length;
-            const div = document.createElement('div');
-            div.className = 'input-group mb-2 gal-row';
-            div.innerHTML = `
-                <input class="form-control gal-input" name="Shared.ImageUrls[${idx}]" placeholder="https://..." />
-                <button type="button" class="btn btn-outline-danger" onclick="this.closest('.gal-row').remove()">Sil</button>
-            `;
-            wrapper.appendChild(div);
-        }
 
-        // Submit öncesi indexleri sıfırdan güncelle
-        document.getElementById('galleryForm').addEventListener('submit', () => {
-            const inputs = Array.from(document.querySelectorAll('#gal-rows .gal-row .gal-input'));
-            inputs.forEach((inp, i) => inp.name = `Shared.ImageUrls[${i}]`);
-        });
-    </script>
+@section Scripts {
+   
 }
+
+

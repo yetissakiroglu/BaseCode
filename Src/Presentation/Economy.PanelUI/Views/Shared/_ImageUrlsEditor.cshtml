@@ -1,0 +1,126 @@
+﻿@model List<string>
+@{
+    // Basit ve genel: NamePrefix ve FormId dışarıdan ViewData ile gelir.
+    var namePrefix = (ViewData["NamePrefix"] as string) ?? "ImageUrls";
+    var formId = (ViewData["FormId"] as string) ?? "mainForm";
+    var pickerUrl = (ViewData["PickerUrl"] as string) ?? "/Tenant/ImageManager/Picker";
+    var containerId = "imgurls_" + Guid.NewGuid().ToString("N");
+}
+<div id="@containerId" class="mt-3">
+    <label class="form-label">Görsel URL’leri</label>
+
+    <div class="row g-2" id="rows-@containerId">
+        @for (int i = 0; i < (Model?.Count ?? 0); i++)
+        {
+            var url = Model[i] ?? "";
+            <div class="col-12 gal-row d-flex align-items-center gap-2">
+                <a href="@url" target="_blank" class="d-inline-block rounded border" style="width:100px;height:66px;overflow:hidden">
+                    <img src="@url" alt="Önizleme" style="width:100%;height:100%;object-fit:cover" />
+                </a>
+                <input class="form-control gal-input" name="@($"{namePrefix}[{i}]")" value="@url" placeholder="https://..." />
+                <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.gal-row').remove()">Sil</button>
+            </div>
+        }
+    </div>
+
+    <button type="button" class="btn btn-sm btn-outline-secondary mt-2 btn-pick-gallery" data-editor="@containerId">
+        Dosya Seç
+    </button>
+</div>
+
+<!-- DİKKAT: Partial içinde SECTION yok; doğrudan script -->
+<script>
+    (function(){
+      const containerId = "@containerId";
+      const namePrefix  = "@namePrefix";
+      const formId      = "@formId";
+      const pickerUrl   = "@pickerUrl";
+
+      const root   = document.getElementById(containerId);
+      const rowsEl = document.getElementById("rows-" + containerId);
+
+      if (!root || !rowsEl) return;
+
+      // Küçük stil (tek satırda)
+      (function(){
+        if (document.getElementById('imgurls-style')) return;
+        const s=document.createElement('style');
+        s.id='imgurls-style';
+        s.textContent=`.gal-row img{display:block}`;
+        document.head.appendChild(s);
+      })();
+
+      // Picker aç
+      function openPicker(){
+        const w=1000,h=700;
+        const y=window.top.outerHeight/2+window.top.screenY-(h/2);
+        const x=window.top.outerWidth/2+window.top.screenX-(w/2);
+        window.__activeImgEditor = containerId; // aktif editor işareti
+        window.open(pickerUrl,'picker',`popup=yes,width=${w},height=${h},left=${x},top=${y}`);
+      }
+
+      // Satır üret
+      function createRow(url, idx){
+        const row = document.createElement('div');
+        row.className = "col-12 gal-row d-flex align-items-center gap-2";
+        row.innerHTML = `
+          <a href="${url||'#'}" target="_blank" class="d-inline-block rounded border" style="width:100px;height:66px;overflow:hidden">
+            <img src="${url||'about:blank'}" alt="Önizleme" style="width:100%;height:100%;object-fit:cover"/>
+          </a>
+          <input class="form-control gal-input" name="${namePrefix}[${idx}]" value="${url||''}" placeholder="https://..." />
+          <button type="button" class="btn btn-outline-danger btn-sm">Sil</button>
+        `;
+        // sil
+        row.querySelector('button').addEventListener('click', ()=> row.remove());
+        // input değişince önizleme güncelle
+        const inp = row.querySelector('.gal-input');
+        const a = row.querySelector('a'); const img = row.querySelector('img');
+        inp.addEventListener('input',()=>{
+          const u = inp.value.trim();
+          img.src = u || 'about:blank';
+          a.href  = u || '#';
+        });
+        return row;
+      }
+
+      // “Dosya Seç”
+      const pickBtn = root.querySelector('.btn-pick-gallery');
+      pickBtn && pickBtn.addEventListener('click', openPicker);
+
+      // Picker dönüşü (tek sefer bağla)
+      if(!window.__imgUrlsEditorBound){
+        window.addEventListener('message', (ev)=>{
+          const data = ev.data || {};
+          // Hem 'image-picked' hem 'images-picked' kabul
+          const isValidType = data.type === 'image-picked' || data.type === 'images-picked';
+          if (!isValidType) return;
+
+          const urls = Array.isArray(data.urls) ? data.urls : [];
+          if (!urls.length) return;
+
+          // Aktif editor: butona basıldığında set edildi
+          const activeId = window.__activeImgEditor;
+          const activeRows = activeId ? document.getElementById("rows-" + activeId) : null;
+          if(!activeRows) return;
+
+          urls.forEach(u=>{
+            const idx = activeRows.querySelectorAll('.gal-row .gal-input').length;
+            activeRows.appendChild(createRow(u, idx));
+          });
+        });
+        window.__imgUrlsEditorBound = true;
+      }
+
+      // Form submit’te indexleri sıfırla (formId yoksa en yakın formu bul)
+      let form = formId ? document.getElementById(formId) : null;
+      if(!form){
+        form = root.closest('form');
+      }
+      if(form){
+        form.addEventListener('submit', ()=>{
+          const inputs = root.querySelectorAll('.gal-row .gal-input');
+          inputs.forEach((inp,i)=> inp.name = `${namePrefix}[${i}]`);
+        });
+      }
+    })();
+</script>
