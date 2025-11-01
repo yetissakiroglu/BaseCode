@@ -183,12 +183,12 @@ builder.Services.AddScoped<TenantProvider>();
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-var fileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files"));
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = fileProvider,
-    RequestPath = "/Files"
-});
+//var fileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files"));
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = fileProvider,
+//    RequestPath = "/Files"
+//});
 
 //todo bak
 app.UseForwardedHeaders(new ForwardedHeadersOptions

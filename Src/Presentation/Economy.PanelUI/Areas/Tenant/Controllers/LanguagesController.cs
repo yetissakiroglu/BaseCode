@@ -2,7 +2,6 @@
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Panel.UI.Areas.Tenant.Models.LanguageViewModels;
 using Economy.Panel.UI.Controllers;
-using Economy.Panel.UI.Models.LanguageViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

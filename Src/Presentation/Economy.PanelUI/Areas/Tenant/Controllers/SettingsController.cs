@@ -1,13 +1,8 @@
-﻿using Economy.Application.TenantUI.Dtos.AppPageDtos;
-using Economy.Application.TenantUI.Dtos.AppSettingDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
-using Economy.Panel.UI.Areas.Tenant.Models;
 using Economy.Panel.UI.Controllers;
-using Economy.Panel.UI.Models.SettingViewModels;
-using Economy.Persistence.Tenant.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
