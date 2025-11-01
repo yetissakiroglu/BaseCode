@@ -50,7 +50,7 @@
                                             <td>@g.Columns.GetDisplayName()</td>
                                             <td>@g.BlockCount</td>
                                             <td>
-                                                <a class="btn btn-sm btn-outline-secondary" asp-action="Edit1" asp-route-id="@g.Id">Blok Düzenle</a>
+                                                <a class="btn btn-sm btn-outline-secondary" asp-action="BlockEdit" asp-route-id="@g.Id">Blok Düzenle</a>
                                                 <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@g.Id">Düzenle</a>
                                                 <form asp-action="Delete" asp-route-id="@g.Id" method="post" style="display:inline">
                                                     @Html.AntiForgeryToken()

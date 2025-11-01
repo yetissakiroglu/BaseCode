@@ -1,0 +1,226 @@
+﻿@using Economy.Panel.UI.Areas.Tenant.Models
+@model BlockGroupEditVm
+@{
+    ViewData["Title"] = "Block Group Düzenle";
+}
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                            </div>
+                            <div>
+                                <div class="app-btn-list">
+                                    <a class="btn btn-primary" asp-action="Index">Tüm Kayıtlar</a>
+                                    <a class="btn btn-danger" asp-action="Create">Yeni Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="container py-3">
+                    <h4>@Model.GroupTitle (#@Model.GroupId)</h4>
+                    <div class="row g-3">
+                        <!-- SOL -->
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header">Tüm Bloklar (Havuz)</div>
+                                <div class="card-body">
+                                    <div class="input-group mb-2">
+                                        <span class="input-group-text bi bi-search"></span>
+                                        <input type="text" id="poolSearch" class="form-control" placeholder="Blok ara...">
+                                    </div>
+
+                                    <ul id="allBlocks" class="list-group min-vh-50">
+                                        @foreach (var b in Model.AllBlocks)
+                                        {
+                                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                                data-block-id="@b.BlockId" data-title="@b.Title" .ToLowerInvariant()>
+                                                <span>@b.Title</span>
+                                                <small class="text-muted">#@b.BlockId</small>
+                                            </li>
+                                        }
+                                    </ul>
+                                    <small class="text-muted d-block mt-2">Sol listeden sağa sürükleyerek gruba ekle.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SAĞ -->
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header">Grup İçeriği (Sıralanabilir)</div>
+                                <div class="card-body">
+                                    <ul id="groupBlocks" class="list-group min-vh-50">
+                                        @foreach (var s in Model.Selected)
+                                        {
+                                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                                data-block-id="@s.BlockId">
+                                                <span>(Block) @s.Title</span>
+                                                <div class="d-flex align-items-center gap-2 ms-auto">
+                                                    <input class="form-control form-control-sm col-input" type="number"
+                                                           min="1" max="12" required value="@(s.Column)"
+                                                           placeholder="Col" style="width:70px" />
+                                                    <button type="button" class="btn btn-sm btn-outline-danger btn-remove">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                    <span class="ph-fill ph-dots-three-outline-vertical"></span>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                    <div class="mt-3 d-flex gap-2">
+                                        <button id="btnSave" class="btn btn-primary">Kaydet</button>
+                                        <button id="btnClear" class="btn btn-outline-secondary">Listeyi Temizle</button>
+                                    </div>
+                                    <small class="text-muted d-block mt-2">Sağ listede sıralamayı değiştirerek SortOrder belirlenir.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <script>
+        const allBlocks = document.getElementById('allBlocks');
+        const groupBlocks = document.getElementById('groupBlocks');
+
+        // 1) Arama
+        const searchInput = document.getElementById('poolSearch');
+        function debounce(fn, ms) { let t; return (...a)=>{clearTimeout(t); t=setTimeout(()=>fn(...a), ms);} }
+        const doFilter = debounce(() => {
+            const q = (searchInput.value || '').toLowerCase().trim();
+            allBlocks.querySelectorAll('li[data-block-id]').forEach(li => {
+                const title = (li.getAttribute('data-title') || '').toLowerCase();
+                li.style.display = q === '' || title.includes(q) ? '' : 'none';
+            });
+        }, 120);
+        searchInput.addEventListener('input', doFilter);
+
+        // 2) Sortable
+        const commonOpts = { group: { name: 'blocks' }, animation: 150, ghostClass: 'bg-light', dragClass: 'opacity-75' };
+
+        new Sortable(allBlocks, { ...commonOpts, sort: false, group: { name: 'blocks', pull: true, put: false } });
+
+        new Sortable(groupBlocks, {
+            ...commonOpts,
+            sort: true,
+            group: { name: 'blocks', pull: true, put: true },
+            onAdd: (evt) => {
+                const li = evt.item;
+                const id = li.getAttribute('data-block-id');
+                const dup = [...groupBlocks.querySelectorAll('li[data-block-id]')]
+                    .filter(x => x.getAttribute('data-block-id') === id);
+                if (dup.length > 1) { li.remove(); return; }
+                if (!li.querySelector('.col-input')) {
+                    li.insertAdjacentHTML('beforeend', `
+                        <div class="d-flex align-items-center gap-2 ms-auto">
+                            <input class="form-control form-control-sm col-input" type="number" min="1" max="12"
+                                   required placeholder="Col" style="width:70px" />
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-remove">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                            <span class="ph-fill ph-dots-three-outline-vertical"></span>
+                        </div>`);
+                }
+                bindRemoveButtons();
+            }
+        });
+
+        // 3) Sil + sola geri
+        function bindRemoveButtons() {
+            groupBlocks.querySelectorAll('.btn-remove').forEach(btn => {
+                btn.onclick = () => {
+                    const li = btn.closest('li');
+                    const blockId = li.getAttribute('data-block-id');
+                    const title = li.querySelector('span').textContent;
+                    li.remove();
+
+                    if (![...allBlocks.querySelectorAll('li[data-block-id]')]
+                        .some(x => x.getAttribute('data-block-id') === blockId)) {
+                        const newLi = document.createElement('li');
+                        newLi.className = 'list-group-item d-flex justify-content-between align-items-center';
+                        newLi.setAttribute('data-block-id', blockId);
+                        newLi.setAttribute('data-title', title.toLowerCase());
+                        newLi.innerHTML = `<span>${title}</span><small class="text-muted">#${blockId}</small>`;
+                        allBlocks.appendChild(newLi);
+                    }
+                };
+            });
+        }
+        bindRemoveButtons();
+
+        // 4) Temizle
+        document.getElementById('btnClear').addEventListener('click', () => {
+            const lis = [...groupBlocks.querySelectorAll('li[data-block-id]')];
+            lis.forEach(li => {
+                const blockId = li.getAttribute('data-block-id');
+                const title = li.querySelector('span').textContent;
+                if (![...allBlocks.querySelectorAll('li[data-block-id]')].some(x => x.getAttribute('data-block-id') === blockId)) {
+                    const newLi = document.createElement('li');
+                    newLi.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    newLi.setAttribute('data-block-id', blockId);
+                    newLi.setAttribute('data-title', title.toLowerCase());
+                    newLi.innerHTML = `<span>${title}</span><small class="text-muted">#${blockId}</small>`;
+                    allBlocks.appendChild(newLi);
+                }
+            });
+            groupBlocks.innerHTML = '';
+        });
+
+        // 5) Kaydet
+        document.getElementById('btnSave').addEventListener('click', async () => {
+            const items = [];
+            const lis = groupBlocks.querySelectorAll('li[data-block-id]');
+            let order = 1, invalid = false;
+
+            lis.forEach(li => {
+                const id = parseInt(li.getAttribute('data-block-id'));
+                const colEl = li.querySelector('.col-input');
+                const col = parseInt(colEl?.value);
+                if (isNaN(col) || col < 1 || col > 12) { colEl.classList.add('is-invalid'); invalid = true; }
+                else { colEl.classList.remove('is-invalid'); }
+                items.push({ blockId: id, sortOrder: order++, column: col });
+            });
+
+            if (invalid) { alert('Lütfen tüm bloklar için 1–12 arasında bir kolon değeri girin.'); return; }
+
+            const payload = { groupId: @Model.GroupId, items };
+            const resp = await fetch('@Url.Action("SaveLayout", "BlockGroups", new { area = "Tenant" })', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            });
+            const data = await resp.json();
+            alert(data?.message ?? (data?.isSuccess ? 'Kaydedildi.' : 'Hata oluştu.'));
+        });
+    </script>
+
+    <style>
+        .min-vh-50 {
+            min-height: 50vh;
+        }
+
+        .opacity-75 {
+            opacity: .75;
+        }
+
+        .list-group-item {
+            cursor: grab;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+    </style>
+}

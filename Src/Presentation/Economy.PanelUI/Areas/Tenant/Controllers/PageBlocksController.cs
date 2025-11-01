@@ -8,8 +8,8 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
     [Route("tenant/pageblocks")]
     public class PageBlocksController : Controller
     {
-        private readonly IPageBlockService _svc;
-        public PageBlocksController(IPageBlockService svc) => _svc = svc;
+        private readonly IPanelPageBlockGroupService _svc;
+        public PageBlocksController(IPanelPageBlockGroupService svc) => _svc = svc;
 
         [HttpGet("list")]
         public async Task<IActionResult> List(int pageId)

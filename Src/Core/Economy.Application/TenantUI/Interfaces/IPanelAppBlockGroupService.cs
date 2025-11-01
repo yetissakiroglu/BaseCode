@@ -1,5 +1,4 @@
-﻿using Economy.Application.TenantUI.Dtos.AppBlockDtos;
-using Economy.Application.TenantUI.Dtos.AppBlockGroupDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppBlockGroupDtos;
 using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 
@@ -14,6 +13,8 @@ namespace Economy.Application.TenantUI.Interfaces
         Task<ServiceResult<NoContent>> UpdateBlockGroupAsync(int blockGroupId, AppBlockGroupDto dto, CancellationToken ct);
         Task<ServiceResult<AppBlockGroupDto>> GetBlockGroupAsync(int blockGroupId, CancellationToken ct);
         Task<ServiceResult<NoContent>> DeleteBlockGroupAsync(int blockGroupId, CancellationToken ct);
+        Task<ServiceResult<List<GroupLayoutItemDto>>> GetGroupLayoutAsync(int blockGroupId, CancellationToken ct);
+        Task<ServiceResult<NoContent>> SaveGroupLayoutAsync(SaveGroupLayoutRequest model, CancellationToken ct);
 
 
         //Task<ServiceResult<NoContent>> FillLanguagesAsync(BlockGroupDto vm, CancellationToken ct);

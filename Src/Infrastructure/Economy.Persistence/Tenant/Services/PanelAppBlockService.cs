@@ -9,6 +9,7 @@ using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace Economy.Persistence.Tenant.Services
 {
@@ -192,6 +193,30 @@ namespace Economy.Persistence.Tenant.Services
                 Q = q
             };
             return ServiceResult<AppBlockListDto>.Success(r);
+        }
+        public async Task<ServiceResult<List<AppBlockMiniDto>>> GetAllMiniBlocksAsync(CancellationToken ct)
+        {
+            var q = _appBlock.DataSet.AsNoTracking()
+                .Where(b => !b.IsDeleted && b.IsActive)
+                .Select(b => new
+                {
+                    b.Id,
+                    Title = b.Tag
+                });
+
+
+            var list = await q
+                .OrderBy(x => x.Title == null)   
+                .ThenBy(x => x.Title)            
+                .ThenBy(x => x.Id)
+                .Select(x => new AppBlockMiniDto(
+                    x.Id,
+                    x.Title ?? $"Block #{x.Id}"
+                ))
+                .ToListAsync(ct);
+
+
+            return ServiceResult<List<AppBlockMiniDto>>.Success(list);
         }
         public async Task<ServiceResult<AppBlockDto>> GetBlocksAsync(int blockId, CancellationToken ct)
         {

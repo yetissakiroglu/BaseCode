@@ -1,4 +1,5 @@
-﻿using Economy.Application.TenantUI.Dtos;
+﻿using Economy.Application.TenantUI.Dtos.AppBlockDtos;
+using Economy.Application.TenantUI.Dtos.AppBlockGroupDtos;
 
 namespace Economy.Panel.UI.Areas.Tenant.Models
 {
@@ -6,7 +7,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Models
     {
         public int GroupId { get; set; }
         public string GroupTitle { get; set; } = "";
-        public List<BlockItemDto> AllBlocks { get; set; } = new();
+        public List<AppBlockMiniDto> AllBlocks { get; set; } = new();
         public List<GroupLayoutItemDto> Selected { get; set; } = new();
     }
 }

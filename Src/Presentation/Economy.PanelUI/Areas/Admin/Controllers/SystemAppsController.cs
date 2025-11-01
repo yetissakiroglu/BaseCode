@@ -1,7 +1,7 @@
 ﻿using Economy.Application.AdminUI.Dtos.AppDtos;
 using Economy.Application.AdminUI.Interfaces;
+using Economy.Panel.UI.Areas.Admin.Models.AppViewModels;
 using Economy.Panel.UI.Controllers;
-using Economy.Panel.UI.Models.AppViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;

@@ -124,21 +124,15 @@ builder.Services.AddScoped<IPanelAppManagerService, PanelAppManagerService>(); /
 builder.Services.AddScoped<IPanelSuperAdminService, PanelSuperAdminService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IValidator<AppSuperAdminUserCreateDto>, SuperAdminCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<AppSuperAdminUserEditDto>, SuperAdminEditDtoValidator>();
-
 builder.Services.AddScoped<IPanelAppMenuService, PanelAppMenuService>();
-
 builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>(); // Service sýnýfý kaydediliyor.
 builder.Services.AddScoped<IPanelDashboardService, PanelDashboardService>();
 builder.Services.AddScoped<IPanelAppTechnicalSettingService, PanelAppTechnicalSettingService>();
-
 builder.Services.AddScoped<IValidator<MenuItemDto>, AppMenuItemValidator>();
 
 
 builder.Services.AddScoped<IPanelAppBlockGroupService, PanelAppBlockGroupService>();
-builder.Services.AddScoped<IPageBlockService, PageBlockService>();
-
-
-builder.Services.AddTransient<IValidator<BlockGroupDto>, BlockGroupDtoValidator>();
+builder.Services.AddScoped<IPanelPageBlockGroupService, PanelPageBlockGroupService>();
 
 builder.Services.AddScoped<IValidator<AppGeneralSettingCreateDto>, AppGeneralSettingCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<AppGeneralSettingEditDto>, AppGeneralSettingEditDtoValidator>();

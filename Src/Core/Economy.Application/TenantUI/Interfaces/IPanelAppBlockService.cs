@@ -8,6 +8,7 @@ namespace Economy.Application.TenantUI.Interfaces
     public interface IPanelAppBlockService
     {
         Task<ServiceResult<AppBlockListDto>> GetAllBlocksAsync(BlockType? type, int page, int size, string? q);
+        Task<ServiceResult<List<AppBlockMiniDto>>> GetAllMiniBlocksAsync(CancellationToken ct);
         Task<ServiceResult<AppBlockDto>> GetBlocksAsync(int blockId, CancellationToken ct);
         Task<ServiceResult<NoContent>> DeleteBlockAsync(int blockId, CancellationToken ct);
         Task<ServiceResult<NoContent>> FillLanguagesAsync(AppBlockDto vm, CancellationToken ct);

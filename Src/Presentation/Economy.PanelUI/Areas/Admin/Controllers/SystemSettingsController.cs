@@ -2,8 +2,8 @@
 using Economy.Application.AdminUI.Interfaces;
 using Economy.Application.Providers;
 using Economy.Core.Core;
+using Economy.Panel.UI.Areas.Admin.Models.GeneralSettingsPageViewModels;
 using Economy.Panel.UI.Controllers;
-using Economy.Panel.UI.Models.GeneralSettingsPageViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Ocsp;

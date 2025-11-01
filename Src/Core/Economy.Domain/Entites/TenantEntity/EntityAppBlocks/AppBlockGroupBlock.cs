@@ -8,7 +8,7 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppBlocks
         public AppBlockGroup AppBlockGroup { get; set; } = default!;
 
         public int AppBlockId { get; set; }
-        public AppBlock Block { get; set; } = default!;
+        public AppBlock AppBlock { get; set; } = default!;
 
         public int SortOrder { get; set; } = 0;
         public bool IsActive { get; set; } = true;

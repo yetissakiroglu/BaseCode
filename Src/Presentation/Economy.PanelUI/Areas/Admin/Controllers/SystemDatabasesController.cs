@@ -1,6 +1,6 @@
 ﻿using Economy.Application.AdminUI.Interfaces;
+using Economy.Panel.UI.Areas.Admin.Models.DatabaseBackupPageViewModels;
 using Economy.Panel.UI.Controllers;
-using Economy.Panel.UI.Models.DatabaseBackupPageViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
