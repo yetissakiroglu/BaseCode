@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Economy.Application.TenantUI.Dtos;
+using Economy.Application.TenantUI.Dtos.AppBlockDtos;
 using Economy.Application.TenantUI.Dtos.AppBlockGroupDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Enums;
@@ -16,11 +17,10 @@ namespace Economy.Persistence.Tenant.Services
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEntityRepository<AppLanguage, int> _appLanguage;
         private readonly IEntityRepository<AppBlockGroup, int> _appBlockGroup;
         private readonly IEntityRepository<AppBlockGroupTranslation, int> _appBlockGroupTranslation;
         private readonly IEntityRepository<AppBlockGroupBlock, int> _appBlockGroupBlock;
-
-        private readonly IEntityRepository<AppLanguage, int> _appLanguage;
 
         public PanelAppBlockGroupService(IMapper mapper, IUnitOfWork unitOfWork)
         {
@@ -32,6 +32,81 @@ namespace Economy.Persistence.Tenant.Services
             _mapper = mapper;
         }
 
+        public async Task<ServiceResult<NoContent>> CreateBlockGroupAsync(AppBlockGroupDto vm, CancellationToken ct)
+        {
+            var ci = new AppBlockGroup
+            {
+                IsDeleted = false,
+                ShowDescription = vm.ShowDescription,
+                Columns = vm.Columns,
+                IsActive = vm.IsActive,
+                ShowTitle = vm.ShowTitle,
+            };
+
+            await _appBlockGroup.DataSet.AddAsync(ci, ct);
+            await _unitOfWork.SaveHotelChangesAsync();
+
+            foreach (var t in vm.Translations)
+            {
+
+                var tr = new AppBlockGroupTranslation
+                {
+                    AppBlockGroupId = ci.Id,
+                    AppLanguageId = t.LanguageId,
+                    IsDeleted = false,
+                    Title = t.Title,
+                    Description = t.Description,
+                };
+                await _appBlockGroupTranslation.DataSet.AddAsync(tr, ct);
+            }
+
+            await _unitOfWork.SaveHotelChangesAsync();
+            return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
+        }
+
+        public async Task<ServiceResult<NoContent>> DeleteBlockGroupAsync(int blockGroupId, CancellationToken ct)
+        {
+            var deletedBlocks = _appBlockGroup.DataSet.Where(x => x.Id == blockGroupId);
+            _appBlockGroup.DataSet.RemoveRange(deletedBlocks);
+            await _unitOfWork.SaveHotelChangesAsync();
+            return ServiceResult<NoContent>.Success(new NoContent { Id = blockGroupId });
+        }
+
+        public async Task<ServiceResult<NoContent>> EnsureLanguageTabsAsync(AppBlockGroupDto vm, CancellationToken ct)
+        {
+            var exist = vm.Translations.Select(t => t.LanguageId).ToHashSet();
+            var langs = await _appLanguage.DataSet.Where(x => !x.IsDeleted && x.IsActive)
+                .Select(x => new { x.Id, x.Code, x.Icon, x.Name }).ToListAsync(ct);
+
+            foreach (var l in langs)
+                if (!exist.Contains(l.Id))
+                    vm.Translations.Add(new AppBlockGroupTranslationDto { LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon, LanguageName = l.Name });
+
+            vm.Translations = [.. vm.Translations
+                    .OrderByDescending(t => t.LanguageCode == "tr")
+                    .ThenBy(t => t.LanguageId)];
+
+            return ServiceResult<NoContent>.Success(null);
+        }
+        public async Task<ServiceResult<NoContent>> FillLanguagesAsync(AppBlockGroupDto vm, CancellationToken ct)
+        {
+            var langs = await _appLanguage.DataSet
+              .Where(x => !x.IsDeleted && x.IsActive)
+              .OrderByDescending(x => x.IsDefault)
+              .ThenBy(x => x.Id)
+              .Select(x => new { x.Id, x.Code, x.Icon,x.Name })
+              .ToListAsync(ct);
+
+            vm.Translations = langs.Select(l => new AppBlockGroupTranslationDto
+            {
+                LanguageId = l.Id,
+                LanguageCode = l.Code,
+                LanguageIcon = l.Icon,
+                LanguageName = l.Name
+            }).ToList();
+
+            return ServiceResult<NoContent>.Success(null);
+        }
         public async Task<ServiceResult<List<AppBlockGroupListDto>>> GetAllBlockGroupsListAsync(CancellationToken ct)
         {
             var defLangId = await _appLanguage.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
@@ -67,6 +142,73 @@ namespace Economy.Persistence.Tenant.Services
 
 
             return ServiceResult<List<AppBlockGroupListDto>>.Success(list);
+        }
+        public async Task<ServiceResult<AppBlockGroupDto>> GetBlockGroupAsync(int blockGroupId, CancellationToken ct)
+        {
+            var b = await _appBlockGroup.DataSet.Include(x => x.Translations).FirstOrDefaultAsync(x => x.Id == blockGroupId && !x.IsDeleted, ct);
+            if (b == null)
+            {
+                return ServiceResult<AppBlockGroupDto>.Empty();
+            }
+
+            var langs = await _appLanguage.DataSet.Where(x => x.IsActive && !x.IsDeleted).ToListAsync(cancellationToken: ct);
+            var vm = new AppBlockGroupDto
+            {
+                Id = b.Id,
+                ShowDescription = b.ShowDescription,
+                Columns = b.Columns,
+                ShowTitle = b.ShowTitle,
+                IsActive = b.IsActive,
+                Translations = [.. langs.Select(l =>
+                {
+                    var bt = b.Translations.FirstOrDefault(t => t.AppLanguageId == l.Id);
+                    return new AppBlockGroupTranslationDto { Id = bt?.Id, Description = bt?.Description,Title=bt?.Title, LanguageId = l.Id, LanguageCode = l.Code, LanguageIcon = l.Icon, LanguageName = l.Name };
+                })]
+            };
+
+            return ServiceResult<AppBlockGroupDto>.Success(vm);
+        }
+        public async Task<ServiceResult<NoContent>> UpdateBlockGroupAsync(int blockGroupId, AppBlockGroupDto vm, CancellationToken ct)
+        {
+            var ci = await _appBlockGroup.DataSet.FirstOrDefaultAsync(x => x.Id == blockGroupId && !x.IsDeleted, ct);
+            if (ci is null)
+            {
+                return ServiceResult<NoContent>.Empty();
+            }
+
+            ci.IsActive = vm.IsActive;
+            ci.ShowDescription = vm.ShowDescription;
+            ci.ShowTitle = vm.ShowTitle;
+            ci.Columns = vm.Columns;
+
+            var existing = await _appBlockGroupTranslation.DataSet
+                .Where(t => !t.IsDeleted && t.AppBlockGroupId == blockGroupId)
+                .ToListAsync(ct);
+
+            foreach (var t in vm.Translations)
+            {
+                var ex = existing.FirstOrDefault(x => x.AppLanguageId == t.LanguageId);
+                if (ex is null)
+                {
+                    var tr = new AppBlockGroupTranslation
+                    {
+                        AppBlockGroupId = blockGroupId,
+                        AppLanguageId = t.LanguageId,
+                        Description = t.Description,
+                        IsDeleted = false,
+                        Title = t.Title
+                    };
+                    await _appBlockGroupTranslation.DataSet.AddAsync(tr, ct);
+                }
+                else
+                {
+                    ex.Title = t.Title;
+                    ex.Description = t.Description;
+                }
+            }
+
+            await _unitOfWork.SaveHotelChangesAsync();
+            return ServiceResult<NoContent>.Success(new NoContent() { Id = ci.Id });
         }
 
 

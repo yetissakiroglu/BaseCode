@@ -1,4 +1,5 @@
-﻿using Economy.Application.TenantUI.Interfaces;
+﻿using Economy.Application.TenantUI.Dtos.AppBlockGroupDtos;
+using Economy.Application.TenantUI.Interfaces;
 using Economy.Panel.UI.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         {
             _panelAppBlockGroupService = panelAppBlockGroupService;
         }
+
         [HttpGet]
         public async Task<IActionResult> Index(CancellationToken ct)
         {
@@ -24,9 +26,43 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         [HttpGet]
         public async Task<IActionResult> Create(CancellationToken ct)
         {
-            var vm = new BlockGroupDto();
-            await _svc.FillLanguagesAsync(vm, ct);
+            var vm = new AppBlockGroupDto();
+            await _panelAppBlockGroupService.FillLanguagesAsync(vm, ct);
             return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(AppBlockGroupDto vm, CancellationToken ct)
+        {
+            var result = await _panelAppBlockGroupService.CreateBlockGroupAsync(vm, ct);
+            AddMessage(result);
+            return RedirectToAction(nameof(Edit), new { id = result.Data.Id });
+        }
+
+        public async Task<IActionResult> Edit(int id, CancellationToken ct)
+        {
+            var d = await _panelAppBlockGroupService.GetBlockGroupAsync(id, ct);
+            if (d == null) return NotFound();
+            return View(d.Data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, AppBlockGroupDto vm, CancellationToken ct)
+        {
+            var result = await _panelAppBlockGroupService.UpdateBlockGroupAsync(id,vm, ct);
+            AddMessage(result);
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
+        {
+            var result = await _panelAppBlockGroupService.DeleteBlockGroupAsync(id, ct);
+            AddMessage(result);
+            return RedirectToAction(nameof(Index));
         }
 
 

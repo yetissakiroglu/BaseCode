@@ -1,10 +1,11 @@
-﻿namespace Economy.Core.Enums
-{
-    /// <summary>
-    /// Bootstrap grid sistemine göre blok genişliklerini belirtir.
-    /// </summary>
-    using System.ComponentModel.DataAnnotations;
+﻿/// <summary>
+/// Bootstrap grid sistemine göre blok genişliklerini belirtir.
+/// </summary>
+using System.ComponentModel.DataAnnotations;
 
+namespace Economy.Core.Enums
+{
+ 
     public enum BlockColumns
     {
         [Display(Name = "1 Sütun Genişlik (col-1)")]

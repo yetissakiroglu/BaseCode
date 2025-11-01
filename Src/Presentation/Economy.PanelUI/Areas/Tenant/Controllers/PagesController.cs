@@ -2,7 +2,6 @@
 using Economy.Application.TenantUI.Dtos.AppPageDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Dtos.Custom;
-using Economy.Core.Interfaces;
 using Economy.Panel.UI.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

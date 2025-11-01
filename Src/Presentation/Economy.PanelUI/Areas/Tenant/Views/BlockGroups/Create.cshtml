@@ -1,10 +1,9 @@
-﻿@using Economy.Application.TenantUI.Dtos
-@using Economy.Application.TenantUI.Dtos.AppLanguageDtos
+﻿@using Economy.Application.TenantUI.Dtos.AppBlockGroupDtos
 @using Economy.Core.Enums
-@using Economy.Domain.Entites.TenantEntity.EntityAppLanguages
-@model BlockGroupDto
+
+@model AppBlockGroupDto
 @{
-    ViewData["Title"] = "Yeni Block Group";
+    ViewData["Title"] = "Yeni Sayfa Block Group";
 }
 
 
@@ -43,7 +42,7 @@
                                 </div>
                             </div>
                             <div class="row mt-3">
-                                <div class="col-md-6 col-xl-4">
+                                <div class="col-md-4 col-xl-4">
                                     <div class="check-container">
                                         <label class="check-box">
                                             <input type="checkbox" asp-for="ShowTitle" />
@@ -52,12 +51,21 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-xl-4">
+                                <div class="col-md-4 col-xl-4">
                                     <div class="check-container">
                                         <label class="check-box">
                                             <input type="checkbox" asp-for="ShowDescription" />
                                             <span class="checkmark check-primary ms-2"></span>
                                             <span class="text-dark">Kısa Açıklama Görünsün mü?</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <div class="check-container">
+                                        <label class="check-box">
+                                            <input type="checkbox" asp-for="IsActive" />
+                                            <span class="checkmark check-primary ms-2"></span>
+                                            <span class="text-dark">Aktif mi?</span>
                                         </label>
                                     </div>
                                 </div>
@@ -72,19 +80,19 @@
                                         var code = (t.LanguageCode ?? "xx").ToLower();       // güvenli
                                         var tabId = $"tab-{code}-{i}";                        // benzersiz
                                         var paneId = $"pane-{code}-{i}";                      // benzersiz
-                                                                                              <li class="nav-item" role="presentation">
-                                                                                                  <button class="gap-2 nav-link @(i == 0 ? "active" : null)"
-                                                                                                          id="@tabId"
-                                                                                                          type="button"
-                                                                                                          role="tab"
-                                                                                                          data-bs-toggle="tab"
-                                                                                                          data-bs-target="#@paneId"
-                                                                                                          aria-controls="@paneId"
-                                                                                                          aria-selected="@(i == 0 ? "true" : "false")">
-                                                                                                      <i class="@t.LanguageIcon?.ToLower()"></i>
-                                                                                                      @t.LanguageCode?.ToUpper()
-                                                                                                  </button>
-                                                                                              </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="gap-2 nav-link @(i == 0 ? "active" : null)"
+                                                    id="@tabId"
+                                                    type="button"
+                                                    role="tab"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#@paneId"
+                                                    aria-controls="@paneId"
+                                                    aria-selected="@(i == 0 ? "true" : "false")">
+                                                <i class="@t.LanguageIcon?.ToLower()"></i>
+                                                @t.LanguageCode?.ToUpper()
+                                            </button>
+                                        </li>
                                     }
                                 </ul>
                                 <div class="tab-content border border-top-0 p-3">
@@ -94,16 +102,13 @@
                                         var code = (t.LanguageCode ?? "xx").ToLower();
                                         var tabId = $"tab-{code}-{i}";
                                         var paneId = $"pane-{code}-{i}";
-
                                         <div id="@paneId" class="tab-pane fade @(i == 0 ? "show active" : null)" role="tabpanel" aria-labelledby="@tabId">
-
                                             <input type="hidden" name="Translations[@i].LanguageId" value="@t.LanguageId" />
                                             <input type="hidden" name="Translations[@i].LanguageCode" value="@t.LanguageCode" />
                                             <input type="hidden" name="Translations[@i].LanguageIcon" value="@t.LanguageIcon" />
+                                            <input type="hidden" name="Translations[@i].LanguageName" value="@t.LanguageName" />
                                             <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
-
                                             <div class="row g-3">
-
                                                 <div class="col-md-6">
                                                     <label class="form-label">Başlık</label>
                                                     <input class="form-control" name="Translations[@i].Title" value="@t.Title" />
@@ -117,41 +122,14 @@
                                     }
                                 </div>
                             </div>
-                            <hr class="my-4" />
-                            <div class="mt-4 text-end">
-                                <button class="btn btn-primary" type="submit">Kaydet</button>
-                                <a class="btn btn-outline-secondary" href="/tenant/blockgroups">Vazgeç</a>
-                            </div>
-
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a class="btn btn-outline-secondary" href="/tenant/blockgroups">Vazgeç</a>
+                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                      
                         </div>
                     </div>
-
-                    <div class="card mb-3 ">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between mt-4">
-                                <h5>Blocks</h5>
-                                <div class="d-flex gap-2">
-                                    <select id="newBlockType" class="form-select form-select-sm" style="width:220px">
-                                        <option value="">Block type…</option>
-                                        @foreach (var t in Enum.GetValues(typeof(BlockType)))
-                                        {
-                                            <option value="@((int)t)">@t</option>
-                                        }
-                                    </select>
-                                    <button class="btn btn-sm btn-outline-primary" type="button" id="btnAddNew">Add Block</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="grid" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3 mt-1 project-total-card">
-                        @for (int i = 0; i < Model.Blocks.Count; i++)
-                        {
-                            <partial name="_BlockCard" for="Blocks[i]" />
-                        }
-                    </div>
-
                 </form>
-
             </div>
         </div>
     </div>
@@ -160,19 +138,5 @@
 
 
 @section Scripts {
-    <script>
-        const langs = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(((List<AppLanguageDto>)ViewBag.Languages).Select(l => l.Id)));
-        document.getElementById('btnAddNew').addEventListener('click', async ()=>{
-          const type = document.getElementById('newBlockType').value;
-          if(!type) return;
-          const idx = document.querySelectorAll('#grid .block-card').length;
-          const url = '@Url.Action("BlockCardPartial", "BlockGroups", new { area = "Tenant" })' + `?type=${type}&index=${idx}` + langs.map(l=>`&languageIds=${l}`).join('');
-          const resp = await fetch(url); const html = await resp.text();
-          document.getElementById('grid').insertAdjacentHTML('beforeend', html);
-          normalizeOrders();
-        });
-         function normalizeOrders(){
-          document.querySelectorAll('#grid .block-card').forEach((el,idx)=>{ const input=el.querySelector('input[name$=".SortOrder"]'); if(input) input.value=idx; });
-        }
-    </script>
+   
 }

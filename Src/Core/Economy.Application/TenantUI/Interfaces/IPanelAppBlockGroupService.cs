@@ -1,4 +1,6 @@
-﻿using Economy.Application.TenantUI.Dtos.AppBlockGroupDtos;
+﻿using Economy.Application.TenantUI.Dtos.AppBlockDtos;
+using Economy.Application.TenantUI.Dtos.AppBlockGroupDtos;
+using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 
 namespace Economy.Application.TenantUI.Interfaces
@@ -6,7 +8,12 @@ namespace Economy.Application.TenantUI.Interfaces
     public interface IPanelAppBlockGroupService
     {
         Task<ServiceResult<List<AppBlockGroupListDto>>> GetAllBlockGroupsListAsync(CancellationToken ct);
-
+        Task<ServiceResult<NoContent>> FillLanguagesAsync(AppBlockGroupDto vm, CancellationToken ct);
+        Task<ServiceResult<NoContent>> EnsureLanguageTabsAsync(AppBlockGroupDto vm, CancellationToken ct);
+        Task<ServiceResult<NoContent>> CreateBlockGroupAsync(AppBlockGroupDto vm, CancellationToken ct);
+        Task<ServiceResult<NoContent>> UpdateBlockGroupAsync(int blockGroupId, AppBlockGroupDto dto, CancellationToken ct);
+        Task<ServiceResult<AppBlockGroupDto>> GetBlockGroupAsync(int blockGroupId, CancellationToken ct);
+        Task<ServiceResult<NoContent>> DeleteBlockGroupAsync(int blockGroupId, CancellationToken ct);
 
 
         //Task<ServiceResult<NoContent>> FillLanguagesAsync(BlockGroupDto vm, CancellationToken ct);
