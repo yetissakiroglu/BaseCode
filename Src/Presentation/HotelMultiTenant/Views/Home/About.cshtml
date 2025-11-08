@@ -1,0 +1,7 @@
+﻿@model HotelMultiTenant.Services.AboutVm
+@{
+    Layout = "_Layout";
+}
+<h1>@Model.Title</h1>
+<img src="@Model.CoverImageUrl" alt="about" style="max-width:100%;height:auto;" />
+<div>@Html.Raw(Model.BodyHtml)</div>

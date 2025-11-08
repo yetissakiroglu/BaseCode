@@ -1,0 +1,19 @@
+﻿@using HotelMultiTenant.Multitenancy
+@{
+    var t = Context.GetTenant()?.Current;
+    var name = t?.Name ?? "Otel";
+}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@name – Modern</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/themes/modern.css" />
+</head>
+<body class="modern">
+    @await Html.PartialAsync("/Themes/Modern/Views/Shared/_TopNav.cshtml")
+    <main class="container">@RenderBody()</main>
+    @await Html.PartialAsync("/Themes/Modern/Views/Shared/_Footer.cshtml")
+</body>
+</html>

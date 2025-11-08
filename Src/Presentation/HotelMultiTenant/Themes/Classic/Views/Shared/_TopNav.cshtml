@@ -1,0 +1,15 @@
+﻿@using HotelMultiTenant.Multitenancy
+@{
+    var t = Context.GetTenant()?.Current;
+    var name = t?.Name ?? "Otel";
+}
+<header class="hero">
+    <h1>@name</h1>
+    <nav class="nav">
+        <a href="/">Anasayfa</a>
+        <a href="/Home/About">Hakkımızda</a>
+        <a href="/Home/Rooms">Odalar</a>
+        <a href="/Home/Services">Hizmetler</a>
+        <a href="/Home/Contact">İletişim</a>
+    </nav>
+</header>

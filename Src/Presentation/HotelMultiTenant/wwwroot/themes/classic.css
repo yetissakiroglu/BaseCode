@@ -1,0 +1,30 @@
+﻿body.classic {
+    font-family: system-ui, sans-serif;
+    background: #f7f7fb;
+    color: #1f2937;
+}
+
+.hero {
+    padding: 32px 16px;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+.nav a {
+    margin: 0 8px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 980px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.foot {
+    padding: 24px;
+    text-align: center;
+    color: #6b7280;
+}

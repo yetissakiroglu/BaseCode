@@ -1,0 +1,11 @@
+﻿@model HotelMultiTenant.Services.ServicesVm
+@{
+    Layout = "_Layout";
+}
+<h1>@Model.Title</h1>
+<ul>
+    @foreach (var it in Model.Items)
+    {
+        <li><strong>@it.Name:</strong> @it.Desc</li>
+    }
+</ul>

@@ -1,0 +1,33 @@
+﻿body.modern {
+    font-family: Inter, system-ui, sans-serif;
+    background: #0f1115;
+    color: #e5e7eb;
+}
+
+.topbar {
+    padding: 12px 16px;
+    background: #111827;
+    border-bottom: 1px solid #1f2937;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+    .topbar .links a {
+        margin-left: 12px;
+        color: #93c5fd;
+        text-decoration: none;
+    }
+
+.container {
+    max-width: 980px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.foot {
+    padding: 24px;
+    text-align: center;
+    color: #9ca3af;
+    border-top: 1px solid #1f2937;
+}

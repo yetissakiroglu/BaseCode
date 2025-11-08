@@ -1,0 +1,15 @@
+﻿@model HotelMultiTenant.Services.HomeVm
+@{
+    Layout = "_Layout";
+}
+<section>
+    <h1>@Model.Title</h1>
+    <p>@Model.Subtitle</p>
+    <img src="@Model.HeroImageUrl" alt="hero" style="max-width:100%;height:auto;" />
+    <ul>
+        @foreach (var h in Model.Highlights)
+        {
+            <li>@h</li>
+        }
+    </ul>
+</section>
