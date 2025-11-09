@@ -1,0 +1,11 @@
+﻿using Economy.Application.ApplicationUI.Dtos;
+
+namespace Economy.Application.ApplicationUI.Interfaces
+{
+    public interface IApplicationMenuService
+    {
+        Task<List<MenuViewModel>> GetMenuAsync(string lang, CancellationToken ct);
+
+
+    }
+}

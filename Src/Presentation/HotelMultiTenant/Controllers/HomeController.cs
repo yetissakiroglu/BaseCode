@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace HotelMultiTenant.Controllers
 {
-    [OutputCache(PolicyName = "PerHost")]
+    //[OutputCache(PolicyName = "PerHost")]
     public class HomeController(IContentService content) : Controller
     {
         private int GetTenantId() => HttpContext.GetTenant()?.Current?.Id ?? 0;

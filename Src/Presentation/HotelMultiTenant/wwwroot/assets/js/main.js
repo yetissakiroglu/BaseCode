@@ -673,23 +673,23 @@
     /*----------------------------------------------
         Light & Dark Mode
     ----------------------------------------------*/
-    function updateLogoOnTheme() {
-        // White logo Dark logo path Change
-        var changeLogos = document.querySelectorAll(".changeLogo");
-        var whiteLogoPath = document.head
-            .querySelector("meta[white-logo]")
-            .getAttribute("white-logo");
-        var lightLogoPath = document.head
-            .querySelector("meta[logo]")
-            .getAttribute("logo");
+    //function updateLogoOnTheme() {
+    //    // White logo Dark logo path Change
+    //    var changeLogos = document.querySelectorAll(".changeLogo");
+    //    var whiteLogoPath = document.head
+    //        .querySelector("meta[white-logo]")
+    //        .getAttribute("white-logo");
+    //    var lightLogoPath = document.head
+    //        .querySelector("meta[logo]")
+    //        .getAttribute("logo");
 
-        var imagePath =
-            localStorage.theme === "dark" ? whiteLogoPath : lightLogoPath;
-        changeLogos.forEach(function (changeLogo) {
-            changeLogo.src = imagePath;
-        });
-    }
-    updateLogoOnTheme();
+    //    var imagePath =
+    //        localStorage.theme === "dark" ? whiteLogoPath : lightLogoPath;
+    //    changeLogos.forEach(function (changeLogo) {
+    //        changeLogo.src = imagePath;
+    //    });
+    //}
+    //updateLogoOnTheme();
     // Button icon change
     const themeModeAction = () => {
         if (localStorage.theme === "dark") {
@@ -714,7 +714,7 @@
             const theme = localStorage.theme === "dark" ? "light" : "dark";
             setTheme(theme);
             themeModeAction();
-            updateLogoOnTheme();
+        //    updateLogoOnTheme();
         });
     }
 

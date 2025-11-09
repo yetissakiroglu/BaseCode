@@ -26,11 +26,11 @@ namespace Economy.Panel.UI.Middlewares
             }
             else
             {
-                var connectionString = await tenantProvider.GetConnectionStringAsync("HotelDb2");
-                if (!string.IsNullOrWhiteSpace(connectionString))
-                {
-                    unitOfWork.SetHotelConnectionString(connectionString);
-                }
+                //var connectionString = await tenantProvider.GetConnectionStringAsync("HotelDb2");
+                //if (!string.IsNullOrWhiteSpace(connectionString))
+                //{
+                //    unitOfWork.SetHotelConnectionString(connectionString);
+                //}
 
                 //var apiKey = context.Request.Headers["X-API-KEY"].FirstOrDefault();
                 //if (!string.IsNullOrWhiteSpace(apiKey))

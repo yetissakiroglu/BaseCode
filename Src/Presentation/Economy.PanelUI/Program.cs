@@ -8,13 +8,11 @@ using Economy.Application.AdminUI.Validations.AppValidator;
 using Economy.Application.AdminUI.Validations.PanelAppAccountValidator;
 using Economy.Application.Interfaces;
 using Economy.Application.Providers;
-using Economy.Application.TenantUI.Dtos;
 using Economy.Application.TenantUI.Dtos.AppMenuDtos;
 using Economy.Application.TenantUI.Dtos.AppSettingDtos;
 using Economy.Application.TenantUI.Dtos.AppSettingLogoDtos;
 using Economy.Application.TenantUI.Dtos.AppTechnicalSettingDtos;
 using Economy.Application.TenantUI.Interfaces;
-using Economy.Application.TenantUI.Validations;
 using Economy.Application.TenantUI.Validations.AppMenuIValidator;
 using Economy.Application.TenantUI.Validations.AppSettingLogoValidator;
 using Economy.Application.TenantUI.Validations.AppSettingValidator;
@@ -38,10 +36,11 @@ using Economy.Persistence.Repositories.UnitOfWork;
 using Economy.Persistence.Services;
 using Economy.Persistence.Tenant.Services;
 using FluentValidation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.OpenApi.Models;
 using System.Net;
 using System.Reflection;
 
@@ -52,7 +51,32 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews(o =>
 {
     o.Filters.Add<SeoAndBrandingFilter>();
-}).AddRazorRuntimeCompilation(); 
+}).AddRazorRuntimeCompilation();
+
+// (Ýsteðe baðlý ama faydalý) CORS – UI baþka origin'den çaðýracaksa aç
+//builder.Services.AddCors(opt =>
+//{
+//    opt.AddPolicy("UI", p => p
+//        .WithOrigins("http://xotel.local:5011", "https://senin-ui-domainin.com")
+//        .AllowAnyHeader()
+//        .AllowAnyMethod());
+//});
+
+// (Ýsteðe baðlý) Sýkýþtýrma + Caching
+//builder.Services.AddResponseCompression();
+//builder.Services.AddResponseCaching();
+
+// (Ýsteðe baðlý) Swagger – dev’de API’yi gör
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
+
+
+
+
+
+
 
 builder.Services.AddDbContext<DefaultDbContext>(options =>
 {
@@ -200,27 +224,36 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseSwagger();
+    app.UseSwaggerUI();
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 // HTTPS yönlendirmesi ve routing iþlemleri
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 app.MapStaticAssets();
+app.UseResponseCaching();
 
-// Area routing: önce Areas!
-app.MapControllerRoute(
-    name: "areas",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-// MVC, Razor Sayfalarý ve Blazor bileþenleri için routing iþlemleri
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+//app.UseResponseCompression();
+//app.UseCors("UI");
 
 // Authorization ve Authentication iþlemleri
 app.UseAuthentication();
 app.UseAuthorization();
 //app.UseMiddleware<ErrorLoggingMiddleware>();
+
+// Area routing: önce Areas!
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+// MVC, Razor Sayfalarý ve Blazor bileþenleri için routing iþlemleri
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 // Custom middleware
 app.UseMiddleware<HotelConnectionMiddleware>();
