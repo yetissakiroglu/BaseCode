@@ -19,6 +19,7 @@ namespace HotelMultiTenant.Multitenancy
             $"/Themes/{theme}/Views/{{1}}/{{0}}.cshtml",
             $"/Themes/{theme}/Views/Shared/{{0}}.cshtml"
         };
+
             return themed.Concat(viewLocations);
         }
     }
