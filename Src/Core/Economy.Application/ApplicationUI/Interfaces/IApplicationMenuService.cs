@@ -2,9 +2,11 @@
 
 namespace Economy.Application.ApplicationUI.Interfaces
 {
+  
+
     public interface IApplicationMenuService
     {
-        Task<List<MenuViewModel>> GetMenuAsync(string lang, CancellationToken ct);
+        Task<List<MenuNodeDto>> GetMenuAsync(string lang, CancellationToken ct);
 
 
     }

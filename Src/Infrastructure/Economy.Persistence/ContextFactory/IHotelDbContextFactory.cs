@@ -7,14 +7,16 @@ namespace Economy.Core.ContextFactory
     {
         HotelDbContext CreateDbContext(string connectionString);
     }
+
     public class HotelDbContextFactory : IHotelDbContextFactory
     {
         public HotelDbContext CreateDbContext(string connectionString)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<HotelDbContext>();
-            optionsBuilder.UseSqlServer(connectionString);  // Bağlantı string'ini kullanarak DbContext oluşturuluyor.
+            var options = new DbContextOptionsBuilder<HotelDbContext>()
+                .UseSqlServer(connectionString)
+                .Options;
 
-            return new HotelDbContext(optionsBuilder.Options);
+            return new HotelDbContext(options);
         }
     }
 }

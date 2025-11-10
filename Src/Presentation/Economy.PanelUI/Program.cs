@@ -1,4 +1,4 @@
-using Economy.Application.AdminUI.Dtos.AppAccountDtos;
+ï»¿using Economy.Application.AdminUI.Dtos.AppAccountDtos;
 using Economy.Application.AdminUI.Dtos.AppDtos;
 using Economy.Application.AdminUI.Dtos.AppGeneralSettingDtos;
 using Economy.Application.AdminUI.Dtos.AppSuperAdminUserDtos;
@@ -6,6 +6,7 @@ using Economy.Application.AdminUI.Interfaces;
 using Economy.Application.AdminUI.Validations.AppSuperAdminValidator;
 using Economy.Application.AdminUI.Validations.AppValidator;
 using Economy.Application.AdminUI.Validations.PanelAppAccountValidator;
+using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Application.Interfaces;
 using Economy.Application.Providers;
 using Economy.Application.TenantUI.Dtos.AppMenuDtos;
@@ -23,37 +24,36 @@ using Economy.Core.Dtos;
 using Economy.Core.Helpers;
 using Economy.Core.Interfaces;
 using Economy.Core.Options;
-using Economy.Core.Services.Providers;
 using Economy.Domain.Entites.AdminEntity.EntityAppUsers;
 using Economy.Infrastructure;
 using Economy.Panel.UI;
 using Economy.Panel.UI.Filters;
 using Economy.Panel.UI.Middlewares;
+using Economy.Panel.UI.Tenancy;
 using Economy.Persistence.Admin.Services;
+using Economy.Persistence.ApplicationUI;
 using Economy.Persistence.Contexts;
 using Economy.Persistence.Providers;
 using Economy.Persistence.Repositories.UnitOfWork;
 using Economy.Persistence.Services;
 using Economy.Persistence.Tenant.Services;
 using FluentValidation;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using System.Net;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-// MVC ve Razor Pages'ý ekleyin
+// MVC ve Razor Pages'Ä± ekleyin
 builder.Services.AddControllersWithViews(o =>
 {
     o.Filters.Add<SeoAndBrandingFilter>();
 }).AddRazorRuntimeCompilation();
 
-// (Ýsteðe baðlý ama faydalý) CORS – UI baþka origin'den çaðýracaksa aç
+// (Ä°steÄŸe baÄŸlÄ± ama faydalÄ±) CORS â€“ UI baÅŸka origin'den Ã§aÄŸÄ±racaksa aÃ§
 //builder.Services.AddCors(opt =>
 //{
 //    opt.AddPolicy("UI", p => p
@@ -62,40 +62,63 @@ builder.Services.AddControllersWithViews(o =>
 //        .AllowAnyMethod());
 //});
 
-// (Ýsteðe baðlý) Sýkýþtýrma + Caching
+// (Ä°steÄŸe baÄŸlÄ±) SÄ±kÄ±ÅŸtÄ±rma + Caching
 //builder.Services.AddResponseCompression();
 //builder.Services.AddResponseCaching();
 
-// (Ýsteðe baðlý) Swagger – dev’de API’yi gör
+// (Ä°steÄŸe baÄŸlÄ±) Swagger â€“ devâ€™de APIâ€™yi gÃ¶r
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
-
-
-
-
-
-
-
-builder.Services.AddDbContext<DefaultDbContext>(options =>
+builder.Services.AddSwaggerGen(opt =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), configure =>
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Hotel UI API", Version = "v1" });
+    opt.DocInclusionPredicate((docName, apiDesc) =>
     {
-        configure.MigrationsAssembly("Economy.Panel.UI");
+        if (!string.Equals(docName, "v1", StringComparison.OrdinalIgnoreCase)) return false;
+        var isApiArea = apiDesc.ActionDescriptor.RouteValues.TryGetValue("area", out var area)
+                        && string.Equals(area, "Api", StringComparison.OrdinalIgnoreCase);
+        return isApiArea;
     });
-});
-
-builder.Services.AddDbContext<HotelDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultHotelConnection"), configure =>
-    {
-        configure.MigrationsAssembly("Economy.Base.Persistence");
-    });
+    opt.OperationFilter<AddTenantHeaderOperationFilter>();
 });
 
 
-// FileManager ayarlarý + storage
+
+// Services
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<ITenantContextAccessor, TenantContextAccessor>();
+
+
+// DefaultDb (sabit connection) â€“ Tenants, TenantDomains, UserTenants burada
+builder.Services.AddDbContext<DefaultDbContext>(o =>
+    o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// TenantDb (dinamik connection â€“ OnConfiguring iÃ§inde set edilecek)
+builder.Services.AddDbContext<HotelDbContext>(o =>
+    o.UseSqlServer("Server=.;Database=__placeholder;Trusted_Connection=True;"));
+
+
+
+
+
+//builder.Services.AddDbContext<DefaultDbContext>(options =>
+//{
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), configure =>
+//    {
+//        configure.MigrationsAssembly("Economy.Panel.UI");
+//    });
+//});
+
+//builder.Services.AddDbContext<HotelDbContext>(options =>
+//{
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultHotelConnection"), configure =>
+//    {
+//        configure.MigrationsAssembly("Economy.Base.Persistence");
+//    });
+//});
+
+
+// FileManager ayarlarÄ± + storage
 builder.Services.Configure<FileManagerOptions>(builder.Configuration.GetSection("FileManager"));
 builder.Services.AddSingleton<IImageStorage, LocalImageStorage>();
 
@@ -121,35 +144,37 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
     options.LogoutPath = "/Account/Logout";
-    options.AccessDeniedPath = "/Error/403";
+    options.AccessDeniedPath = "/Error/403"; // AynÄ± satÄ±rÄ± iki kez set etmeyelim
+
     options.Cookie = new CookieBuilder
     {
         Name = "DijitalPanel",
         HttpOnly = true,
-        SameSite = SameSiteMode.Strict,
-        SecurePolicy = CookieSecurePolicy.SameAsRequest
+        SameSite = SameSiteMode.Strict,      // dÄ±ÅŸ yÃ¶nlendirme/iframe gerekirse Lax yaparsÄ±n
+        SecurePolicy = CookieSecurePolicy.SameAsRequest // prod HTTPSâ€™te Always Ã¶nerilir
     };
+
     options.SlidingExpiration = true;
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
-    options.AccessDeniedPath = new PathString($"/Error/{HttpStatusCode.Forbidden}");
 });
+
 
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IAppSettingsProvider, AppSettingsProvider>();
 // Repository'leri otomatik olarak ekle
 builder.Services.AddRepositories(Assembly.GetExecutingAssembly());
-// EfEntityRepositoryBase<T> kaydý
+// EfEntityRepositoryBase<T> kaydÄ±
 // HotelDbContextFactory'nin kaydedilmesi
 builder.Services.AddScoped<IHotelDbContextFactory, HotelDbContextFactory>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// Service kaydýný yapalým.
-builder.Services.AddScoped<IPanelAppManagerService, PanelAppManagerService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelSuperAdminService, PanelSuperAdminService>(); // Service sýnýfý kaydediliyor.
+// Service kaydÄ±nÄ± yapalÄ±m.
+builder.Services.AddScoped<IPanelAppManagerService, PanelAppManagerService>(); // Service sÄ±nÄ±fÄ± kaydediliyor.
+builder.Services.AddScoped<IPanelSuperAdminService, PanelSuperAdminService>(); // Service sÄ±nÄ±fÄ± kaydediliyor.
 builder.Services.AddScoped<IValidator<AppSuperAdminUserCreateDto>, SuperAdminCreateDtoValidator>();
 builder.Services.AddScoped<IValidator<AppSuperAdminUserEditDto>, SuperAdminEditDtoValidator>();
 builder.Services.AddScoped<IPanelAppMenuService, PanelAppMenuService>();
-builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IConnectionTesterService, ConnectionTesterService>(); // Service sÄ±nÄ±fÄ± kaydediliyor.
 builder.Services.AddScoped<IPanelDashboardService, PanelDashboardService>();
 builder.Services.AddScoped<IPanelAppTechnicalSettingService, PanelAppTechnicalSettingService>();
 builder.Services.AddScoped<IValidator<MenuItemDto>, AppMenuItemValidator>();
@@ -169,37 +194,37 @@ builder.Services.AddTransient<IValidator<AppSignInDto>, AppSignInDtoValidator>()
 
 
 
-builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelAppSettingService, PanelAppSettingService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelAppLanguageService, PanelAppLanguageService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelAppSettingLogoService, PanelAppSettingLogoService>(); // Service sýnýfý kaydediliyor.
-builder.Services.AddScoped<IPanelAppGeneralSettingService, PanelAppGeneralSettingService>(); // Service sýnýfý kaydediliyor.
+builder.Services.AddScoped<IPanelAppService, PanelAppService>(); // Service sÄ±nÄ±fÄ± kaydediliyor.
+builder.Services.AddScoped<IPanelAppSettingService, PanelAppSettingService>(); // Service sÄ±nÄ±fÄ± kaydediliyor.
+builder.Services.AddScoped<IPanelAppLanguageService, PanelAppLanguageService>(); // Service sÄ±nÄ±fÄ± kaydediliyor.
+builder.Services.AddScoped<IPanelAppSettingLogoService, PanelAppSettingLogoService>(); // Service sÄ±nÄ±fÄ± kaydediliyor.
+builder.Services.AddScoped<IPanelAppGeneralSettingService, PanelAppGeneralSettingService>(); // Service sÄ±nÄ±fÄ± kaydediliyor.
 builder.Services.AddScoped<IDatabaseBackupService, DatabaseBackupService>();
 builder.Services.AddScoped<IPanelAppAccountService, PanelAppAccountService>();
 builder.Services.AddScoped<IPanelAppPageService, PanelAppPageService>();
 builder.Services.AddScoped<IPanelAppPageMediaService, PanelAppPageMediaService>();
 builder.Services.AddScoped<IPanelAppBlockService, PanelAppBlockService>();
 
+builder.Services.AddScoped<IApplicationMenuService, ApplicationMenuService>();
 
 
 
 builder.Services.Configure<SeoOptions>(builder.Configuration.GetSection("Seo"));
 builder.Services.AddScoped<ISlugService, SlugService>();
 
-builder.Services.AddScoped<IFileImageHelperService, FileImageHelperService>(); // Token service kaydý
+builder.Services.AddScoped<IFileImageHelperService, FileImageHelperService>(); // Token service kaydÄ±
 
-// Diðer servisler (örneðin AutoMapper)
+// DiÄŸer servisler (Ã¶rneÄŸin AutoMapper)
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-// Services
-builder.Services.AddHttpContextAccessor();
+
 //builder.Services.AddScoped<ICdnUrlService, CdnUrlService>();
 
-builder.Services.AddScoped<TenantProvider>();
+//builder.Services.AddScoped<TenantProvider>();
 
 //builder.Services.Configure<FormOptions>(options =>
 //{
-//    options.MultipartBodyLengthLimit = 104857600; // 100 MB gibi büyük bir limit
+//    options.MultipartBodyLengthLimit = 104857600; // 100 MB gibi bÃ¼yÃ¼k bir limit
 //});
 
 
@@ -224,12 +249,10 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-// HTTPS yönlendirmesi ve routing iþlemleri
+// HTTPS yÃ¶nlendirmesi ve routing iÅŸlemleri
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -239,23 +262,38 @@ app.UseResponseCaching();
 //app.UseResponseCompression();
 //app.UseCors("UI");
 
-// Authorization ve Authentication iþlemleri
+// Authorization ve Authentication iÅŸlemleri
 app.UseAuthentication();
+// 1) Tenant seÃ§imi zorunluluÄŸu
+app.UseMiddleware<PanelTenantSelectionGuardMiddleware>();
+
+// 2) Tenant DB baÄŸlantÄ±sÄ±nÄ± set et
+app.UseMiddleware<HotelConnectionMiddleware>();
+
 app.UseAuthorization();
 //app.UseMiddleware<ErrorLoggingMiddleware>();
+// Swagger UI
+// ðŸ”¸ Klasik Swagger kullanÄ±mÄ± (UseSwagger / UseSwaggerUI)
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hotel UI API v1");
+    c.RoutePrefix = "swagger";
+});
+// Area routing: Ã¶nce Areas!
+//app.MapControllerRoute(
+//    name: "areas",
+//    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+// Areas (Api + diÄŸerleri)
+app.MapAreaControllerRoute("api", "Api", "api/{controller=Home}/{action=Index}/{id?}");
+app.MapAreaControllerRoute("tenant", "Tenant", "tenant/{controller=Home}/{action=Index}/{id?}");
+app.MapAreaControllerRoute("admin", "Admin", "admin/{controller=Dashboard}/{action=Index}/{id?}");
 
-// Area routing: önce Areas!
-app.MapControllerRoute(
-    name: "areas",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-// MVC, Razor Sayfalarý ve Blazor bileþenleri için routing iþlemleri
+// MVC, Razor SayfalarÄ± ve Blazor bileÅŸenleri iÃ§in routing iÅŸlemleri
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
-// Custom middleware
-app.UseMiddleware<HotelConnectionMiddleware>();
-// Uygulamayý çalýþtýr
+// UygulamayÄ± Ã§alÄ±ÅŸtÄ±r
 app.Run();

@@ -6,52 +6,19 @@ namespace Economy.Core.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        /// <summary>
-        /// Default (sabit) veritabanındaki değişiklikleri kaydeder.
-        /// </summary>
-        Task<int> SaveDefaultChangesAsync();
+        // Default (merkez) DB
+        IEntityRepository<T, int> DefaultEntityRepository<T>() where T : class, ISoftDelete, IHasId<int>;
+        Task<int> SaveDefaultChangesAsync(CancellationToken ct = default);
         int SaveDefaultChanges();
 
-        /// <summary>
-        /// Otel veritabanındaki değişiklikleri kaydeder.
-        /// </summary>
-        Task<int> SaveHotelChangesAsync();
+        // Hotel (tenant) DB
+        void SetHotelConnectionString(string connectionString);
+        IEntityRepository<T, int> HotelEntityRepository<T>() where T : class, ISoftDelete, IHasId<int>;
+        Task<int> SaveHotelChangesAsync(CancellationToken ct = default);
         int SaveHotelChanges();
 
-        /// <summary>
-        /// Otel bağlantı bilgisini belirler. 
-        /// Bu metod çağrılmadan otel işlemleri yapılamaz.
-        /// </summary>
-        /// <param name="connectionString">Otele özel bağlantı cümlesi</param>
-        void SetHotelConnectionString(string connectionString);
-
-        ///// <summary>
-        ///// Belirtilen varlık türü için otel veritabanında çalışan repository döner.
-        ///// </summary>
-        ///// <typeparam name="T">Varlık türü</typeparam>
-        ///// <returns>IEntityRepository</returns>
-        //IEntityRepository<T, int> EntityRepository<T>() where T : class, ISoftDelete, IHasId<int>;
-
-
-        /// <summary>
-        /// Belirtilen varlık türü için default (sabit) veritabanında çalışan repository döner.
-        /// </summary>
-        /// <typeparam name="T">Varlık türü</typeparam>
-        /// <returns>IEntityRepository</returns>
-        IEntityRepository<T, int> DefaultEntityRepository<T>()
-            where T : class, ISoftDelete, IHasId<int>;
-
-        /// <summary>
-        /// Belirtilen varlık türü için otel veritabanında çalışan repository döner.
-        /// </summary>
-        /// <typeparam name="T">Varlık türü</typeparam>
-        /// <returns>IEntityRepository</returns>
-        IEntityRepository<T, int> HotelEntityRepository<T>()
-            where T : class, ISoftDelete, IHasId<int>;
-
-
-
-
+        // İsteğe bağlı: Hotel DB için transaction sarmalayıcı
+        Task ExecuteHotelTxAsync(Func<Task> work, CancellationToken ct = default);
     }
 }
 

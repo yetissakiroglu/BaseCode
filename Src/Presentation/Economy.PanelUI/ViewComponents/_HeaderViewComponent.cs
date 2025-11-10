@@ -2,7 +2,6 @@
 using Economy.Panel.UI.Models.ProfileViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.ViewComponents
 {
@@ -22,8 +21,8 @@ namespace Economy.Panel.UI.ViewComponents
             var user = (_panelSuperAdminService.GetUserAsync(Convert.ToInt32(CurrentUserId))).Result;
             var model = new HeaderUserViewModel
             {
-                FullName = user?.Data.FirstName + " " + user?.Data.LastName  ?? "Kullanıcı Adı", // Gerçek veri varsa claim'e ekle
-                Email = user.Data.Email,
+                FullName = user?.Data?.FirstName + " " + user?.Data?.LastName  ?? "Kullanıcı Adı", // Gerçek veri varsa claim'e ekle
+                Email = user?.Data?.Email,
                 PhotoUrl = "/assets/images/avtar/woman.jpg" // Gerçek veri varsa claim'e ekle
             };
 
