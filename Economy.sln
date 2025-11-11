@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.Application", "Src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelMultiTenant", "Src\Presentation\HotelMultiTenant\HotelMultiTenant.csproj", "{1C9E2FA8-4795-4466-8803-5D9DFBA26B4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Economy.UI.Dtos", "Src\Core\Economy.UI.Dtos\Economy.UI.Dtos.csproj", "{C5FDDEBC-D147-4691-AEB8-A411EA74B9E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{1C9E2FA8-4795-4466-8803-5D9DFBA26B4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C9E2FA8-4795-4466-8803-5D9DFBA26B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C9E2FA8-4795-4466-8803-5D9DFBA26B4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5FDDEBC-D147-4691-AEB8-A411EA74B9E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5FDDEBC-D147-4691-AEB8-A411EA74B9E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5FDDEBC-D147-4691-AEB8-A411EA74B9E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5FDDEBC-D147-4691-AEB8-A411EA74B9E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{372C2FDA-6C7A-4504-9EF2-56536A9F4465} = {FA6C4317-017A-46A5-AC2B-2223501710B3}
 		{64DE1C96-C22F-4C0E-B07E-4EDB6BF672F4} = {A562FD7E-981E-4AD8-83BD-2ABE0791DB98}
 		{1C9E2FA8-4795-4466-8803-5D9DFBA26B4C} = {FA6C4317-017A-46A5-AC2B-2223501710B3}
+		{C5FDDEBC-D147-4691-AEB8-A411EA74B9E4} = {A562FD7E-981E-4AD8-83BD-2ABE0791DB98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {20E107F7-FA8E-44CE-9C37-93776883CCC7}

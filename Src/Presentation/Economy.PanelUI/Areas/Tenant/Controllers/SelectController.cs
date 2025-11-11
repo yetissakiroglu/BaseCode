@@ -10,7 +10,7 @@ using System.Security.Claims;
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
     [Area("Tenant")]
-    [Authorize(Roles = "Tenant")]
+    [Authorize(Roles = "Tenant Admin")]
     public class SelectController : Controller
     {
         private readonly DefaultDbContext _db;

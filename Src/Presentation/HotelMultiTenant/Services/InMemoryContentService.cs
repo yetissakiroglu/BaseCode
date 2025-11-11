@@ -1,7 +1,17 @@
-﻿namespace HotelMultiTenant.Services
+﻿using Economy.UI.Dtos;
+using HotelMultiTenant.Multitenancy;
+
+namespace HotelMultiTenant.Services
 {
     public class InMemoryContentService : IContentService
     {
+        private readonly IApiClient _apiClient;
+
+        public InMemoryContentService(IApiClient apiClient)
+        {
+            _apiClient = apiClient;
+        }
+
         private static readonly Dictionary<int, HomeVm> Home = new()
         {
             [1] = new HomeVm("X Otel’e Hoş Geldiniz", "Denize sıfır konfor", "/themes/hero-classic.jpg",
@@ -60,5 +70,11 @@
         public Task<RoomsVm> GetRoomsAsync(int id, CancellationToken ct = default) => Task.FromResult(Rooms[id]);
         public Task<ServicesVm> GetServicesAsync(int id, CancellationToken ct = default) => Task.FromResult(Svc[id]);
         public Task<ContactVm> GetContactAsync(int id, CancellationToken ct = default) => Task.FromResult(Cnt[id]);
+
+        public async Task<SiteTechnicalDto> GetTanentAsync(CancellationToken ct = default)
+        {
+            var test = await _apiClient.GetAsync<SiteTechnicalDto>("/api/Content/tanent", ct);
+            return test;
+        }
     }
 }

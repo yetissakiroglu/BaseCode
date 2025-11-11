@@ -1,7 +1,6 @@
 using HotelMultiTenant.Multitenancy;
 using HotelMultiTenant.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 
 namespace HotelMultiTenant.Controllers
 {

@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Economy.UI.Dtos\Economy.UI.Dtos.csproj" />
+  </ItemGroup>
+
 </Project>

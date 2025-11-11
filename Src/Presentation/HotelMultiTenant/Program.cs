@@ -1,6 +1,5 @@
 using HotelMultiTenant.Multitenancy;
 using HotelMultiTenant.Services;
-using Microsoft.AspNetCore.OutputCaching;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,14 +10,26 @@ builder.Services.AddOutputCache(o =>
                                  .Expire(TimeSpan.FromSeconds(300)));
 });
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IApiClient, ApiClient>();
+
 // Tenant & Content servisleri (mock/in-memory)
 builder.Services.AddSingleton<ITenantDirectory, InMemoryTenantDirectory>();
 builder.Services.AddSingleton<IContentService, InMemoryContentService>();
+
+builder.Services.AddHttpClient("api", c =>
+{
+    c.BaseAddress = new Uri("https://localhost:7248");
+    c.Timeout = TimeSpan.FromSeconds(30);
+});
+
 
 // Multitenancy bileþenleri
 builder.Services.AddTransient<TenantMiddleware>();
 builder.Services.AddControllersWithViews()
     .AddRazorOptions(o => o.ViewLocationExpanders.Add(new ThemeViewLocationExpander()));
+
+
 
 var app = builder.Build();
 

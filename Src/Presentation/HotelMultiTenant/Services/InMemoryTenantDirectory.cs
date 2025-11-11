@@ -5,6 +5,13 @@ namespace HotelMultiTenant.Services
 
     public class InMemoryTenantDirectory : ITenantDirectory
     {
+      private readonly IContentService _contentService;
+
+        public InMemoryTenantDirectory(IContentService contentService)
+        {
+            _contentService = contentService;
+        }
+
         // Burayı ileride gerçek HTTP/DB kaynağına çevirebilirsin.
         // Şimdilik demo için host→tenant eşlemesi:
         private readonly List<Tenant> _tenants =
@@ -29,11 +36,16 @@ namespace HotelMultiTenant.Services
         }
         ];
 
-        public Task<Tenant?> ResolveByHostAsync(string host, CancellationToken ct = default)
+        
+
+
+        public async Task<Tenant?> ResolveByHostAsync(string host, CancellationToken ct = default)
         {
+            var test = await _contentService.GetTanentAsync(ct);
+
             var t = _tenants.FirstOrDefault(x => x.Domains.Any(d =>
                 d.Hostname.Equals(host, StringComparison.OrdinalIgnoreCase)));
-            return Task.FromResult<Tenant?>(t);
+            return await Task.FromResult<Tenant?>(t);
         }
     }
 }
