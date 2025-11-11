@@ -232,7 +232,9 @@ namespace Economy.Persistence.Admin.Services
                 IsPassword = result.IsPassword,
                 Password = result.Password,
                 Domain = result.Domain,
-                ApiKey =result.ApiKey
+                ApiKey =result.ApiKey,
+                AccessMode = result.AccessMode,
+                Theme = result.Theme
             };
             return ServiceResult<AppDto>.Success(appDto);
         }
