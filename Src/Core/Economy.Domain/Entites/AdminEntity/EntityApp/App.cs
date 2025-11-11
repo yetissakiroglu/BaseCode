@@ -32,7 +32,7 @@ namespace Economy.Domain.Entites.AdminEntity.EntityApp
         public string Domain { get; set; }
 
         public AppAccessMode AccessMode { get; set; } = AppAccessMode.LocalOnly;
-        public AppTheme Theme { get; set; } = AppTheme.Default;
+        public AppTheme Theme { get; set; } = AppTheme.Classic;
 
         public string? ApiKey { get; set; }   // yeni alan
 

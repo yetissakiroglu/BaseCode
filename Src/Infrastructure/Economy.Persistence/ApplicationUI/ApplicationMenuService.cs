@@ -32,6 +32,63 @@ namespace Economy.Persistence.ApplicationUI
 
 
         }
+        public async Task<TenantDto> GetTenantAsync(string xtanent,CancellationToken ct)
+        {
+            var app = await _appRepository.DataSet
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => !x.IsDeleted && (x.Domain == xtanent), ct);
+            if (app is null)
+            {
+                return null;
+            }
+
+            // 1) Teknik ayarlar
+            var t = _appTechnicalSettingRepository.DataSet
+                .AsNoTracking()
+                .FirstOrDefault(x => !x.IsDeleted);
+
+            // 2) Default dil AppLanguage’den
+            var defaultLang = _appLanguageRepository.DataSet
+                .AsNoTracking()
+                .Where(x => !x.IsDeleted && x.IsDefault)
+                .Select(x => x.Code)
+                .FirstOrDefault();
+
+            var supportedLanguages = _appLanguageRepository.DataSet
+              .AsNoTracking()
+              .Where(x => !x.IsDeleted)
+              .Select(x => x.Code).ToArray();
+
+
+            TenantDto? technicalDto = null;
+            if (t != null)
+            {
+                technicalDto = new TenantDto
+                {   ThemeKey= app.Theme,
+                    DefaultLanguage = defaultLang,
+                    SupportedLanguages = supportedLanguages ?? Array.Empty<string>(),
+                    Settings = new TenantSettingsDto
+                    {
+                        CdnBaseUrl = t.CdnBaseUrl,
+                        EnableCdn = t.CdnEnabled,
+                        OutputCacheEnabled = t.EnableOutputCache,
+                        OutputCacheTtlSeconds = t.OutputCacheTtlSeconds,
+                        MaintenanceMode = t.MaintenanceModeEnabled,
+                        MaintenanceAllowedIpList = t.MaintenanceAllowedIpList ?? new List<string>(),
+                        ShowCookieBanner = t.CookieBannerEnabled,
+                        EnableDebugMode = t.EnableDebugMode,
+                        ForceHttps = t.ForceSSL,
+                        MaintenanceMessage = t.MaintenanceMessage,
+                        CanonicalHost = t.DomainName,
+                        Domain = app.Domain
+                    },
+
+                };
+            }
+            return technicalDto;
+        }
+
+
 
 
 
@@ -171,48 +228,6 @@ namespace Economy.Persistence.ApplicationUI
                 FaviconPath = logo?.FaviconPath,
                 ShareImagePath = logo?.ShareImagePath
             };
-        }
-        public async Task<SiteTechnicalDto> GetSiteTechnicalAsync(CancellationToken ct)
-        {
-            // 1) Teknik ayarlar
-            var t = _appTechnicalSettingRepository.DataSet
-                .AsNoTracking()
-                .FirstOrDefault(x => !x.IsDeleted);
-
-            // 2) Default dil AppLanguage’den
-            var defaultLang = _appLanguageRepository.DataSet
-                .AsNoTracking()
-                .Where(x => !x.IsDeleted && x.IsDefault)
-                .Select(x => x.Code)
-                .FirstOrDefault();
-
-            var supportedLanguages = _appLanguageRepository.DataSet
-              .AsNoTracking()
-              .Where(x => !x.IsDeleted)
-              .Select(x => x.Code).ToArray();
-                       
-
-            SiteTechnicalDto? technicalDto = null;
-            if (t != null)
-            {
-                technicalDto = new SiteTechnicalDto
-                {
-                    DefaultLanguage = defaultLang,
-                    SupportedLanguages = supportedLanguages ?? Array.Empty<string>(),
-                    CdnBaseUrl = t.CdnBaseUrl,
-                    CdnEnabled = t.CdnEnabled,
-                    EnableOutputCache = t.EnableOutputCache,
-                    OutputCacheTtlSeconds = t.OutputCacheTtlSeconds,
-                    MaintenanceModeEnabled = t.MaintenanceModeEnabled,
-                    MaintenanceAllowedIpList = t.MaintenanceAllowedIpList ?? new List<string>(),
-                    CookieBannerEnabled = t.CookieBannerEnabled,
-                    //DomainName = t.DomainName,
-                    EnableDebugMode = t.EnableDebugMode,
-                    ForceSSL = t.ForceSSL,
-                    MaintenanceMessage = t.MaintenanceMessage
-                };
-            }
-            return technicalDto;
         }
     }
 }

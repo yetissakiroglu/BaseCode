@@ -71,9 +71,9 @@ namespace HotelMultiTenant.Services
         public Task<ServicesVm> GetServicesAsync(int id, CancellationToken ct = default) => Task.FromResult(Svc[id]);
         public Task<ContactVm> GetContactAsync(int id, CancellationToken ct = default) => Task.FromResult(Cnt[id]);
 
-        public async Task<SiteTechnicalDto> GetTanentAsync(CancellationToken ct = default)
+        public async Task<TenantDto> GetTanentAsync(CancellationToken ct = default)
         {
-            var test = await _apiClient.GetAsync<SiteTechnicalDto>("/api/Content/tanent", ct);
+            var test = await _apiClient.GetAsync<TenantDto>("/api/Content/tanent", ct);
             return test;
         }
     }

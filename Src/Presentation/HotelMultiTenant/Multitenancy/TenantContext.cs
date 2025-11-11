@@ -1,6 +1,8 @@
-﻿namespace HotelMultiTenant.Multitenancy
+﻿using Economy.UI.Dtos;
+
+namespace HotelMultiTenant.Multitenancy
 {
-    public class TenantContext { public Tenant? Current { get; init; } }
+    public class TenantContext { public TenantDto? Current { get; init; } }
 
     public static class TenantHttpExtensions
     {

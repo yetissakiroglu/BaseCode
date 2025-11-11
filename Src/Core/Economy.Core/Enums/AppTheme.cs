@@ -2,9 +2,8 @@
 {
     public enum AppTheme
     {
-        Default = 0,
-        Light = 1,
-        Dark = 2,
-        Corporate = 3
+        Classic = 0,
+        Modern = 1,
+        Seaside = 2
     }
 }

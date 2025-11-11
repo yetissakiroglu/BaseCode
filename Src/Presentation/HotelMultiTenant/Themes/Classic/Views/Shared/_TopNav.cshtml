@@ -1,7 +1,7 @@
 ﻿@using HotelMultiTenant.Multitenancy
 @{
     var t = Context.GetTenant()?.Current;
-    var name = t?.Name ?? "Otel";
+    var name = t?.Settings.Domain ?? "Otel";
 }
 <header class="hero">
     <h1>@name</h1>

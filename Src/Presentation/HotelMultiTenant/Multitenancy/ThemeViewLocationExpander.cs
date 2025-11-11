@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor;
+﻿using Economy.Core.Extensions;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace HotelMultiTenant.Multitenancy
 {
@@ -8,7 +9,7 @@ namespace HotelMultiTenant.Multitenancy
         public void PopulateValues(ViewLocationExpanderContext context)
         {
             var tenant = context.ActionContext.HttpContext.GetTenant()?.Current;
-            context.Values["theme"] = tenant?.ThemeKey ?? "Classic";
+            context.Values["theme"] = tenant.ThemeKey.ToString();
         }
 
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)

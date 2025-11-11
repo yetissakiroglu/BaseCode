@@ -6,7 +6,7 @@ namespace HotelMultiTenant.Services
     {
 
 
-        Task<SiteTechnicalDto> GetTanentAsync(CancellationToken ct = default);
+        Task<TenantDto> GetTanentAsync(CancellationToken ct = default);
 
         Task<HomeVm> GetHomeAsync(int tenantId, CancellationToken ct = default);
         Task<AboutVm> GetAboutAsync(int tenantId, CancellationToken ct = default);

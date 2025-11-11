@@ -14,10 +14,18 @@ namespace Economy.Panel.UI.Areas.Api
         private readonly IApplicationMenuService _applicationMenuService = applicationMenuService;
 
         [HttpGet("tanent")]
-        [ProducesResponseType(typeof(IEnumerable<SiteTechnicalDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<TenantDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTanentAsync(CancellationToken ct)
-        {
-            var menus = await _applicationMenuService.GetSiteTechnicalAsync(ct);
+        {  
+            // Header'dan X-TENANT anahtarını oku
+            var tenantKey = Request.Headers["X-TENANT"].FirstOrDefault();
+
+            if (string.IsNullOrEmpty(tenantKey))
+                return BadRequest("Missing X-TENANT header.");
+
+            // Servise tenant anahtarını gönder
+            var menus = await _applicationMenuService.GetTenantAsync(tenantKey, ct);
+
             return Ok(menus);
         }
 

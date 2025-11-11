@@ -1,9 +1,0 @@
-﻿@model HotelMultiTenant.Services.ContactVm
-@{
-    Layout = "_Layout";
-}
-<h1>@Model.Title</h1>
-<p><strong>Adres:</strong> @Model.Address</p>
-<p><strong>Telefon:</strong> @Model.Phone</p>
-<p><strong>E-posta:</strong> <a href="mailto:@Model.Email">@Model.Email</a></p>
-<div>@Html.Raw(Model.MapEmbedHtml)</div>
