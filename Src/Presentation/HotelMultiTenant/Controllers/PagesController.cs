@@ -16,7 +16,7 @@ namespace HotelMultiTenant.Controllers
         public async Task<IActionResult> DefaultAsync()
         {
             var homePage = await _contentService.GetHomeAsync("tr");
-            return View("Anasayfa", homePage);
+            return View("Default", homePage);
         }
 
         // /tr  -> Anasayfa
