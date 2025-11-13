@@ -46,5 +46,28 @@ namespace Economy.Panel.UI.Areas.Api
             var menus = await _applicationMenuService.GetSiteMetaAsync("tr", ct);
             return Ok(menus);
         }
+
+        // 1) Tüm yayınlanmış sayfalar
+      
+        // 2) Anasayfa
+        [HttpGet("homepage")]
+        [ProducesResponseType(typeof(PageDetailDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetHomepageAsync([FromQuery] string? lang = "tr", CancellationToken ct = default)
+        {
+            var vm = await _applicationMenuService.GetHomepageAsync(lang ?? "tr", ct);
+            return vm is null ? NotFound() : Ok(vm);
+        }
+
+        // 3) Slug ile tek sayfa
+        [HttpGet("{slug}")]
+        [ProducesResponseType(typeof(PageDetailDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetBySlugAsync([FromRoute] string slug, [FromQuery] string? lang = "tr", CancellationToken ct = default)
+        {
+            var vm = await _applicationMenuService.GetBySlugAsync(lang ?? "tr", slug, ct);
+            return vm is null ? NotFound() : Ok(vm);
+        }
+
     }
 }

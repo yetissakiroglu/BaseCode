@@ -69,5 +69,5 @@ namespace Economy.Panel.UI.Areas.Tenant.Models
     };
     }
 
- 
+
 }

@@ -11,7 +11,8 @@ namespace Economy.Application.ApplicationUI.Interfaces
 
         Task<List<MenuNodeDto>> GetMenuAsync(string lang, CancellationToken ct);
         Task<SiteMetaDto> GetSiteMetaAsync(string lang, CancellationToken ct);
-
+        Task<PageDetailDto?> GetHomepageAsync(string lang, CancellationToken ct);
+        Task<PageDetailDto?> GetBySlugAsync(string lang, string slug, CancellationToken ct);
 
     }
 }
