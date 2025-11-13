@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Economy.Application.ApplicationUI.Dtos
+namespace Economy.UI.Dtos
 {
     public class SiteMetaDto
     {

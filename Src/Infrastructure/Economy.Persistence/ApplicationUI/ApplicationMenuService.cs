@@ -1,5 +1,4 @@
-﻿using Economy.Application.ApplicationUI.Dtos;
-using Economy.Application.ApplicationUI.Interfaces;
+﻿using Economy.Application.ApplicationUI.Interfaces;
 using Economy.Core.Enums;
 using Economy.Core.Interfaces;
 using Economy.Domain.Entites.AdminEntity.EntityApp;
@@ -10,8 +9,6 @@ using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
 using Economy.UI.Dtos;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
-using System;
 using System.Text.Json;
 
 namespace Economy.Persistence.ApplicationUI
@@ -70,13 +67,13 @@ namespace Economy.Persistence.ApplicationUI
             // 2) Default dil AppLanguage’den
             var defaultLang = _appLanguageRepository.DataSet
                 .AsNoTracking()
-                .Where(x => !x.IsDeleted && x.IsDefault)
+                .Where(x => !x.IsDeleted && x.IsDefault && x.IsActive)
                 .Select(x => x.Code)
                 .FirstOrDefault();
 
             var supportedLanguages = _appLanguageRepository.DataSet
               .AsNoTracking()
-              .Where(x => !x.IsDeleted)
+              .Where(x => !x.IsDeleted && x.IsActive)
               .Select(x => x.Code).ToArray();
 
 
@@ -103,8 +100,21 @@ namespace Economy.Persistence.ApplicationUI
                         CanonicalHost = t.DomainName,
                         Domain = app.Domain
                     },
-
                 };
+
+                technicalDto.Languages = await _appLanguageRepository.DataSet
+                    .AsNoTracking()
+                    .Where(x => !x.IsDeleted && x.IsActive)
+                    .Select(x => new LanguagesDto
+                    {
+                        Code = x.Code,
+                        Lang = x.Code,
+                        Name = x.Name,
+                        IsDefault = x.IsDefault,
+                        IsRTL = x.IsRTL
+                    })
+                    .ToListAsync(ct);
+
             }
             return technicalDto;
         }

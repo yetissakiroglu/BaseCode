@@ -1,6 +1,4 @@
-﻿using Economy.Application.TenantUI.Dtos.AppMenuDtos;
-
-namespace Economy.Application.ApplicationUI.Dtos
+﻿namespace Economy.UI.Dtos
 {
     public record MenuNodeDto(string Title, string Url, bool IsExternal, bool IsActive, List<MenuNodeDto> Children)
     {

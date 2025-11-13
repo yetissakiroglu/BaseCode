@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="AdminUI\Mappings\" />
+    <Folder Include="ApplicationUI\Dtos\" />
   </ItemGroup>
 
 </Project>

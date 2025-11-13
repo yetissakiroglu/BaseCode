@@ -1,0 +1,292 @@
+﻿
+@{
+    Layout = "_Layout";
+}
+
+@using Economy.Core.Enums
+@using Economy.UI.Dtos
+@model PageDetailDto
+
+@{
+    ViewData["Title"] = Model.MetaTitle ?? Model.Title ?? "";
+
+    var cover = Model.CoverImageUrl
+                ?? Model.Medias?.FirstOrDefault(m => m.IsCover)?.Url
+                ?? Model.OgImageUrl;
+}
+
+@section HeadMeta {
+    @* Meta title & description *@
+    @if (!string.IsNullOrWhiteSpace(Model.MetaTitle))
+    {
+        <title>@Model.MetaTitle</title>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.MetaDescription))
+    {
+        <meta name="description" content="@Model.MetaDescription" />
+    }
+
+    @* OG image *@
+    @if (!string.IsNullOrWhiteSpace(Model.OgImageUrl))
+    {
+        <meta property="og:image" content="@Model.OgImageUrl" />
+    }
+
+    @* Hreflang linkleri *@
+    @if (Model.Hreflangs != null && Model.Hreflangs.Count > 0)
+    {
+        foreach (var h in Model.Hreflangs)
+        {
+            <link rel="alternate" hreflang="@h.Lang" href="@h.Url" />
+        }
+    }
+}
+
+<div class="page-detail">
+
+    @* -------------------------------------------------
+       1) ÜST HERO / BAŞLIK BÖLÜMÜ
+       ------------------------------------------------- *@
+    @if (!string.IsNullOrWhiteSpace(cover))
+    {
+        <section class="page-hero mb-4 position-relative">
+            <div class="ratio ratio-21x9">
+                <img src="@cover"
+                     class="w-100 h-100 object-fit-cover"
+                     alt="@Model.Title" />
+            </div>
+
+            <div class="container position-absolute top-50 start-50 translate-middle text-center text-white">
+                @if (!string.IsNullOrWhiteSpace(Model.Title))
+                {
+                    <h1 class="display-5 fw-bold">@Model.Title</h1>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Summary))
+                {
+                    <p class="lead mt-2">@Model.Summary</p>
+                }
+            </div>
+        </section>
+    }
+    else
+    {
+        <section class="py-5 bg-light mb-4">
+            <div class="container text-center">
+                @if (!string.IsNullOrWhiteSpace(Model.Title))
+                {
+                    <h1 class="display-5 fw-bold mb-2">@Model.Title</h1>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Summary))
+                {
+                    <p class="lead mb-0">@Model.Summary</p>
+                }
+            </div>
+        </section>
+    }
+
+    <div class="container">
+        <div class="row">
+            @* SOL TARAF: SAYFA İÇERİĞİ + BLOCKLAR *@
+            <div class="col-lg-8">
+
+                @* -------------------------------------------------
+                   2) BODY HTML
+                   ------------------------------------------------- *@
+                @if (!string.IsNullOrWhiteSpace(Model.Body))
+                {
+                    <article class="page-body mb-5">
+                        @Html.Raw(Model.Body)
+                    </article>
+                }
+
+                @* -------------------------------------------------
+                   3) BLOCK GROUPS
+                   ------------------------------------------------- *@
+                @if (Model.Groups != null && Model.Groups.Count > 0)
+                {
+                    foreach (var group in Model.Groups.OrderBy(g => g.SortOrder))
+                    {
+                        <section class="page-block-group mb-5">
+
+                            @if (group.ShowTitle && !string.IsNullOrWhiteSpace(group.Title))
+                            {
+                                <h2 class="h4 fw-semibold mb-2">@group.Title</h2>
+                            }
+
+                            @if (group.ShowDescription && !string.IsNullOrWhiteSpace(group.Description))
+                            {
+                                <p class="text-muted mb-4">@group.Description</p>
+                            }
+
+                            <div class="row g-4">
+                                @if (group.Blocks != null && group.Blocks.Count > 0)
+                                {
+                                    foreach (var block in group.Blocks.OrderBy(b => b.SortOrder))
+                                    {
+                                        var col = (int)block.Column;
+                                        if (col < 1) { col = 1; }
+                                        if (col > 12) { col = 12; }
+                                        var colClass = "col-md-" + col;
+
+                                        <div class="@colClass">
+                                            @* BLOK TİPİNE GÖRE RENDER *@
+                                            @switch (block.Type)
+                                            {
+                                                case BlockType.Hero:
+                                                    {
+                                                        var shared = block.Shared as HeroSharedVm ?? new HeroSharedVm();
+                                                        var loc = block.Localized as HeroLocVm ?? new HeroLocVm();
+
+                                                        var vAlign = "align-items-center";
+                                                        if (shared.VerticalAlign == "top")
+                                                        {
+                                                            vAlign = "align-items-start";
+                                                        }
+                                                        else if (shared.VerticalAlign == "bottom")
+                                                        {
+                                                            vAlign = "align-items-end";
+                                                        }
+
+                                                        <section class="block-hero position-relative overflow-hidden rounded-3" style="min-height:300px;">
+                                                            <div class="ratio ratio-21x9">
+                                                                <img src="@shared.BackgroundUrl"
+                                                                     class="w-100 h-100 object-fit-cover"
+                                                                     alt="@loc.Heading" />
+                                                            </div>
+                                                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex @vAlign justify-content-center">
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col-lg-8">
+                                                                            <div class="p-4 p-md-5 bg-dark bg-opacity-75 text-white rounded-3">
+                                                                                @if (!string.IsNullOrWhiteSpace(loc.Heading))
+                                                                                {
+                                                                                    <h2 class="h3 fw-bold mb-2">@loc.Heading</h2>
+                                                                                }
+                                                                                @if (!string.IsNullOrWhiteSpace(loc.SubHeading))
+                                                                                {
+                                                                                    <p class="mb-3">@loc.SubHeading</p>
+                                                                                }
+                                                                                @if (!string.IsNullOrWhiteSpace(loc.ButtonText) && !string.IsNullOrWhiteSpace(loc.ButtonUrl))
+                                                                                {
+                                                                                    <a href="@loc.ButtonUrl" class="btn btn-light btn-sm">@loc.ButtonText</a>
+                                                                                }
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </section>
+
+                                                        break;
+                                                    }
+
+                                                case BlockType.Text:
+                                                    {
+                                                        var loc = block.Localized as TextLocVm ?? new TextLocVm();
+
+                                                        <section class="block-text">
+                                                            @if (!string.IsNullOrWhiteSpace(loc.Heading))
+                                                            {
+                                                                <h3 class="h4 fw-semibold mb-3">@loc.Heading</h3>
+                                                            }
+                                                            <div class="block-text-body">
+                                                                @Html.Raw(loc.BodyHtml)
+                                                            </div>
+                                                        </section>
+
+                                                        break;
+                                                    }
+
+                                                case BlockType.ImageGallery:
+                                                    {
+                                                        var shared = block.Shared as GallerySharedVm ?? new GallerySharedVm();
+                                                        var images = shared.ImageUrls ?? new List<string>();
+
+                                                        <section class="block-gallery">
+                                                            <div class="row g-3">
+                                                                @foreach (var url in images)
+                                                                {
+                                                                    <div class="col-6 col-md-4">
+                                                                        <div class="ratio ratio-4x3">
+                                                                            <img src="@url"
+                                                                                 class="w-100 h-100 object-fit-cover rounded"
+                                                                                 alt="" />
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </section>
+
+                                                        break;
+                                                    }
+
+                                                case BlockType.AmenityGroup:
+                                                    {
+                                                        var loc = block.Localized as AmenityLocVm ?? new AmenityLocVm();
+                                                        var amenities = loc.Amenities ?? new List<string>();
+
+                                                        <section class="block-amenities">
+                                                            <h3 class="h5 fw-semibold mb-3">@loc.GroupTitle</h3>
+                                                            <ul class="list-unstyled row g-2">
+                                                                @foreach (var item in amenities)
+                                                                {
+                                                                    <li class="col-sm-6">
+                                                                        <div class="d-flex align-items-center gap-2">
+                                                                            <span class="badge rounded-pill bg-light text-dark border">
+                                                                                <i class="bi bi-check2"></i>
+                                                                            </span>
+                                                                            <span>@item</span>
+                                                                        </div>
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        </section>
+
+                                                        break;
+                                                    }
+
+                                                default:
+                                                    {
+                                                        @* Bilinmeyen blok tipi için hiçbir şey render etme *@
+                                                        break;
+                                                    }
+                                            }
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </section>
+                    }
+                }
+
+            </div>
+
+            @* SAĞ TARAF: MEDYA GALERİ *@
+            <div class="col-lg-4">
+                @if (Model.Medias != null && Model.Medias.Count > 0)
+                {
+                    <aside class="page-medias mb-4">
+                        <h3 class="h5 fw-semibold mb-3">Galeri</h3>
+                        <div class="row g-3">
+                            @foreach (var media in Model.Medias.OrderBy(m => m.SortOrder))
+                            {
+                                <div class="col-6">
+                                    <div class="ratio ratio-4x3">
+                                        <img src="@media.Url"
+                                             class="w-100 h-100 object-fit-cover rounded"
+                                             alt="@media.Alt" />
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(media.Caption))
+                                    {
+                                        <small class="d-block mt-1 text-muted">@media.Caption</small>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </aside>
+                }
+            </div>
+        </div>
+    </div>
+</div>

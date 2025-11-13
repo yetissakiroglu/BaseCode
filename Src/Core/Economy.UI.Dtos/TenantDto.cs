@@ -11,8 +11,17 @@ namespace Economy.UI.Dtos
     {
         public string DefaultLanguage { get; set; } = "tr";
         public IReadOnlyList<string> SupportedLanguages { get; set; } = Array.Empty<string>();
+        public IReadOnlyList<LanguagesDto> Languages { get; set; }
         public AppTheme ThemeKey { get; set; } = AppTheme.Classic;
         public TenantSettingsDto Settings { get; set; } = new();
+    }
+    public class LanguagesDto
+    {
+        public string Name { get; set; }
+        public string Lang { get; set; } = "";
+        public string Code { get; set; } = "";
+        public bool IsRTL { get; set; } // Sağdan sola yazımı destekleyen diller
+        public bool IsDefault { get; set; }
     }
 
     public class TenantSettingsDto

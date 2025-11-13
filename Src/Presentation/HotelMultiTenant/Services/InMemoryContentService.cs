@@ -73,8 +73,21 @@ namespace HotelMultiTenant.Services
 
         public async Task<TenantDto> GetTanentAsync(CancellationToken ct = default)
         {
-            var test = await _apiClient.GetAsync<TenantDto>("/api/Content/tanent", ct);
-            return test;
+            var result = await _apiClient.GetAsync<TenantDto>("/api/Content/tanent", ct);
+            return result;
+        }
+
+        public async Task<List<MenuNodeDto>> GetMenusAsync(CancellationToken ct = default)
+        {
+            var result = await _apiClient.GetAsync<List<MenuNodeDto>>("/api/Content/menus", ct);
+            return result;
+        }
+
+        public async Task<PageDetailDto> GetHomeAsync(string lang, CancellationToken ct = default)
+        {
+            ///api/Content/homepage? lang = tr
+            var result = await _apiClient.GetAsync<PageDetailDto>($"/api/Content/homepage?lang={lang}", ct);
+            return result;
         }
     }
 }

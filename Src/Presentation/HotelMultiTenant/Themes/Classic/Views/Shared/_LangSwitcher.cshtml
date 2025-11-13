@@ -1,0 +1,14 @@
+﻿@using HotelMultiTenant.Multitenancy
+@{
+    var t = Context.GetTenant()?.Current;
+}
+
+
+<select onchange="if(this.value) window.location.href=this.value;">
+    @foreach (var h in t.Languages)
+    {
+        <option value="@h.Code">
+            @h.Name.ToUpper()
+        </option>
+    }
+</select>

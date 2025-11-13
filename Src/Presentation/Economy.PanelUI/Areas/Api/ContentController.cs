@@ -1,5 +1,4 @@
-﻿using Economy.Application.ApplicationUI.Dtos;
-using Economy.Application.ApplicationUI.Interfaces;
+﻿using Economy.Application.ApplicationUI.Interfaces;
 using Economy.UI.Dtos;
 using Microsoft.AspNetCore.Mvc;
 

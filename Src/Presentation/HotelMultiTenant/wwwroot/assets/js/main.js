@@ -712,7 +712,7 @@
     for (const ToggleTheme of ToggleThemes) {
         ToggleTheme.addEventListener("click", () => {
             const theme = localStorage.theme === "dark" ? "light" : "dark";
-            setTheme(theme);
+            //setTheme(theme);
             themeModeAction();
         //    updateLogoOnTheme();
         });

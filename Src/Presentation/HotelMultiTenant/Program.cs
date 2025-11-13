@@ -4,11 +4,11 @@ using HotelMultiTenant.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Output cache (host bazlý vary)
-builder.Services.AddOutputCache(o =>
-{
-    o.AddPolicy("PerHost", b => b.SetVaryByHost(true)
-                                 .Expire(TimeSpan.FromSeconds(300)));
-});
+//builder.Services.AddOutputCache(o =>
+//{
+//    o.AddPolicy("PerHost", b => b.SetVaryByHost(true)
+//                                 .Expire(TimeSpan.FromSeconds(300)));
+//});
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IApiClient, ApiClient>();
@@ -61,7 +61,33 @@ app.Use(async (ctx, next) =>
 
 app.UseStaticFiles();
 app.UseRouting();
-app.UseOutputCache();
+//app.UseOutputCache();
+
+
+app.MapControllerRoute(
+    name: "page-detail",
+    pattern: "{lang:length(2)}/{parentSlug}/{slug}",
+    defaults: new { controller = "Pages", action = "IndexParent" }
+);
+// 1) /{lang}/{slug}  -> Pages.Index
+app.MapControllerRoute(
+    name: "pages-with-slug",
+    pattern: "{lang:length(2)}/{slug}",
+    defaults: new { controller = "Pages", action = "Index" }
+);
+
+// 2) /{lang}         -> Pages.Anasayfa
+app.MapControllerRoute(
+    name: "pages-root",
+    pattern: "{lang:length(2)}",
+    defaults: new { controller = "Pages", action = "Anasayfa" }
+);
+
+app.MapControllerRoute(
+    name: "page",
+    pattern: "",
+    defaults: new { controller = "Pages", action = "Default" }
+);
 
 app.MapControllerRoute(
     name: "default",
