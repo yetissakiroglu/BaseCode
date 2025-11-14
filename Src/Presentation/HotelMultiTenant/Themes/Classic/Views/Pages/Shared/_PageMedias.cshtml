@@ -1,0 +1,23 @@
+﻿@using Economy.UI.Dtos
+@model PageDetailDto
+
+@if (Model.Medias != null && Model.Medias.Count > 0)
+{
+    <aside class="page-medias mb-4">
+        <h3 class="h5 fw-semibold mb-3">Galeri</h3>
+        <div class="row g-3">
+            @foreach (var media in Model.Medias.OrderBy(m => m.SortOrder))
+            {
+                <div class="col-6">
+                    <div class="ratio ratio-4x3">
+                        <img src="@media.Url" class="w-100 h-100 object-fit-cover rounded" alt="@media.Alt" />
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(media.Caption))
+                    {
+                        <small class="d-block mt-1 text-muted">@media.Caption</small>
+                    }
+                </div>
+            }
+        </div>
+    </aside>
+}

@@ -1,0 +1,24 @@
+﻿@using Economy.UI.Dtos
+@model PageDetailDto
+
+@{
+    var cover = Model.CoverImageUrl
+                ?? Model.Medias.FirstOrDefault(m => m.IsCover)?.Url
+                ?? Model.OgImageUrl;
+}
+
+@if (!string.IsNullOrWhiteSpace(cover))
+{
+    <section class="page-hero mb-4 position-relative">
+        <div class="ratio ratio-21x9">
+            <img src="@cover" class="w-100 h-100 object-fit-cover" alt="@Model.Title" />
+        </div>
+        <div class="container position-absolute top-50 start-50 translate-middle text-center text-white">
+            <h1 class="display-5 fw-bold">@Model.Title</h1>
+            @if (!string.IsNullOrWhiteSpace(Model.Summary))
+            {
+                <p class="lead mt-2">@Model.Summary</p>
+            }
+        </div>
+    </section>
+}

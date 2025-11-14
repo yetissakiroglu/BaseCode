@@ -1,0 +1,23 @@
+﻿@using Economy.UI.Dtos
+@model BlockDto
+@{
+    var loc = Model.Localized as AmenityLocVm ?? new AmenityLocVm();
+}
+
+<section class="block-amenities">
+    <h3 class="h5 fw-semibold mb-3">@loc.GroupTitle</h3>
+
+    <ul class="list-unstyled row g-2">
+        @foreach (var item in loc.Amenities)
+        {
+            <li class="col-sm-6">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge rounded-pill bg-light text-dark border">
+                        <i class="bi bi-check2"></i>
+                    </span>
+                    <span>@item</span>
+                </div>
+            </li>
+        }
+    </ul>
+</section>

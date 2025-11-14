@@ -1,0 +1,40 @@
+﻿@using Economy.UI.Dtos
+@model BlockDto
+@{
+    var shared = Model.Shared as HeroSharedVm ?? new HeroSharedVm();
+    var loc = Model.Localized as HeroLocVm ?? new HeroLocVm();
+
+    var vAlign = shared.VerticalAlign == "top"
+        ? "align-items-start"
+        : shared.VerticalAlign == "bottom"
+            ? "align-items-end"
+            : "align-items-center";
+}
+
+<section class="block-hero position-relative overflow-hidden rounded-3" style="min-height:300px;">
+    <div class="ratio ratio-21x9">
+        <img src="@shared.BackgroundUrl" class="w-100 h-100 object-fit-cover" alt="@loc.Heading" />
+    </div>
+    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex @vAlign justify-content-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="p-4 p-md-5 bg-dark bg-opacity-75 text-white rounded-3">
+                        @if (!string.IsNullOrWhiteSpace(loc.Heading))
+                        {
+                            <h2 class="h3 fw-bold mb-2">@loc.Heading</h2>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(loc.SubHeading))
+                        {
+                            <p class="mb-3">@loc.SubHeading</p>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(loc.ButtonText))
+                        {
+                            <a href="@loc.ButtonUrl" class="btn btn-light btn-sm">@loc.ButtonText</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,15 @@
+﻿@using Economy.UI.Dtos
+@model BlockDto
+@{
+    var loc = Model.Localized as TextLocVm ?? new TextLocVm();
+}
+
+<section class="block-text">
+    @if (!string.IsNullOrWhiteSpace(loc.Heading))
+    {
+        <h3 class="h4 fw-semibold mb-3">@loc.Heading</h3>
+    }
+    <div class="block-text-body">
+        @Html.Raw(loc.BodyHtml)
+    </div>
+</section>

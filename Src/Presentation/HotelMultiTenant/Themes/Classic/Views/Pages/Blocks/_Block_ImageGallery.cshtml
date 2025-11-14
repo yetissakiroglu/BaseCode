@@ -1,0 +1,18 @@
+﻿@using Economy.UI.Dtos
+@model BlockDto
+@{
+    var shared = Model.Shared as GallerySharedVm ?? new GallerySharedVm();
+}
+
+<section class="block-gallery">
+    <div class="row g-3">
+        @foreach (var url in shared.ImageUrls)
+        {
+            <div class="col-6 col-md-4">
+                <div class="ratio ratio-4x3">
+                    <img src="@url" class="w-100 h-100 object-fit-cover rounded" alt="" />
+                </div>
+            </div>
+        }
+    </div>
+</section>
