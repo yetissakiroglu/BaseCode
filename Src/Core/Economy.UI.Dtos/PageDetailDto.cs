@@ -50,7 +50,8 @@ namespace Economy.UI.Dtos
         string? OgImageUrl,
         IReadOnlyList<PageMediaDto> Medias,
         IReadOnlyList<BlockGroupDto> Groups,
-        IReadOnlyList<HreflangVm> Hreflangs
+        IReadOnlyList<HreflangVm> Hreflangs,
+        IReadOnlyList<BreadcrumbItemDto> Breadcrumbs
     );
 
     // --- JSON VM’leri (Shared/Localized) ---
@@ -89,6 +90,7 @@ namespace Economy.UI.Dtos
     public sealed class HreflangVm
     {
         public string Lang { get; set; } = "";
+        public string Title { get; set; } = "";
         public string Slug { get; set; } = "";
         public string Url { get; set; } = ""; // İstersen controller katmanında mutlak üret
     }

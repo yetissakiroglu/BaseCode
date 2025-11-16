@@ -6,7 +6,7 @@
 @{
     var t = Context.GetSeoMetaTenant()?.Current;
 
-    var title = Model?.MetaTitle + "|" + t.MetaTitle ?? "Site Başlığı";
+    var title = Model?.MetaTitle + " - " + t.MetaTitle ?? "Site Başlığı";
     var desc = Model?.MetaDescription ?? "";
     var canon = Model?.CanonicalUrl ?? Context.Request.GetDisplayUrl();
 }

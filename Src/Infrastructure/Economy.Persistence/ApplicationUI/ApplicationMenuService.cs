@@ -1,6 +1,8 @@
 ﻿using Economy.Application.ApplicationUI.Interfaces;
+using Economy.Application.Extensions;
 using Economy.Core.Enums;
 using Economy.Core.Interfaces;
+using Economy.Core.PagingModels;
 using Economy.Domain.Entites.AdminEntity.EntityApp;
 using Economy.Domain.Entites.TenantEntity.EntityAppBlocks;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
@@ -10,6 +12,7 @@ using Economy.Domain.Entites.TenantEntity.EntityAppSettings;
 using Economy.UI.Dtos;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using static Economy.Application.Extensions.AppPageExtensions;
 
 namespace Economy.Persistence.ApplicationUI
 {
@@ -123,9 +126,9 @@ namespace Economy.Persistence.ApplicationUI
             const int MaxDepth = 3;
 
             // --- 1. Dil Çözümü ---
-            lang = (lang ?? "").Trim().ToLowerInvariant();
+            lang = (lang ?? string.Empty).Trim().ToLowerInvariant();
             if (string.IsNullOrWhiteSpace(lang))
-                return []; // dil belirtilmediyse da boş dön
+                return new List<MenuNodeDto>();
 
             var langId = await _appLanguageRepository.DataSet
                 .AsNoTracking()
@@ -133,10 +136,10 @@ namespace Economy.Persistence.ApplicationUI
                 .Select(x => (int?)x.Id)
                 .FirstOrDefaultAsync(ct);
 
-            if (langId is null)
-                return []; // sistemde böyle bir dil yoksa, fallback yapma
+            if (langId == null)
+                return new List<MenuNodeDto>();
 
-            // --- 2. Menüleri Çek (çeviriyle birlikte) ---
+            // --- 2. Menüleri al ---
             var menus = await _appMenuRepository.DataSet
                 .AsNoTracking()
                 .Where(m => !m.IsDeleted && m.IsActive)
@@ -147,12 +150,14 @@ namespace Economy.Persistence.ApplicationUI
                     m.PageId,
                     m.IsExternal,
                     Order = m.SortOrder,
+
                     Title = m.Translations
-                        .Where(t => !t.IsDeleted && t.AppLanguageId == langId)
+                        .Where(t => !t.IsDeleted && t.AppLanguageId == langId.Value)
                         .Select(t => t.Title)
-                        .FirstOrDefault() ?? "",
-                    Url = m.Translations
-                        .Where(t => !t.IsDeleted && t.AppLanguageId == langId)
+                        .FirstOrDefault() ?? string.Empty,
+
+                    MenuUrl = m.Translations
+                        .Where(t => !t.IsDeleted && t.AppLanguageId == langId.Value)
                         .Select(t => t.Url)
                         .FirstOrDefault()
                 })
@@ -161,23 +166,59 @@ namespace Economy.Persistence.ApplicationUI
                 .ToListAsync(ct);
 
             if (menus.Count == 0)
-                return []; // o dilde hiç menü çevirisi yoksa boş dön
+                return new List<MenuNodeDto>();
 
-            // --- 3. Ağaç Yapısını Kur ---
+            // --- 3. Page'leri al ve dictionary'ye çevir ---
+            var pageIds = menus
+                .Where(x => x.PageId.HasValue && x.PageId.Value > 0)
+                .Select(x => x.PageId.Value)
+                .Distinct()
+                .ToList();
+
+            var pageEntities = await _appPageRepository.DataSet.Include(x => x.Translations)
+                .AsNoTracking()
+                .Where(p => pageIds.Contains(p.Id))
+                .ToListAsync(ct);
+
+            // AppPage için flatten dictionary (Id -> PageFlat)
+            var pageDict = pageEntities.ToPageFlatDictionary(langId.Value);
+
+            // --- 4. Ağaç için lookup ---
             var byParent = menus.ToLookup(m => m.ParentId);
 
             async Task<MenuNodeDto> MapAsync(dynamic m, int level)
             {
                 string url;
 
-                if (m.IsExternal && !string.IsNullOrWhiteSpace(m.Url))
-                    url = m.Url!;
-                else if (m.PageId is int)
-                    url = string.IsNullOrWhiteSpace(m.Url) ? "#" : m.Url!;
+                // (1) External link
+                if (m.IsExternal && !string.IsNullOrWhiteSpace(m.MenuUrl))
+                {
+                    url = m.MenuUrl;
+                }
+                // (2) Page bağlı ise (PageId > 0 ve dictionary'de varsa)
+                else if (m.PageId != null && m.PageId > 0 && pageDict.ContainsKey((int)m.PageId))
+                {
+                    var slugList = pageDict.BuildSlugPath((int)m.PageId);
+                    // /{lang}/slug1/slug2/slug3
+                    url = "/" + lang + "/" + string.Join("/", slugList);
+                }
+                // (3) Menü çevirisinde URL varsa
+                else if (!string.IsNullOrWhiteSpace(m.MenuUrl))
+                {
+                    url = m.MenuUrl;
+                }
                 else
-                    url = string.IsNullOrWhiteSpace(m.Url) ? "#" : m.Url!;
+                {
+                    url = "#";
+                }
 
-                var node = new MenuNodeDto(m.Title ?? "", url, m.IsExternal, true, new List<MenuNodeDto>());
+                var node = new MenuNodeDto(
+                    m.Title ?? string.Empty,
+                    url,
+                    m.IsExternal,
+                    true,
+                    new List<MenuNodeDto>()
+                );
 
                 if (level < MaxDepth)
                 {
@@ -190,6 +231,7 @@ namespace Economy.Persistence.ApplicationUI
                 return node;
             }
 
+            // --- 5. Root nodları oluştur ---
             var tree = new List<MenuNodeDto>();
             foreach (var root in byParent[null])
                 tree.Add(await MapAsync(root, 1));
@@ -341,7 +383,8 @@ namespace Economy.Persistence.ApplicationUI
                          .ThenInclude(m => m.Translations);
         }
 
-        private static PageDetailDto ProjectToDto(AppPage p, AppPageTranslation t, string langCode, IReadOnlyList<BlockGroupDto> groups, IReadOnlyList<HreflangVm> Hreflangs)
+        private static PageDetailDto ProjectToDto(AppPage p, AppPageTranslation t, string langCode, IReadOnlyList<BlockGroupDto> groups, IReadOnlyList<HreflangVm> Hreflangs, IReadOnlyDictionary<int, PageFlat> pageDict
+)
         {
             // Medyaları dil-özgül alt/caption ile eşle
             var list = new List<PageMediaDto>();
@@ -356,7 +399,10 @@ namespace Economy.Persistence.ApplicationUI
                     SortOrder: m.SortOrder
                 ));
             }
-       
+
+
+
+            var breadcrumb = BuildBreadcrumbs(p, pageDict, langCode );
 
 
             return new PageDetailDto(
@@ -373,7 +419,9 @@ namespace Economy.Persistence.ApplicationUI
                 OgImageUrl: p.OgImageUrl,
                 Medias: list,
                 Groups: groups,
-                Hreflangs : Hreflangs
+                Hreflangs: Hreflangs,
+                Breadcrumbs: breadcrumb
+
             );
         }
 
@@ -508,6 +556,39 @@ namespace Economy.Persistence.ApplicationUI
         private static string Join2(string lang, string slug) => "/" + lang + "/" + slug;
         private static string Join3(string lang, string parent, string slug) => "/" + lang + "/" + parent + "/" + slug;
 
+        private static IReadOnlyList<BreadcrumbItemDto> BuildBreadcrumbs(AppPage page, IReadOnlyDictionary<int, AppPageExtensions.PageFlat> dict, string lang)
+        {
+            var items = new List<BreadcrumbItemDto>();
+
+            // 1) Parent zinciri slug listesi
+            var slugList = dict.BuildSlugPath(page.Id);
+
+            // 2) Tek tek breadcrumb item üret
+            // Her slug için URL: /{lang}/{slug1}/{slug2}/...
+            for (int i = 0; i < slugList.Count; i++)
+            {
+                var slug = slugList[i];
+                var url = "/" + lang + "/" + string.Join("/", slugList.Take(i + 1));
+
+                // Title dictionary'den (PageFlat Slug → Title çekmemiz lazım)
+                // Dil çevirisi üzerinden Title alacağız:
+                var pg = dict.Values.FirstOrDefault(x => x.Slug == slug);
+                var title = pg?.Slug ?? slug; // istersen Title alanı ekleyebilirim
+
+                items.Add(new BreadcrumbItemDto(title, url, false));
+            }
+
+            // 3) Son breadcrumb aktif olsun
+            if (items.Count > 0)
+            {
+                var last = items.Last();
+                items[items.Count - 1] = last with { Active = true };
+            }
+
+            return items;
+        }
+
+
         public async Task<PageDetailDto?> GetHomepageAsync(string lang, CancellationToken ct)
         {
             var langId = await ResolveLangIdAsync(lang, ct);
@@ -541,13 +622,36 @@ namespace Economy.Persistence.ApplicationUI
                                    orderby la.Code
                                    select new HreflangVm
                                    {
+                                       Title = t.Title,
                                        Lang = la.Code,
                                        Slug = t.Slug ?? "",
                                        Url = Join2(la.Code, t.Slug ?? "")
                                    })
                           .ToListAsync(ct);
 
-            return ProjectToDto(item.Page, item.Tr, langCode, groups, hreflangs);
+                                var pageDict = await _appPageRepository.DataSet
+                        .AsNoTracking()
+                        .Where(p => p.Id == item.Page.Id)
+                        .Select(p => new PageFlat
+                        {
+                            Id = p.Id,
+                            ParentId = p.AppPageId,
+                            Slug = p.Translations
+                                    .Where(t => !t.IsDeleted && t.AppLanguageId == langId)
+                                    .Select(t => t.Slug)
+                                    .FirstOrDefault(),
+                            Title = p.Translations
+                                     .Where(t => !t.IsDeleted && t.AppLanguageId == langId)
+                                    .Select(t => t.Title)
+                                    .FirstOrDefault()
+                        })
+                        .ToDictionaryAsync(x => x.Id, x => x, ct);
+
+
+
+            return ProjectToDto(item.Page, item.Tr, langCode, groups, hreflangs, pageDict);
+
+
         }
 
         public async Task<PageDetailDto?> GetBySlugAsync(string lang, string slug, CancellationToken ct)
@@ -602,7 +706,27 @@ namespace Economy.Persistence.ApplicationUI
                                    })
                            .ToListAsync(ct);
 
-            return ProjectToDto(selected.Page, selected.Tr, langCode, groups, hreflangs);
+            var pageDict = await _appPageRepository.DataSet
+.AsNoTracking()
+.Where(p => p.Id == selected.Page.Id)
+.Select(p => new PageFlat
+{
+Id = p.Id,
+ParentId = p.AppPageId,
+Slug = p.Translations
+        .Where(t => !t.IsDeleted && t.AppLanguageId == langId)
+        .Select(t => t.Slug)
+        .FirstOrDefault(),
+Title = p.Translations
+         .Where(t => !t.IsDeleted && t.AppLanguageId == langId)
+        .Select(t => t.Title)
+        .FirstOrDefault()
+})
+.ToDictionaryAsync(x => x.Id, x => x, ct);
+
+
+
+            return ProjectToDto(selected.Page, selected.Tr, langCode, groups, hreflangs, pageDict);
         }
     }
 }

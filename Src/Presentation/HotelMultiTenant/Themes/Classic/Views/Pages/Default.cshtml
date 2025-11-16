@@ -6,40 +6,9 @@
 @using Economy.UI.Dtos
 @model PageDetailDto
 
-@{
-    ViewData["Title"] = Model.MetaTitle ?? Model.Title ?? "";
-
-    var cover = Model.CoverImageUrl
-                ?? Model.Medias?.FirstOrDefault(m => m.IsCover)?.Url
-                ?? Model.OgImageUrl;
-}
-
-@section HeadMeta {
-    @* Meta title & description *@
-    @if (!string.IsNullOrWhiteSpace(Model.MetaTitle))
-    {
-        <title>@Model.MetaTitle</title>
-    }
-
-    @if (!string.IsNullOrWhiteSpace(Model.MetaDescription))
-    {
-        <meta name="description" content="@Model.MetaDescription" />
-    }
-
-    @* OG image *@
-    @if (!string.IsNullOrWhiteSpace(Model.OgImageUrl))
-    {
-        <meta property="og:image" content="@Model.OgImageUrl" />
-    }
-
-    @* Hreflang linkleri *@
-    @if (Model.Hreflangs != null && Model.Hreflangs.Count > 0)
-    {
-        foreach (var h in Model.Hreflangs)
-        {
-            <link rel="alternate" hreflang="@h.Lang" href="@h.Url" />
-        }
-    }
+@if (!Model.IsHomepage)
+{
+    @await Html.PartialAsync("_Breadcrumbs", Model)
 }
 
 <div class="page-detail">

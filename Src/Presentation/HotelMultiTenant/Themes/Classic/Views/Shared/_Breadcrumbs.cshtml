@@ -1,0 +1,45 @@
+﻿@using Economy.UI.Dtos
+@model PageDetailDto
+
+@{
+    var lang = (Model.Lang ?? "tr").ToLowerInvariant();
+    var items = new List<(string text, string? url, bool active)>();
+
+    // 1) Home
+    items.Add(("Anasayfa", $"/{lang}", false));
+
+    foreach (var item in Model.Breadcrumbs)
+    {   
+        var isActive = item.Url.Equals(Model.Slug, StringComparison.OrdinalIgnoreCase);
+        var url = isActive ? null : $"{item.Url}";
+        items.Add((item.Title, url, isActive));      
+    }
+ 
+}
+
+<section class="breadcrumbs-area breadcrumb-bg">
+    <div class="container">
+        <h1 class="title">@Model.Title</h1>
+        <div class="breadcrumb-text">
+            <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                <ul class="breadcrumb listing">
+                    @foreach (var it in items)
+                    {
+                        if (!it.active && !string.IsNullOrWhiteSpace(it.url))
+                        {
+                            <li class="breadcrumb-item single-list">
+                                <a href="@it.url" class="single">@it.text</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="breadcrumb-item single-list" aria-current="page">
+                                <a href="javascript:void(0)" class="single active">@it.text</a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
