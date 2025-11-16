@@ -118,11 +118,6 @@ namespace Economy.Persistence.ApplicationUI
             }
             return technicalDto;
         }
-
-
-
-
-
         public async Task<List<MenuNodeDto>> GetMenuAsync(string lang, CancellationToken ct)
         {
             const int MaxDepth = 3;

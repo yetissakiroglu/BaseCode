@@ -6,5 +6,7 @@ namespace HotelMultiTenant.Multitenancy
     {
         // Host name → Tenant
         Task<TenantDto?> ResolveByHostAsync(string host, CancellationToken ct = default);
+        Task<SiteMetaDto?> ResolveByLangSeoMetaAsync(string lang, CancellationToken ct = default);
+
     }
 }

@@ -16,6 +16,9 @@ builder.Services.AddSingleton<IApiClient, ApiClient>();
 // Tenant & Content servisleri (mock/in-memory)
 builder.Services.AddSingleton<ITenantDirectory, InMemoryTenantDirectory>();
 builder.Services.AddSingleton<IContentService, InMemoryContentService>();
+builder.Services.AddSingleton<ICdnHelper, CdnHelper>();
+builder.Services.AddSingleton<ISeoHelper, SeoHelper>();
+
 
 builder.Services.AddHttpClient("api", c =>
 {
@@ -33,7 +36,6 @@ builder.Services.AddControllersWithViews()
 
 var app = builder.Build();
 
-app.UseMiddleware<TenantMiddleware>();
 
 // Basit canonical / bakým modu (tenant ayarlarýndan)
 app.Use(async (ctx, next) =>
@@ -60,6 +62,7 @@ app.Use(async (ctx, next) =>
 });
 
 app.UseStaticFiles();
+app.UseMiddleware<TenantMiddleware>();
 app.UseRouting();
 //app.UseOutputCache();
 
@@ -73,7 +76,9 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "pages-with-slug",
     pattern: "{lang:length(2)}/{slug}",
-    defaults: new { controller = "Pages", action = "Index" }
+    defaults: new { controller = "Pages", action = "Index" },
+    constraints: new { slug = @"^(?!.*\.map$).+" }  // .map ile biteni alma
+
 );
 
 // 2) /{lang}         -> Pages.Anasayfa
@@ -81,13 +86,13 @@ app.MapControllerRoute(
     name: "pages-root",
     pattern: "{lang:length(2)}",
     defaults: new { controller = "Pages", action = "Anasayfa" }
-);
+    );
 
 app.MapControllerRoute(
     name: "page",
     pattern: "",
     defaults: new { controller = "Pages", action = "Default" }
-);
+    );
 
 app.MapControllerRoute(
     name: "default",

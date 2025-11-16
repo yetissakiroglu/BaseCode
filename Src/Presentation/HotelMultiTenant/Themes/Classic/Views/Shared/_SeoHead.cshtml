@@ -1,0 +1,45 @@
+﻿@model SeoDto
+@using Economy.UI.Dtos
+@using HotelMultiTenant.Multitenancy
+@using Microsoft.AspNetCore.Http.Extensions
+
+@{
+    var t = Context.GetSeoMetaTenant()?.Current;
+
+    var title = Model?.MetaTitle + "|" + t.MetaTitle ?? "Site Başlığı";
+    var desc = Model?.MetaDescription ?? "";
+    var canon = Model?.CanonicalUrl ?? Context.Request.GetDisplayUrl();
+}
+
+<title>@title</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="@desc" />
+<link rel="canonical" href="@canon" />
+
+@foreach (var (lang, url) in Model?.Hreflangs ?? new List<(string, string)>())
+{
+    <link rel="alternate" hreflang="@lang" href="@url" />
+}
+
+<meta property="og:site_name" content="@title">
+<meta property="og:type" content="@Model?.OgType">
+<meta property="og:title" content="@title" />
+<meta property="og:description" content="@desc" />
+<meta property="og:url" content="@canon" />
+@if (!string.IsNullOrWhiteSpace(Model?.ShareImage))
+{
+    <meta property="og:image" content="@Model.ShareImage" />
+}
+@if (!string.IsNullOrWhiteSpace(Model?.JsonLd))
+{
+    <script type="application/ld+json">@Html.Raw(Model.JsonLd)</script>
+}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="@title" />
+<meta name="twitter:description" content="@desc" />
+@if (!string.IsNullOrWhiteSpace(Model?.ShareImage))
+{
+    <meta name="twitter:image" content="@Model.ShareImage" />
+}

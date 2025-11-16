@@ -15,7 +15,7 @@ namespace Economy.Panel.UI.Areas.Api
         [HttpGet("tanent")]
         [ProducesResponseType(typeof(IEnumerable<TenantDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTanentAsync(CancellationToken ct)
-        {  
+        {
             // Header'dan X-TENANT anahtarını oku
             var tenantKey = Request.Headers["X-TENANT"].FirstOrDefault();
 
@@ -28,27 +28,14 @@ namespace Economy.Panel.UI.Areas.Api
             return Ok(menus);
         }
 
-
-        [HttpGet("menus")]
-        [ProducesResponseType(typeof(IEnumerable<MenuNodeDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> MenusAsync(CancellationToken ct)
-        {
-            var menus = await _applicationMenuService.GetMenuAsync("tr", ct);
-            return Ok(menus);
-        }
-
-
         [HttpGet("sitemeta")]
         [ProducesResponseType(typeof(IEnumerable<SiteMetaDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SiteMetaAsync(CancellationToken ct)
+        public async Task<IActionResult> SiteMetaAsync([FromQuery] string lang, CancellationToken ct)
         {
-            var menus = await _applicationMenuService.GetSiteMetaAsync("tr", ct);
+            var menus = await _applicationMenuService.GetSiteMetaAsync(lang, ct);
             return Ok(menus);
         }
 
-        // 1) Tüm yayınlanmış sayfalar
-      
-        // 2) Anasayfa
         [HttpGet("homepage")]
         [ProducesResponseType(typeof(PageDetailDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -58,15 +45,39 @@ namespace Economy.Panel.UI.Areas.Api
             return vm is null ? NotFound() : Ok(vm);
         }
 
-        // 3) Slug ile tek sayfa
-        [HttpGet("{slug}")]
+        [HttpGet("page/{slug}")]
         [ProducesResponseType(typeof(PageDetailDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetBySlugAsync([FromRoute] string slug, [FromQuery] string? lang = "tr", CancellationToken ct = default)
+        public async Task<IActionResult> GetBySlugAsync([FromQuery] string lang, [FromRoute] string slug, CancellationToken ct = default)
         {
-            var vm = await _applicationMenuService.GetBySlugAsync(lang ?? "tr", slug, ct);
+            var vm = await _applicationMenuService.GetBySlugAsync(lang, slug, ct);
             return vm is null ? NotFound() : Ok(vm);
         }
+
+
+
+
+
+
+
+
+
+        [HttpGet("menus")]
+        [ProducesResponseType(typeof(IEnumerable<MenuNodeDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> MenusAsync([FromQuery] string lang, CancellationToken ct)
+        {
+            var menus = await _applicationMenuService.GetMenuAsync(lang, ct);
+            return Ok(menus);
+        }
+
+
+        // 1) Tüm yayınlanmış sayfalar
+
+        // 2) Anasayfa
+
+
+        // 3) Slug ile tek sayfa
+
 
     }
 }

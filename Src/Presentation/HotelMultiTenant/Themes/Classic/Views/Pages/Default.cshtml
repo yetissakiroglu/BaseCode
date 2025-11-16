@@ -45,53 +45,54 @@
 <div class="page-detail">
 
     @* ---------------- Cover / Title ---------------- *@
-    @await Html.PartialAsync("~/Themes/Classic/Views/Shared/_PageHero.cshtml", Model)
+    @await Html.PartialAsync("~/Themes/Classic/Views/Pages/Shared/_PageHero.cshtml", Model)
 
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
 
-                @* ---------------- Body HTML ---------------- *@
-                @if (!string.IsNullOrWhiteSpace(Model.Body))
+    @if (!Model.IsHomepage)
+    {
+        @* ---------------- Body HTML ---------------- *@
+        @if (!string.IsNullOrWhiteSpace(Model.Body))
+        {
+            <article class="page-body mb-5">
+                @Html.Raw(Model.Body)
+            </article>
+        }
+    }
+
+
+
+    @* ---------------- Block Groups ---------------- *@
+    @foreach (var group in Model.Groups.OrderBy(g => g.SortOrder))
+    {
+        <section class="page-block-group mb-5">
+
+
+            @if (group.ShowTitle)
+            {
+                <h2 class="h4 fw-semibold mb-2">@group.Title</h2>
+            }
+
+            @if (group.ShowDescription)
+            {
+                <p class="text-muted mb-4">@group.Description</p>
+            }
+
+            <div class="row g-4">
+                @foreach (var block in group.Blocks.OrderBy(b => b.SortOrder))
                 {
-                    <article class="page-body mb-5">
-                        @Html.Raw(Model.Body)
-                    </article>
-                }
-
-                @* ---------------- Block Groups ---------------- *@
-                @foreach (var group in Model.Groups.OrderBy(g => g.SortOrder))
-                {
-                    <section class="page-block-group mb-5">
-
-                        @if (group.ShowTitle)
-                        {
-                            <h2 class="h4 fw-semibold mb-2">@group.Title</h2>
-                        }
-
-                        @if (group.ShowDescription)
-                        {
-                            <p class="text-muted mb-4">@group.Description</p>
-                        }
-
-                        <div class="row g-4">
-                            @foreach (var block in group.Blocks.OrderBy(b => b.SortOrder))
-                            {
-                                var col = Math.Clamp(block.Column, (byte)1, (byte)12);
-                                <div class="col-md-@col">
-                                    @await Html.PartialAsync($"~/Themes/Classic/Views/Pages/Blocks/_Block_{block.Type}", block)
-                                </div>
-                            }
-                        </div>
-
-                    </section>
+                    var col = Math.Clamp(block.Column, (byte)1, (byte)12);
+                    <div class="col-md-@col">
+                        @await Html.PartialAsync($"~/Themes/Classic/Views/Pages/Blocks/_Block_{block.Type}.cshtml", block)
+                    </div>
                 }
             </div>
 
-            @* Sağ taraf: medya *@
-            <div class="col-lg-4">
-                @await Html.PartialAsync("~/Themes/Classic/Views/Shared/_PageMedias.cshtml", Model)
-            </div>
-        </div>
+        </section>
+    }
+
+
+    @* Sağ taraf: medya *@
+    <div class="col-lg-4">
+        @await Html.PartialAsync("~/Themes/Classic/Views/Pages/Shared/_PageMedias.cshtml", Model)
     </div>
 </div>

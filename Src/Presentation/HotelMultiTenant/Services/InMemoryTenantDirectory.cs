@@ -18,5 +18,11 @@ namespace HotelMultiTenant.Services
             var t = await _contentService.GetTanentAsync(ct);
             return await Task.FromResult<TenantDto?>(t);
         }
+
+        public async Task<SiteMetaDto?> ResolveByLangSeoMetaAsync(string lang, CancellationToken ct = default)
+        {
+            var t = await _contentService.GetSeoMetaAsync(lang,ct);
+            return await Task.FromResult<SiteMetaDto?>(t);
+        }
     }
 }

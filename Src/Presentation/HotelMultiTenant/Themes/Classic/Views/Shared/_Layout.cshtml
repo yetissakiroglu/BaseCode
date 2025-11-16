@@ -1,21 +1,19 @@
-﻿@using HotelMultiTenant.Multitenancy
+﻿@using Economy.UI.Dtos
+@using HotelMultiTenant.Multitenancy
 @{
     var t = Context.GetTenant()?.Current;
     var name = t?.Settings.Domain ?? "Otel";
+
+    var seo = (SeoDto?)ViewData["Seo"] ?? new SeoDto { MetaTitle = "Site" };
 }
+
 <!doctype html>
 <html>
 <head>
-@*     <meta charset="utf-8" />
-    <title>@name – Classic</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
- *@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    @await Html.PartialAsync("_SeoHead", seo)
     @RenderSection("HeadMeta", required: false)
-
-    <title>@ViewData["Title"]</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-5.3.0.min.css">
@@ -26,7 +24,7 @@
     <!-- Main CSS -->
     <link rel="stylesheet" type="text/css" href="/assets/css/main-style.css">
     <!-- Tema Css-->
-    <link rel="stylesheet" href="/themes/classic.css" />
+    <link rel="stylesheet" type="text/css" href="/themes/classic.css" />
 </head>
 <body class="classic">
     @await Component.InvokeAsync("_Header")

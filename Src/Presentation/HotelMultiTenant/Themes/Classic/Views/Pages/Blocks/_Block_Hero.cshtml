@@ -1,9 +1,15 @@
-﻿@using Economy.UI.Dtos
+﻿@using Economy.Core.Extensions
+@using Economy.UI.Dtos
+@using HotelMultiTenant.Multitenancy
+@inject ICdnHelper Cdn
+
 @model BlockDto
 @{
-    var shared = Model.Shared as HeroSharedVm ?? new HeroSharedVm();
-    var loc = Model.Localized as HeroLocVm ?? new HeroLocVm();
 
+    var shared = Model.Shared.SafeAs<HeroSharedVm>() ?? new();
+    var loc = Model.Localized.SafeAs<HeroLocVm>() ?? new();
+
+  
     var vAlign = shared.VerticalAlign == "top"
         ? "align-items-start"
         : shared.VerticalAlign == "bottom"
@@ -13,7 +19,7 @@
 
 <section class="block-hero position-relative overflow-hidden rounded-3" style="min-height:300px;">
     <div class="ratio ratio-21x9">
-        <img src="@shared.BackgroundUrl" class="w-100 h-100 object-fit-cover" alt="@loc.Heading" />
+        <img src="@Cdn.Url(shared.BackgroundUrl,true)" class="w-100 h-100 object-fit-cover" alt="@loc.Heading" />
     </div>
     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex @vAlign justify-content-center">
         <div class="container">

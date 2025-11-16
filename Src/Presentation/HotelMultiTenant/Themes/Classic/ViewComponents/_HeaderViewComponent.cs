@@ -13,15 +13,9 @@ namespace HotelMultiTenant.Themes.Classic.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(CancellationToken ct)
         {
-            var header = new Models.HeaderComponentViewModel
-            {
-                Title = "Welcome to Our Hotel",
-                Subtitle = "Experience luxury and comfort",
-                BackgroundImageUrl = "/images/header-background.jpg"
-            };
-         
-
-            var menus = await _contentService.GetMenusAsync(ct);
+            var header = new Models.HeaderComponentViewModel();
+            var lang = (string?)HttpContext.Items["Lang"];
+            var menus = await _contentService.GetMenusAsync(lang, ct);
             header.Menus = menus;
             // Eğer özel yol kullanacaksan (opsiyonel):
             return View("Default", header);
