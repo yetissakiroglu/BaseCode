@@ -19,7 +19,10 @@ namespace Economy.Core.Enums
         ImageGallery = 4,
 
         [Display(Name = "Oda Olanakları")]
-        AmenityGroup = 5
+        AmenityGroup = 5,
+
+        [Display(Name = "Manşet Blok")]
+        HeroGallery = 6,
     }
 
     //public enum BlockType

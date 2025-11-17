@@ -12,6 +12,17 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+        const setTheme = (theme) => {
+            theme ??= localStorage.theme || "light";
+            document.documentElement.dataset.theme = theme;
+            localStorage.theme = theme;
+        };
+        setTheme();
+    </script>
+    <meta logo="/assets/images/logo/logo.png">
+    <meta white-logo="/assets/images/logo/logo-white.png">
+
     @await Html.PartialAsync("_SeoHead", seo)
     @RenderSection("HeadMeta", required: false)
 
@@ -19,6 +30,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-5.3.0.min.css">
     <!-- Fonts & icon -->
     <link rel="stylesheet" type="text/css" href="/assets/css/remixicon.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/fonts-icon.css">
     <!-- Plugin -->
     <link rel="stylesheet" type="text/css" href="/assets/css/plugin.css">
     <!-- Main CSS -->
@@ -40,7 +52,7 @@
     <!-- Add an search-overlay element -->
     <div class="search-overlay"></div>
     <!-- jquery-->
-    <script src="/assets/js/jquery-3.7.0.min.js"></script>
+    <script src="/assets/js/jquery-3.7.1.min.js"></script>
     <script src="/assets/js/popper.min.js"></script>
     <script src="/assets/js/bootstrap-5.3.0.min.js"></script>
     <!-- Plugin -->

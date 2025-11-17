@@ -20,7 +20,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Models
 
         [StringLength(140)]
         public string? SubHeading { get; set; }
-
+        public string? Body { get; set; }
         public string? ButtonText { get; set; }
         public string? ButtonUrl { get; set; } = "/";
     }
@@ -51,6 +51,20 @@ namespace Economy.Panel.UI.Areas.Tenant.Models
     {
         // Faz-1 gereği burada alan yok
     }
+
+    public class GalleryHeroSharedVm
+    {
+        [Required] public string Mode { get; set; } = "grid"; // grid|masonry|slider
+        public List<string> ImageUrls { get; set; } = new();
+    }
+
+    // Localized: {} (boş sözleşme)
+    public class GalleryHeroLocVm
+    {
+        // Faz-1 gereği burada alan yok
+    }
+
+
 
 
     // --- AMENITY GROUP ---

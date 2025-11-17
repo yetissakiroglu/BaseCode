@@ -87,6 +87,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                             Heading = "Başlık",
                             SubHeading = "Alt başlık",
                             ButtonText = "Devam",
+                            Body = "İçerik",
                             ButtonUrl = "/"
                         }, jsonOpts);
 
@@ -153,6 +154,25 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                             loc.Amenities.AddRange(new[] { "Ücretsiz Wi-Fi", "Klima", "TV" });
 
                         return View("AmenityEditor", loc);
+                    }
+                case BlockType.HeroGallery:
+                    {
+                        var shared = SafeDeserialize(pb.SharedJson, () => new GalleryHeroSharedVm
+                        {
+                            Mode = "grid",
+                            ImageUrls = new List<string>()
+                        }, jsonOpts);
+
+                        shared.Mode ??= "grid";
+                        shared.ImageUrls ??= new List<string>();
+                        if (shared.ImageUrls.Count == 0)
+                            shared.ImageUrls.Add("/media/g1.jpg"); // örnek
+
+                        // Localized {} (Faz-1’de boş)
+                        var loc = SafeDeserialize(tr.LocalizedJson, () => new GalleryHeroLocVm(), jsonOpts);
+
+                        ViewBag.Shared = shared;
+                        return View("GalleryHeroEditor", loc);
                     }
 
                 default:
@@ -273,7 +293,26 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                         tr.LocalizedJson = JsonSerializer.Serialize(lc, _json);
                         break;
                     }
+                case BlockType.HeroGallery:
+                    {
+                        var gsh = new GalleryHeroSharedVm();
+                        // Faz-1'de Localized {} — yine de bind etmeye çalışmak zararsız
+                        var glc = new GalleryHeroLocVm();
 
+                        await TryUpdateModelAsync(gsh, prefix: "Shared");
+                        await TryUpdateModelAsync(glc); // alan yoksa ModelState etkilenmez
+
+                        if (!TryValidateModel(gsh))
+                        {
+                            ViewBag.Shared = gsh;
+                            return View("GalleryHeroEditor", glc);
+                        }
+
+                        pb.SharedJson = JsonSerializer.Serialize(gsh, _json);
+                        // Boş sözleşme: {} — istersen mevcut LocalizedJson'u korumak da mümkün
+                        tr.LocalizedJson = JsonSerializer.Serialize(glc, _json);
+                        break;
+                    }
                 default:
                     return BadRequest("Bu blok tipi bu ekranda güncellenemez.");
             }

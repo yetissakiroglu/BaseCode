@@ -2,7 +2,7 @@
     Index Of Script
 -----------------------------------------------------------
 
-    @version         : 1.1.0
+    @version         : 3.0.0
     @Template Name   : Travello
     @Template author : initTheme
     
@@ -29,7 +29,7 @@
     -----------------------------------------------*/
     $(window).on("scroll", function () {
         var scroll = $(window).scrollTop();
-        if (scroll < 400) {
+        if (scroll < 300) {
             $(".header-sticky").removeClass("sticky-bar");
             $("#back-top").fadeOut(300);
         } else {
@@ -92,7 +92,7 @@
         loop: true,
         slidesPerView: 1,
         centeredSlides: true,
-        spaceBetween: 0,
+        spaceBetween: 24,
         autoplay: {
             delay: 6000,
         },
@@ -102,7 +102,7 @@
         },
         breakpoints: {
             992: {
-                slidesPerView: 1,
+                slidesPerView: 2,
             },
         },
     });
@@ -246,19 +246,7 @@
             ]);
         });
     });
-    
-    /*----------------------------------------------
-        :: Custom click expand icon
-    ----------------------------------------------*/
-    document.addEventListener("DOMContentLoaded", function () {
-        const hoverIcons = document.querySelectorAll(".hover-icon");
-        hoverIcons.forEach((hoverIcon) => {
-            hoverIcon.addEventListener("click", function () {
-                const socialIcons = this.nextElementSibling;
-                socialIcons.classList.toggle("active");
-            });
-        });
-    });
+
 
     /*----------------------------------------------
         :: JS for Price Range slider
@@ -673,23 +661,23 @@
     /*----------------------------------------------
         Light & Dark Mode
     ----------------------------------------------*/
-    //function updateLogoOnTheme() {
-    //    // White logo Dark logo path Change
-    //    var changeLogos = document.querySelectorAll(".changeLogo");
-    //    var whiteLogoPath = document.head
-    //        .querySelector("meta[white-logo]")
-    //        .getAttribute("white-logo");
-    //    var lightLogoPath = document.head
-    //        .querySelector("meta[logo]")
-    //        .getAttribute("logo");
+    function updateLogoOnTheme() {
+        // White logo Dark logo path Change
+        var changeLogos = document.querySelectorAll(".changeLogo");
+        var whiteLogoPath = document.head
+            .querySelector("meta[white-logo]")
+            .getAttribute("white-logo");
+        var lightLogoPath = document.head
+            .querySelector("meta[logo]")
+            .getAttribute("logo");
 
-    //    var imagePath =
-    //        localStorage.theme === "dark" ? whiteLogoPath : lightLogoPath;
-    //    changeLogos.forEach(function (changeLogo) {
-    //        changeLogo.src = imagePath;
-    //    });
-    //}
-    //updateLogoOnTheme();
+        var imagePath =
+            localStorage.theme === "dark" ? whiteLogoPath : lightLogoPath;
+        changeLogos.forEach(function (changeLogo) {
+            changeLogo.src = imagePath;
+        });
+    }
+    updateLogoOnTheme();
     // Button icon change
     const themeModeAction = () => {
         if (localStorage.theme === "dark") {
@@ -712,9 +700,9 @@
     for (const ToggleTheme of ToggleThemes) {
         ToggleTheme.addEventListener("click", () => {
             const theme = localStorage.theme === "dark" ? "light" : "dark";
-            //setTheme(theme);
+            setTheme(theme);
             themeModeAction();
-        //    updateLogoOnTheme();
+            updateLogoOnTheme();
         });
     }
 
@@ -722,21 +710,21 @@
     /*-----------------------------------
         OFF inspections
     -----------------------------------*/
-    //document.addEventListener("contextmenu", (event) => event.preventDefault());
-    //document.onkeydown = function (e) {
-    //    if (event.keyCode == 123) {
-    //        return false;
-    //    }
-    //    if (e.ctrlKey && e.shiftKey && e.keyCode == "I".charCodeAt(0)) {
-    //        return false;
-    //    }
-    //    if (e.ctrlKey && e.shiftKey && e.keyCode == "J".charCodeAt(0)) {
-    //        return false;
-    //    }
-    //    if (e.ctrlKey && e.keyCode == "U".charCodeAt(0)) {
-    //        return false;
-    //    }
-    //};
+    // document.addEventListener("contextmenu", (event) => event.preventDefault());
+    // document.onkeydown = function (e) {
+    //     if (event.keyCode == 123) {
+    //         return false;
+    //     }
+    //     if (e.ctrlKey && e.shiftKey && e.keyCode == "I".charCodeAt(0)) {
+    //         return false;
+    //     }
+    //     if (e.ctrlKey && e.shiftKey && e.keyCode == "J".charCodeAt(0)) {
+    //         return false;
+    //     }
+    //     if (e.ctrlKey && e.keyCode == "U".charCodeAt(0)) {
+    //         return false;
+    //     }
+    // };
 
     /*-------------------------------------------------
         :: Back To Top
@@ -795,4 +783,45 @@
         $(this).addClass("selected");
     });
 
+    /*----------------------------------------------
+      Dashboard User sidebar Menu Responsive
+    ----------------------------------------------*/
+    $(document).on('click', '.close-sidebar, .sidebar-body-overlay', function () {
+        $('.panel-sidebar-close, .sidebar-users-dashboard, .sidebar-body-overlay').removeClass('active');
+    });
+    $(document).on('click', '.sidebar-icon', function () {
+        $('.panel-sidebar-close, .sidebar-users-dashboard, .sidebar-body-overlay').addClass('active');
+    });
+
+    
+
+    /*-----------------------------------
+      Product Counter Cart Table
+    -----------------------------------*/
+    var incrementPlus;
+    var incrementMinus;
+    var buttonPlus = $(".count-plus");
+    var buttonMinus = $(".count-minus");
+
+    var incrementPlus = buttonPlus.click(function () {
+        var $n = $(this)
+            .parent(".button-container")
+            .parent(".productCount")
+            .find(".qty");
+
+        $n.val(Number($n.val()) + 1);
+    });
+    var incrementMinus = buttonMinus.click(function () {
+        var $n = $(this)
+            .parent(".button-container")
+            .parent(".productCount")
+            .find(".qty");
+
+        var amount = Number($n.val());
+        if (amount > 0) {
+            $n.val(amount - 1);
+        }
+    });
+
+    
 })(jQuery);
