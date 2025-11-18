@@ -1,6 +1,7 @@
 ﻿using Economy.Core.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -86,6 +87,30 @@ namespace Economy.UI.Dtos
         public string Heading { get; set; } = "Bölüm";
         public string BodyHtml { get; set; } = "<p>Metin…</p>";
     }
+
+
+    public class GalleryHeroSharedVm
+    {
+        [Required] public string VerticalAlign { get; set; } = "center"; // top|center|bottom
+        [Required] public string Mode { get; set; } = "grid"; // grid|masonry|slider
+        public List<string> ImageUrls { get; set; } = new();
+    }
+
+    // Localized: {} (boş sözleşme)
+    public class GalleryHeroLocVm
+    {
+        [Required, StringLength(60, MinimumLength = 4)]
+        public string Heading { get; set; } = "";
+
+        [StringLength(140)]
+        public string? SubHeading { get; set; }
+        public string? Body { get; set; }
+        public string? ButtonText { get; set; }
+        public string? ButtonUrl { get; set; } = "/";
+        // Faz-1 gereği burada alan yok
+    }
+
+
 
     public sealed class HreflangVm
     {

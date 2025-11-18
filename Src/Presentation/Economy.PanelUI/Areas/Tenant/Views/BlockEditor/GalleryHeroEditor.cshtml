@@ -2,7 +2,7 @@
 @using Economy.Panel.UI.Areas.Tenant.Models
 @model GalleryHeroLocVm
 @{
-    var shared = ViewBag.Shared as GalleryHeroSharedVm ?? new GalleryHeroSharedVm { Mode = "grid", ImageUrls = new List<string>() };
+    var shared = ViewBag.Shared as GalleryHeroSharedVm ?? new GalleryHeroSharedVm { VerticalAlign = "center", Mode = "grid", ImageUrls = new List<string>() };
     var urls = shared.ImageUrls ?? new List<string>();
 
     int langId = ViewBag.LanguageId is int lid ? lid : 0;
@@ -10,7 +10,7 @@
     string? langName = ViewBag.LanguageName as string;
     string langBadge = !string.IsNullOrWhiteSpace(langName) ? langName : $"Dil ID: {langId}";
 
-    ViewData["Title"] = "Hero Gallery Editor";
+    ViewData["Title"] = "Gallery Hero Editor";
 }
 <style>
     .gal-thumb {
@@ -48,7 +48,7 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="PageBlockId" value="@pageBlockId" />
                     <input type="hidden" name="LanguageId" value="@langId" />
-                    <input type="hidden" name="type" value="@((int)BlockType.ImageGallery)" />
+                    <input type="hidden" name="type" value="@((int)BlockType.HeroGallery)" />
 
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
@@ -58,7 +58,7 @@
 
                         <div class="card-body">
                             <div class="row g-3">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label class="form-label">Düzen (mode)</label>
                                     <select class="form-select" name="Shared.Mode">
                                         @{
@@ -72,8 +72,47 @@
                             </div>
                             <div class="mt-3">
                                 <label class="form-label">Görsel URL’leri (imageUrls)</label>
-                                @await Html.PartialAsync("PartialViews/_ImageUrlsEditor",urls,new ViewDataDictionary(ViewData){["NamePrefix"] = "Shared.ImageUrls",["FormId"] = "galleryForm",["PickerUrl"] = "/Tenant/ImageManager/Picker"})
+                                @await Html.PartialAsync("PartialViews/_ImageUrlsEditor", urls, new ViewDataDictionary(ViewData) { ["NamePrefix"] = "Shared.ImageUrls", ["FormId"] = "galleryForm", ["PickerUrl"] = "/Tenant/ImageManager/Picker" })
                             </div>
+                            <div class="row g-3">
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Dikey Hizalama</label>
+                                    <select class="form-select" name="Shared.VerticalAlign">
+                                        @{
+                                            var va = shared.VerticalAlign ?? "center";
+                                            string Opt(string v) => $"<option value=\"{v}\" {(va == v ? "selected" : "")}>{v}</option>";
+                                        }
+                                        @Html.Raw(Opt("top"))
+                                        @Html.Raw(Opt("center"))
+                                        @Html.Raw(Opt("bottom"))
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Başlık (heading)</label>
+                                    <input class="form-control" asp-for="Heading" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Alt Başlık (subHeading)</label>
+                                    <input class="form-control" asp-for="SubHeading" />
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">İçerik (body)</label>
+                                    <textarea class="form-control editorContent" rows="10" asp-for="Body"></textarea>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Buton Metni (buttonText)</label>
+                                    <input class="form-control" asp-for="ButtonText" />
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label">Buton URL (buttonUrl)</label>
+                                    <input class="form-control" asp-for="ButtonUrl" />
+                                </div>
+
+                            </div>
+
                         </div>
                         <div class="card-footer d-flex justify-content-between">
                             <button type="button" class="btn btn-outline-secondary" onclick="history.back()">← Geri</button>
@@ -87,7 +126,7 @@
 </main>
 
 @section Scripts {
-   
+
 }
 
 

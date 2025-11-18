@@ -42,6 +42,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Models
     // Shared: mode, imageUrls ([])
     public class GallerySharedVm
     {
+
         [Required] public string Mode { get; set; } = "grid"; // grid|masonry|slider
         public List<string> ImageUrls { get; set; } = new();
     }
@@ -54,6 +55,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Models
 
     public class GalleryHeroSharedVm
     {
+        [Required] public string VerticalAlign { get; set; } = "center"; // top|center|bottom
         [Required] public string Mode { get; set; } = "grid"; // grid|masonry|slider
         public List<string> ImageUrls { get; set; } = new();
     }
@@ -61,6 +63,14 @@ namespace Economy.Panel.UI.Areas.Tenant.Models
     // Localized: {} (boş sözleşme)
     public class GalleryHeroLocVm
     {
+        [Required, StringLength(60, MinimumLength = 4)]
+        public string Heading { get; set; } = "";
+
+        [StringLength(140)]
+        public string? SubHeading { get; set; }
+        public string? Body { get; set; }
+        public string? ButtonText { get; set; }
+        public string? ButtonUrl { get; set; } = "/";
         // Faz-1 gereği burada alan yok
     }
 

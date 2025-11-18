@@ -116,7 +116,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 
                         return View("TextEditor", loc);
                     }
-
                 case BlockType.ImageGallery:
                     {
                         var shared = SafeDeserialize(pb.SharedJson, () => new GallerySharedVm
@@ -136,7 +135,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                         ViewBag.Shared = shared;
                         return View("GalleryEditor", loc);
                     }
-
                 case BlockType.AmenityGroup:
                     {
                         // Shared {}
@@ -159,6 +157,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                     {
                         var shared = SafeDeserialize(pb.SharedJson, () => new GalleryHeroSharedVm
                         {
+                            VerticalAlign = "center",
                             Mode = "grid",
                             ImageUrls = new List<string>()
                         }, jsonOpts);
@@ -167,10 +166,18 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
                         shared.ImageUrls ??= new List<string>();
                         if (shared.ImageUrls.Count == 0)
                             shared.ImageUrls.Add("/media/g1.jpg"); // örnek
+                        shared.VerticalAlign ??= "center";
 
-                        // Localized {} (Faz-1’de boş)
-                        var loc = SafeDeserialize(tr.LocalizedJson, () => new GalleryHeroLocVm(), jsonOpts);
+                        var loc = SafeDeserialize(tr.LocalizedJson, () => new GalleryHeroLocVm
+                        {
+                            Heading = "Başlık",
+                            SubHeading = "Alt başlık",
+                            ButtonText = "Devam",
+                            Body = "İçerik",
+                            ButtonUrl = "/"
+                        }, jsonOpts);
 
+            
                         ViewBag.Shared = shared;
                         return View("GalleryHeroEditor", loc);
                     }

@@ -327,6 +327,8 @@ namespace Economy.Persistence.ApplicationUI
                     return SafeDeserialize<HeroSharedVm>(sharedJson) ?? new HeroSharedVm();
                 case BlockType.ImageGallery:
                     return SafeDeserialize<GallerySharedVm>(sharedJson) ?? new GallerySharedVm();
+                case BlockType.HeroGallery:
+                    return SafeDeserialize<GalleryHeroSharedVm>(sharedJson) ?? new GalleryHeroSharedVm();
                 default:
                     return SafeDeserialize<object>(sharedJson) ?? new { };
             }
@@ -342,6 +344,9 @@ namespace Economy.Persistence.ApplicationUI
                     return SafeDeserialize<TextLocVm>(localizedJson) ?? new TextLocVm();
                 case BlockType.AmenityGroup:
                     return SafeDeserialize<AmenityLocVm>(localizedJson) ?? new AmenityLocVm();
+                case BlockType.HeroGallery:
+                    return SafeDeserialize<GalleryHeroLocVm>(localizedJson) ?? new GalleryHeroLocVm();
+
                 default:
                     return SafeDeserialize<object>(localizedJson) ?? new { };
             }

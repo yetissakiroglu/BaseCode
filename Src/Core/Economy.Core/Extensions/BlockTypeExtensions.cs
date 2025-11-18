@@ -12,6 +12,7 @@ namespace Economy.Core.Extensions
                 BlockType.Text => """{}""",
                 BlockType.ImageGallery => """{"mode":"grid","imageUrls":[]}""",
                 BlockType.AmenityGroup => """{}""",
+                BlockType.HeroGallery => """{"verticalAlign":"center","mode":"grid","imageUrls":[]}""",
                 _ => """{}"""
             };
         }
@@ -31,6 +32,9 @@ namespace Economy.Core.Extensions
 
                 BlockType.AmenityGroup =>
                     """{"groupTitle":"Oda Olanakları","amenities":["Ücretsiz Wi-Fi","Klima","TV"]}""",
+
+                BlockType.HeroGallery =>
+                    """{"heading":"Başlık","subHeading":"Alt başlık","buttonText":"Devam","buttonUrl":"/"}""",
 
                 _ => """{}"""
             };
