@@ -8,6 +8,7 @@
     var shared = Model.Shared.SafeAs<GalleryHeroSharedVm>() ?? new();
     var loc = Model.Localized.SafeAs<GalleryHeroLocVm>() ?? new();
 
+    var col = Math.Clamp(Model.Column, (byte)1, (byte)12);
 
     var vAlign = shared.VerticalAlign == "top"
         ? "align-items-start"
@@ -16,205 +17,30 @@
             : "align-items-center";
 }
 
-<!-- Destination area S t a r t -->
-<section class="destination-area destination-bg-before">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-xl-7 col-lg-7">
-                <div class="section-title text-center mx-526 mx-auto position-relative">
-                    <span class="highlights">Odalarımız</span>
-                    <h4 class="title">
-                        Ramada Hotel & Suites Kuşadası 1
 
-                    </h4>
+<div class="col-xl-@col col-lg-@col col-md-@col">
+    <a href="@loc.ButtonUrl" class="destination-banner">
+        <img src="assets/images/destination/destination-01.png" alt="@loc.Heading">
+        <div class="destination-content">
+    @*         <div class="ratting-badge">
+                <i class="ri-star-s-fill"></i>
+                <span>4.5</span>
+            </div> *@
+            <div class="destination-info">
+                <div class="destination-name">
+                    <p class="pera">@loc.Heading</p>
+                    <div class="location">
+                        <i class="ri-map-pin-line"></i>
+                        <p class="name">@loc.SubHeading</p>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="row g-4">
-            <div class="col-xl-4 col-lg-7 col-md-7">
-                <a href="details-with-gallery.html" class="destination-banner">
-                    <img src="assets/images/destination/destination-01.png" alt="travello">
-                    <div class="destination-content">
-                        <div class="ratting-badge">
-                            <i class="ri-star-s-fill"></i>
-                            <span>4.5</span>
-                        </div>
-                        <div class="destination-info">
-                            <div class="destination-name">
-                                <p class="pera">Spain</p>
-                                <div class="location">
-                                    <i class="ri-map-pin-line"></i>
-                                    <p class="name">Malaga View</p>
-                                </div>
-                            </div>
-                            <div class="button-section">
-                                <div class="arrow-btn">
-                                    <i class="ri-arrow-right-line"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-xl-4 col-lg-7 col-md-7">
-                <a href="details-with-gallery.html" class="destination-banner">
-                    <img src="assets/images/destination/destination-1.png" alt="travello">
-                    <div class="destination-content">
-                        <div class="ratting-badge">
-                            <i class="ri-star-s-fill"></i>
-                            <span>4.5</span>
-                        </div>
-                        <div class="destination-info">
-                            <div class="destination-name">
-                                <p class="pera">Spain</p>
-                                <div class="location">
-                                    <i class="ri-map-pin-line"></i>
-                                    <p class="name">Malaga View</p>
-                                </div>
-                            </div>
-                            <div class="button-section">
-                                <div class="arrow-btn">
-                                    <i class="ri-arrow-right-line"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-xl-4 col-lg-7 col-md-7">
-                <a href="details-with-gallery.html" class="destination-banner">
-                    <img src="assets/images/destination/destination-001.jpg" alt="travello">
-                    <div class="destination-content">
-                        <div class="ratting-badge">
-                            <i class="ri-star-s-fill"></i>
-                            <span>4.5</span>
-                        </div>
-                        <div class="destination-info">
-                            <div class="destination-name">
-                                <p class="pera">Spain</p>
-                                <div class="location">
-                                    <i class="ri-map-pin-line"></i>
-                                    <p class="name">Malaga View</p>
-                                </div>
-                            </div>
-                            <div class="button-section">
-                                <div class="arrow-btn">
-                                    <i class="ri-arrow-right-line"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="destination-gallery">
-                <div class="row g-4">
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <a href="details-with-gallery.html" class="destination-banner">
-                            <img src="assets/images/destination/destination-3.png" alt="travello">
-                            <div class="destination-content">
-                                <div class="ratting-badge">
-                                    <i class="ri-star-s-fill"></i>
-                                    <span>4.5</span>
-                                </div>
-                                <div class="destination-info">
-                                    <div class="destination-name">
-                                        <p class="pera">Switzerland</p>
-                                        <div class="location">
-                                            <i class="ri-map-pin-line"></i>
-                                            <p class="name">Zürich View</p>
-                                        </div>
-                                    </div>
-                                    <div class="button-section">
-                                        <div class="arrow-btn">
-                                            <i class="ri-arrow-right-line"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <a href="details-with-gallery.html" class="destination-banner">
-                            <img src="assets/images/destination/destination-4.png" alt="travello">
-                            <div class="destination-content">
-                                <div class="ratting-badge">
-                                    <i class="ri-star-s-fill"></i>
-                                    <span>4.5</span>
-                                </div>
-                                <div class="destination-info">
-                                    <div class="destination-name">
-                                        <p class="pera">Australia</p>
-                                        <div class="location">
-                                            <i class="ri-map-pin-line"></i>
-                                            <p class="name">Melbourne View</p>
-                                        </div>
-                                    </div>
-                                    <div class="button-section">
-                                        <div class="arrow-btn">
-                                            <i class="ri-arrow-right-line"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <a href="details-with-gallery.html" class="destination-banner">
-                            <img src="assets/images/destination/destination-5.png" alt="travello">
-                            <div class="destination-content">
-                                <div class="ratting-badge">
-                                    <i class="ri-star-s-fill"></i>
-                                    <span>4.5</span>
-                                </div>
-                                <div class="destination-info">
-                                    <div class="destination-name">
-                                        <p class="pera">Canada</p>
-                                        <div class="location">
-                                            <i class="ri-map-pin-line"></i>
-                                            <p class="name">Toronto View</p>
-                                        </div>
-                                    </div>
-                                    <div class="button-section">
-                                        <div class="arrow-btn">
-                                            <i class="ri-arrow-right-line"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <a href="details-with-gallery.html" class="destination-banner">
-                            <img src="assets/images/destination/destination-02.png" alt="travello">
-                            <div class="destination-content">
-                                <div class="ratting-badge">
-                                    <i class="ri-star-s-fill"></i>
-                                    <span>4.5</span>
-                                </div>
-                                <div class="destination-info">
-                                    <div class="destination-name">
-                                        <p class="pera">Canada</p>
-                                        <div class="location">
-                                            <i class="ri-map-pin-line"></i>
-                                            <p class="name">Toronto View</p>
-                                        </div>
-                                    </div>
-                                    <div class="button-section">
-                                        <div class="arrow-btn">
-                                            <i class="ri-arrow-right-line"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
+                <div class="button-section">
+                    <div class="arrow-btn">
+                        <i class="ri-arrow-right-line"></i>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- shape -->
-    <div class="shape">
-        <img src="assets/images/icon/shape.png" alt="travello">
-    </div>
-</section>
-<!--/ End-of Destination -->
+    </a>
+</div>
+

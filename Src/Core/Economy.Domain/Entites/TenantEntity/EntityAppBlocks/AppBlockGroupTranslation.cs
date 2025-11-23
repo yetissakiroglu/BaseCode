@@ -9,6 +9,8 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppBlocks
         public AppBlockGroup AppBlockGroup { get; set; }
         public int AppLanguageId { get; set; }
         public AppLanguage AppLanguage { get; set; }
+
+        public string? SubHeadingTile { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
     }

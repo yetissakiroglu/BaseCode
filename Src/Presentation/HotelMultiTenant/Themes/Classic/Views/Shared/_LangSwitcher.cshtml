@@ -4,7 +4,7 @@
 }
 
 
-<select onchange="if(this.value) window.location.href=this.value;">
+<select class="lang" onchange="if(this.value) window.location.href=this.value;">
     @foreach (var h in t.Languages)
     {
         <option value="/@h.Code">

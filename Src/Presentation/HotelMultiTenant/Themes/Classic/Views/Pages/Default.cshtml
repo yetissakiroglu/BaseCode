@@ -12,6 +12,14 @@
 {
     @await Html.PartialAsync("_Breadcrumbs", Model)
 
+    @* ---------------- Body HTML ---------------- *@
+    @if (!string.IsNullOrWhiteSpace(Model.Body))
+    {
+        <article class="page-body mb-5">
+            @Html.Raw(Model.Body)
+        </article>
+    }
+
 
     <!-- Destination area S t a r t -->
     <section class="tour-details-section section-padding2">
@@ -21,26 +29,6 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
-                            <!-- Details Heading -->
-                            <div class="details-heading pt-0">
-                                <div class="d-flex flex-column">
-                                    <h4 class="title text-capitalize">@Model.Title</h4>
-                                </div>
-
-                            </div>
-                            <!-- / Details Heading -->
-                            <!-- Service Feature -->
-                            <ul class="service-feature py-20">
-                                <li class="single"><i class="icon_set_1_icon-27"></i>Parking</li>
-                                <li class="single"><i class="icon_set_1_icon-86"></i>Free Wifi</li>
-                                <li class="single"><i class="icon_set_2_icon-116"></i>Plasma TV</li>
-                                <li class="single"><i class="icon_set_2_icon-110"></i>Poll</li>
-                                <li class="single"><i class="icon_set_1_icon-59"></i>Breakfast</li>
-                                <li class="single"><i class="icon_set_1_icon-22"></i>Pet allowed</li>
-                                <li class="single"><i class="icon_set_1_icon-13"></i>Accessibiliy</li>
-                                <li class="single"><i class="icon_set_1_icon-23"></i>Private Balcony</li>
-                            </ul>
-                            <!-- / Service Feature -->
                             <!-- Details Banner Slider -->
                             <div class="tour-details-banner">
                                 <div class="row">
@@ -62,6 +50,30 @@
                             </div>
                             <!-- / Slider-->
 
+
+
+                            <!-- Details Heading -->
+                            <div class="details-heading pt-0">
+                                <div class="d-flex flex-column">
+                                    <h4 class="title text-capitalize">@Model.Title</h4>
+                                </div>
+
+                            </div>
+                            <!-- / Details Heading -->
+                            <!-- Service Feature -->
+                            <ul class="service-feature py-20">
+                                <li class="single"><i class="icon_set_1_icon-27"></i>Parking</li>
+                                <li class="single"><i class="icon_set_1_icon-86"></i>Free Wifi</li>
+                                <li class="single"><i class="icon_set_2_icon-116"></i>Plasma TV</li>
+                                <li class="single"><i class="icon_set_2_icon-110"></i>Poll</li>
+                                <li class="single"><i class="icon_set_1_icon-59"></i>Breakfast</li>
+                                <li class="single"><i class="icon_set_1_icon-22"></i>Pet allowed</li>
+                                <li class="single"><i class="icon_set_1_icon-13"></i>Accessibiliy</li>
+                                <li class="single"><i class="icon_set_1_icon-23"></i>Private Balcony</li>
+                            </ul>
+                            <!-- / Service Feature -->
+                        
+
                             <div class="mt-30">
                                 <div class="row g-4">
                                     <!-- Left content -->
@@ -75,201 +87,6 @@
 
                                         </div>
                                         <!-- / Description tour -->
-                                        <!-- Single Room -->
-                                        <div class="tour-details-content mb-30">
-                                            <h4 class="title text-capitalize">Single Room</h4>
-                                            <div class="row g-4">
-                                                <div class="col-lg-3 col-sm-6">
-                                                    <img src="assets/images/new/single_hotel_1.png" alt="" class="w-100 radius-4">
-                                                </div>
-                                                <div class="col-lg-3 col-sm-6">
-                                                    <img src="assets/images/new/single_hotel_2.png" alt="" class="w-100 radius-4">
-                                                </div>
-                                                <div class="col-lg-3 col-sm-6">
-                                                    <img src="assets/images/new/single_hotel_3.png" alt="" class="w-100 radius-4">
-                                                </div>
-                                                <div class="col-lg-3 col-sm-6">
-                                                    <img src="assets/images/new/single_hotel_4.png" alt="" class="w-100 radius-4">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- / Single Room -->
-                                        <!-- Double Room -->
-                                        <div class="tour-details-content">
-                                            <h4 class="title text-capitalize">Double Room</h4>
-                                            <div class="row g-4">
-                                                <div class="col-lg-3 col-sm-6">
-                                                    <img src="assets/images/new/double_hotel_1.png" alt="" class="w-100 radius-4">
-                                                </div>
-                                                <div class="col-lg-3 col-sm-6">
-                                                    <img src="assets/images/new/double_hotel_2.png" alt="" class="w-100 radius-4">
-                                                </div>
-                                                <div class="col-lg-3 col-sm-6">
-                                                    <img src="assets/images/new/double_hotel_3.png" alt="" class="w-100 radius-4">
-                                                </div>
-                                                <div class="col-lg-3 col-sm-6">
-                                                    <img src="assets/images/new/double_hotel_4.png" alt="" class="w-100 radius-4">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- / Double Room -->
-                                        <!-- Tour Include Exclude -->
-                                        <div class="tour-include-exclude radius-6">
-                                            <div class="includ-exclude-point">
-                                                <h4 class="title">Included</h4>
-                                                <ul class="expect-list">
-                                                    <li class="list">Welcome Breakfast</li>
-                                                    <li class="list">All Entry Tickets of Hopping Destinations</li>
-                                                    <li class="list">Lunch Platter</li>
-                                                    <li class="list">Evening Snacks</li>
-                                                    <li class="list">First Aid Kit (In case of emergency)</li>
-                                                </ul>
-                                            </div>
-                                            <div class="divider"></div>
-                                            <div class="includ-exclude-point">
-                                                <h4 class="title">Exclude</h4>
-                                                <ul class="expect-list">
-                                                    <li class="list">Personal expenses</li>
-                                                    <li class="list">Anything else that isn't mentioned on Inclusions</li>
-                                                    <li class="list">Additional Service</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <!-- / Tour Include Exclude -->
-
-                                        <div class="tag-social-section d-flex justify-content-between gap-16 flex-wrap">
-                                            <div class="tag-section">
-                                                <h4 class="title">Tags :</h4>
-                                                <div class="tag-list">
-                                                    <div class="tags">
-                                                        <a href="javascript:void(0)" class="tag-btn">Travel</a>
-                                                    </div>
-                                                    <div class="tags">
-                                                        <a href="javascript:void(0)" class="tag-btn">Design</a>
-                                                    </div>
-                                                    <div class="tags">
-                                                        <a href="javascript:void(0)" class="tag-btn">Booking</a>
-                                                    </div>
-                                                    <div class="tags">
-                                                        <a href="javascript:void(0)" class="tag-btn">Destination</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="social-section">
-                                                <h4 class="title">Share :</h4>
-                                                <div class="social-list">
-                                                    <div class="tags">
-                                                        <a href="javascript:void(0)" class="social-btn"><i class="ri-facebook-fill"></i></a>
-                                                    </div>
-                                                    <div class="socials">
-                                                        <a href="javascript:void(0)" class="social-btn"><i class="ri-twitter-fill"></i></a>
-                                                    </div>
-                                                    <div class="socials">
-                                                        <a href="javascript:void(0)" class="social-btn"><i class="ri-linkedin-fill"></i></a>
-                                                    </div>
-                                                    <div class="socials">
-                                                        <a href="javascript:void(0)" class="social-btn"><i class="ri-instagram-line"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Comments -->
-                                        <div class="comment-section">
-                                            <div class="main-profile">
-                                                <div class="user-info">
-                                                    <p class="pera">
-                                                        Chris Jordan is a technical content writer at Travello. he’s a tech
-                                                        enthusiast, writer
-                                                        by day, programmer by night, and always a foodie at heart!
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <h4 class="comment-count">( 3 ) Comments</h4>
-                                            <!-- Single Comments -->
-                                            <div class="main-profile-two d-block pb-15 border-bottom mb-20">
-                                                <div class="d-flex justify-content-between align-items-center mb-15">
-                                                    <div class="user d-flex align-items-center flex-wrap gap-15">
-                                                        <div class="user-img-sm">
-                                                            <img src="assets/images/news/news-user-1.png" alt="travello">
-                                                        </div>
-                                                        <h4 class="text-18 font-600">David Warner</h4>
-                                                    </div>
-                                                    <div class="user-info p-0 border-0">
-                                                        <p class="date">Jan 12, 2025</p>
-                                                    </div>
-                                                </div>
-                                                <p class="pera">
-                                                    Chris Jordan is a technical content writer at Travello. he’s a tech
-                                                    enthusiast, writer by day, writer by day, programmer by night, and always a  programmer by night, and always a foodie at heart!
-                                                </p>
-                                            </div>
-                                            <!-- Single Comments -->
-                                            <div class="main-profile-two d-block pb-15 border-bottom mb-20">
-                                                <div class="d-flex justify-content-between align-items-center mb-15">
-                                                    <div class="user d-flex align-items-center flex-wrap gap-15">
-                                                        <div class="user-img-sm">
-                                                            <img src="assets/images/news/news-user-2.png" alt="travello">
-                                                        </div>
-                                                        <h4 class="text-18 font-600">David Warner</h4>
-                                                    </div>
-                                                    <div class="user-info p-0 border-0">
-                                                        <p class="date">Jan 12, 2025</p>
-                                                    </div>
-                                                </div>
-                                                <p class="pera">
-                                                    Chris Jordan is a technical content writer at Travello. he’s a tech
-                                                    enthusiast, writer by day, writer by day, programmer by night, and always a  programmer by night, and always a foodie at heart!
-                                                </p>
-                                            </div>
-                                            <!-- Single Comments -->
-                                            <div class="main-profile-two d-block pb-15 border-bottom mb-20">
-                                                <div class="d-flex justify-content-between align-items-center mb-15">
-                                                    <div class="user d-flex align-items-center flex-wrap gap-15">
-                                                        <div class="user-img-sm">
-                                                            <img src="assets/images/news/news-user-3.png" alt="travello">
-                                                        </div>
-                                                        <h4 class="text-18 font-600">David Warner</h4>
-                                                    </div>
-                                                    <div class="user-info p-0 border-0">
-                                                        <p class="date">Jan 12, 2025</p>
-                                                    </div>
-                                                </div>
-                                                <p class="pera">
-                                                    Chris Jordan is a technical content writer at Travello. he’s a tech
-                                                    enthusiast, writer by day, writer by day, programmer by night, and always a  programmer by night, and always a foodie at heart!
-                                                </p>
-                                            </div>
-
-                                        </div>
-                                        <!-- Comments -->
-
-                                        <div class="contact-card mt-40">
-                                            <h4 class="contact-heading">Write Your Comment</h4>
-                                            <form method="post" class="contact-form">
-                                                <div class="row g-4">
-                                                    <div class="col-sm-6">
-                                                        <input class="custom-form" type="text" placeholder="Enter your name">
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <input class="custom-form" type="text" placeholder="Enter your email">
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <input class="custom-form" type="text" placeholder="Your Phone">
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <input class="custom-form" type="text" placeholder="Select subject">
-                                                    </div>
-                                                    <div class="col-sm-12">
-                                                        <textarea class="custom-form-textarea" id="exampleFormControlTextarea1"
-                                                              rows="6" placeholder="Enter your message..."></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="mt-40">
-                                                    <button type="submit" class="send-btn">Post Comment</button>
-                                                </div>
-                                            </form>
-                                        </div>
 
                                     </div>
 
@@ -290,57 +107,94 @@
 
 
 
-<div class="page-detail">
+@* ---------------- Block Groups ---------------- *@
+@foreach (var group in Model.Groups.OrderBy(g => g.SortOrder))
+{
 
-    @* ---------------- Cover / Title ---------------- *@
-    @await Html.PartialAsync("~/Themes/Classic/Views/Pages/Shared/_PageHero.cshtml", Model)
-
-
-    @if (!Model.IsHomepage)
+    if (group.GroupType == GroupTypes.RoomView)
     {
-        @* ---------------- Body HTML ---------------- *@
-        @if (!string.IsNullOrWhiteSpace(Model.Body))
+        var colGroup = Math.Clamp((byte)group.Columns, (byte)1, (byte)12);
+
+        <section class="feature-area feature-area-bg section-padding2">
+            <div class="container">
+                @if (group.ShowSectionTitle)
+                {
+                    <div class="row justify-content-center">
+                        <div class="col-xl-@colGroup col-lg-@colGroup">
+                            <div class="section-title mx-430 mx-auto text-center">
+                                @if (group.ShowTitle)
+                                {
+                                    <span class="highlights fancy-font font-400">
+                                        @group.SubHeadingTile
+                                    </span>
+                                    <h4 class="title">
+                                        @group.Title
+                                    </h4>
+                                }
+                                @if (group.ShowDescription)
+                                {
+                                    <p class="text-muted mb-4">@group.Description</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="row g-4">
+                    @foreach (var block in group.Blocks.OrderBy(b => b.SortOrder))
+                    {
+                        @await Html.PartialAsync($"~/Themes/Classic/Views/Pages/Blocks/_Block_{block.Type}.cshtml", block)
+                    }
+                </div>
+            </div>
+            <!-- shape -->
+            <div class="shape">
+                <img src="/assets/images/icon/shape.png" alt="travello">
+            </div>
+        </section>
+    }
+
+
+    if (group.GroupType == GroupTypes.Default)
+    {
+        var colGroup = Math.Clamp((byte)group.Columns, (byte)1, (byte)12);
+
+        @if (group.ShowSectionTitle)
         {
-            <article class="page-body mb-5">
-                @Html.Raw(Model.Body)
-            </article>
+            <section class="default-area default-bg-before">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-@colGroup col-lg-@colGroup">
+                            <div class="section-title mx-430 mx-auto text-center">
+                                @if (group.ShowTitle)
+                                {
+                                    <span class="highlights fancy-font font-400">
+                                        @group.SubHeadingTile
+                                    </span>
+                                    <h4 class="title">
+                                        @group.Title
+                                    </h4>
+                                }
+                                @if (group.ShowDescription)
+                                {
+                                    <p class="text-muted mb-4">@group.Description</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+        @foreach (var block in group.Blocks.OrderBy(b => b.SortOrder))
+        {
+            @await Html.PartialAsync($"~/Themes/Classic/Views/Pages/Blocks/_Block_{block.Type}.cshtml", block)
         }
     }
 
 
 
-    @* ---------------- Block Groups ---------------- *@
-    @foreach (var group in Model.Groups.OrderBy(g => g.SortOrder))
-    {
-        <section class="page-block-group mb-5">
 
 
-            @if (group.ShowTitle)
-            {
-                <h2 class="h4 fw-semibold mb-2">@group.Title</h2>
-            }
 
-            @if (group.ShowDescription)
-            {
-                <p class="text-muted mb-4">@group.Description</p>
-            }
+}
 
-            <div class="row g-4">
-                @foreach (var block in group.Blocks.OrderBy(b => b.SortOrder))
-                {
-                    var col = Math.Clamp(block.Column, (byte)1, (byte)12);
-                    <div class="col-md-@col">
-                        @await Html.PartialAsync($"~/Themes/Classic/Views/Pages/Blocks/_Block_{block.Type}.cshtml", block)
-                    </div>
-                }
-            </div>
 
-        </section>
-    }
-
- 
-    @* Sağ taraf: medya *@
-    <div class="col-lg-4">
-        @await Html.PartialAsync("~/Themes/Classic/Views/Pages/Shared/_PageMedias.cshtml", Model)
-    </div>
-</div>

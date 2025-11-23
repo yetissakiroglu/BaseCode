@@ -41,6 +41,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
@@ -232,12 +233,12 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-//var fileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files"));
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = fileProvider,
-//    RequestPath = "/Files"
-//});
+var fileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files"));
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = fileProvider,
+    RequestPath = "/Files"
+});
 
 //todo bak
 app.UseForwardedHeaders(new ForwardedHeadersOptions

@@ -6,7 +6,9 @@
     var containerId = "imglist_" + Guid.NewGuid().ToString("N");
 }
 
-<div id="@containerId" class="imgpick mt-3">
+<div id="@containerId"
+     class="imgpick mt-3"
+     data-name-prefix="@namePrefix">
     <label class="form-label fw-semibold mb-2">Görsel Listesi</label>
 
     <div class="row g-3" id="rows-@containerId">
@@ -42,7 +44,10 @@
                         </div>
 
                         <div class="input-group input-group-sm">
-                            <input class="form-control url-input" name="@($"{namePrefix}[{i}]")" value="@url" placeholder="https://...">
+                            <input class="form-control url-input"
+                                   name="@($"{namePrefix}[{i}]")"
+                                   value="@url"
+                                   placeholder="https://...">
                             <button class="btn btn-outline-danger btn-sm remove-row" type="button">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" class="me-1">
                                     <path d="M19 6L5 20M5 6l14 14" stroke="currentColor" stroke-width="1.7" />
@@ -118,29 +123,34 @@
 </style>
 
 <script>
-    (function(){
-        const id         = "@containerId";
-        const pickerUrl  = "@pickerUrl";
-        const namePrefix = "@namePrefix";
-        const formId     = "@formId";
+    (function () {
+        const id        = "@containerId";
+        const pickerUrl = "@pickerUrl";
+        const formId    = "@formId";
 
-        const root   = document.getElementById(id);
-        if(!root) return;
-        const rowsEl = root.querySelector("#rows-" + id);
-        const addBtn = root.querySelector(".btn-add");
+        const root = document.getElementById(id);
+        if (!root) return;
+
+        const rowsEl         = root.querySelector("#rows-" + id);
+        const addBtn         = root.querySelector(".btn-add");
         const pickGalleryBtn = root.querySelector(".btn-pick-gallery");
 
+        // Her partial kendi namePrefix'ini DOM'dan alıyor
+        function getNamePrefix() {
+            return root.getAttribute("data-name-prefix") || "@namePrefix";
+        }
+
         // -------- Helpers --------
-        function setUrl(input, img, ph, openA, val){
+        function setUrl(input, img, ph, openA, val) {
             val = (val || "").trim();
             input.value = val;
             const has = !!val;
-            if (img){ img.src = val; img.classList.toggle("d-none", !has); }
-            if (ph){ ph.classList.toggle("d-none", has); }
-            if (openA){ openA.href = has ? val : "#"; }
+            if (img)   { img.src = val; img.classList.toggle("d-none", !has); }
+            if (ph)    { ph.classList.toggle("d-none", has); }
+            if (openA) { openA.href = has ? val : "#"; }
         }
 
-        function bindRowEvents(row){
+        function bindRowEvents(row) {
             const input = row.querySelector(".url-input");
             const img   = row.querySelector(".preview-img");
             const ph    = row.querySelector(".placeholder-wrap");
@@ -148,12 +158,16 @@
             const pick  = row.querySelector(".pick-btn");
             const del   = row.querySelector(".remove-row");
 
-            input.addEventListener("input", () => setUrl(input, img, ph, openA, input.value));
+            if (input) {
+                input.addEventListener("input", () => setUrl(input, img, ph, openA, input.value));
+            }
             if (pick) pick.addEventListener("click", () => openPicker(row));
             if (del)  del.addEventListener("click", () => row.remove());
         }
 
-        function createRow(url, idx){
+        function createRow(url, idx) {
+            const np = getNamePrefix();
+
             const col = document.createElement("div");
             col.className = "col-12 col-md-6 col-xl-4 gal-row";
             col.innerHTML = `
@@ -162,23 +176,34 @@
                 <div class="position-relative rounded-3 overflow-hidden border bg-light mb-2 preview-wrap">
                   <div class="checkerboard"></div>
                   <div class="ratio ratio-16x9">
-                    <img src="${url||""}" class="img-fluid w-100 h-100 object-fit-cover preview-img ${url?"":"d-none"}">
-                    <div class="d-flex flex-column align-items-center justify-content-center text-muted gap-1 placeholder-wrap ${url?"d-none":""}">
-                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.25"/><path d="M4 15l4-4 4 4 4-5 4 5" stroke="currentColor" stroke-width="1.25"/><circle cx="9" cy="8" r="1" fill="currentColor"/></svg>
+                    <img src="${url || ""}" class="img-fluid w-100 h-100 object-fit-cover preview-img ${url ? "" : "d-none"}">
+                    <div class="d-flex flex-column align-items-center justify-content-center text-muted gap-1 placeholder-wrap ${url ? "d-none" : ""}">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.25" />
+                        <path d="M4 15l4-4 4 4 4-5 4 5" stroke="currentColor" stroke-width="1.25" />
+                        <circle cx="9" cy="8" r="1" fill="currentColor" />
+                      </svg>
                       <small>Seçilmedi</small>
                     </div>
                   </div>
                   <div class="overlay-actions d-flex gap-2">
                     <button type="button" class="btn btn-dark btn-xs pick-btn">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" class="me-1"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8"/></svg> Değiştir
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" class="me-1">
+                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" />
+                      </svg> Değiştir
                     </button>
-                    <a href="${url||"#"}" target="_blank" class="btn btn-outline-light btn-xs open-btn">Aç</a>
+                    <a href="${url || "#"}" target="_blank" class="btn btn-outline-light btn-xs open-btn">Aç</a>
                   </div>
                 </div>
                 <div class="input-group input-group-sm">
-                  <input class="form-control url-input" name="${namePrefix}[${idx}]" value="${url||""}" placeholder="https://...">
+                  <input class="form-control url-input"
+                         name="${np}[${idx}]"
+                         value="${url || ""}"
+                         placeholder="https://...">
                   <button class="btn btn-outline-danger btn-sm remove-row" type="button">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" class="me-1"><path d="M19 6L5 20M5 6l14 14" stroke="currentColor" stroke-width="1.7"/></svg> Sil
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" class="me-1">
+                      <path d="M19 6L5 20M5 6l14 14" stroke="currentColor" stroke-width="1.7" />
+                    </svg> Sil
                   </button>
                 </div>
               </div>
@@ -188,91 +213,84 @@
         }
 
         // -------- Add empty row --------
-        addBtn.addEventListener("click", () => {
-            const idx = rowsEl.querySelectorAll(".url-input").length;
-            rowsEl.appendChild(createRow("", idx));
-        });
+        if (addBtn) {
+            addBtn.addEventListener("click", () => {
+                const idx = rowsEl.querySelectorAll(".url-input").length;
+                rowsEl.appendChild(createRow("", idx));
+            });
+        }
 
         // -------- Picker (row mode / gallery mode) --------
-        function openPicker(row){
-            const w=1000, h=700;
-            const y=window.top.outerHeight/2+window.top.screenY-(h/2);
-            const x=window.top.outerWidth/2+window.top.screenX-(w/2);
-            window.__activeImgEditor = id;
-            window.__activeRow = row; // ✅ DEĞİŞTİR modu
-            window.open(pickerUrl,'picker',`popup=yes,width=${w},height=${h},left=${x},top=${y}`);
+        function openPicker(row) {
+            const w = 1000, h = 700;
+            const y = window.top.outerHeight / 2 + window.top.screenY - (h / 2);
+            const x = window.top.outerWidth / 2 + window.top.screenX - (w / 2);
+            window.__activeImgEditor = id;   // bu partial
+            window.__activeRow       = row;  // null ise galeri modu
+            window.open(pickerUrl, 'picker', `popup=yes,width=${w},height=${h},left=${x},top=${y}`);
         }
 
-        pickGalleryBtn.addEventListener("click", () => {
-            const w=1000, h=700;
-            const y=window.top.outerHeight/2+window.top.screenY-(h/2);
-            const x=window.top.outerWidth/2+window.top.screenX-(w/2);
-            window.__activeImgEditor = id;
-            window.__activeRow = null; // ✅ EKLEME modu
-            window.open(pickerUrl,'picker',`popup=yes,width=${w},height=${h},left=${x},top=${y}`);
-        });
+        if (pickGalleryBtn) {
+            pickGalleryBtn.addEventListener("click", () => openPicker(null));
+        }
 
-        // -------- Message listener (replace vs add) --------
-        if(!window.__multiImgEditorBound){
-            window.addEventListener("message", ev => {
-                const data = ev.data || {};
-                const isValid = data.type === "image-picked" || data.type === "images-picked";
-                if(!isValid) return;
+        // -------- Message listener (HER partial kendi handler'ına sahip) --------
+        window.addEventListener("message", ev => {
+            const data = ev.data || {};
+            const isValid = data.type === "image-picked" || data.type === "images-picked";
+            if (!isValid) return;
 
-                const activeId = window.__activeImgEditor;
-                if(!activeId) return;
+            // Bu event bu editor için mi?
+            if (window.__activeImgEditor !== id) return;
 
-                const container = document.getElementById(activeId);
-                if(!container) return;
+            const urls = Array.isArray(data.urls)
+                ? data.urls.filter(Boolean)
+                : (data.url ? [data.url] : []);
 
-                const rows = container.querySelector("#rows-" + activeId);
-                if(!rows) return;
+            if (!urls.length) return;
 
-                const urls = Array.isArray(data.urls)
-                    ? data.urls.filter(Boolean)
-                    : (data.url ? [data.url] : []);
-                if(!urls.length) return;
+            const activeRow = window.__activeRow;
+            if (activeRow && rowsEl.contains(activeRow)) {
+                // 1) İlk URL: aktif satırı değiştir
+                const first = urls[0];
+                const input = activeRow.querySelector(".url-input");
+                const img   = activeRow.querySelector(".preview-img");
+                const ph    = activeRow.querySelector(".placeholder-wrap");
+                const openA = activeRow.querySelector(".open-btn");
+                setUrl(input, img, ph, openA, first);
 
-                const activeRow = window.__activeRow;
-                if (activeRow && rows.contains(activeRow)) {
-                    // 1) İlk URL: aktif satırı DEĞİŞTİR
-                    const first = urls[0];
-                    const input = activeRow.querySelector(".url-input");
-                    const img   = activeRow.querySelector(".preview-img");
-                    const ph    = activeRow.querySelector(".placeholder-wrap");
-                    const openA = activeRow.querySelector(".open-btn");
-                    setUrl(input, img, ph, openA, first);
-
-                    // 2) Kalan URL'ler: yeni satır olarak EKLE
-                    if (urls.length > 1) {
-                        urls.slice(1).forEach(u => {
-                            const idx = rows.querySelectorAll(".url-input").length;
-                            rows.appendChild(createRow(u, idx));
-                        });
-                    }
-                    window.__activeRow = null; // temizle
-                    return;
+                // 2) Kalan URL'ler: yeni satır olarak ekle
+                if (urls.length > 1) {
+                    urls.slice(1).forEach(u => {
+                        const idx = rowsEl.querySelectorAll(".url-input").length;
+                        rowsEl.appendChild(createRow(u, idx));
+                    });
                 }
 
-                // ➕ EKLEME modu: tüm URL'ler yeni satır
-                urls.forEach(u => {
-                    const idx = rows.querySelectorAll(".url-input").length;
-                    rows.appendChild(createRow(u, idx));
-                });
+                window.__activeRow = null;
+                return;
+            }
+
+            // ➕ Galeri ekleme modu: tüm URL'ler yeni satır
+            urls.forEach(u => {
+                const idx = rowsEl.querySelectorAll(".url-input").length;
+                rowsEl.appendChild(createRow(u, idx));
             });
-            window.__multiImgEditorBound = true;
-        }
+        });
 
         // -------- Initial bind for existing rows --------
         rowsEl.querySelectorAll(".gal-row").forEach(bindRowEvents);
 
         // -------- Reindex on submit --------
         let form = formId ? document.getElementById(formId) : null;
-        if(!form) form = root.closest("form");
-        if(form){
+        if (!form) form = root.closest("form");
+        if (form) {
             form.addEventListener("submit", () => {
+                const np = getNamePrefix();
                 const inputs = rowsEl.querySelectorAll(".url-input");
-                inputs.forEach((inp, i) => inp.name = `${namePrefix}[${i}]`);
+                inputs.forEach((inp, i) => {
+                    inp.name = `${np}[${i}]`;
+                });
             });
         }
     })();

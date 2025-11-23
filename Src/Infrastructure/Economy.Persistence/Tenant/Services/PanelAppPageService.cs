@@ -446,5 +446,38 @@ namespace Economy.Persistence.Tenant.Services
             await _unitOfWork.SaveHotelChangesAsync();
             return ServiceResult<NoContent>.Success(new NoContent { Id = page.Id });
         }
+
+        public async Task<ServiceResult<List<PageListDto>>> GetPageListAsync(ContentItemType type, CancellationToken ct)
+        {
+            var defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
+               .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            if (defLangId == 0)
+                defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive)
+                    .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            var list = await (from ci in _entityPageRepository.DataSet
+                              where !ci.IsDeleted && ci.Type == type
+                              //join tr in _trRepo.DataSet on ci.Id equals tr.AppPageId into trx
+                              //from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
+                              join ptr in _trRepo.DataSet on ci.AppPageId equals ptr.AppPageId into ptx
+                              from ptr in ptx.Where(p => !p.IsDeleted && p.AppLanguageId == defLangId).DefaultIfEmpty()
+                              orderby ci.SortOrder, ci.Id
+                              select new PageListDto
+                              {
+                                  Id = ci.Id,
+                                  ParentTitle = ptr.Title,
+                                  Title = ptr.Title,
+                                  Slug = ptr.Slug,
+                                  IsActive = ci.IsActive,
+                                  Stage = ci.Stage,
+                                  IsHomepage = ci.IsHomepage,
+                                  PublishAtUtc = ci.PublishAtUtc,
+                                  SortOrder = ci.SortOrder,
+                              })
+                              .ToListAsync();
+
+            return ServiceResult<List<PageListDto>>.Success(list);
+        }
     }
 }

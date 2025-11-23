@@ -137,7 +137,6 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Slugify([FromForm] string text,

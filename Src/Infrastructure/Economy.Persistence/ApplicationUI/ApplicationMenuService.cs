@@ -453,15 +453,17 @@ namespace Economy.Persistence.ApplicationUI
                         {
                             g.Id,
                             g.Columns,
+                            g.GroupType,
+                            g.ShowSectionTitle,
                             g.ShowTitle,
                             g.ShowDescription,
                             Tr = g.Translations
                                  .Where(tr => tr.AppLanguageId == langId)
-                                 .Select(tr => new { tr.Title, tr.Description, tr.AppLanguageId })
+                                 .Select(tr => new {tr.SubHeadingTile ,tr.Title, tr.Description, tr.AppLanguageId })
                                  .FirstOrDefault()
                                  ?? g.Translations
                                       .Where(tr => tr.AppLanguageId == defaultLangId)
-                                      .Select(tr => new { tr.Title, tr.Description, tr.AppLanguageId })
+                                      .Select(tr => new { tr.SubHeadingTile, tr.Title, tr.Description, tr.AppLanguageId })
                                       .FirstOrDefault()
                         })
                         .FirstOrDefault()
@@ -547,8 +549,11 @@ namespace Economy.Persistence.ApplicationUI
                 result.Add(new BlockGroupDto(
                     Id: g.Id,
                     Columns: g.Columns,
+                    GroupType: g.GroupType,
+                    ShowSectionTitle: g.ShowSectionTitle,
                     ShowTitle: g.ShowTitle,
                     ShowDescription: g.ShowDescription,
+                    SubHeadingTile: g.Tr != null ? g.Tr.SubHeadingTile : null,
                     Title: g.Tr != null ? g.Tr.Title : null,
                     Description: g.Tr != null ? g.Tr.Description : null,
                     SortOrder: pg.SortOrder,

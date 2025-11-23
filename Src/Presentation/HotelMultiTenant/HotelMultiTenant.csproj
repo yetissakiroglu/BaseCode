@@ -10,4 +10,8 @@
     <ProjectReference Include="..\..\Core\Economy.UI.Dtos\Economy.UI.Dtos.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\pluging\" />
+  </ItemGroup>
+
 </Project>

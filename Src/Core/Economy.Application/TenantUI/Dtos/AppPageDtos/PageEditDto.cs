@@ -15,6 +15,8 @@ namespace Economy.Application.TenantUI.Dtos.AppPageDtos
         public short Type { get; set; } = 1;
         public string? CoverImageUrl { get; set; }
         public string? OgImageUrl { get; set; }
+        public List<string>? ImgGalleryUrls { get; set; }
+
         public List<PageTranslationDto> Translations { get; set; } = new();
         public List<GalleryGroupVm> Galleries { get; set; } = new();
         public List<ImageFieldVm> Singles { get; set; } = new();

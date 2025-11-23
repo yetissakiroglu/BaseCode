@@ -28,9 +28,12 @@ namespace Economy.UI.Dtos
 
     public sealed record BlockGroupDto(
         int Id,
+        GroupTypes GroupType,
         BlockColumns Columns, // Mevcut enum’un: One/Two/Three/Four (veya 1–4)
+        bool ShowSectionTitle,
         bool ShowTitle,
         bool ShowDescription,
+        string? SubHeadingTile,
         string? Title,
         string? Description,
         int SortOrder,

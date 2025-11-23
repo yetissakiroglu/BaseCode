@@ -19,7 +19,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             _panelAppLanguageService = panelAppLanguageService;
         }
 
-        public async Task<IActionResult> Index(BlockType? type, string? q, int page = 1, int size = 5)
+        public async Task<IActionResult> Index(BlockType? type, string? q, int page = 1, int size = 50)
         {
             var model = await _panelAppBlockService.GetAllBlocksAsync(type, page, size, q);
             return View(model.Data);

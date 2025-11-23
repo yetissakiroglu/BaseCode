@@ -7,11 +7,9 @@
     var url = Model ?? "";
 }
 
-<div id="@containerId" class="imgpick mt-3">
+<div id="@containerId" class="imgpick">
     <div class="card shadow-sm border-0">
-        <div class="card-body">
-            <label class="form-label fw-semibold mb-2">Kapak Görseli</label>
-
+        <div class="card-body p-0">
             <!-- Preview -->
             <div class="position-relative rounded-3 overflow-hidden border bg-light mb-3 preview-wrap">
                 <!-- Checkerboard arka plan: transparan görseller için -->
@@ -142,10 +140,11 @@
         const clear = root.querySelector(".clear-btn");
         const placeholder = root.querySelector(".placeholder-wrap");
 
-        function setUrl(u){
+        function setUrlLocal(u){
             const val = (u || "").trim();
             input.value = val;
             const has = !!val;
+
             if (img){
                 img.src = has ? val : "";
                 img.classList.toggle("d-none", !has);
@@ -160,8 +159,8 @@
             });
         }
 
-        input.addEventListener("input", e => setUrl(e.target.value));
-        clear.addEventListener("click", () => setUrl(""));
+        input.addEventListener("input", e => setUrlLocal(e.target.value));
+        clear.addEventListener("click", () => setUrlLocal(""));
 
         function openPicker(){
             const w=1000,h=700;
@@ -172,16 +171,43 @@
         }
         pick.forEach(b => b.addEventListener("click", openPicker));
 
+        // GLOBAL dinleyici: aktif editor'ü DOM'dan bul
         if (!window.__singleImgUrlBoundFancy){
             window.addEventListener("message", ev => {
                 const data = ev.data || {};
                 const isValid = data.type === "image-picked" || data.type === "images-picked";
                 if (!isValid) return;
-                if (window.__activeImgEditor !== id) return;
+
+                const activeId = window.__activeImgEditor;
+                if (!activeId) return;
+
+                const container = document.getElementById(activeId);
+                if (!container) return;
+
+                const inp        = container.querySelector(".url-input");
+                const imgEl      = container.querySelector(".preview-img");
+                const placeholderEl = container.querySelector(".placeholder-wrap");
+                const openEls    = container.querySelectorAll(".open-btn");
 
                 const picked = data.url || (Array.isArray(data.urls) && data.urls[0]) || "";
-                if (!picked) return;
-                setUrl(picked);
+                const val = (picked || "").trim();
+                if (!inp) return;
+
+                inp.value = val;
+                const has = !!val;
+
+                if (imgEl){
+                    imgEl.src = has ? val : "";
+                    imgEl.classList.toggle("d-none", !has);
+                }
+                if (placeholderEl){
+                    placeholderEl.classList.toggle("d-none", has);
+                }
+                openEls.forEach(a => {
+                    if (!a) return;
+                    a.classList.toggle("disabled", !has);
+                    a.setAttribute("href", has ? val : "#");
+                });
             });
             window.__singleImgUrlBoundFancy = true;
         }
