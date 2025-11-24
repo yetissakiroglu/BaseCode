@@ -6,12 +6,16 @@
     var formId = (ViewData["FormId"] as string) ?? "mainForm";
     var pickerUrl = (ViewData["PickerUrl"] as string) ?? "/Tenant/ImageManager/Picker";
     var containerId = "imglist_" + Guid.NewGuid().ToString("N");
+
+    // Kapak radio'ları için ortak grup adı
+    var coverGroupName = $"{namePrefix}_CoverGroup";
 }
 
 <div id="@containerId"
      class="imgpick mt-3"
      data-editor-type="multi"
-     data-name-prefix="@namePrefix">
+     data-name-prefix="@namePrefix"
+     data-cover-group="@coverGroupName">
 
     <div class="row g-3" id="rows-@containerId">
         @for (int i = 0; i < (Model?.Count ?? 0); i++)
@@ -20,13 +24,12 @@
             var url = item?.MediaUrl ?? "";
             var id = item?.Id;
             var sort = item?.SortOrder ?? i;
-            var IsCover = item?.IsCover ?? false;
+            var isCover = item?.IsCover ?? false;
 
             <div class="col-12 col-md-6 col-xl-4 gal-row">
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-2">
                         <div class="position-relative rounded-3 overflow-hidden border bg-light mb-2 preview-wrap">
-
                             <div class="ratio ratio-16x9">
                                 <img src="@url"
                                      alt="Görsel önizleme"
@@ -59,6 +62,25 @@
                                name="@($"{namePrefix}[{i}].SortOrder")"
                                value="@sort" />
 
+                        <!-- IsCover hidden -->
+                        <input type="hidden"
+                               class="is-cover-hidden"
+                               name="@($"{namePrefix}[{i}].IsCover")"
+                               value="@(isCover ? "true" : "false")" />
+
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <div class="form-check form-check-sm">
+                                <input class="form-check-input is-cover-radio"
+                                       type="radio"
+                                       name="@coverGroupName"
+                                       value="@i"
+                                       @(isCover ? "checked" : null) />
+                                <label class="form-check-label small">
+                                    Kapak
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="input-group input-group-sm">
                             <input class="form-control url-input"
                                    name="@($"{namePrefix}[{i}].MediaUrl")"
@@ -71,14 +93,14 @@
                             </button>
                         </div>
 
-                        @* Var olan Translations’ları kaybetmemek için hidden olarak gönderiyoruz *@
+                        @* Var olan Translations’ları kaybetmemek için hidden + input olarak gönderiyoruz *@
                         @if (item?.Translations != null && item.Translations.Count > 0)
                         {
                             for (int t = 0; t < item.Translations.Count; t++)
                             {
                                 var tr = item.Translations[t];
 
-                                <small class="text-muted">
+                                <small class="text-muted d-block mt-2">
                                     <i class="@tr.AppLanguageIcon"></i> @tr.AppLanguageCode.ToUpper()
                                 </small>
 
@@ -100,11 +122,13 @@
 
                                 <input class="form-control form-control-sm mt-1"
                                        name="@($"{namePrefix}[{i}].Translations[{t}].Alt")"
-                                       value="@tr.Alt" placeholder="Caption (@tr.Alt)" />
+                                       value="@tr.Alt"
+                                       placeholder="Alt (@tr.AppLanguageCode)" />
 
                                 <input class="form-control form-control-sm mt-1"
                                        name="@($"{namePrefix}[{i}].Translations[{t}].Caption")"
-                                       value="@tr.Caption" placeholder="Caption (@tr.Caption)" />
+                                       value="@tr.Caption"
+                                       placeholder="Caption (@tr.AppLanguageCode)" />
                             }
                         }
                     </div>
@@ -187,6 +211,7 @@
         const rowsEl         = root.querySelector("#rows-" + id);
         const addBtn         = root.querySelector(".btn-add");
         const pickGalleryBtn = root.querySelector(".btn-pick-gallery");
+        const coverGroupName = root.getAttribute("data-cover-group") || "";
 
         function getNamePrefix() {
             return root.getAttribute("data-name-prefix") || "@namePrefix";
@@ -201,13 +226,26 @@
             if (openA) { openA.href = has ? val : "#"; }
         }
 
+        function updateIsCoverHiddenForRow(row, isCover) {
+            const hidden = row.querySelector(".is-cover-hidden");
+            if (hidden) {
+                hidden.value = isCover ? "true" : "false";
+            }
+        }
+
+        function clearAllCovers() {
+            const allHidden = rowsEl.querySelectorAll(".is-cover-hidden");
+            allHidden.forEach(h => h.value = "false");
+        }
+
         function bindRowEvents(row) {
-            const input = row.querySelector(".url-input");
-            const img   = row.querySelector(".preview-img");
-            const ph    = row.querySelector(".placeholder-wrap");
-            const openA = row.querySelector(".open-btn");
-            const pick  = row.querySelector(".pick-btn");
-            const del   = row.querySelector(".remove-row");
+            const input      = row.querySelector(".url-input");
+            const img        = row.querySelector(".preview-img");
+            const ph         = row.querySelector(".placeholder-wrap");
+            const openA      = row.querySelector(".open-btn");
+            const pick       = row.querySelector(".pick-btn");
+            const del        = row.querySelector(".remove-row");
+            const coverRadio = row.querySelector(".is-cover-radio");
 
             if (input) {
                 input.addEventListener("input", () => setUrl(input, img, ph, openA, input.value));
@@ -232,7 +270,33 @@
                 });
             }
             if (del) {
-                del.addEventListener("click", () => row.remove());
+                del.addEventListener("click", () => {
+                    const wasCover = !!row.querySelector(".is-cover-radio")?.checked;
+                    row.remove();
+
+                    // Eğer kapak olan satırı sildiysek, başka bir satırı kapak yapalım (varsa)
+                    if (wasCover) {
+                        const firstRadio = rowsEl.querySelector(".is-cover-radio");
+                        if (firstRadio) {
+                            clearAllCovers();
+                            firstRadio.checked = true;
+                            const firstRow = firstRadio.closest(".gal-row");
+                            if (firstRow) {
+                                updateIsCoverHiddenForRow(firstRow, true);
+                            }
+                        }
+                    }
+                });
+            }
+            if (coverRadio) {
+                coverRadio.addEventListener("change", function () {
+                    if (!this.checked) return;
+                    // önce bütün satırlarda IsCover'ı false yap
+                    clearAllCovers();
+                    // bu satırda true yap
+                    const r = this.closest(".gal-row");
+                    if (r) updateIsCoverHiddenForRow(r, true);
+                });
             }
         }
 
@@ -244,7 +308,6 @@
             <div class="card shadow-sm border-0">
               <div class="card-body p-2">
                 <div class="position-relative rounded-3 overflow-hidden border bg-light mb-2 preview-wrap">
-                  <div class="checkerboard"></div>
                   <div class="ratio ratio-16x9">
                     <img src="${url || ""}" class="img-fluid w-100 h-100 object-fit-cover preview-img ${url ? "" : "d-none"}">
                     <div class="d-flex flex-column align-items-center justify-content-center text-muted gap-1 placeholder-wrap ${url ? "d-none" : ""}">
@@ -274,6 +337,21 @@
                        name="${np}[${idx}].SortOrder"
                        value="${idx}" />
 
+                <input type="hidden"
+                       class="is-cover-hidden"
+                       name="${np}[${idx}].IsCover"
+                       value="false" />
+
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                  <div class="form-check form-check-sm">
+                    <input class="form-check-input is-cover-radio"
+                           type="radio"
+                           name="${coverGroupName}"
+                           value="${idx}">
+                    <label class="form-check-label small">Kapak</label>
+                  </div>
+                </div>
+
                 <div class="input-group input-group-sm">
                   <input class="form-control url-input"
                          name="${np}[${idx}].MediaUrl"
@@ -294,7 +372,19 @@
         if (addBtn) {
             addBtn.addEventListener("click", () => {
                 const idx = rowsEl.querySelectorAll(".gal-row").length;
-                rowsEl.appendChild(createRow("", idx));
+                const row = createRow("", idx);
+                rowsEl.appendChild(row);
+
+                // Eğer hiç kapak yoksa, ilk yeni ekleneni kapak yap (opsiyonel)
+                const anyChecked = rowsEl.querySelector(".is-cover-radio:checked");
+                if (!anyChecked) {
+                    const radio = row.querySelector(".is-cover-radio");
+                    if (radio) {
+                        clearAllCovers();
+                        radio.checked = true;
+                        updateIsCoverHiddenForRow(row, true);
+                    }
+                }
             });
         }
 
@@ -339,14 +429,16 @@
                     if (urls.length > 1) {
                         urls.slice(1).forEach(u => {
                             const idx = rowsEl.querySelectorAll(".gal-row").length;
-                            rowsEl.appendChild(createRow(u, idx));
+                            const r = createRow(u, idx);
+                            rowsEl.appendChild(r);
                         });
                     }
                 } else {
                     // Galeri modu: tüm URL'ler yeni satır
                     urls.forEach(u => {
                         const idx = rowsEl.querySelectorAll(".gal-row").length;
-                        rowsEl.appendChild(createRow(u, idx));
+                        const r = createRow(u, idx);
+                        rowsEl.appendChild(r);
                     });
                 }
 

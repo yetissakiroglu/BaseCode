@@ -285,45 +285,36 @@ namespace Economy.Persistence.Tenant.Services
                 CoverImageUrl = page.CoverImageUrl,
                 OgImageUrl = page.OgImageUrl,
                 CoverImageMobilUrl = page.CoverImageMobilUrl,
-                //        Singles = new List<ImageFieldVm>
-                //{
-                //    new ImageFieldVm { Key = "KapakImage", Label = "Kapak Görseli", Url = page.CoverImageUrl },
-                //    new ImageFieldVm { Key = "OGImage", Label = "OG Görseli", Url = page.OgImageUrl }
-                //},
-                //        Galleries = new List<GalleryGroupVm>
-                //{
-                //    new GalleryGroupVm { Key = "GenelImages", Label = "Galeri Fotoğrafları" }
-                //}
             };
 
-            //var gal = vm.Galleries.First();
-            //gal.CoverUrl = page.Medias.FirstOrDefault(m => m.IsCover)?.MediaUrl;
+            vm.MediaItems = new List<MediaItem>();
 
-            //gal.Items = page.Medias.Select(m =>
-            //{
-            //    var mediaItem = new MediaItem
-            //    {
-            //        Id = m.Id,
-            //        MediaUrl = m.MediaUrl,
-            //        SortOrder = m.SortOrder
-            //    };
+            vm.MediaItems = page.Medias.Select(m =>
+            {
+                var mediaItem = new MediaItem
+                {
+                    Id = m.Id,
+                    MediaUrl = m.MediaUrl,
+                    SortOrder = m.SortOrder,
+                    IsCover = m.IsCover,
+                };
 
-            //    foreach (var lang in langs)
-            //    {
-            //        var tr = m.Translations?.FirstOrDefault(t => t.AppLanguageId == lang.Id);
-            //        mediaItem.Translations.Add(new MediaItemTranslation
-            //        {
-            //            Id = tr?.Id,
-            //            AppLanguageId = lang.Id,
-            //            AppLanguageCode = lang.Code,
-            //            AppLanguageIcon = lang.Icon,
-            //            Alt = tr?.Alt ?? "",
-            //            Caption = tr?.Caption ?? ""
-            //        });
-            //    }
+                foreach (var lang in langs)
+                {
+                    var tr = m.Translations?.FirstOrDefault(t => t.AppLanguageId == lang.Id);
+                    mediaItem.Translations.Add(new MediaItemTranslation
+                    {
+                        Id = tr?.Id,
+                        AppLanguageId = lang.Id,
+                        AppLanguageCode = lang.Code,
+                        AppLanguageIcon = lang.Icon,
+                        Alt = tr?.Alt ?? "",
+                        Caption = tr?.Caption ?? ""
+                    });
+                }
 
-            //    return mediaItem;
-            //}).ToList();
+                return mediaItem;
+            }).ToList();
 
             await FillLanguagesAsync(vm, ct);
 
@@ -403,41 +394,41 @@ namespace Economy.Persistence.Tenant.Services
                 }
             }
 
-            
-            //if (vm.ImgGalleryUrls != null)
-            //{
-            //    var keepIds = items.Where(i => i.Id.HasValue).Select(i => i.Id!.Value).ToHashSet();
-            //    var toRemove = page.Medias.Where(m => !keepIds.Contains(m.Id)).ToList();
-            //    _appPageMedia.DataSet.RemoveRange(toRemove);
 
-            //    int order = 0;
-            //    foreach (var m in items.OrderBy(x => x.SortOrder))
-            //    {
-            //        var media = m.Id == null || m.Id == 0
-            //            ? new AppPageMedia { MediaUrl = m.MediaUrl }
-            //            : page.Medias.FirstOrDefault(x => x.Id == m.Id) ?? new AppPageMedia();
+            if (vm.MediaItems != null)
+            {
+                var keepIds = vm.MediaItems.Where(i => i.Id.HasValue).Select(i => i.Id!.Value).ToHashSet();
+                var toRemove = page.Medias.Where(m => !keepIds.Contains(m.Id)).ToList();
+                _appPageMedia.DataSet.RemoveRange(toRemove);
 
-            //        media.SortOrder = order++;
-            //        media.IsCover = gallery.CoverUrl == m.MediaUrl;
-            //        media.MediaUrl = m.MediaUrl;
+                int order = 0;
+                foreach (var m in vm.MediaItems.OrderBy(x => x.SortOrder))
+                {
+                    var media = m.Id == null || m.Id == 0
+                        ? new AppPageMedia { MediaUrl = m.MediaUrl }
+                        : page.Medias.FirstOrDefault(x => x.Id == m.Id) ?? new AppPageMedia();
 
-            //        foreach (var l in langs)
-            //        {
-            //            var mt = m.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
-            //            var cur = media.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
-            //            if (cur == null)
-            //                media.Translations.Add(new AppPageMediaTranslation { AppLanguageId = l.Id, Alt = mt?.Alt, Caption = mt?.Caption });
-            //            else
-            //            {
-            //                cur.Alt = mt?.Alt;
-            //                cur.Caption = mt?.Caption;
-            //            }
-            //        }
+                    media.SortOrder = order++;
+                    media.IsCover = m.IsCover;
+                    media.MediaUrl = m.MediaUrl;
 
-            //        if (m.Id == null || m.Id == 0)
-            //            page.Medias.Add(media);
-            //    }
-            //}
+                    foreach (var l in langs)
+                    {
+                        var mt = m.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
+                        var cur = media.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
+                        if (cur == null)
+                            media.Translations.Add(new AppPageMediaTranslation { AppLanguageId = l.Id, Alt = mt?.Alt, Caption = mt?.Caption });
+                        else
+                        {
+                            cur.Alt = mt?.Alt;
+                            cur.Caption = mt?.Caption;
+                        }
+                    }
+
+                    if (m.Id == null || m.Id == 0)
+                        page.Medias.Add(media);
+                }
+            }
 
             if (vm.Id == null)
                 _entityPageRepository.DataSet.Add(page);
@@ -456,8 +447,8 @@ namespace Economy.Persistence.Tenant.Services
 
             var list = await (from ci in _entityPageRepository.DataSet
                               where !ci.IsDeleted && ci.Type == type
-                              //join tr in _trRepo.DataSet on ci.Id equals tr.AppPageId into trx
-                              //from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
+                              join tr in _trRepo.DataSet on ci.Id equals tr.AppPageId into trx
+                              from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
                               join ptr in _trRepo.DataSet on ci.AppPageId equals ptr.AppPageId into ptx
                               from ptr in ptx.Where(p => !p.IsDeleted && p.AppLanguageId == defLangId).DefaultIfEmpty()
                               orderby ci.SortOrder, ci.Id
@@ -465,8 +456,8 @@ namespace Economy.Persistence.Tenant.Services
                               {
                                   Id = ci.Id,
                                   ParentTitle = ptr.Title,
-                                  Title = ptr.Title,
-                                  Slug = ptr.Slug,
+                                  Title = tr.Title,
+                                  Slug = tr.Slug,
                                   IsActive = ci.IsActive,
                                   Stage = ci.Stage,
                                   IsHomepage = ci.IsHomepage,

@@ -1,0 +1,233 @@
+﻿@using static Economy.Panel.UI.Areas.Tenant.Controllers.RoomsController
+@model RoomCreateEditDto
+
+
+<div class="card">
+    <div class="card-header">
+        <h5>Oda Detayı - Ekle / Düzenle</h5>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-4">
+
+                <!-- 2) Odanın Temel Özeti (Property Highlights) -->
+                <div class="col-12">
+                    <h6 class="mb-2">Oda Özeti (Property Highlights)</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Oda Tipi</label>
+                            <input asp-for="RoomType" class="form-control" placeholder="Standart, Deluxe, Suit..." />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Kapasite (Kişi)</label>
+                            <input asp-for="Capacity" type="number" min="1" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Metrekare</label>
+                            <input asp-for="SquareMeter" type="number" min="1" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Yatak Tipi</label>
+                            <input asp-for="BedType" class="form-control" placeholder="King, Double, Twin..." />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Manzara</label>
+                            <input asp-for="ViewType" class="form-control" placeholder="Deniz, Dağ, Bahçe..." />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Sigara</label>
+                            <select asp-for="IsSmokingAllowed" class="form-select">
+                                <option value="false">İçilmez</option>
+                                <option value="true">İçilebilir</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Balkon / Teras</label>
+                            <select asp-for="HasBalconyOrTerrace" class="form-select">
+                                <option value="false">Yok</option>
+                                <option value="true">Var</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Klima Tipi</label>
+                            <input asp-for="ClimateType" class="form-control" placeholder="Split, Merkezi..." />
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-check mt-4">
+                                <input asp-for="HasWifi" class="form-check-input" type="checkbox" />
+                                <label class="form-check-label" for="HasWifi">Ücretsiz Wi-Fi</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-check mt-4">
+                                <input asp-for="HasParking" class="form-check-input" type="checkbox" />
+                                <label class="form-check-label" for="HasParking">Ücretsiz Otopark</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3) Oda Açıklaması -->
+                <div class="col-12">
+                    <h6 class="mb-2">Oda Açıklaması (4–6 cümle)</h6>
+                    <textarea asp-for="Description" rows="4" class="form-control"
+                              placeholder="Odanın tarzını, konforunu, sessizliğini, aile/iş seyahati uygunluğunu anlatan 4–6 cümle yazın."></textarea>
+                </div>
+
+                <!-- 4) Oda Özellikleri (Amenity Listesi) -->
+                <div class="col-12">
+                    <h6 class="mb-2">Oda Özellikleri (Amenity Listesi)</h6>
+
+                    <div class="row g-4">
+
+                        <!-- KONFOR -->
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <h6 class="fw-bold mb-2">Konfor</h6>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Comfort_Heating" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Comfort_Heating">Isıtma</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Comfort_SoundIsolation" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Comfort_SoundIsolation">Ses yalıtımı</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Comfort_BlackoutCurtain" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Comfort_BlackoutCurtain">Karartma perdesi</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TEKNOLOJİ -->
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <h6 class="fw-bold mb-2">Teknoloji</h6>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Tech_SmartTv" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Tech_SmartTv">Smart TV</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Tech_NetflixYoutube" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Tech_NetflixYoutube">Netflix / YouTube</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Tech_UsbSocket" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Tech_UsbSocket">USB priz</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Tech_FastWifi" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Tech_FastWifi">Hızlı Wi-Fi</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BANYO -->
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <h6 class="fw-bold mb-2">Banyo</h6>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Bath_Shower" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Bath_Shower">Duş</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Bath_Bathtub" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Bath_Bathtub">Küvet</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Bath_HairDryer" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Bath_HairDryer">Saç kurutma makinesi</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Bath_TowelSet" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Bath_TowelSet">Havlu seti</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Bath_Toiletries" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Bath_Toiletries">Buklet ürünler</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MUTFAK -->
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <h6 class="fw-bold mb-2">Mutfak (varsa)</h6>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Kitchen_MiniFridge" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Kitchen_MiniFridge">Mini buzdolabı</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Kitchen_Kettle" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Kitchen_Kettle">Su ısıtıcısı</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Kitchen_TeaCoffeeSet" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Kitchen_TeaCoffeeSet">Çay–kahve seti</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Kitchen_StoveOrMicrowave" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Kitchen_StoveOrMicrowave">Ocak / Mikro dalga</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GÜVENLİK -->
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <h6 class="fw-bold mb-2">Güvenlik</h6>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Security_SmokeDetector" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Security_SmokeDetector">Yangın dedektörü</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Security_SafeBox" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Security_SafeBox">Kasa</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Security_24hHotWater" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Security_24hHotWater">24 saat sıcak su</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DIŞ ALAN -->
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <h6 class="fw-bold mb-2">Dış Alan</h6>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Outdoor_BalconyTerrace" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Outdoor_BalconyTerrace">Balkon / Teras</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="Amenity_Outdoor_GardenAccess" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="Amenity_Outdoor_GardenAccess">Bahçe çıkışı</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    Kaydet
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

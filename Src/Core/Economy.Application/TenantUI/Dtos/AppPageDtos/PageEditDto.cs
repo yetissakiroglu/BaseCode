@@ -17,8 +17,6 @@ namespace Economy.Application.TenantUI.Dtos.AppPageDtos
         public string? CoverImageMobilUrl { get; set; }
         public string? OgImageUrl { get; set; }
         public List<MediaItem> MediaItems { get; set; } = new();
-
-        //public List<string>? ImgGalleryUrls { get; set; }
         public List<PageTranslationDto> Translations { get; set; } = new();
     }
 
