@@ -52,6 +52,7 @@ namespace Economy.UI.Dtos
         string? MetaDescription,
         string? CoverImageUrl,
         string? OgImageUrl,
+        string? CoverImageMobilUrl,
         IReadOnlyList<PageMediaDto> Medias,
         IReadOnlyList<BlockGroupDto> Groups,
         IReadOnlyList<HreflangVm> Hreflangs,

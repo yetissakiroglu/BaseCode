@@ -281,18 +281,19 @@ namespace Economy.Persistence.Tenant.Services
                 IsHomepage = page.IsHomepage,
                 PublishAtUtc = page.PublishAtUtc,
                 SortOrder = page.SortOrder,
-                Type = (short)page.Type,
+                Type = page.Type,
                 CoverImageUrl = page.CoverImageUrl,
                 OgImageUrl = page.OgImageUrl,
-        //        Singles = new List<ImageFieldVm>
-        //{
-        //    new ImageFieldVm { Key = "KapakImage", Label = "Kapak Görseli", Url = page.CoverImageUrl },
-        //    new ImageFieldVm { Key = "OGImage", Label = "OG Görseli", Url = page.OgImageUrl }
-        //},
-        //        Galleries = new List<GalleryGroupVm>
-        //{
-        //    new GalleryGroupVm { Key = "GenelImages", Label = "Galeri Fotoğrafları" }
-        //}
+                CoverImageMobilUrl = page.CoverImageMobilUrl,
+                //        Singles = new List<ImageFieldVm>
+                //{
+                //    new ImageFieldVm { Key = "KapakImage", Label = "Kapak Görseli", Url = page.CoverImageUrl },
+                //    new ImageFieldVm { Key = "OGImage", Label = "OG Görseli", Url = page.OgImageUrl }
+                //},
+                //        Galleries = new List<GalleryGroupVm>
+                //{
+                //    new GalleryGroupVm { Key = "GenelImages", Label = "Galeri Fotoğrafları" }
+                //}
             };
 
             //var gal = vm.Galleries.First();
@@ -355,9 +356,6 @@ namespace Economy.Persistence.Tenant.Services
             if (langs.Count == 0)
                 return ServiceResult<NoContent>.Failure("Aktif dil bulunamadı.");
 
-            //var gallery = vm.Galleries?.FirstOrDefault(x => x.Key == "GenelImages");
-            //var items = gallery?.Items ?? new List<MediaItem>();
-
             AppPage page = vm.Id == null
                 ? new AppPage()
                 : await _entityPageRepository.DataSet
@@ -371,9 +369,10 @@ namespace Economy.Persistence.Tenant.Services
             page.IsHomepage = vm.IsHomepage;
             page.CoverImageUrl = vm.CoverImageUrl;
             page.OgImageUrl = vm.OgImageUrl;
+            page.CoverImageMobilUrl = vm.CoverImageMobilUrl;
             page.PublishAtUtc = vm.PublishAtUtc;
             page.SortOrder = vm.SortOrder;
-            page.Type = ContentItemType.Page;
+            page.Type = vm.Type;
 
             // Çeviriler
             foreach (var l in langs)
@@ -404,8 +403,8 @@ namespace Economy.Persistence.Tenant.Services
                 }
             }
 
-            // Galeri
-            //if (gallery != null)
+            
+            //if (vm.ImgGalleryUrls != null)
             //{
             //    var keepIds = items.Where(i => i.Id.HasValue).Select(i => i.Id!.Value).ToHashSet();
             //    var toRemove = page.Medias.Where(m => !keepIds.Contains(m.Id)).ToList();

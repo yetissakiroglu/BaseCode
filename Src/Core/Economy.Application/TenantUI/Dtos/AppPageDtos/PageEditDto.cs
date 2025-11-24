@@ -1,4 +1,5 @@
-﻿using Economy.Core.Enums;
+﻿using Economy.Core.Dtos.Custom;
+using Economy.Core.Enums;
 
 namespace Economy.Application.TenantUI.Dtos.AppPageDtos
 {
@@ -11,21 +12,23 @@ namespace Economy.Application.TenantUI.Dtos.AppPageDtos
         public bool IsHomepage { get; set; } = false;
         public DateTime? PublishAtUtc { get; set; }
         public int SortOrder { get; set; }
-        public short Type { get; set; } = 1;
+        public ContentItemType Type { get; set; } = ContentItemType.Page;
         public string? CoverImageUrl { get; set; }
         public string? CoverImageMobilUrl { get; set; }
         public string? OgImageUrl { get; set; }
-        public List<string>? ImgGalleryUrls { get; set; }
+        public List<MediaItem> MediaItems { get; set; } = new();
+
+        //public List<string>? ImgGalleryUrls { get; set; }
         public List<PageTranslationDto> Translations { get; set; } = new();
-     }
+    }
 
     public class PageTranslationDto
     {
         public int? Id { get; set; }
         public int AppLanguageId { get; set; }
         public string AppLanguageCode { get; set; } = default!;
-        public string? AppLanguageIcon { get; set; } = default!;
-        public string Slug { get; set; }
+        public string AppLanguageIcon { get; set; } = default!;
+        public string? Slug { get; set; }
         public string? Title { get; set; }
         public string? Summary { get; set; }
         public string? Body { get; set; }

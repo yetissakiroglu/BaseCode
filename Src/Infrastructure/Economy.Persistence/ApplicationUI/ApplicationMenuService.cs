@@ -422,6 +422,7 @@ namespace Economy.Persistence.ApplicationUI
                 MetaDescription: t.MetaDescription,
                 CoverImageUrl: p.CoverImageUrl,
                 OgImageUrl: p.OgImageUrl,
+                CoverImageMobilUrl: p.CoverImageMobilUrl,
                 Medias: list,
                 Groups: groups,
                 Hreflangs: Hreflangs,

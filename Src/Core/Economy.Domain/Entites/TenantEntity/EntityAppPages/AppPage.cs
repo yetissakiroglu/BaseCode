@@ -10,6 +10,7 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
         public bool IsHomepage { get; set; } = false;
         public string? CoverImageUrl { get; set; }
         public string? OgImageUrl { get; set; }
+        public string? CoverImageMobilUrl { get; set; }
         public bool IsActive { get; set; } = true;
         public PageStage Stage { get; set; } = PageStage.Draft;
         public int SortOrder { get; set; } = 0;

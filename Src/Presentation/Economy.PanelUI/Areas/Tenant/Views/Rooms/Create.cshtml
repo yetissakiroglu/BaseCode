@@ -5,7 +5,6 @@
     bool isEdit = Model.Id.HasValue;
     ViewBag.Title = isEdit ? "Oda Düzenle" : "Yeni Oda";
     var parents = (List<PageParentOptionDto>)ViewBag.Parents!;
-    var urls = Model.ImgGalleryUrls ?? new List<string>();
 }
 <main>
     <div class="container-fluid">
@@ -29,6 +28,7 @@
             <div class="col-12">
                 <form method="post" id="roomCreateForm">
                     @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Type" />
                     <div class="card equal-card">
                         <div class="card-body">
                             <ul class="nav nav-tabs tab-primary bg-primary p-1" id="bg" role="tablist">
@@ -220,7 +220,6 @@
                                             })
                                         </div>
 
-
                                         <div class="col-md-4">
                                             <label class="form-label fw-semibold">
                                                 Paylaşım Kapak Görseli
@@ -242,12 +241,11 @@
                                             <label class="form-label fw-semibold mb-2">Görsel Listesi</label>
                                             <div class="card project-total-card">
                                                 <div class="card-body">
-                                                    @await Html.PartialAsync("PartialViews/_ImageUrlsEditor", urls, new ViewDataDictionary(ViewData) { ["NamePrefix"] = "ImgGalleryUrls", ["FormId"] = "roomCreateForm", ["PickerUrl"] = "/Tenant/ImageManager/Picker" })
+                                                    @await Html.PartialAsync("PartialViews/_ImageGalleryEditor", Model.MediaItems, new ViewDataDictionary(ViewData) { ["NamePrefix"] = "MediaItems", ["FormId"] = "roomCreateForm", ["PickerUrl"] = "/Tenant/ImageManager/Picker" })
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>

@@ -32,6 +32,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         public async Task<IActionResult> Create(CancellationToken ct)
         {
             var vm = new PageEditDto();
+            vm.Type = ContentItemType.Room;
             await _panelAppPageService.FillLanguagesAsync(vm, ct);
             ViewBag.Parents = (await _panelAppPageService.GetParentOptionsAsync(ct)).Data;
             return View(vm);
