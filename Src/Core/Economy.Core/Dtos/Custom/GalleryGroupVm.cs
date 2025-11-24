@@ -13,6 +13,7 @@
         public int? Id { get; set; }
         public string? MediaUrl { get; set; }
         public int SortOrder { get; set; }
+        public bool IsCover { get; set; }
         public List<MediaItemTranslation> Translations { get; set; } = new();
     }
 

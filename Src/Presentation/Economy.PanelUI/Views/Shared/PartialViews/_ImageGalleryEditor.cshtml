@@ -20,12 +20,13 @@
             var url = item?.MediaUrl ?? "";
             var id = item?.Id;
             var sort = item?.SortOrder ?? i;
+            var IsCover = item?.IsCover ?? false;
 
             <div class="col-12 col-md-6 col-xl-4 gal-row">
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-2">
                         <div class="position-relative rounded-3 overflow-hidden border bg-light mb-2 preview-wrap">
-                            <div class="checkerboard"></div>
+
                             <div class="ratio ratio-16x9">
                                 <img src="@url"
                                      alt="Görsel önizleme"
