@@ -1,93 +1,67 @@
-﻿@model string?
+﻿@model string
 @{
     var namePrefix = (ViewData["NamePrefix"] as string) ?? "ImageUrl";
     var formId = (ViewData["FormId"] as string) ?? "mainForm";
     var pickerUrl = (ViewData["PickerUrl"] as string) ?? "/Tenant/ImageManager/Picker";
-    var containerId = "imgurl_" + Guid.NewGuid().ToString("N");
+    var containerId = "imgsingle_" + Guid.NewGuid().ToString("N");
     var url = Model ?? "";
 }
 
-<div id="@containerId" class="imgpick">
+<div id="@containerId"
+     class="imgpick"
+     data-editor-type="single"
+     data-name-prefix="@namePrefix">
     <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
-            <!-- Preview -->
-            <div class="position-relative rounded-3 overflow-hidden border bg-light mb-3 preview-wrap">
-                <!-- Checkerboard arka plan: transparan görseller için -->
+        <div class="card-body p-2">
+            <div class="position-relative rounded-3 overflow-hidden border bg-light mb-2 preview-wrap">
                 <div class="checkerboard"></div>
-
-                <!-- 16:9 ratio alan -->
                 <div class="ratio ratio-16x9">
                     <img src="@(string.IsNullOrWhiteSpace(url) ? "" : url)"
                          alt="Görsel önizleme"
                          class="img-fluid w-100 h-100 object-fit-cover preview-img @(string.IsNullOrWhiteSpace(url) ? "d-none" : null)">
-                    <!-- boş durumda placeholder -->
                     <div class="d-flex flex-column align-items-center justify-content-center text-muted gap-1 placeholder-wrap @(string.IsNullOrWhiteSpace(url) ? null : "d-none")">
-                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.5" />
-                            <path d="M4 15l4-4 4 4 4-5 4 5" stroke="currentColor" stroke-width="1.5" fill="none" />
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                            <path d="M4 5h16v14H4z" stroke="currentColor" stroke-width="1.25" />
+                            <path d="M4 15l4-4 4 4 4-5 4 5" stroke="currentColor" stroke-width="1.25" />
                             <circle cx="9" cy="8" r="1" fill="currentColor" />
                         </svg>
-                        <small>Görsel seçilmedi</small>
+                        <small>Seçilmedi</small>
                     </div>
                 </div>
-
-                <!-- Hover overlay -->
                 <div class="overlay-actions d-flex gap-2">
-                    <button type="button" class="btn btn-sm btn-dark pick-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="me-1">
-                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" />
-                        </svg>
-                        Değiştir
+                    <button type="button" class="btn btn-dark btn-xs pick-btn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" class="me-1">
+                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" />
+                        </svg> Değiştir
                     </button>
-                    <a href="@(string.IsNullOrWhiteSpace(url) ? "#" : url)" target="_blank"
-                       class="btn btn-sm btn-outline-light open-btn @(string.IsNullOrWhiteSpace(url) ? "disabled" : null)">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="me-1">
-                            <path d="M14 3h7v7M21 3l-9 9" stroke="currentColor" stroke-width="2" />
-                            <path d="M5 21h14V11" stroke="currentColor" stroke-width="2" />
-                        </svg>
-                        Aç
-                    </a>
+                    <a href="@url" target="_blank" class="btn btn-outline-light btn-xs open-btn">Aç</a>
                 </div>
             </div>
 
-            <!-- Input + Butonlar -->
             <div class="input-group input-group-sm">
-                <span class="input-group-text">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M3 12a5 5 0 015-5h3M13 17h-3a5 5 0 010-10m5 0a5 5 0 010 10h-3" stroke="currentColor" stroke-width="1.5" />
-                    </svg>
-                </span>
-                <input class="form-control url-input" name="@namePrefix" value="@url" placeholder="https://...">
-                <button class="btn btn-outline-secondary copy-btn" type="button" title="Kopyala">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.5" />
-                        <rect x="4" y="4" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.5" />
-                    </svg>
-                </button>
-                <a class="btn btn-outline-secondary open-btn" target="_blank" href="@(string.IsNullOrWhiteSpace(url) ? "#" : url)" title="Yeni sekmede aç">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M14 3h7v7M21 3l-9 9" stroke="currentColor" stroke-width="1.5" />
-                        <path d="M5 21h14V11" stroke="currentColor" stroke-width="1.5" />
-                    </svg>
-                </a>
-                <button class="btn btn-outline-danger clear-btn" type="button" title="Temizle">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M19 6L5 20M5 6l14 14" stroke="currentColor" stroke-width="1.8" />
-                    </svg>
-                </button>
-                <button class="btn btn-primary pick-btn" type="button" title="Dosya Seç">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="me-1">
-                        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" />
-                    </svg>
-                    Seç
+                <input class="form-control url-input"
+                       name="@namePrefix"
+                       value="@url"
+                       placeholder="https://...">
+                <button class="btn btn-outline-danger btn-sm clear-btn" type="button">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" class="me-1">
+                        <path d="M19 6L5 20M5 6l14 14" stroke="currentColor" stroke-width="1.7" />
+                    </svg> Temizle
                 </button>
             </div>
-            <small class="text-muted d-block mt-2">Öneri: 1600×900 veya 1920×1080, JPG/WEBP.</small>
         </div>
     </div>
 </div>
 
 <style>
+    .imgpick .object-fit-cover {
+        object-fit: cover
+    }
+
+    .ratio-16x9 {
+        aspect-ratio: 16/9
+    }
+
     .imgpick .preview-wrap {
         transition: box-shadow .2s ease
     }
@@ -96,8 +70,11 @@
             box-shadow: 0 .125rem .5rem rgba(0,0,0,.12)
         }
 
-    .imgpick .object-fit-cover {
-        object-fit: cover
+    .imgpick .checkerboard {
+        position: absolute;
+        inset: 0;
+        background: conic-gradient(#eee 25%, #fff 0 50%, #eee 0 75%, #fff 0) 0/16px 16px;
+        opacity: .6;
     }
 
     .imgpick .overlay-actions {
@@ -105,7 +82,7 @@
         inset: auto 0 0 0;
         display: flex;
         justify-content: center;
-        padding: .5rem;
+        padding: .4rem;
         background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.45) 100%);
         opacity: 0;
         transition: opacity .2s ease;
@@ -115,108 +92,103 @@
         opacity: 1
     }
 
-    .imgpick .checkerboard {
-        position: absolute;
-        inset: 0;
-        background: conic-gradient(#eee 25%, #fff 0 50%, #eee 0 75%, #fff 0) 0/16px 16px;
-        opacity: .6;
+    .btn-xs {
+        padding: .15rem .4rem;
+        font-size: .75rem;
+        line-height: 1.1;
+        border-radius: .25rem
     }
 </style>
 
 <script>
     (function () {
-        const id = "@containerId";
+        const id        = "@containerId";
         const pickerUrl = "@pickerUrl";
-        const namePrefix = "@namePrefix";
-        const formId = "@formId";
 
         const root = document.getElementById(id);
         if (!root) return;
 
         const input = root.querySelector(".url-input");
         const img   = root.querySelector(".preview-img");
-        const openA = root.querySelectorAll(".open-btn");
-        const pick  = root.querySelectorAll(".pick-btn");
+        const ph    = root.querySelector(".placeholder-wrap");
+        const openA = root.querySelector(".open-btn");
+        const pick  = root.querySelector(".pick-btn");
         const clear = root.querySelector(".clear-btn");
-        const placeholder = root.querySelector(".placeholder-wrap");
 
-        function setUrlLocal(u){
-            const val = (u || "").trim();
+        function setUrl(val) {
+            val = (val || "").trim();
             input.value = val;
             const has = !!val;
+            if (img)   { img.src = val; img.classList.toggle("d-none", !has); }
+            if (ph)    { ph.classList.toggle("d-none", has); }
+            if (openA) { openA.href = has ? val : "#"; }
+        }
 
-            if (img){
-                img.src = has ? val : "";
-                img.classList.toggle("d-none", !has);
-            }
-            if (placeholder){
-                placeholder.classList.toggle("d-none", has);
-            }
-            openA.forEach(a => {
-                if (!a) return;
-                a.classList.toggle("disabled", !has);
-                a.setAttribute("href", has ? val : "#");
+        if (input) {
+            input.addEventListener("input", () => setUrl(input.value));
+        }
+
+        if (pick) {
+            pick.addEventListener("click", () => {
+                const w = 1000, h = 700;
+                const y = window.top.outerHeight / 2 + window.top.screenY - (h / 2);
+                const x = window.top.outerWidth / 2 + window.top.screenX - (w / 2);
+
+                // Global picker state
+                window.__imgPickerState = {
+                    editorId: id,
+                    mode: "single"
+                };
+
+                window.open(
+                    pickerUrl,
+                    "picker",
+                    `popup=yes,width=${w},height=${h},left=${x},top=${y}`
+                );
             });
         }
 
-        input.addEventListener("input", e => setUrlLocal(e.target.value));
-        clear.addEventListener("click", () => setUrlLocal(""));
-
-        function openPicker(){
-            const w=1000,h=700;
-            const y=window.top.outerHeight/2+window.top.screenY-(h/2);
-            const x=window.top.outerWidth/2+window.top.screenX-(w/2);
-            window.__activeImgEditor = id;
-            window.open(pickerUrl, 'picker', `popup=yes,width=${w},height=${h},left=${x},top=${y}`);
+        if (clear) {
+            clear.addEventListener("click", () => setUrl(""));
         }
-        pick.forEach(b => b.addEventListener("click", openPicker));
 
-        // GLOBAL dinleyici: aktif editor'ü DOM'dan bul
-        if (!window.__singleImgUrlBoundFancy){
-            window.addEventListener("message", ev => {
+        // Bu editor’ü global kayda al
+        window.__imgEditors = window.__imgEditors || {};
+        window.__imgEditors[id] = {
+            type: "single",
+            apply: function (payload) {
+                const urls = payload.urls || [];
+                if (!urls.length) return;
+                setUrl(urls[0]); // tekli editor: sadece ilkini al
+            }
+        };
+
+        // Ortak message handler sadece 1 kere eklenir
+        if (!window.__imgPickerMessageBound) {
+            window.__imgPickerMessageBound = true;
+
+            window.addEventListener("message", function (ev) {
                 const data = ev.data || {};
-                const isValid = data.type === "image-picked" || data.type === "images-picked";
-                if (!isValid) return;
+                if (data.type !== "image-picked" && data.type !== "images-picked") return;
 
-                const activeId = window.__activeImgEditor;
-                if (!activeId) return;
+                const state = window.__imgPickerState || {};
+                if (!state.editorId) return;
 
-                const container = document.getElementById(activeId);
-                if (!container) return;
+                const editorMap = window.__imgEditors || {};
+                const editor = editorMap[state.editorId];
+                if (!editor || typeof editor.apply !== "function") return;
 
-                const inp        = container.querySelector(".url-input");
-                const imgEl      = container.querySelector(".preview-img");
-                const placeholderEl = container.querySelector(".placeholder-wrap");
-                const openEls    = container.querySelectorAll(".open-btn");
+                const urls = Array.isArray(data.urls)
+                    ? data.urls.filter(Boolean)
+                    : (data.url ? [data.url] : []);
 
-                const picked = data.url || (Array.isArray(data.urls) && data.urls[0]) || "";
-                const val = (picked || "").trim();
-                if (!inp) return;
+                if (!urls.length) return;
 
-                inp.value = val;
-                const has = !!val;
-
-                if (imgEl){
-                    imgEl.src = has ? val : "";
-                    imgEl.classList.toggle("d-none", !has);
-                }
-                if (placeholderEl){
-                    placeholderEl.classList.toggle("d-none", has);
-                }
-                openEls.forEach(a => {
-                    if (!a) return;
-                    a.classList.toggle("disabled", !has);
-                    a.setAttribute("href", has ? val : "#");
+                editor.apply({
+                    urls,
+                    state
                 });
             });
-            window.__singleImgUrlBoundFancy = true;
-        }
-
-        // Form submit (isim sabit kalır)
-        let form = formId ? document.getElementById(formId) : null;
-        if(!form) form = root.closest("form");
-        if (form){
-            form.addEventListener("submit", () => { input.name = namePrefix; });
         }
     })();
 </script>

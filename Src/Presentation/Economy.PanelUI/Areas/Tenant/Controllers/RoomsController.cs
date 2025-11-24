@@ -32,20 +32,29 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         public async Task<IActionResult> Create(CancellationToken ct)
         {
             var vm = new PageEditDto();
-            vm.Singles = new List<ImageFieldVm>()
-            {
-                new ImageFieldVm { Key = "KapakImage", Label = "Kapak Görseli" },
-                new ImageFieldVm { Key ="OGImage", Label="OG Görseli"}
-            };
-
-            vm.Galleries = new List<GalleryGroupVm>()
-            {
-                new GalleryGroupVm { Key = "GenelImages", Label = "Galeri Fotoğrafları" },
-            };
-
             await _panelAppPageService.FillLanguagesAsync(vm, ct);
             ViewBag.Parents = (await _panelAppPageService.GetParentOptionsAsync(ct)).Data;
             return View(vm);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(PageEditDto vm, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                await _panelAppPageService.EnsureLanguageTabsAsync(vm, ct);
+                ViewBag.Parents = (await _panelAppPageService.GetParentOptionsAsync(ct)).Data;
+                return View(vm);
+            }
+
+            var resultNew = await _panelAppPageService.CreateEdit(vm, ct);
+            AddMessage(resultNew);
+            if (!resultNew.IsSuccess)
+            {
+                return RedirectToAction(nameof(Create), vm);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

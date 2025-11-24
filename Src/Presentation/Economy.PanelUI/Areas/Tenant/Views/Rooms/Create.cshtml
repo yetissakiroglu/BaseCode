@@ -6,7 +6,6 @@
     ViewBag.Title = isEdit ? "Oda Düzenle" : "Yeni Oda";
     var parents = (List<PageParentOptionDto>)ViewBag.Parents!;
     var urls = Model.ImgGalleryUrls ?? new List<string>();
-
 }
 <main>
     <div class="container-fluid">
@@ -28,177 +27,242 @@
                 </div>
             </div>
             <div class="col-12">
-                <div class="card mb-3">
-                    <div class="card-header">Genel</div>
-                    <form method="post" id="roomCreateForm">
-                        @Html.AntiForgeryToken()
+                <form method="post" id="roomCreateForm">
+                    @Html.AntiForgeryToken()
+                    <div class="card equal-card">
                         <div class="card-body">
-                            <div class="row g-3 align-items-end">
-
-                                <div class="col-md-3">
-                                    <label asp-for="AppPageId" class="form-label fw-semibold">Üst Sayfa</label>
-                                    <select asp-for="AppPageId" class="form-select">
-                                        <option value="">(Yok)</option>
-                                        @foreach (var p in parents)
-                                        {
-                                            <option value="@p.Id" selected="@(Model.AppPageId == p.Id ? "selected" : null)">
-                                                @p.Title
-                                            </option>
-                                        }
-                                    </select>
-                                </div>
-
-                                <div class="col-md-1">
-                                    <label asp-for="SortOrder" class="form-label fw-semibold">Sıra</label>
-                                    <input asp-for="SortOrder" class="form-control" type="number" min="0" />
-                                </div>
-                                <div class="col-md-2">
-                                    <select asp-for="Stage"
-                                            class="form-select"
-                                            asp-items="Html.GetEnumSelectList<PageStage>()">
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <label asp-for="PublishAtUtc" class="form-label fw-semibold">Yayın Tarihi (UTC)</label>
-                                    <input asp-for="PublishAtUtc" class="form-control" type="datetime-local" />
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-check mt-3">
-                                        <input asp-for="IsActive" class="form-check-input" type="checkbox" id="chkActive" />
-                                        <label class="form-check-label" for="chkActive">Aktif</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-check mt-3">
-                                        <input asp-for="IsHomepage" class="form-check-input" type="checkbox" id="chkHome" />
-                                        <label class="form-check-label" for="chkHome">Anasayfa mı?</label>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">
-                                        Kapak Görseli
-                                    </label>
-                                    @await Html.PartialAsync("PartialViews/_ImageUrlEditor", Model.CoverImageUrl, new ViewDataDictionary(ViewData)
-                                    {
-                                        { "NamePrefix", "Model.CoverImageUrl" },
-                                                                        { "FormId", "roomCreateForm" },
-                                                                        { "PickerUrl", "/Tenant/ImageManager/Picker" }
-                                    })
-
-                                </div>
-
-
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">
-                                        OG Görseli
-                                    </label>
-                                    @await Html.PartialAsync("PartialViews/_ImageUrlEditor", Model.OgImageUrl, new ViewDataDictionary(ViewData)
-                                                                        {
-                                        { "NamePrefix", "Model.OgImageUrl" },
-                                                                        { "FormId", "roomCreateForm" },
-                                                                        { "PickerUrl", "/Tenant/ImageManager/Picker" }
-                                    })
-
-                                </div>
-
-                                <div class="col-lg-12">
-                                    <div class="card project-total-card">
-                                        <div class="card-body">
-                                           @await Html.PartialAsync("PartialViews/_ImageUrlsEditor",urls,new ViewDataDictionary(ViewData){["NamePrefix"] = "Model.ImgGalleryUrls",["FormId"] = "roomCreateForm",["PickerUrl"] = "/Tenant/ImageManager/Picker"})
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                        <hr class="custom-divider" />
-                        <div class="card-body">
-                            <ul class="nav nav-tabs tab-light-secondary" role="tablist">
-                                @for (int i = 0; i < Model.Translations.Count; i++)
-                                {
-                                    var t = Model.Translations[i];
-                                    var code = (t.AppLanguageCode ?? "xx").ToLower();       // güvenli
-                                    var tabId = $"tab-{code}-{i}";                        // benzersiz
-                                    var paneId = $"pane-{code}-{i}";                      // benzersiz
-                                        <li class="nav-item" role="presentation">
-                                            <button class="gap-2 nav-link @(i == 0 ? "active" : null)"
-                                                    id="@tabId"
-                                                    type="button"
-                                                    role="tab"
-                                                    data-bs-toggle="tab"
-                                                    data-bs-target="#@paneId"
-                                                    aria-controls="@paneId"
-                                                    aria-selected="@(i == 0 ? "true" : "false")">
-                                                <i class="@t.AppLanguageIcon?.ToLower()"></i>
-                                                @t.AppLanguageCode?.ToUpper()
-                                            </button>
-                                        </li>
-                                }
+                            <ul class="nav nav-tabs tab-primary bg-primary p-1" id="bg" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="genel-tab" data-bs-toggle="tab"
+                                            data-bs-target="#genel-tab-pane" type="button" role="tab" aria-controls="genel-tab-pane"
+                                            aria-selected="true">
+                                        <i class="ti ti-disc pe-1 ps-1"></i> Genel Ayarlar
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="resim-tab" data-bs-toggle="tab"
+                                            data-bs-target="#resim-tab-pane" type="button" role="tab" aria-controls="resim-tab-pane"
+                                            aria-selected="false">
+                                        <i class="ti ti-history pe-1 ps-1"></i>Resimler
+                                    </button>
+                                </li>
                             </ul>
-                            <div class="tab-content border border-top-0 p-3">
-                                @for (int i = 0; i < Model.Translations.Count; i++)
-                                {
-                                    var t = Model.Translations[i];
-                                    var code = (t.AppLanguageCode ?? "xx").ToLower();
-                                    var tabId = $"tab-{code}-{i}";
-                                    var paneId = $"pane-{code}-{i}";
+                            <div class="tab-content" id="bgContent">
+                                <div class="tab-pane fade show active" id="genel-tab-pane" role="tabpanel" aria-labelledby="genel-tab" tabindex="0">
+                                    <div class="row g-3 align-items-end p-3">
+                                        <div class="col-3">
+                                            <div class="card shadow-sm">
+                                                <div class="card-header d-flex align-items-center gap-2">
+                                                    <i class="bi bi-cone-striped"></i>
+                                                    <label asp-for="IsActive" class="form-label fw-semibold fw-bold">Durumu</label>
+                                                </div>
+                                                <div class="card-body row g-3">
+                                                    <div class="col-12 d-flex align-items-center">
+                                                        <div class="form-check form-switch ms-1">
+                                                            <input asp-for="IsActive" class="form-check-input" />
+                                                            <label asp-for="IsActive" class="form-check-label">aktif/pasif</label>
+                                                        </div>
+                                                    </div>
 
-                                    <div id="@paneId" class="tab-pane fade @(i == 0 ? "show active" : null)" role="tabpanel" aria-labelledby="@tabId">
-
-                                        <input type="hidden" name="Translations[@i].AppLanguageId" value="@t.AppLanguageId" />
-                                        <input type="hidden" name="Translations[@i].AppLanguageCode" value="@t.AppLanguageCode" />
-                                        <input type="hidden" name="Translations[@i].AppLanguageIcon" value="@t.AppLanguageIcon" />
-                                        <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
-
-
-                                        <div class="row slug-row" data-langid="@t.AppLanguageId" data-trid="@t.Id">
-                                            <div class="col-md-6">
-                                                <label class="form-label">Başlık</label>
-                                                <input class="form-control js-title" name="Translations[@i].Title" value="@t.Title" />
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">Slug</label>
-                                                <input class="form-control js-slug" name="Translations[@i].Slug" value="@t.Slug" />
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="row g-3">
-                                            <div class="col-md-12">
-                                                <label class="form-label">Kısa Açıklama</label>
-                                                <textarea class="form-control" name="Translations[@i].Summary" rows="2">@t.Summary</textarea>
+                                        <div class="col-3">
+                                            <div class="card shadow-sm">
+                                                <div class="card-header d-flex align-items-center gap-2">
+                                                    <i class="bi bi-cone-striped"></i>
+                                                    <label asp-for="IsHomepage" class="form-label fw-semibold fw-bold">Anasayfa Mi?</label>
+                                                </div>
+                                                <div class="card-body row g-3">
+                                                    <div class="col-6 d-flex align-items-center">
+                                                        <div class="form-check form-switch ms-1">
+                                                            <input asp-for="IsHomepage" class="form-check-input" />
+                                                            <label asp-for="IsHomepage" class="form-check-label"> aktif/pasif</label>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
                                             </div>
-                                            <div class="col-md-12">
-                                                <label class="form-label">İçerik</label>
-                                                <textarea class="form-control app-editor editorContent" name="Translations[@i].Body" rows="6">@t.Body</textarea>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="card shadow-sm">
+                                                <div class="card-header d-flex align-items-center gap-2">
+                                                    <i class="bi bi-cone-striped"></i>
+                                                    <label asp-for="Stage" class="form-label fw-semibold fw-bold">Yayınlama Durumu</label>
+                                                </div>
+                                                <div class="card-body row g-3">
+                                                    <div class="col-6 d-flex align-items-center">
+                                                        <input asp-for="PublishAtUtc" class="form-control" type="datetime-local" />
+                                                    </div>
+                                                    <div class="col-6 d-flex align-items-center">
+                                                        <select asp-for="Stage"
+                                                                class="form-select"
+                                                                asp-items="Html.GetEnumSelectList<PageStage>()">
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-12">
-                                                <label class="form-label">Meta Title</label>
-                                                <input class="form-control" name="Translations[@i].MetaTitle" value="@t.MetaTitle" />
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="card shadow-sm">
+                                                <div class="card-header d-flex align-items-center gap-2">
+                                                    <i class="bi bi-cone-striped"></i>
+                                                    <label asp-for="SortOrder" class="form-label fw-semibold fw-bold">Sıra</label>
+                                                </div>
+                                                <div class="card-body row g-3">
+                                                    <div class="col-12 d-flex align-items-center">
+                                                        <input asp-for="SortOrder" class="form-control" type="number" min="0" />
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-md-12">
-                                                <label class="form-label">Meta Description</label>
-                                                <textarea class="form-control" name="Translations[@i].MetaDescription" rows="3">@t.MetaDescription</textarea>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <ul class="nav nav-tabs tab-light-secondary" role="tablist">
+                                                @for (int i = 0; i < Model.Translations.Count; i++)
+                                                {
+                                                    var t = Model.Translations[i];
+                                                    var code = (t.AppLanguageCode ?? "xx").ToLower();       // güvenli
+                                                    var tabId = $"tab-{code}-{i}";                        // benzersiz
+                                                    var paneId = $"pane-{code}-{i}";                      // benzersiz
+                                                                                                          <li class="nav-item" role="presentation">
+                                                                                                              <button class="gap-2 nav-link @(i == 0 ? "active" : null)"
+                                                                                                                      id="@tabId"
+                                                                                                                      type="button"
+                                                                                                                      role="tab"
+                                                                                                                      data-bs-toggle="tab"
+                                                                                                                      data-bs-target="#@paneId"
+                                                                                                                      aria-controls="@paneId"
+                                                                                                                      aria-selected="@(i == 0 ? "true" : "false")">
+                                                                                                                  <i class="@t.AppLanguageIcon?.ToLower()"></i>
+                                                                                                                  @t.AppLanguageCode?.ToUpper()
+                                                                                                              </button>
+                                                                                                          </li>
+                                                }
+                                            </ul>
+                                            <div class="tab-content pt-3">
+                                                @for (int i = 0; i < Model.Translations.Count; i++)
+                                                {
+                                                    var t = Model.Translations[i];
+                                                    var code = (t.AppLanguageCode ?? "xx").ToLower();
+                                                    var tabId = $"tab-{code}-{i}";
+                                                    var paneId = $"pane-{code}-{i}";
+
+                                                    <div id="@paneId" class="tab-pane fade @(i == 0 ? "show active" : null)" role="tabpanel" aria-labelledby="@tabId">
+                                                        <input type="hidden" name="Translations[@i].AppLanguageId" value="@t.AppLanguageId" />
+                                                        <input type="hidden" name="Translations[@i].AppLanguageCode" value="@t.AppLanguageCode" />
+                                                        <input type="hidden" name="Translations[@i].AppLanguageIcon" value="@t.AppLanguageIcon" />
+                                                        <input type="hidden" name="Translations[@i].Id" value="@t.Id" />
+
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-2">
+                                                                <div class="row slug-row" data-langid="@t.AppLanguageId" data-trid="@t.Id">
+                                                                    <div class="col-md-6 mb-2">
+                                                                        <label class="form-label fw-semibold">Başlık</label>
+                                                                        <input class="form-control js-title" name="Translations[@i].Title" value="@t.Title" />
+                                                                    </div>
+                                                                    <div class="col-md-6 mb-2">
+                                                                        <label class="form-label fw-semibold">Url</label>
+                                                                        <input class="form-control js-slug" name="Translations[@i].Slug" value="@t.Slug" />
+                                                                    </div>
+                                                                    <div class="col-md-12 mb-2">
+                                                                        <label class="form-label fw-semibold">Kısa Açıklama</label>
+                                                                        <textarea class="form-control" name="Translations[@i].Summary" rows="2">@t.Summary</textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 mb-2">
+                                                                <div class="row">
+                                                                    <div class="col-md-12 mb-2">
+                                                                        <label class="form-label fw-semibold">Meta Title</label>
+                                                                        <input class="form-control" name="Translations[@i].MetaTitle" value="@t.MetaTitle" />
+                                                                    </div>
+                                                                    <div class="col-md-12 mb-2">
+                                                                        <label class="form-label fw-semibold">Meta Description</label>
+                                                                        <textarea class="form-control" name="Translations[@i].MetaDescription" rows="2">@t.MetaDescription</textarea>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-12 mb-2">
+                                                                <label class="form-label fw-semibold">İçerik</label>
+                                                                <textarea class="form-control app-editor editorContent" name="Translations[@i].Body" rows="6">@t.Body</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-semibold">
+                                                Web Kapak Görseli
+                                            </label>
+                                            @await Html.PartialAsync("PartialViews/_ImageUrlEditor", Model.CoverImageUrl, new ViewDataDictionary(ViewData)
+                                            {
+                                                { "NamePrefix", "CoverImageUrl" },
+                                                                                        { "FormId", "roomCreateForm" },
+                                                                                        { "PickerUrl", "/Tenant/ImageManager/Picker" }
+                                            })
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-semibold">
+                                                Mobil Kapak Görseli
+                                            </label>
+                                            @await Html.PartialAsync("PartialViews/_ImageUrlEditor", Model.CoverImageMobilUrl, new ViewDataDictionary(ViewData)
+                                                                                        {
+                                                { "NamePrefix", "CoverImageMobilUrl" },
+                                                                                        { "FormId", "roomCreateForm" },
+                                                                                        { "PickerUrl", "/Tenant/ImageManager/Picker" }
+                                            })
+                                        </div>
+
+
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-semibold">
+                                                Paylaşım Kapak Görseli
+                                            </label>
+                                            @await Html.PartialAsync("PartialViews/_ImageUrlEditor", Model.OgImageUrl, new ViewDataDictionary(ViewData)
+                                                                                        {
+                                                { "NamePrefix", "OgImageUrl" },
+                                                                                        { "FormId", "roomCreateForm" },
+                                                                                        { "PickerUrl", "/Tenant/ImageManager/Picker" }
+                                            })
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="resim-tab-pane" role="tabpanel" aria-labelledby="resim-tab"
+                                     tabindex="0">
+                                    <div class="row g-3 align-items-end p-3">
+                                        <div class="col-lg-12">
+                                            <label class="form-label fw-semibold mb-2">Görsel Listesi</label>
+                                            <div class="card project-total-card">
+                                                <div class="card-body">
+                                                    @await Html.PartialAsync("PartialViews/_ImageUrlsEditor", urls, new ViewDataDictionary(ViewData) { ["NamePrefix"] = "ImgGalleryUrls", ["FormId"] = "roomCreateForm", ["PickerUrl"] = "/Tenant/ImageManager/Picker" })
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                }
-                            </div>
-                            <hr class="my-4" />
-                            <div class="mt-4 text-end">
-                                <button class="btn btn-primary" type="submit">Kaydet</button>
-                                <a class="btn btn-outline-secondary" href="/tenant/pages">Vazgeç</a>
+
+                                </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" onclick="history.back()">← Geri</button>
+                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </main>
 
 @section Scripts {
-@*     <script src="~/components/image-manager.js"></script>
- *@
     <script>
         (function(){
           const url   = '@Url.Action("Slugify", "Pages")';

@@ -1,5 +1,4 @@
-﻿using Economy.Core.Dtos.Custom;
-using Economy.Core.Enums;
+﻿using Economy.Core.Enums;
 
 namespace Economy.Application.TenantUI.Dtos.AppPageDtos
 {
@@ -14,13 +13,11 @@ namespace Economy.Application.TenantUI.Dtos.AppPageDtos
         public int SortOrder { get; set; }
         public short Type { get; set; } = 1;
         public string? CoverImageUrl { get; set; }
+        public string? CoverImageMobilUrl { get; set; }
         public string? OgImageUrl { get; set; }
         public List<string>? ImgGalleryUrls { get; set; }
-
         public List<PageTranslationDto> Translations { get; set; } = new();
-        public List<GalleryGroupVm> Galleries { get; set; } = new();
-        public List<ImageFieldVm> Singles { get; set; } = new();
-    }
+     }
 
     public class PageTranslationDto
     {

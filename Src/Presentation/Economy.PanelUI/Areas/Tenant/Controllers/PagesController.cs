@@ -32,16 +32,16 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         public async Task<IActionResult> Create(CancellationToken ct)
         {
             var vm = new PageEditDto();
-            vm.Singles = new List<ImageFieldVm>()
-            {
-                new ImageFieldVm { Key = "KapakImage", Label = "Kapak Görseli" },
-                new ImageFieldVm { Key ="OGImage", Label="OG Görseli"}
-            };
+            //vm.Singles = new List<ImageFieldVm>()
+            //{
+            //    new ImageFieldVm { Key = "KapakImage", Label = "Kapak Görseli" },
+            //    new ImageFieldVm { Key ="OGImage", Label="OG Görseli"}
+            //};
 
-            vm.Galleries = new List<GalleryGroupVm>()
-            {
-                new GalleryGroupVm { Key = "GenelImages", Label = "Galeri Fotoğrafları" },
-            };
+            //vm.Galleries = new List<GalleryGroupVm>()
+            //{
+            //    new GalleryGroupVm { Key = "GenelImages", Label = "Galeri Fotoğrafları" },
+            //};
 
             await _panelAppPageService.FillLanguagesAsync(vm, ct);
             ViewBag.Parents = (await _panelAppPageService.GetParentOptionsAsync(ct)).Data;
@@ -51,8 +51,8 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PageEditDto vm, CancellationToken ct)
         {
-            vm.CoverImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "KapakImage")?.Url;
-            vm.OgImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "OGImage")?.Url;
+            //vm.CoverImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "KapakImage")?.Url;
+            //vm.OgImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "OGImage")?.Url;
 
             if (!ModelState.IsValid)
             {
@@ -113,8 +113,8 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, PageEditDto vm, CancellationToken ct)
         {
-            vm.CoverImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "KapakImage")?.Url;
-            vm.OgImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "OGImage")?.Url;
+            //vm.CoverImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "KapakImage")?.Url;
+            //vm.OgImageUrl = vm.Singles?.FirstOrDefault(x => x.Key == "OGImage")?.Url;
 
             if (!ModelState.IsValid)
             {
