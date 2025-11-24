@@ -1,0 +1,79 @@
+﻿@using Economy.Application.TenantUI.Dtos
+@model RoomAttributeEditVm
+
+<div class="card">
+    <div class="card-header">
+        <h5>@(Model.Id == 0 ? "Yeni Özellik" : "Özellik Düzenle")</h5>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Id)
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <label class="form-label">Kod</label>
+                    <input asp-for="Code" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Grup</label>
+                    <input asp-for="Group" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Input Tipi</label>
+                    <select asp-for="InputType" class="form-select">
+                        <option value="Option">Option</option>
+                        <option value="Bool">Bool</option>
+                        <option value="Number">Number</option>
+                        <option value="Text">Text</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Sıra</label>
+                    <input asp-for="SortOrder" class="form-control" type="number" />
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-check mt-4">
+                        <input asp-for="IsFilterable" class="form-check-input" />
+                        <label class="form-check-label">Filtrede Göster</label>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-check mt-4">
+                        <input asp-for="IsRequired" class="form-check-input" />
+                        <label class="form-check-label">Zorunlu Alan</label>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-check mt-4">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label class="form-check-label">Aktif</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Ad (Türkçe)</label>
+                    <input asp-for="NameTr" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Ad (English)</label>
+                    <input asp-for="NameEn" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Geri</a>
+            </div>
+        </form>
+    </div>
+</div>

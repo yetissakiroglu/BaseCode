@@ -36,10 +36,10 @@ namespace Economy.Persistence.Contexts
         public DbSet<AppBlock> AppBlocks => Set<AppBlock>();
         public DbSet<AppBlockTranslation> AppBlockTranslations => Set<AppBlockTranslation>();
         public DbSet<AppBlockGroupBlock> AppBlockGroupBlocks => Set<AppBlockGroupBlock>();
-
-
-        
-
+        public DbSet<DefRoomAttribute> DefRoomAttributes => Set<DefRoomAttribute>();
+        public DbSet<DefRoomAttributeTranslation> DefRoomAttributeTranslations => Set<DefRoomAttributeTranslation>();
+        public DbSet<DefRoomAttributeOption> DefRoomAttributeOptions => Set<DefRoomAttributeOption>();
+        public DbSet<DefRoomAttributeOptionTranslation> DefRoomAttributeOptionTranslations => Set<DefRoomAttributeOptionTranslation>();
         public DbSet<PageBlock> PageBlocks => Set<PageBlock>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
