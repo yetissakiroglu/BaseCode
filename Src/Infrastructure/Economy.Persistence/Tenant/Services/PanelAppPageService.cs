@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Economy.Application.TenantUI.Dtos;
 using Economy.Application.TenantUI.Dtos.AppPageDtos;
 using Economy.Application.TenantUI.Interfaces;
 using Economy.Core.Dtos.Custom;
@@ -19,6 +20,13 @@ namespace Economy.Persistence.Tenant.Services
         private readonly IEntityRepository<AppPageTranslation, int> _trRepo;
         private readonly IEntityRepository<AppLanguage, int> _entityLanguageRepository;
         private readonly IEntityRepository<AppPageMedia, int> _appPageMedia;
+
+        private readonly IEntityRepository<DefRoomAttribute, int> _defRoomAttributeRepository;
+        private readonly IEntityRepository<DefRoomAttributeTranslation, int> _defRoomAttributeTranslationRepository;
+        private readonly IEntityRepository<DefRoomAttributeOption, int> _defRoomAttributeOptionRepository;
+        private readonly IEntityRepository<DefRoomAttributeOptionTranslation, int> _defRoomAttributeOptionTranslationRepository;
+        private readonly IEntityRepository<RoomAttributeValue, int> _roomAttributeValueRepository;
+
         private readonly IMapper _mapper;
 
         public PanelAppPageService(IUnitOfWork unitOfWork, IMapper mapper)
@@ -28,8 +36,14 @@ namespace Economy.Persistence.Tenant.Services
             _entityLanguageRepository = unitOfWork.HotelEntityRepository<AppLanguage>();
             _trRepo = unitOfWork.HotelEntityRepository<AppPageTranslation>();
             _appPageMedia = unitOfWork.HotelEntityRepository<AppPageMedia>();
+            _defRoomAttributeRepository = unitOfWork.HotelEntityRepository<DefRoomAttribute>();
+            _defRoomAttributeTranslationRepository = unitOfWork.HotelEntityRepository<DefRoomAttributeTranslation>();
+            _defRoomAttributeOptionRepository = unitOfWork.HotelEntityRepository<DefRoomAttributeOption>();
+            _defRoomAttributeOptionTranslationRepository = unitOfWork.HotelEntityRepository<DefRoomAttributeOptionTranslation>();
+            _roomAttributeValueRepository = unitOfWork.HotelEntityRepository<RoomAttributeValue>();
             _mapper = mapper;
         }
+
         public async Task<ServiceResult<NoContent>> Create(PageEditDto vm, CancellationToken ct)
         {
 
@@ -467,6 +481,253 @@ namespace Economy.Persistence.Tenant.Services
                               .ToListAsync();
 
             return ServiceResult<List<PageListDto>>.Success(list);
+        }
+
+
+
+
+        public async Task<ServiceResult<List<RoomAttributeListVm>>> GetRoomAttributeListAsync(CancellationToken ct)
+        {
+            var defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
+                .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            if (defLangId == 0)
+                defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive)
+                    .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            var list = await(from ci in _defRoomAttributeRepository.DataSet
+                             where !ci.IsDeleted
+                             join tr in _defRoomAttributeTranslationRepository.DataSet on ci.Id equals tr.DefRoomAttributeId into trx
+                             from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
+                             orderby ci.SortOrder, ci.Id
+                             select new RoomAttributeListVm
+                             {
+                                 Id = ci.Id,
+                                 Description = tr.Description,
+                                 Code = ci.Code,
+                                 Group = ci.Group,
+                                 InputType = ci.InputType,
+                                 IsActive = ci.IsActive,
+                                 IsFilterable = ci.IsFilterable,
+                                 IsRequired = ci.IsRequired,
+                                 Name = tr.Name,
+                                 SortOrder = ci.SortOrder,
+
+                             })
+                              .ToListAsync();
+
+            return ServiceResult<List<RoomAttributeListVm>>.Success(list);
+        }
+        public async Task<ServiceResult<List<RoomAttributeOptionListVm>>> GetRoomAttributeOptionListAsync(int attributeId, CancellationToken ct)
+        {
+            var defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
+                .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            if (defLangId == 0)
+                defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive)
+                    .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            var list = await(from ci in _defRoomAttributeOptionRepository.DataSet
+                             where !ci.IsDeleted && ci.DefRoomAttributeId == attributeId
+                             join tr in _defRoomAttributeOptionTranslationRepository.DataSet on ci.Id equals tr.DefRoomAttributeOptionId into trx
+                             from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
+                             orderby ci.SortOrder, ci.Id
+                             select new RoomAttributeOptionListVm
+                             {
+                                 Id = ci.Id,
+                                 DefRoomAttributeId = ci.DefRoomAttributeId,
+                                 DisplayName = tr.DisplayName,
+                                 //AttributeCode = tr.,
+                                 IsActive = ci.IsActive,
+                                 Value = ci.Value,
+                                 SortOrder = ci.SortOrder,
+
+                             })
+                              .ToListAsync();
+
+            return ServiceResult<List<RoomAttributeOptionListVm>>.Success(list);
+        }
+        public async Task<ServiceResult<RoomAttributeEditVm>> GetRoomAttributeAsync(int attributeId, CancellationToken ct)
+        {
+            var langs = await _entityLanguageRepository.DataSet
+                .Where(x => x.IsActive && !x.IsDeleted)
+                .ToListAsync(ct);
+
+            if (langs.Count == 0)
+                return ServiceResult<RoomAttributeEditVm>.Empty("Aktif dil bulunamadı.");
+
+            var page = await _defRoomAttributeRepository.DataSet
+                .Include(x => x.Translations)
+                    .FirstOrDefaultAsync(x => x.Id == attributeId && !x.IsDeleted, ct);
+
+            if (page == null)
+                return ServiceResult<RoomAttributeEditVm>.Empty();
+
+            var vm = new RoomAttributeEditVm
+            {
+                Id = page.Id,
+               Code = page.Code,
+               Group = page.Group,
+               InputType = page.InputType,
+               IsActive = page.IsActive,
+               IsFilterable = page.IsFilterable,
+               IsRequired = page.IsRequired,
+               SortOrder = page.SortOrder 
+            };
+
+            await RoomAttributeFillLanguagesAsync(vm, ct);
+
+            var trs = await _defRoomAttributeTranslationRepository.DataSet
+                .Where(t => !t.IsDeleted && t.DefRoomAttributeId == page.Id)
+                .ToListAsync(ct);
+
+            foreach (var t in vm.Translations)
+            {
+                var hit = trs.FirstOrDefault(x => x.AppLanguageId == t.AppLanguageId);
+                if (hit == null) continue;
+
+                t.Id = hit.Id;
+                t.Name = hit.Name;
+                t.Description = hit.Description;
+            }
+
+            return ServiceResult<RoomAttributeEditVm>.Success(vm);
+        }
+        public async Task<ServiceResult<NoContent>> RoomAttributeFillLanguagesAsync(RoomAttributeEditVm vm, CancellationToken ct)
+        {
+            var langs = await _entityLanguageRepository.DataSet
+             .Where(x => !x.IsDeleted && x.IsActive)
+             .OrderByDescending(x => x.IsDefault)
+             .ThenBy(x => x.Id)
+             .Select(x => new { x.Id, x.Code, x.Icon })
+             .ToListAsync(ct);
+
+            vm.Translations = langs.Select(l => new RoomAttributeTranslationDto
+            {
+                AppLanguageId = l.Id,
+                AppLanguageCode = l.Code,
+                AppLanguageIcon = l.Icon
+            }).ToList();
+
+            return ServiceResult<NoContent>.Success(null);
+        }
+        public async Task<ServiceResult<NoContent>> RoomAttributeEnsureLanguageTabsAsync(RoomAttributeEditVm vm, CancellationToken ct)
+        {
+            var exist = vm.Translations.Select(t => t.AppLanguageId).ToHashSet();
+            var langs = await _entityLanguageRepository.DataSet.Where(x => !x.IsDeleted && x.IsActive)
+                .Select(x => new { x.Id, x.Code, x.Icon }).ToListAsync(ct);
+
+            foreach (var l in langs)
+                if (!exist.Contains(l.Id))
+                    vm.Translations.Add(new RoomAttributeTranslationDto { AppLanguageId = l.Id, AppLanguageCode = l.Code, AppLanguageIcon = l.Icon });
+
+            vm.Translations = vm.Translations
+                .OrderByDescending(t => t.AppLanguageCode == "tr")
+                .ThenBy(t => t.AppLanguageId)
+                .ToList();
+
+            return ServiceResult<NoContent>.Success(null);
+        }
+
+        public async Task<ServiceResult<RoomAttributeValueEditVm>> GetPageEditAttributesAsync(int pageId, CancellationToken ct)
+        {
+            // Tüm aktif attribute’ları ve seçeneklerini TR çevirileriyle birlikte çek
+            var attrs = await _defRoomAttributeRepository.DataSet
+                .Where(a => a.IsActive)
+                .Include(a => a.Translations).ThenInclude(t => t.AppLanguage)
+                .Include(a => a.Options).ThenInclude(o => o.Translations).ThenInclude(t => t.AppLanguage)
+                .OrderBy(a => a.Group)
+                .ThenBy(a => a.SortOrder)
+                .ToListAsync(ct);
+
+            // Bu odaya ait mevcut değerler
+            var values = await _roomAttributeValueRepository.DataSet
+                .Where(v => v.AppPageId == pageId)
+                .ToListAsync(ct);
+
+            var vm = new RoomAttributeValueEditVm
+            {
+                RoomId = pageId
+            };
+
+            foreach (var attr in attrs)
+            {
+                var groupKey = string.IsNullOrWhiteSpace(attr.Group)
+                    ? "Diğer"
+                    : attr.Group;
+
+                if (!vm.GroupedAttributes.ContainsKey(groupKey))
+                    vm.GroupedAttributes[groupKey] = new List<RoomAttributeItemVm>();
+
+                // Türkçe isim (yoksa code’a düş)
+                var trName = attr.Translations
+                    .FirstOrDefault(t => t.AppLanguage.Code == "tr")
+                    ?.Name ?? attr.Code;
+
+                var currentValue = values.FirstOrDefault(v => v.DefRoomAttributeId == attr.Id);
+
+                var item = new RoomAttributeItemVm
+                {
+                    AttributeId = attr.Id,
+                    Name = trName,
+                    Type = attr.InputType,
+                    Group = attr.Group ?? ""
+                };
+
+                // Option tipiyse seçenekleri hazırla
+                if (attr.InputType == "Option")
+                {
+                    foreach (var opt in attr.Options.Where(o => o.IsActive).OrderBy(o => o.SortOrder))
+                    {
+                        var optTrName = opt.Translations
+                            .FirstOrDefault(t => t.AppLanguage.Code == "tr")
+                            ?.DisplayName ?? opt.Value;
+
+                        item.Options.Add(new RoomAttributeOptionVm
+                        {
+                            Id = opt.Id,
+                            DisplayName = optTrName
+                        });
+                    }
+
+                    if (currentValue != null)
+                        item.SelectedOptionId = currentValue.DefRoomAttributeOptionId;
+                }
+                else if (attr.InputType == "Bool")
+                {
+                    if (currentValue != null)
+                        item.ValueBool = currentValue.ValueBool;
+                }
+                else if (attr.InputType == "Number")
+                {
+                    if (currentValue != null)
+                        item.ValueInt = currentValue.ValueInt;
+                }
+                else if (attr.InputType == "Text")
+                {
+                    if (currentValue != null)
+                        item.ValueText = currentValue.ValueText;
+                }
+
+                vm.GroupedAttributes[groupKey].Add(item);
+
+                // POST sırasında Values sözlüğü dolsun diye AttributeId kaydı da açabiliriz (şart değil ama temiz olur)
+                if (!vm.Values.ContainsKey(attr.Id))
+                {
+                    vm.Values[attr.Id] = new RoomAttributeValueInputVm
+                    {
+                        AttributeId = attr.Id,
+                        OptionId = item.SelectedOptionId,
+                        BoolValue = item.ValueBool,
+                        IntValue = item.ValueInt,
+                        TextValue = item.ValueText
+                    };
+                }
+
+
+            }
+            return ServiceResult<RoomAttributeValueEditVm>.Success(vm);
+
         }
     }
 }

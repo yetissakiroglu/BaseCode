@@ -1,10 +1,8 @@
 ﻿using Economy.Application.TenantUI.Dtos;
-using Economy.Domain.Entites.TenantEntity.EntityAppPages;
+using Economy.Application.TenantUI.Interfaces;
 using Economy.Panel.UI.Controllers;
-using Economy.Persistence.Contexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
@@ -12,43 +10,19 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
     [Authorize]
     public class RoomAttributeController : BaseController
     {
-        private readonly HotelDbContext _db; // veya servis
-
-        public RoomAttributeController(HotelDbContext db)
+        private readonly IPanelAppPageService _panelAppPageService;
+        public RoomAttributeController(IPanelAppPageService panelAppPageService)
         {
-            _db = db;
+            _panelAppPageService = panelAppPageService;
         }
 
-        // LIST
-        public IActionResult Index()
-        {
-            var list = _db.DefRoomAttributes
-                .Where(x => x.IsActive) // istersen kaldır
-                .OrderBy(x => x.SortOrder)
-                .Select(a => new RoomAttributeEditVm
-                {
-                    Id = a.Id,
-                    Code = a.Code,
-                    Group = a.Group,
-                    InputType = a.InputType,
-                    SortOrder = a.SortOrder,
-                    IsFilterable = a.IsFilterable,
-                    IsRequired = a.IsRequired,
-                    IsActive = a.IsActive,
-                    // Basitçe TR/EN çevirileri çekiyoruz
-                    NameTr = a.Translations
-                        .Where(t => t.AppLanguage.Code == "tr")
-                        .Select(t => t.Name)
-                        .FirstOrDefault() ?? "",
-                    NameEn = a.Translations
-                        .Where(t => t.AppLanguage.Code == "en")
-                        .Select(t => t.Name)
-                        .FirstOrDefault() ?? ""
-                })
-                .ToList();
 
-            return View(list);
+        public async Task<IActionResult> Index(CancellationToken ct)
+        {
+            var pageModel = await _panelAppPageService.GetRoomAttributeListAsync(ct);
+            return View(pageModel.Data);
         }
+
 
         // CREATE GET
         [HttpGet]

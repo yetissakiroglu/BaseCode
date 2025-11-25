@@ -10,7 +10,12 @@ namespace Economy.Application.TenantUI.Dtos
     {
         public int RoomId { get; set; }
 
+        // Ekranda gruplanmış gösterim için
         public Dictionary<string, List<RoomAttributeItemVm>> GroupedAttributes { get; set; }
+            = new();
+
+        // POST sırasında gelen değerler için (name="Values[AttrId].Xxx" ile bağlı)
+        public Dictionary<int, RoomAttributeValueInputVm> Values { get; set; }
             = new();
     }
 
@@ -25,13 +30,9 @@ namespace Economy.Application.TenantUI.Dtos
         public List<RoomAttributeOptionVm> Options { get; set; } = new();
         public int? SelectedOptionId { get; set; }
 
-        // Bool tipi
+        // Mevcut değerler (ekrana doldurmak için)
         public bool? ValueBool { get; set; }
-
-        // Number tipi
         public int? ValueInt { get; set; }
-
-        // Text tipi
         public string? ValueText { get; set; }
     }
 
@@ -39,5 +40,15 @@ namespace Economy.Application.TenantUI.Dtos
     {
         public int Id { get; set; }
         public string DisplayName { get; set; } = "";
+    }
+
+    // POST için input taşıyıcı (Values sözlüğünün içindeki tip)
+    public class RoomAttributeValueInputVm
+    {
+        public int AttributeId { get; set; }
+        public int? OptionId { get; set; }
+        public bool? BoolValue { get; set; }
+        public int? IntValue { get; set; }
+        public string? TextValue { get; set; }
     }
 }

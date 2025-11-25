@@ -1,5 +1,5 @@
 ﻿@using Economy.Application.TenantUI.Dtos
-@model List<RoomAttributeOptionEditVm>
+@model List<RoomAttributeOptionListVm>
 
 @{
     ViewData["Title"] = "Özellik Seçenekleri";
@@ -7,82 +7,87 @@
     var attributeName = ViewBag.AttributeName as string ?? "Özellik";
 }
 
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <div>
-            <h5 class="mb-0">Seçenekler - @attributeName</h5>
-            <small class="text-muted">Bu özelliğe ait tüm seçenekleri buradan yönetebilirsiniz.</small>
-        </div>
-        <div>
-            <a asp-area="Admin"
-               asp-controller="RoomAttribute"
-               asp-action="Index"
-               class="btn btn-sm btn-outline-secondary me-2">
-                Özellik Listesine Dön
-            </a>
+<main>
+    <div class="container-fluid">
+        <!-- Breadcrumb start -->
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- Breadcrumb end -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0">Seçenekler - @attributeName</h5>
+                    <small class="text-muted">Bu özelliğe ait tüm seçenekleri buradan yönetebilirsiniz.</small>
+                </div>
+                <div>
+                    <a asp-area="Admin"
+                       asp-controller="RoomAttribute"
+                       asp-action="Index"
+                       class="btn btn-sm btn-outline-secondary me-2">
+                        Özellik Listesine Dön
+                    </a>
 
-            <a asp-action="Create"
-               asp-route-attributeId="@attributeId"
-               class="btn btn-sm btn-primary">
-                Yeni Seçenek Ekle
-            </a>
+                    <a asp-action="Create"
+                       asp-route-attributeId="@attributeId"
+                       class="btn btn-sm btn-primary">
+                        Yeni Seçenek Ekle
+                    </a>
+                </div>
+            </div>
+
+            <div class="card-body">
+                @if (Model == null || !Model.Any())
+                {
+                    <div class="alert alert-info mb-0">
+                        Bu özelliğe ait henüz seçenek tanımlanmamış.
+                        <a asp-action="Create" asp-route-attributeId="@attributeId" class="alert-link">
+                            İlk seçeneği eklemek için tıklayın.
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th style="width: 15%;">Value (Kod)</th>
+                                    <th style="width: 25%;">Ad</th>
+                                    <th style="width: 10%;">Sıra</th>
+                                    <th style="width: 10%;">Aktif</th>
+                                    <th style="width: 15%;" class="text-end">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Value</td>
+                                        <td>@item.DisplayName</td>
+                                        <td>@item.SortOrder</td>
+                                        <td>
+                                            @if (item.IsActive)
+                                            {
+                                                <span class="badge bg-success">Aktif</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Pasif</span>
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            <a asp-action="Edit"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-outline-secondary">
+                                                Düzenle
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
         </div>
     </div>
-
-    <div class="card-body">
-        @if (Model == null || !Model.Any())
-        {
-            <div class="alert alert-info mb-0">
-                Bu özelliğe ait henüz seçenek tanımlanmamış.
-                <a asp-action="Create" asp-route-attributeId="@attributeId" class="alert-link">
-                    İlk seçeneği eklemek için tıklayın.
-                </a>
-            </div>
-        }
-        else
-        {
-            <div class="table-responsive">
-                <table class="table table-sm table-striped align-middle">
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Value (Kod)</th>
-                            <th style="width: 25%;">Ad (TR)</th>
-                            <th style="width: 25%;">Ad (EN)</th>
-                            <th style="width: 10%;">Sıra</th>
-                            <th style="width: 10%;">Aktif</th>
-                            <th style="width: 15%;" class="text-end">İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Value</td>
-                                <td>@item.DisplayNameTr</td>
-                                <td>@item.DisplayNameEn</td>
-                                <td>@item.SortOrder</td>
-                                <td>
-                                    @if (item.IsActive)
-                                    {
-                                        <span class="badge bg-success">Aktif</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">Pasif</span>
-                                    }
-                                </td>
-                                <td class="text-end">
-                                    <a asp-action="Edit"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-sm btn-outline-secondary">
-                                        Düzenle
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-    </div>
-</div>
+</main>

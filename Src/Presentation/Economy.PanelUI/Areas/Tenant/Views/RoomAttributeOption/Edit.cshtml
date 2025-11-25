@@ -5,59 +5,63 @@
     var isNew = Model.Id == 0;
     ViewData["Title"] = isNew ? "Yeni Seçenek" : "Seçenek Düzenle";
 }
+<main>
+    <div class="container-fluid">
+        <!-- Breadcrumb start -->
+        @await Html.PartialAsync("_breadcrumbs")
+        <!-- Breadcrumb end -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    @(isNew ? "Yeni Seçenek Ekle" : "Seçenek Düzenle")
+                </h5>
+                <a asp-action="Index"
+                   asp-route-attributeId="@Model.DefRoomAttributeId"
+                   class="btn btn-sm btn-outline-secondary">
+                    Geri
+                </a>
+            </div>
 
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">
-            @(isNew ? "Yeni Seçenek Ekle" : "Seçenek Düzenle")
-        </h5>
-        <a asp-action="Index"
-           asp-route-attributeId="@Model.DefRoomAttributeId"
-           class="btn btn-sm btn-outline-secondary">
-            Geri
-        </a>
-    </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.Id)
+                    @Html.HiddenFor(m => m.DefRoomAttributeId)
+                    @Html.HiddenFor(m => m.AttributeCode)
 
-    <div class="card-body">
-        <form asp-action="Edit" method="post">
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(m => m.Id)
-            @Html.HiddenFor(m => m.DefRoomAttributeId)
-            @Html.HiddenFor(m => m.AttributeCode)
+                    <div class="row g-3">
 
-            <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Özellik Kodu</label>
+                            <input class="form-control" value="@Model.AttributeCode" readonly />
+                            <div class="form-text">
+                                Bu seçenek, <strong>@Model.AttributeCode</strong> özelliğine bağlıdır.
+                            </div>
+                        </div>
 
-                <div class="col-md-4">
-                    <label class="form-label">Özellik Kodu</label>
-                    <input class="form-control" value="@Model.AttributeCode" readonly />
-                    <div class="form-text">
-                        Bu seçenek, <strong>@Model.AttributeCode</strong> özelliğine bağlıdır.
-                    </div>
-                </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Value (Sistem Kodu)</label>
+                            <input asp-for="Value" class="form-control" />
+                            <span asp-validation-for="Value" class="text-danger"></span>
+                            <div class="form-text">
+                                Örn: <code>STANDARD</code>, <code>DELUXE</code>, <code>SEA</code> gibi.
+                            </div>
+                        </div>
 
-                <div class="col-md-4">
-                    <label class="form-label">Value (Sistem Kodu)</label>
-                    <input asp-for="Value" class="form-control" />
-                    <span asp-validation-for="Value" class="text-danger"></span>
-                    <div class="form-text">
-                        Örn: <code>STANDARD</code>, <code>DELUXE</code>, <code>SEA</code> gibi.
-                    </div>
-                </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Sıra</label>
+                            <input asp-for="SortOrder" class="form-control" type="number" />
+                            <span asp-validation-for="SortOrder" class="text-danger"></span>
+                        </div>
 
-                <div class="col-md-2">
-                    <label class="form-label">Sıra</label>
-                    <input asp-for="SortOrder" class="form-control" type="number" />
-                    <span asp-validation-for="SortOrder" class="text-danger"></span>
-                </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="form-check">
+                                <input asp-for="IsActive" class="form-check-input" />
+                                <label class="form-check-label" for="IsActive">Aktif</label>
+                            </div>
+                        </div>
 
-                <div class="col-md-2 d-flex align-items-end">
-                    <div class="form-check">
-                        <input asp-for="IsActive" class="form-check-input" />
-                        <label class="form-check-label" for="IsActive">Aktif</label>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
+                        @*  <div class="col-md-6">
                     <label class="form-label">Ad (Türkçe)</label>
                     <input asp-for="DisplayNameTr" class="form-control" />
                     <span asp-validation-for="DisplayNameTr" class="text-danger"></span>
@@ -67,23 +71,26 @@
                     <label class="form-label">Ad (English)</label>
                     <input asp-for="DisplayNameEn" class="form-control" />
                     <span asp-validation-for="DisplayNameEn" class="text-danger"></span>
-                </div>
-            </div>
+                </div> *@
+                    </div>
 
-            <div class="mt-4 d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">
-                    Kaydet
-                </button>
+                    <div class="mt-4 d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            Kaydet
+                        </button>
 
-                <a asp-action="Index"
-                   asp-route-attributeId="@Model.DefRoomAttributeId"
-                   class="btn btn-outline-secondary">
-                    Vazgeç
-                </a>
+                        <a asp-action="Index"
+                           asp-route-attributeId="@Model.DefRoomAttributeId"
+                           class="btn btn-outline-secondary">
+                            Vazgeç
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</main>
+
 
 @* @section Scripts {
     @await Html.RenderPartialAsync("_ValidationScriptsPartial")

@@ -8,6 +8,7 @@ using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Panel.UI.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
@@ -90,113 +91,13 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             return RedirectToAction(nameof(Edit), new { id });
         }
 
-
-
-        //// Oda özellikleri düzenleme ekranı
-        //[HttpGet]
-        //public IActionResult EditAttributes(int id) // id = RoomId
-        //{
-        //    var room = _db.Rooms.FirstOrDefault(r => r.Id == id);
-        //    if (room == null)
-        //        return NotFound();
-
-        //    // Tüm aktif attribute’ları ve seçeneklerini TR çevirileriyle birlikte çek
-        //    var attrs = _db.DefRoomAttributes
-        //        .Where(a => a.IsActive)
-        //        .Include(a => a.Translations).ThenInclude(t => t.AppLanguage)
-        //        .Include(a => a.Options).ThenInclude(o => o.Translations).ThenInclude(t => t.AppLanguage)
-        //        .OrderBy(a => a.Group)
-        //        .ThenBy(a => a.SortOrder)
-        //        .ToList();
-
-        //    // Bu odaya ait mevcut değerler
-        //    var values = _db.RoomAttributeValues
-        //        .Where(v => v.RoomId == id)
-        //        .ToList();
-
-        //    var vm = new RoomAttributeValueEditVm
-        //    {
-        //        RoomId = id
-        //    };
-
-        //    foreach (var attr in attrs)
-        //    {
-        //        var groupKey = string.IsNullOrWhiteSpace(attr.Group)
-        //            ? "Diğer"
-        //            : attr.Group;
-
-        //        if (!vm.GroupedAttributes.ContainsKey(groupKey))
-        //            vm.GroupedAttributes[groupKey] = new List<RoomAttributeItemVm>();
-
-        //        // Türkçe isim (yoksa code’a düş)
-        //        var trName = attr.Translations
-        //            .FirstOrDefault(t => t.AppLanguage.Code == "tr")
-        //            ?.Name ?? attr.Code;
-
-        //        var currentValue = values.FirstOrDefault(v => v.DefRoomAttributeId == attr.Id);
-
-        //        var item = new RoomAttributeItemVm
-        //        {
-        //            AttributeId = attr.Id,
-        //            Name = trName,
-        //            Type = attr.InputType,
-        //            Group = attr.Group ?? ""
-        //        };
-
-        //        // Option tipiyse seçenekleri hazırla
-        //        if (attr.InputType == "Option")
-        //        {
-        //            foreach (var opt in attr.Options.Where(o => o.IsActive).OrderBy(o => o.SortOrder))
-        //            {
-        //                var optTrName = opt.Translations
-        //                    .FirstOrDefault(t => t.AppLanguage.Code == "tr")
-        //                    ?.DisplayName ?? opt.Value;
-
-        //                item.Options.Add(new RoomAttributeOptionVm
-        //                {
-        //                    Id = opt.Id,
-        //                    DisplayName = optTrName
-        //                });
-        //            }
-
-        //            if (currentValue != null)
-        //                item.SelectedOptionId = currentValue.DefRoomAttributeOptionId;
-        //        }
-        //        else if (attr.InputType == "Bool")
-        //        {
-        //            if (currentValue != null)
-        //                item.ValueBool = currentValue.ValueBool;
-        //        }
-        //        else if (attr.InputType == "Number")
-        //        {
-        //            if (currentValue != null)
-        //                item.ValueInt = currentValue.ValueInt;
-        //        }
-        //        else if (attr.InputType == "Text")
-        //        {
-        //            if (currentValue != null)
-        //                item.ValueText = currentValue.ValueText;
-        //        }
-
-        //        vm.GroupedAttributes[groupKey].Add(item);
-
-        //        // POST sırasında Values sözlüğü dolsun diye AttributeId kaydı da açabiliriz (şart değil ama temiz olur)
-        //        if (!vm.Values.ContainsKey(attr.Id))
-        //        {
-        //            vm.Values[attr.Id] = new RoomAttributeValueInputVm
-        //            {
-        //                AttributeId = attr.Id,
-        //                OptionId = item.SelectedOptionId,
-        //                BoolValue = item.ValueBool,
-        //                IntValue = item.ValueInt,
-        //                TextValue = item.ValueText
-        //            };
-        //        }
-        //    }
-
-        //    return View("EditAttributes", vm);
-        //}
-
+        // Oda özellikleri düzenleme ekranı
+        [HttpGet]
+        public async Task<IActionResult> EditAttributes(int id, CancellationToken ct) // id = RoomId
+        {
+            var result  = await _panelAppPageService.GetPageEditAttributesAsync(id, ct);
+            return View("EditAttributes", result.Data);
+        }
 
         //[HttpPost]
         //[ValidateAntiForgeryToken]
