@@ -1,100 +1,147 @@
 ﻿@using Economy.Application.TenantUI.Dtos
-@model RoomAttributeValueEditVm  
+@model RoomAttributeValueEditVm
 
 @{
     ViewData["Title"] = "Oda Özellikleri";
+    var roomName = ViewBag.RoomName as string ?? $"Oda #{Model.RoomId}";
 }
+<main>
+    <div class="container-fluid">
+        @await Html.PartialAsync("_breadcrumbs")
+        <div class="container-fluid">
 
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Oda Özellikleri</h5>
-        <a asp-action="Edit" asp-route-id="@Model.RoomId" class="btn btn-sm btn-outline-secondary">
-            Geri
-        </a>
-    </div>
-
-    <div class="card-body">
-
-        <form asp-action="SaveAttributes" method="post">
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(m => m.RoomId)
-
-            @foreach (var group in Model.GroupedAttributes)
-            {
-                <div class="mb-4">
-                    <h6 class="fw-bold mb-3 text-primary">@group.Key</h6>
-
-                    <div class="row g-3">
-
-                        @foreach (var attr in group.Value)
-                        {
-                            <div class="col-md-6 col-lg-4">
-                                <label class="form-label fw-semibold">
-                                    @attr.Name
-                                </label>
-
-                                @* OPTION – Dropdown *@
-                                if (attr.Type == "Option")
-                                {
-                                    <select class="form-select"
-                                            name="Values[@attr.AttributeId].OptionId">
-                                        <option value="">Seçiniz</option>
-
-                                        @foreach (var opt in attr.Options)
-                                    {
-                                        @(opt.Id == attr.SelectedOptionId ? "selected" : "")
-                                            <option value="@opt.Id">
-                                                @opt.DisplayName
-                                            </option>
-                                        }
-                                    </select>
-                                }
-
-                                @* BOOL – Switch *@
-                                else if (attr.Type == "Bool")
-                                {
-                                    <div class="form-check form-switch mt-1">
-                                        <input type="checkbox"
-                                               class="form-check-input"
-                                               name="Values[@attr.AttributeId].BoolValue"
-                                               value="true"
-                                               @(attr.ValueBool == true ? "checked" : "") />
-                                        <label class="form-check-label">Evet / Hayır</label>
-                                    </div>
-                                }
-
-                                @* NUMBER *@
-                                else if (attr.Type == "Number")
-                                {
-                                    <input type="number"
-                                           class="form-control"
-                                           name="Values[@attr.AttributeId].IntValue"
-                                           value="@attr.ValueInt"
-                                           placeholder="Değer giriniz" />
-                                }
-
-                                @* TEXT *@
-                                else if (attr.Type == "Text")
-                                {
-                                    <input type="text"
-                                           class="form-control"
-                                           name="Values[@attr.AttributeId].TextValue"
-                                           value="@attr.ValueText"
-                                           placeholder="Metin giriniz" />
-                                }
-
-                                <input type="hidden" name="Values[@attr.AttributeId].AttributeId" value="@attr.AttributeId" />
-                            </div>
-                        }
-
-                    </div>
+            <!-- Başlık + Geri Butonu -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h4 class="mb-1">@roomName - Özellikler</h4>
+                    <small class="text-muted">
+                        Bu ekrandan oda için gösterilecek tüm özet ve amenity bilgilerini yönetebilirsiniz.
+                    </small>
                 </div>
-            }
-
-            <div class="mt-4 text-end">
-                <button type="submit" class="btn btn-primary">Kaydet</button>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model.RoomId" class="btn btn-sm btn-outline-secondary">
+                        Geri Dön
+                    </a>
+                </div>
             </div>
 
-        </form>
+            <form asp-action="SaveAttributes" method="post">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.RoomId)
+
+                @* Genel hata alanı *@
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                @if (Model.GroupedAttributes == null || !Model.GroupedAttributes.Any())
+                {
+                    <div class="alert alert-info">
+                        Tanımlı oda özelliği bulunamadı. Önce <strong>Oda Özellikleri</strong> menüsünden attribute eklemelisiniz.
+                    </div>
+                }
+                else
+                {
+                    foreach (var group in Model.GroupedAttributes)
+                    {
+                        <div class="card mb-4 shadow-sm border-0">
+                            <div class="card-header bg-light d-flex align-items-center">
+                                <h6 class="mb-0">
+                                    <i class="bi bi-grid-3x3-gap me-1"></i>
+                                    @group.Key
+                                </h6>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    @foreach (var attr in group.Value)
+                                    {
+                                        <div class="col-md-6 col-xl-4">
+                                            <div class="mb-2">
+                                                <label class="form-label fw-semibold">
+                                                    @attr.Name
+                                                    @* Zorunlu alan için küçük bir yıldız göstermek istersen:
+                                               (bunun için attr.Type yanında IsRequired bilgisini de VM'e taşıyabilirsin) *@
+                                                </label>
+                                            </div>
+
+                                            @* OPTION – Dropdown *@
+                                            @if (attr.Type == "Option")
+                                            {
+                                            <select class="form-select"
+                                                    name="Values[@attr.AttributeId].OptionId">
+                                                <option value="">Seçiniz</option>
+                                                @foreach (var opt in attr.Options)
+                                                {
+                                                    if (opt.Id == attr.SelectedOptionId)
+                                                    {
+                                                        <option value="@opt.Id" selected="selected">
+                                                            @opt.DisplayName
+                                                        </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@opt.Id">
+                                                            @opt.DisplayName
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                            }
+                                            @* BOOL – Switch *@
+                                            else if (attr.Type == "Bool")
+                                            {
+                                            <div class="form-check form-switch">
+                                                <input type="checkbox"
+                                                       class="form-check-input"
+                                                       id="bool_@attr.AttributeId"
+                                                       name="Values[@attr.AttributeId].BoolValue"
+                                                       value="true"
+                                                       @(attr.ValueBool == true ? "checked" : "") />
+                                                <label class="form-check-label" for="bool_@attr.AttributeId">
+                                                    Evet ise işaretleyin
+                                                </label>
+                                            </div>
+                                            @* CheckBox post edilmezse false kabul etmek istiyorsan,
+                                           Controller'da null ise false yapıyoruz zaten *@
+                                            }
+                                            @* NUMBER *@
+                                            else if (attr.Type == "Number")
+                                            {
+                                            <input type="number"
+                                                   class="form-control"
+                                                   name="Values[@attr.AttributeId].IntValue"
+                                                   value="@(attr.ValueInt?.ToString() ?? "")"
+                                                   placeholder="Değer giriniz" />
+                                            }
+                                            @* TEXT *@
+                                            else if (attr.Type == "Text")
+                                            {
+                                            <input type="text"
+                                                   class="form-control"
+                                                   name="Values[@attr.AttributeId].TextValue"
+                                                   value="@attr.ValueText"
+                                                   placeholder="Metin giriniz" />
+                                            }
+
+                                            @* AttributeId bilgisini POST'ta da tutalım *@
+                                            <input type="hidden"
+                                                   name="Values[@attr.AttributeId].AttributeId"
+                                                   value="@attr.AttributeId" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="d-flex justify-content-end mb-5">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check2-circle me-1"></i> Kaydet
+                        </button>
+                    </div>
+                }
+            </form>
+        </div>
     </div>
-</div>
+</main>
+@section Scripts {
+}

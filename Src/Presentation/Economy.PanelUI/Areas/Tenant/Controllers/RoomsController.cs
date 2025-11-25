@@ -31,7 +31,7 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             var pageModel = await _panelAppPageService.GetPageListAsync(ContentItemType.Room, ct);
             return View(pageModel.Data);
         }
-     
+
         [HttpGet]
         public async Task<IActionResult> Create(CancellationToken ct)
         {
@@ -95,9 +95,117 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
         [HttpGet]
         public async Task<IActionResult> EditAttributes(int id, CancellationToken ct) // id = RoomId
         {
-            var result  = await _panelAppPageService.GetPageEditAttributesAsync(id, ct);
+            var result = await _panelAppPageService.GetPageEditAttributesAsync(id, ct);
             return View("EditAttributes", result.Data);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SaveAttributes(RoomAttributeValueEditVm model)
+        {
+
+            return View();
+        }
+
+        //        [HttpPost]
+        //        [ValidateAntiForgeryToken]
+        //        public IActionResult SaveAttributes(RoomAttributeValueEditVm model)
+        //        {
+        //            var room = _db.Rooms.FirstOrDefault(r => r.Id == model.RoomId);
+        //            if (room == null)
+        //                return NotFound();
+
+        //            // Tüm attribute’lar (tip bilgisi lazım)
+        //            var attrs = _db.DefRoomAttributes
+        //                .Where(a => a.IsActive)
+        //                .ToList();
+
+        //            // Mevcut değerleri çek
+        //            var existingValues = _db.RoomAttributeValues
+        //                .Where(v => v.RoomId == model.RoomId)
+        //                .ToList();
+
+        //            var existingDict = existingValues
+        //                .ToDictionary(v => v.DefRoomAttributeId, v => v);
+
+        //            // Her attribute için gelen değeri işle
+        //            foreach (var attr in attrs)
+        //            {
+        //                model.Values.TryGetValue(attr.Id, out var input);
+
+        //                // Zorunlu kontrolü istersen burada yapabilirsin:
+        //                // if (attr.IsRequired && (input == null || (input.OptionId == null && input.BoolValue == null && ...)))
+
+        //                RoomAttributeValue value;
+        //                var hasExisting = existingDict.TryGetValue(attr.Id, out value);
+
+        //                // Attribute POST içinde yoksa ve gereksizse atlayabilirsin
+        //                if (input == null)
+        //                {
+        //                    // İstersen mevcut kayıt varsa ve IsRequired == false ise silebilirsin
+        //                    // if (hasExisting && !attr.IsRequired) _db.RoomAttributeValues.Remove(value);
+        //                    continue;
+        //                }
+
+        //                if (!hasExisting)
+        //                {
+        //                    value = new RoomAttributeValue
+        //                    {
+        //                        RoomId = model.RoomId,
+        //                        DefRoomAttributeId = attr.Id
+        //                    };
+        //                    _db.RoomAttributeValues.Add(value);
+        //                    existingDict[attr.Id] = value;
+        //                }
+
+        //                // Önce eski değerleri temizle
+        //                value.DefRoomAttributeOptionId = null;
+        //                value.ValueBool = null;
+        //                value.ValueInt = null;
+        //                value.ValueText = null;
+
+        //                // Attribute tipine göre doğru alanı doldur
+        //                switch (attr.InputType)
+        //                {
+        //                    case "Option":
+        //                        value.DefRoomAttributeOptionId = input.OptionId;
+        //                        break;
+
+        //                    case "Bool":
+        //                        // Bool checkbox gönderilmezse null gelir, onu false’a çekebilirsin
+        //                        value.ValueBool = input.BoolValue ?? false;
+        //                        break;
+
+        //                    case "Number":
+        //                        value.ValueInt = input.IntValue;
+        //                        break;
+
+        //                    case "Text":
+        //                        value.ValueText = input.TextValue;
+        //                        break;
+        //                }
+
+        //                // Eğer attribute zorunlu değilse ve değeri tamamen boş bırakıldıysa kayıt silebilirsin
+        //                if (!attr.IsRequired
+        //                    && value.DefRoomAttributeOptionId == null
+        //                    && value.ValueBool == null
+        //                    && value.ValueInt == null
+        //                    && string.IsNullOrWhiteSpace(value.ValueText))
+        //                {
+        //                    if (hasExisting)
+        //                        _db.RoomAttributeValues.Remove(value);
+        //                }
+        //            }
+
+        //            _db.SaveChanges();
+
+        //            // Oda edit sayfasına dön
+        //            return RedirectToAction("Edit", new { id = model.RoomId });
+        //        }
+        //}
+
+
+
+
 
         //[HttpPost]
         //[ValidateAntiForgeryToken]
