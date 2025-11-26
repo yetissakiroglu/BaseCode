@@ -66,61 +66,94 @@
                                             @* OPTION – Dropdown *@
                                             @if (attr.Type == "Option")
                                             {
-                                            <select class="form-select"
-                                                    name="Values[@attr.AttributeId].OptionId">
-                                                <option value="">Seçiniz</option>
-                                                @foreach (var opt in attr.Options)
-                                                {
-                                                    if (opt.Id == attr.SelectedOptionId)
+                                                <select class="form-select"
+                                                        name="Values[@attr.AttributeId].OptionId">
+                                                    <option value="">Seçiniz</option>
+                                                    @foreach (var opt in attr.Options)
                                                     {
-                                                        <option value="@opt.Id" selected="selected">
-                                                            @opt.DisplayName
-                                                        </option>
+                                                        if (opt.Id == attr.SelectedOptionId)
+                                                        {
+                                                            <option value="@opt.Id" selected="selected">
+                                                                @opt.DisplayName
+                                                            </option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@opt.Id">
+                                                                @opt.DisplayName
+                                                            </option>
+                                                        }
                                                     }
-                                                    else
-                                                    {
-                                                        <option value="@opt.Id">
-                                                            @opt.DisplayName
-                                                        </option>
-                                                    }
-                                                }
-                                            </select>
+                                                </select>
                                             }
                                             @* BOOL – Switch *@
                                             else if (attr.Type == "Bool")
                                             {
-                                            <div class="form-check form-switch">
-                                                <input type="checkbox"
-                                                       class="form-check-input"
-                                                       id="bool_@attr.AttributeId"
-                                                       name="Values[@attr.AttributeId].BoolValue"
-                                                       value="true"
-                                                       @(attr.ValueBool == true ? "checked" : "") />
-                                                <label class="form-check-label" for="bool_@attr.AttributeId">
-                                                    Evet ise işaretleyin
-                                                </label>
-                                            </div>
-                                            @* CheckBox post edilmezse false kabul etmek istiyorsan,
+                                                <div class="form-check form-switch">
+                                                    <input type="checkbox"
+                                                           class="form-check-input"
+                                                           id="bool_@attr.AttributeId"
+                                                           name="Values[@attr.AttributeId].BoolValue"
+                                                           value="true"
+                                                           @(attr.ValueBool == true ? "checked" : "") />
+                                                    <label class="form-check-label" for="bool_@attr.AttributeId">
+                                                        Evet ise işaretleyin
+                                                    </label>
+                                                </div>
+                                                @* CheckBox post edilmezse false kabul etmek istiyorsan,
                                            Controller'da null ise false yapıyoruz zaten *@
                                             }
                                             @* NUMBER *@
                                             else if (attr.Type == "Number")
                                             {
-                                            <input type="number"
-                                                   class="form-control"
-                                                   name="Values[@attr.AttributeId].IntValue"
-                                                   value="@(attr.ValueInt?.ToString() ?? "")"
-                                                   placeholder="Değer giriniz" />
+                                                <input type="number"
+                                                       class="form-control"
+                                                       name="Values[@attr.AttributeId].IntValue"
+                                                       value="@(attr.ValueInt?.ToString() ?? "")"
+                                                       placeholder="Değer giriniz" />
                                             }
-                                            @* TEXT *@
+                                            @* TEXT + MULTI-LANGUAGE *@
                                             else if (attr.Type == "Text")
                                             {
-                                            <input type="text"
-                                                   class="form-control"
-                                                   name="Values[@attr.AttributeId].TextValue"
-                                                   value="@attr.ValueText"
-                                                   placeholder="Metin giriniz" />
+                                                <div class="d-flex flex-column gap-2">
+
+                                                    @for (int i = 0; i < attr.Translations.Count; i++)
+                                                    {
+                                                        var t = attr.Translations[i];
+
+                                                        <div class="input-group">
+
+                                                            <span class="input-group-text">
+                                                                <i class="@t.AppLanguageIcon"></i>
+                                                            </span>
+
+                                                            <input type="text"
+                                                                   class="form-control"
+                                                                   name="Values[@attr.AttributeId].Translations[@i].Text"
+                                                                   value="@t.Text"
+                                                                   placeholder="@attr.Name (@t.AppLanguageCode.ToUpper())" />
+
+                                                            @* ZORUNLU HIDDEN INPUTLAR *@
+                                                            <input type="hidden"
+                                                                   name="Values[@attr.AttributeId].Translations[@i].Id"
+                                                                   value="@(t.Id?.ToString() ?? "")" />
+
+                                                            <input type="hidden"
+                                                                   name="Values[@attr.AttributeId].Translations[@i].AppLanguageId"
+                                                                   value="@t.AppLanguageId" />
+
+                                                            <input type="hidden"
+                                                                   name="Values[@attr.AttributeId].Translations[@i].AppLanguageCode"
+                                                                   value="@t.AppLanguageCode" />
+
+                                                            <input type="hidden"
+                                                                   name="Values[@attr.AttributeId].Translations[@i].AppLanguageIcon"
+                                                                   value="@t.AppLanguageIcon" />
+                                                        </div>
+                                                    }
+                                                </div>
                                             }
+
 
                                             @* AttributeId bilgisini POST'ta da tutalım *@
                                             <input type="hidden"

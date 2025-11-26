@@ -42,6 +42,8 @@ namespace Economy.Persistence.Contexts
         public DbSet<DefRoomAttributeOptionTranslation> DefRoomAttributeOptionTranslations => Set<DefRoomAttributeOptionTranslation>();
         public DbSet<RoomAttributeValue> RoomAttributeValues => Set<RoomAttributeValue>();
 
+        public DbSet<RoomAttributeValueTranslation> RoomAttributeValueTranslations => Set<RoomAttributeValueTranslation>();
+
         public DbSet<PageBlock> PageBlocks => Set<PageBlock>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -495,25 +495,25 @@ namespace Economy.Persistence.Tenant.Services
                 defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive)
                     .Select(l => l.Id).FirstOrDefaultAsync(ct);
 
-            var list = await(from ci in _defRoomAttributeRepository.DataSet
-                             where !ci.IsDeleted
-                             join tr in _defRoomAttributeTranslationRepository.DataSet on ci.Id equals tr.DefRoomAttributeId into trx
-                             from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
-                             orderby ci.SortOrder, ci.Id
-                             select new RoomAttributeListVm
-                             {
-                                 Id = ci.Id,
-                                 Description = tr.Description,
-                                 Code = ci.Code,
-                                 Group = ci.Group,
-                                 InputType = ci.InputType,
-                                 IsActive = ci.IsActive,
-                                 IsFilterable = ci.IsFilterable,
-                                 IsRequired = ci.IsRequired,
-                                 Name = tr.Name,
-                                 SortOrder = ci.SortOrder,
+            var list = await (from ci in _defRoomAttributeRepository.DataSet
+                              where !ci.IsDeleted
+                              join tr in _defRoomAttributeTranslationRepository.DataSet on ci.Id equals tr.DefRoomAttributeId into trx
+                              from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
+                              orderby ci.SortOrder, ci.Id
+                              select new RoomAttributeListVm
+                              {
+                                  Id = ci.Id,
+                                  Description = tr.Description,
+                                  Code = ci.Code,
+                                  Group = ci.Group,
+                                  InputType = ci.InputType,
+                                  IsActive = ci.IsActive,
+                                  IsFilterable = ci.IsFilterable,
+                                  IsRequired = ci.IsRequired,
+                                  Name = tr.Name,
+                                  SortOrder = ci.SortOrder,
 
-                             })
+                              })
                               .ToListAsync();
 
             return ServiceResult<List<RoomAttributeListVm>>.Success(list);
@@ -527,22 +527,22 @@ namespace Economy.Persistence.Tenant.Services
                 defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive)
                     .Select(l => l.Id).FirstOrDefaultAsync(ct);
 
-            var list = await(from ci in _defRoomAttributeOptionRepository.DataSet
-                             where !ci.IsDeleted && ci.DefRoomAttributeId == attributeId
-                             join tr in _defRoomAttributeOptionTranslationRepository.DataSet on ci.Id equals tr.DefRoomAttributeOptionId into trx
-                             from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
-                             orderby ci.SortOrder, ci.Id
-                             select new RoomAttributeOptionListVm
-                             {
-                                 Id = ci.Id,
-                                 DefRoomAttributeId = ci.DefRoomAttributeId,
-                                 DisplayName = tr.DisplayName,
-                                 //AttributeCode = tr.,
-                                 IsActive = ci.IsActive,
-                                 Value = ci.Value,
-                                 SortOrder = ci.SortOrder,
+            var list = await (from ci in _defRoomAttributeOptionRepository.DataSet
+                              where !ci.IsDeleted && ci.DefRoomAttributeId == attributeId
+                              join tr in _defRoomAttributeOptionTranslationRepository.DataSet on ci.Id equals tr.DefRoomAttributeOptionId into trx
+                              from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
+                              orderby ci.SortOrder, ci.Id
+                              select new RoomAttributeOptionListVm
+                              {
+                                  Id = ci.Id,
+                                  DefRoomAttributeId = ci.DefRoomAttributeId,
+                                  DisplayName = tr.DisplayName,
+                                  //AttributeCode = tr.,
+                                  IsActive = ci.IsActive,
+                                  Value = ci.Value,
+                                  SortOrder = ci.SortOrder,
 
-                             })
+                              })
                               .ToListAsync();
 
             return ServiceResult<List<RoomAttributeOptionListVm>>.Success(list);
@@ -566,13 +566,13 @@ namespace Economy.Persistence.Tenant.Services
             var vm = new RoomAttributeEditVm
             {
                 Id = page.Id,
-               Code = page.Code,
-               Group = page.Group,
-               InputType = page.InputType,
-               IsActive = page.IsActive,
-               IsFilterable = page.IsFilterable,
-               IsRequired = page.IsRequired,
-               SortOrder = page.SortOrder 
+                Code = page.Code,
+                Group = page.Group,
+                InputType = page.InputType,
+                IsActive = page.IsActive,
+                IsFilterable = page.IsFilterable,
+                IsRequired = page.IsRequired,
+                SortOrder = page.SortOrder
             };
 
             await RoomAttributeFillLanguagesAsync(vm, ct);
@@ -640,9 +640,10 @@ namespace Economy.Persistence.Tenant.Services
                 .ThenBy(a => a.SortOrder)
                 .ToListAsync(ct);
 
-            // Bu odaya ait mevcut değerler
+            // Bu sayfaya/odaya ait mevcut değerler + translations
             var values = await _roomAttributeValueRepository.DataSet
                 .Where(v => v.AppPageId == pageId)
+                .Include(v => v.Translations).ThenInclude(t => t.AppLanguage)
                 .ToListAsync(ct);
 
             var vm = new RoomAttributeValueEditVm
@@ -706,7 +707,38 @@ namespace Economy.Persistence.Tenant.Services
                 else if (attr.InputType == "Text")
                 {
                     if (currentValue != null)
+                    {
+                        // Eski mantığı koru
                         item.ValueText = currentValue.ValueText;
+
+                        // ➕ Yeni: Text değerlerin dil bazlı çevirilerini doldur
+                        item.Translations = currentValue.Translations
+                            .Select(t => new RoomAttributeItemTranslationDto
+                            {
+                                Id = t.Id,
+                                AppLanguageId = t.AppLanguageId,
+                                AppLanguageCode = t.AppLanguage.Code,
+                                AppLanguageIcon = t.AppLanguage.Icon, // AppLanguage'de Icon varsa
+                                Text = t.Text
+                            })
+                            .ToList();
+                    }
+                    else
+                    {
+                        var langs = await _entityLanguageRepository.DataSet.Where(x => !x.IsDeleted && x.IsActive)
+             .Select(x => new { x.Id, x.Code, x.Icon }).ToListAsync(ct);
+                        // ➕ Yeni: Text değerlerin dil bazlı çevirilerini doldur
+                        item.Translations = langs
+                            .Select(t => new RoomAttributeItemTranslationDto
+                            {
+                                Id = t.Id,
+                                AppLanguageId = t.Id,
+                                AppLanguageCode = t.Code,
+                                AppLanguageIcon = t.Icon, // AppLanguage'de Icon varsa
+                                Text = null
+                            })
+                            .ToList();
+                    }
                 }
 
                 vm.GroupedAttributes[groupKey].Add(item);
@@ -723,11 +755,9 @@ namespace Economy.Persistence.Tenant.Services
                         TextValue = item.ValueText
                     };
                 }
-
-
             }
-            return ServiceResult<RoomAttributeValueEditVm>.Success(vm);
 
+            return ServiceResult<RoomAttributeValueEditVm>.Success(vm);
         }
     }
 }

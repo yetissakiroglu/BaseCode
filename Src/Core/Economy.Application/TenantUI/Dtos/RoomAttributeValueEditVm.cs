@@ -34,7 +34,22 @@ namespace Economy.Application.TenantUI.Dtos
         public bool? ValueBool { get; set; }
         public int? ValueInt { get; set; }
         public string? ValueText { get; set; }
+        public List<RoomAttributeItemTranslationDto> Translations { get; set; }
+                = new List<RoomAttributeItemTranslationDto>();
+
     }
+    public class RoomAttributeItemTranslationDto
+    {
+        public int? Id { get; set; }
+        public int AppLanguageId { get; set; }
+        public string AppLanguageCode { get; set; } = default!;
+        public string AppLanguageIcon { get; set; } = default!;
+        public string? Text { get; set; }
+    }
+
+
+
+
 
     public class RoomAttributeOptionVm
     {
@@ -50,5 +65,7 @@ namespace Economy.Application.TenantUI.Dtos
         public bool? BoolValue { get; set; }
         public int? IntValue { get; set; }
         public string? TextValue { get; set; }
+        public List<RoomAttributeItemTranslationDto> Translations { get; set; }
+         = new List<RoomAttributeItemTranslationDto>();
     }
 }
