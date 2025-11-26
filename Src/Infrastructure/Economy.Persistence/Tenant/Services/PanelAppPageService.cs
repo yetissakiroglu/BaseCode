@@ -9,7 +9,11 @@ using Economy.Core.Tools;
 using Economy.Core.Tools.Result;
 using Economy.Domain.Entites.TenantEntity.EntityAppLanguages;
 using Economy.Domain.Entites.TenantEntity.EntityAppPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Economy.Persistence.Tenant.Services
 {
@@ -43,7 +47,6 @@ namespace Economy.Persistence.Tenant.Services
             _roomAttributeValueRepository = unitOfWork.HotelEntityRepository<RoomAttributeValue>();
             _mapper = mapper;
         }
-
         public async Task<ServiceResult<NoContent>> Create(PageEditDto vm, CancellationToken ct)
         {
 
@@ -483,9 +486,7 @@ namespace Economy.Persistence.Tenant.Services
             return ServiceResult<List<PageListDto>>.Success(list);
         }
 
-
-
-
+        /*------ ------*/
         public async Task<ServiceResult<List<RoomAttributeListVm>>> GetRoomAttributeListAsync(CancellationToken ct)
         {
             var defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
@@ -628,7 +629,6 @@ namespace Economy.Persistence.Tenant.Services
 
             return ServiceResult<NoContent>.Success(null);
         }
-
         public async Task<ServiceResult<RoomAttributeValueEditVm>> GetPageEditAttributesAsync(int pageId, CancellationToken ct)
         {
             // Tüm aktif attribute’ları ve seçeneklerini TR çevirileriyle birlikte çek
@@ -758,6 +758,261 @@ namespace Economy.Persistence.Tenant.Services
             }
 
             return ServiceResult<RoomAttributeValueEditVm>.Success(vm);
+        }
+        public async Task<ServiceResult<NoContent>> CreateEditRoomAttribute(RoomAttributeEditVm vm, CancellationToken ct)
+        {
+            var langs = await _entityLanguageRepository.DataSet
+                 .Where(x => x.IsActive && !x.IsDeleted)
+                 .ToListAsync(ct);
+
+            if (langs.Count == 0)
+                return ServiceResult<NoContent>.Failure("Aktif dil bulunamadı.");
+
+            DefRoomAttribute page = vm.Id == null
+                ? new DefRoomAttribute()
+                : await _defRoomAttributeRepository.DataSet
+                    .Include(x => x.Translations)
+                    .FirstOrDefaultAsync(x => x.Id == vm.Id, ct) ?? new DefRoomAttribute();
+
+            // Ana alanlar
+
+            page.Code = vm.Code.Trim();
+            page.Group = vm.Group.Trim();
+            page.InputType = vm.InputType.Trim();
+            page.SortOrder = vm.SortOrder;
+            page.IsFilterable = vm.IsFilterable;
+            page.IsRequired = vm.IsRequired;
+            page.IsActive = vm.IsActive;
+
+            // Çeviriler
+            foreach (var l in langs)
+            {
+                var incoming = vm.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
+                var cur = page.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
+                if (cur == null)
+                {
+                    page.Translations.Add(new DefRoomAttributeTranslation
+                    {
+                        AppLanguageId = l.Id,
+                        Name = incoming?.Name,
+                        Description = incoming?.Description
+                    });
+                }
+                else
+                {
+                    cur.Name = incoming?.Name;
+                    cur.Description = incoming?.Description;
+                }
+            }
+
+            if (vm.Id == null)
+                _defRoomAttributeRepository.DataSet.Add(page);
+
+            await _unitOfWork.SaveHotelChangesAsync();
+            return ServiceResult<NoContent>.Success(new NoContent { Id = page.Id });
+        }
+
+        public async Task<ServiceResult<RoomAttributeOptionEditVm>> GetRoomAttributeOptionAsync(int attributeOptionId, CancellationToken ct)
+        {
+            var langs = await _entityLanguageRepository.DataSet
+                .Where(x => x.IsActive && !x.IsDeleted)
+                .ToListAsync(ct);
+
+            if (langs.Count == 0)
+                return ServiceResult<RoomAttributeOptionEditVm>.Empty("Aktif dil bulunamadı.");
+
+            var page = await _defRoomAttributeOptionRepository.DataSet
+                .Include(x => x.Translations)
+                .Include(y => y.DefRoomAttribute)
+                    .FirstOrDefaultAsync(x => x.Id == attributeOptionId && !x.IsDeleted, ct);
+
+            if (page == null)
+                return ServiceResult<RoomAttributeOptionEditVm>.Empty();
+
+            var vm = new RoomAttributeOptionEditVm
+            {
+                Id = page.Id,
+                DefRoomAttributeId = page.DefRoomAttributeId,
+                AttributeCode = page.DefRoomAttribute.Code,
+                SortOrder = page.SortOrder,
+                IsActive = page.IsActive,
+                Value = page.Value
+            };
+
+            await RoomAttributeOptionFillLanguagesAsync(vm, ct);
+
+            var trs = await _defRoomAttributeOptionTranslationRepository.DataSet
+                .Where(t => !t.IsDeleted && t.DefRoomAttributeOptionId == page.Id)
+                .ToListAsync(ct);
+
+            foreach (var t in vm.Translations)
+            {
+                var hit = trs.FirstOrDefault(x => x.AppLanguageId == t.AppLanguageId);
+                if (hit == null) continue;
+
+                t.Id = hit.Id;
+                t.DisplayName = hit.DisplayName;
+            }
+
+            return ServiceResult<RoomAttributeOptionEditVm>.Success(vm);
+        }
+
+        public async Task<ServiceResult<NoContent>> RoomAttributeOptionFillLanguagesAsync(RoomAttributeOptionEditVm vm, CancellationToken ct)
+        {
+            var langs = await _entityLanguageRepository.DataSet
+            .Where(x => !x.IsDeleted && x.IsActive)
+            .OrderByDescending(x => x.IsDefault)
+            .ThenBy(x => x.Id)
+            .Select(x => new { x.Id, x.Code, x.Icon })
+            .ToListAsync(ct);
+
+            vm.Translations = langs.Select(l => new RoomAttributeOptionTranslationDto
+            {
+                AppLanguageId = l.Id,
+                AppLanguageCode = l.Code,
+                AppLanguageIcon = l.Icon
+            }).ToList();
+
+            return ServiceResult<NoContent>.Success(null);
+        }
+
+        public async Task<ServiceResult<NoContent>> RoomAttributeOptionEnsureLanguageTabsAsync(RoomAttributeOptionEditVm vm, CancellationToken ct)
+        {
+            var exist = vm.Translations.Select(t => t.AppLanguageId).ToHashSet();
+            var langs = await _entityLanguageRepository.DataSet.Where(x => !x.IsDeleted && x.IsActive)
+                .Select(x => new { x.Id, x.Code, x.Icon }).ToListAsync(ct);
+
+            foreach (var l in langs)
+                if (!exist.Contains(l.Id))
+                    vm.Translations.Add(new RoomAttributeOptionTranslationDto { AppLanguageId = l.Id, AppLanguageCode = l.Code, AppLanguageIcon = l.Icon });
+
+            vm.Translations = vm.Translations
+                .OrderByDescending(t => t.AppLanguageCode == "tr")
+                .ThenBy(t => t.AppLanguageId)
+                .ToList();
+
+            return ServiceResult<NoContent>.Success(null);
+        }
+
+        public async Task<ServiceResult<NoContent>> CreateEditRoomAttributeOptionAsync(RoomAttributeOptionEditVm vm, CancellationToken ct)
+        {
+            var langs = await _entityLanguageRepository.DataSet
+                 .Where(x => x.IsActive && !x.IsDeleted)
+                 .ToListAsync(ct);
+
+            if (langs.Count == 0)
+                return ServiceResult<NoContent>.Failure("Aktif dil bulunamadı.");
+
+            DefRoomAttributeOption page = vm.Id == null
+                ? new DefRoomAttributeOption()
+                : await _defRoomAttributeOptionRepository.DataSet
+                    .Include(x => x.Translations)
+                    .FirstOrDefaultAsync(x => x.Id == vm.Id, ct) ?? new DefRoomAttributeOption();
+
+            // Ana alanlar
+
+            page.DefRoomAttributeId = vm.DefRoomAttributeId;
+            page.Value = vm.Value.Trim();
+            page.SortOrder = vm.SortOrder;
+            page.IsActive = vm.IsActive;
+
+            // Çeviriler
+            foreach (var l in langs)
+            {
+                var incoming = vm.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
+                var cur = page.Translations.FirstOrDefault(x => x.AppLanguageId == l.Id);
+                if (cur == null)
+                {
+                    page.Translations.Add(new DefRoomAttributeOptionTranslation
+                    {
+                        AppLanguageId = l.Id,
+                        DisplayName = incoming?.DisplayName
+                    });
+                }
+                else
+                {
+                    cur.DisplayName = incoming?.DisplayName;
+                }
+            }
+
+            if (vm.Id == null)
+                _defRoomAttributeOptionRepository.DataSet.Add(page);
+
+            await _unitOfWork.SaveHotelChangesAsync();
+            return ServiceResult<NoContent>.Success(new NoContent { Id = page.DefRoomAttributeId });
+        }
+
+        public async Task<ServiceResult<List<PageListDto>>> GetPageListPagingAsync(
+            ContentItemType type,
+            int pageNumber,
+            int pageSize,
+            CancellationToken ct)
+        {
+            // 🧩 1) Varsayılan dili bul
+            var defLangId = await _entityLanguageRepository.DataSet
+                .Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
+                .Select(l => l.Id)
+                .FirstOrDefaultAsync(ct);
+
+            if (defLangId == 0)
+            {
+                defLangId = await _entityLanguageRepository.DataSet
+                    .Where(l => !l.IsDeleted && l.IsActive)
+                    .Select(l => l.Id)
+                    .FirstOrDefaultAsync(ct);
+            }
+
+            // Güvenlik: pageNumber / pageSize minimum değerleri
+            if (pageNumber <= 0) pageNumber = 1;
+            if (pageSize <= 0) pageSize = 10;
+
+            // 🧩 2) Temel query (henüz ToList yok!)
+            var query =
+                from ci in _entityPageRepository.DataSet
+                where !ci.IsDeleted && ci.Type == type
+                join tr in _trRepo.DataSet on ci.Id equals tr.AppPageId into trx
+                from tr in trx.Where(t => !t.IsDeleted && t.AppLanguageId == defLangId).DefaultIfEmpty()
+                join ptr in _trRepo.DataSet on ci.AppPageId equals ptr.AppPageId into ptx
+                from ptr in ptx.Where(p => !p.IsDeleted && p.AppLanguageId == defLangId).DefaultIfEmpty()
+                orderby ci.SortOrder, ci.Id
+                select new PageListDto
+                {
+                    Id = ci.Id,
+                    ParentTitle = ptr.Title,
+                    Title = tr.Title,
+                    Slug = tr.Slug,
+                    IsActive = ci.IsActive,
+                    Stage = ci.Stage,
+                    IsHomepage = ci.IsHomepage,
+                    PublishAtUtc = ci.PublishAtUtc,
+                    SortOrder = ci.SortOrder,
+                };
+
+            // 🧩 3) Toplam kayıt sayısı (sayfalama için)
+            var totalItems = await query.CountAsync(ct);
+
+            // 🧩 4) Sayfalı data (Skip + Take)
+            var list = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(ct);
+
+            // 🧩 5) PaginationInfo oluştur
+            var pagination = new PaginationInfo
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalItems = totalItems
+                // TotalPages kendisi hesaplanıyor
+            };
+
+            // 🧩 6) ServiceResult ile dön
+            return ServiceResult<List<PageListDto>>.Success(
+                data: list,
+                message: "Sayfalı sayfa listesi getirildi.",
+                statusCode: 200,
+                pagination: pagination
+            );
         }
     }
 }

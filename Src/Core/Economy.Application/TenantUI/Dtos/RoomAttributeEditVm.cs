@@ -22,7 +22,7 @@ namespace Economy.Application.TenantUI.Dtos
     }
     public class RoomAttributeEditVm
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Code { get; set; } = "";          // ROOM_TYPE, VIEW_TYPE...
         public string Group { get; set; } = "";         // Summary, Amenity, Filter...
         public string InputType { get; set; } = "";     // Option, Bool, Number, Text

@@ -8,7 +8,7 @@ namespace Economy.Application.TenantUI.Dtos
 {
     public class RoomAttributeOptionEditVm
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public int DefRoomAttributeId { get; set; }     // Hangi özelliğe ait
         public string AttributeCode { get; set; } = ""; // Ekranda gösterim için
         public string Value { get; set; } = "";         // STANDARD, DELUXE, SEA...

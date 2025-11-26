@@ -38,12 +38,17 @@
                                 <td>@(item.IsFilterable ? "Evet" : "Hayır")</td>
                                 <td>@(item.IsRequired ? "Evet" : "Hayır")</td>
                                 <td class="text-end">
+
+                                    @if (item.InputType == "Option")
+                                    {
+                                        <a asp-area="Tenant" asp-controller="RoomAttributeOption" asp-action="Index"
+                                           asp-route-attributeId="@item.Id"
+                                           class="btn btn-sm btn-outline-info">
+                                            Seçenekler
+                                        </a>
+                                    }
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Düzenle</a>
-                                    <a asp-area="Tenant" asp-controller="RoomAttributeOption" asp-action="Index"
-                                       asp-route-attributeId="@item.Id"
-                                       class="btn btn-sm btn-outline-info">
-                                        Seçenekler
-                                    </a>
+
                                 </td>
                             </tr>
                         }

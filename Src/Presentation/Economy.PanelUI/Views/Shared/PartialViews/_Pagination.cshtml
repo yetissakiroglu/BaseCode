@@ -1,0 +1,29 @@
+﻿@model PaginationInfo
+
+@if (Model != null && Model.TotalPages > 1)
+{
+    var current = Model.PageNumber;
+    var totalPages = Model.TotalPages;
+
+    <ul class="pagination">
+
+        <!-- Önceki sayfa -->
+        <li class="page-item @(current == 1 ? "disabled" : "")">
+            <a class="page-link" href="?pageNumber=@(current - 1)&pageSize=@Model.PageSize">«</a>
+        </li>
+
+        <!-- Orta sayfalar -->
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == current ? "active" : "")">
+                <a class="page-link" href="?pageNumber=@i&pageSize=@Model.PageSize">@i</a>
+            </li>
+        }
+
+        <!-- Sonraki sayfa -->
+        <li class="page-item @(current == totalPages ? "disabled" : "")">
+            <a class="page-link" href="?pageNumber=@(current + 1)&pageSize=@Model.PageSize">»</a>
+        </li>
+    </ul>
+
+}

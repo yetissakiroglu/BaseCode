@@ -2,13 +2,10 @@
 using Economy.Application.TenantUI.Dtos;
 using Economy.Application.TenantUI.Dtos.AppPageDtos;
 using Economy.Application.TenantUI.Interfaces;
-using Economy.Core.Dtos.Custom;
 using Economy.Core.Enums;
-using Economy.Domain.Entites.TenantEntity.EntityAppPages;
 using Economy.Panel.UI.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
@@ -26,10 +23,10 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
             _slugService = slugService;
         }
 
-        public async Task<IActionResult> Index(CancellationToken ct)
+        public async Task<IActionResult> Index(int pageNumber = 1,int pageSize = 5,CancellationToken ct = default)
         {
-            var pageModel = await _panelAppPageService.GetPageListAsync(ContentItemType.Room, ct);
-            return View(pageModel.Data);
+            var pageModel = await _panelAppPageService.GetPageListPagingAsync(ContentItemType.Room,pageNumber,pageSize, ct);
+            return View(pageModel);
         }
 
         [HttpGet]
