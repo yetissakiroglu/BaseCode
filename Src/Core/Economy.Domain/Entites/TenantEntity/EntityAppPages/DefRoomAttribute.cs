@@ -10,7 +10,7 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
     public class DefRoomAttribute : BaseEntity<int>
     {
         public string Code { get; set; } = "";          // ROOM_TYPE, VIEW_TYPE, WIFI, BALCONY...
-        public string Group { get; set; } = "";         // Summary, Amenity, Filter...
+        public int DefRoomAttributeGroupId { get; set; }
         public string InputType { get; set; } = "";     // Option, Bool, Number, Text
         public int SortOrder { get; set; }              // Sıralama
 

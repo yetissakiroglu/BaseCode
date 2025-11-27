@@ -10,7 +10,7 @@ namespace Economy.Application.TenantUI.Dtos
     {
         public int Id { get; set; }
         public string Code { get; set; } = "";          // ROOM_TYPE, VIEW_TYPE...
-        public string Group { get; set; } = "";         // Summary, Amenity, Filter...
+        public int GroupId { get; set; }         // Summary, Amenity, Filter...
         public string InputType { get; set; } = "";     // Option, Bool, Number, Text
         public int SortOrder { get; set; }
         public bool IsFilterable { get; set; }
@@ -24,7 +24,7 @@ namespace Economy.Application.TenantUI.Dtos
     {
         public int? Id { get; set; }
         public string Code { get; set; } = "";          // ROOM_TYPE, VIEW_TYPE...
-        public string Group { get; set; } = "";         // Summary, Amenity, Filter...
+        public int GroupId { get; set; }         // Summary, Amenity, Filter...
         public string InputType { get; set; } = "";     // Option, Bool, Number, Text
 
         public int SortOrder { get; set; }
@@ -42,7 +42,7 @@ namespace Economy.Application.TenantUI.Dtos
         public int AppLanguageId { get; set; }
         public string AppLanguageCode { get; set; } = default!;
         public string AppLanguageIcon { get; set; } = default!;
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public string? Description { get; set; }
     }
 

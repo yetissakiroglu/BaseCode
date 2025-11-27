@@ -24,7 +24,7 @@ namespace Economy.Application.TenantUI.Dtos
         public int AppLanguageId { get; set; }
         public string AppLanguageCode { get; set; } = default!;
         public string AppLanguageIcon { get; set; } = default!;
-        public string DisplayName { get; set; } = "";   // "Deluxe Oda" / "Deluxe Room"
+        public string? DisplayName { get; set; } = "";   // "Deluxe Oda" / "Deluxe Room"
     }
 
 

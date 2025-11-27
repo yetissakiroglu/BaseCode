@@ -5,4 +5,11 @@
         public int Id { get; set; }
         public string Title { get; set; } = default!;
     }
+
+    public class RoomAttributeGroupParentOptionDto
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = default!;
+    }
+    
 }

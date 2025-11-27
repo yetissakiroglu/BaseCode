@@ -39,6 +39,12 @@ namespace Economy.Application.TenantUI.Interfaces
         Task<ServiceResult<NoContent>> RoomAttributeOptionEnsureLanguageTabsAsync(RoomAttributeOptionEditVm vm, CancellationToken ct);
         Task<ServiceResult<NoContent>> CreateEditRoomAttributeOptionAsync(RoomAttributeOptionEditVm vm, CancellationToken ct);
 
+        Task<ServiceResult<List<RoomAttributeGroupListVm>>> GetRoomAttributeGroupListAsync(CancellationToken ct);
+        Task<ServiceResult<RoomAttributeGroupEditVm>> GetRoomAttributeGroupAsync(int attributeGroupId, CancellationToken ct);
+        Task<ServiceResult<NoContent>> CreateEditRoomAttributeGroup(RoomAttributeGroupEditVm vm, CancellationToken ct);
+        Task<ServiceResult<NoContent>> RoomAttributeGroupFillLanguagesAsync(RoomAttributeGroupEditVm vm, CancellationToken ct);
+        Task<ServiceResult<NoContent>> RoomAttributeGroupEnsureLanguageTabsAsync(RoomAttributeGroupEditVm vm, CancellationToken ct);
+        Task<ServiceResult<List<RoomAttributeGroupParentOptionDto>>> GetRoomAttributeGroupParentOptionsAsync(CancellationToken ct, int? excludeId = null);
 
     }
 }

@@ -24,7 +24,7 @@ namespace Economy.Application.TenantUI.Dtos
         public int AttributeId { get; set; }
         public string Name { get; set; } = "";
         public string Type { get; set; } = ""; // Option / Bool / Number / Text
-        public string Group { get; set; } = "";
+        public int GroupId { get; set; }
 
         // Option tipi
         public List<RoomAttributeOptionVm> Options { get; set; } = new();

@@ -41,8 +41,9 @@ namespace Economy.Persistence.Contexts
         public DbSet<DefRoomAttributeOption> DefRoomAttributeOptions => Set<DefRoomAttributeOption>();
         public DbSet<DefRoomAttributeOptionTranslation> DefRoomAttributeOptionTranslations => Set<DefRoomAttributeOptionTranslation>();
         public DbSet<RoomAttributeValue> RoomAttributeValues => Set<RoomAttributeValue>();
-
         public DbSet<RoomAttributeValueTranslation> RoomAttributeValueTranslations => Set<RoomAttributeValueTranslation>();
+        public DbSet<DefRoomAttributeGroup> DefRoomAttributeGroups => Set<DefRoomAttributeGroup>();
+        public DbSet<DefRoomAttributeGroupTranslation> DefRoomAttributeGroupTranslations => Set<DefRoomAttributeGroupTranslation>();
 
         public DbSet<PageBlock> PageBlocks => Set<PageBlock>();
 

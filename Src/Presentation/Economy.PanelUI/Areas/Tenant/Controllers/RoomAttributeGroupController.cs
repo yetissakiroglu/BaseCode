@@ -8,55 +8,51 @@ namespace Economy.Panel.UI.Areas.Tenant.Controllers
 {
     [Area("Tenant")]
     [Authorize]
-    public class RoomAttributeController : BaseController
+    public class RoomAttributeGroupController : BaseController
     {
         private readonly IPanelAppPageService _panelAppPageService;
-        public RoomAttributeController(IPanelAppPageService panelAppPageService)
+        public RoomAttributeGroupController(IPanelAppPageService panelAppPageService)
         {
             _panelAppPageService = panelAppPageService;
         }
 
         public async Task<IActionResult> Index(CancellationToken ct)
         {
-            var pageModel = await _panelAppPageService.GetRoomAttributeListAsync(ct);
+            var pageModel = await _panelAppPageService.GetRoomAttributeGroupListAsync(ct);
             return View(pageModel.Data);
         }
 
         [HttpGet]
         public async Task<IActionResult> Create(CancellationToken ct)
         {
-            var vm = new RoomAttributeEditVm
+            var vm = new RoomAttributeGroupEditVm
             {
                 SortOrder = 0,
-                InputType = "Option"
             };
+            await _panelAppPageService.RoomAttributeGroupFillLanguagesAsync(vm, ct);
 
-            ViewBag.Parents = (await _panelAppPageService.GetRoomAttributeGroupParentOptionsAsync(ct)).Data;
-
-            await _panelAppPageService.RoomAttributeFillLanguagesAsync(vm, ct);
             return View("Edit", vm);
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id, CancellationToken ct)
         {
-            var result = await _panelAppPageService.GetRoomAttributeAsync(id, ct);
-            
+            var result = await _panelAppPageService.GetRoomAttributeGroupAsync(id, ct);
+
             return View(result.Data);
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(RoomAttributeEditVm model, CancellationToken ct)
+        public async Task<IActionResult> Edit(RoomAttributeGroupEditVm model, CancellationToken ct)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var resultEdit = await _panelAppPageService.CreateEditRoomAttribute(model, ct);
+            var resultEdit = await _panelAppPageService.CreateEditRoomAttributeGroup(model, ct);
             AddMessage(resultEdit);
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

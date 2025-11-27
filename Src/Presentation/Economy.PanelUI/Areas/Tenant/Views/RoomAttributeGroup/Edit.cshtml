@@ -1,10 +1,6 @@
 ﻿@using Economy.Application.TenantUI.Dtos
 @using Economy.Application.TenantUI.Dtos.AppPageDtos
-@model RoomAttributeEditVm
-@{
-    var parents = (List<RoomAttributeGroupParentOptionDto>)ViewBag.Parents!;
-}
-
+@model RoomAttributeGroupEditVm
 
 
 <main>
@@ -13,61 +9,18 @@
         @await Html.PartialAsync("_breadcrumbs")
         <div class="card">
             <div class="card-header">
-                <h5>@(Model.Id == 0 ? "Yeni Özellik" : "Özellik Düzenle")</h5>
+                <h5>@(Model.Id == 0 ? "Yeni Grub Özellik" : "Grub Özellik Düzenle")</h5>
             </div>
 
             <div class="card-body">
                 <form asp-action="Edit" method="post">
                     @Html.AntiForgeryToken()
                     @Html.HiddenFor(m => m.Id)
-
                     <div class="row g-3">
-
-                        <div class="col-md-4">
-                            <label class="form-label">Kod</label>
-                            <input asp-for="Code" class="form-control" />
-                        </div>
-
-                        <div class="col-md-4">
-                            <label asp-for="GroupId" class="form-label fw-semibold">Grup</label>
-                            <select asp-for="GroupId" class="form-select">
-                                <option value="">(Yok)</option>
-                                @foreach (var p in parents)
-                                {
-                                    <option value="@p.Id" selected="@(Model.GroupId == p.Id ? "selected" : null)">
-                                        @p.Title
-                                    </option>
-                                }
-                            </select>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label">Input Tipi</label>
-                            <select asp-for="InputType" class="form-select">
-                                <option value="Option">Option</option>
-                                <option value="Bool">Bool</option>
-                                <option value="Number">Number</option>
-                                <option value="Text">Text</option>
-                            </select>
-                        </div>
 
                         <div class="col-md-2">
                             <label class="form-label">Sıra</label>
                             <input asp-for="SortOrder" class="form-control" type="number" />
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-check mt-4">
-                                <input asp-for="IsFilterable" class="form-check-input" />
-                                <label class="form-check-label">Filtrede Göster</label>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-check mt-4">
-                                <input asp-for="IsRequired" class="form-check-input" />
-                                <label class="form-check-label">Zorunlu Alan</label>
-                            </div>
                         </div>
 
                         <div class="col-md-3">
@@ -121,11 +74,7 @@
                                                         <label class="form-label fw-semibold">Meta Title</label>
                                                         <input class="form-control" name="Translations[@i].Name" value="@t.Name" />
                                                     </div>
-                                                    <div class="col-md-12 mb-2">
-                                                        <label class="form-label fw-semibold">Meta Description</label>
-                                                        <textarea class="form-control" name="Translations[@i].Description" rows="2">@t.Description</textarea>
-                                                    </div>
-
+         
                                                 </div>
                                             </div>
                                         </div>
