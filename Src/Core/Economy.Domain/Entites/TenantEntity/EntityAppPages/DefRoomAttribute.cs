@@ -11,6 +11,8 @@ namespace Economy.Domain.Entites.TenantEntity.EntityAppPages
     {
         public string Code { get; set; } = "";          // ROOM_TYPE, VIEW_TYPE, WIFI, BALCONY...
         public int DefRoomAttributeGroupId { get; set; }
+        public DefRoomAttributeGroup DefRoomAttributeGroup { get; set; } = null!;
+
         public string InputType { get; set; } = "";     // Option, Bool, Number, Text
         public int SortOrder { get; set; }              // Sıralama
 

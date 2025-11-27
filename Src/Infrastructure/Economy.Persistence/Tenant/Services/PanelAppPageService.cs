@@ -638,14 +638,27 @@ namespace Economy.Persistence.Tenant.Services
         }
         public async Task<ServiceResult<RoomAttributeValueEditVm>> GetPageEditAttributesAsync(int pageId, CancellationToken ct)
         {
+
+            var defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive && l.IsDefault)
+              .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
+            if (defLangId == 0)
+                defLangId = await _entityLanguageRepository.DataSet.Where(l => !l.IsDeleted && l.IsActive)
+                    .Select(l => l.Id).FirstOrDefaultAsync(ct);
+
             // Tüm aktif attribute’ları ve seçeneklerini TR çevirileriyle birlikte çek
             var attrs = await _defRoomAttributeRepository.DataSet
-                .Where(a => a.IsActive)
-                .Include(a => a.Translations).ThenInclude(t => t.AppLanguage)
-                .Include(a => a.Options).ThenInclude(o => o.Translations).ThenInclude(t => t.AppLanguage)
-                .OrderBy(a => a.DefRoomAttributeGroupId)
-                .ThenBy(a => a.SortOrder)
-                .ToListAsync(ct);
+    .Where(a => a.IsActive)
+    .Include(a => a.Translations)
+        .ThenInclude(t => t.AppLanguage)
+    .Include(a => a.Options)
+        .ThenInclude(o => o.Translations)
+            .ThenInclude(t => t.AppLanguage)
+    .Include(a => a.DefRoomAttributeGroup)
+        .ThenInclude(g => g.Translations)
+    .OrderBy(a => a.DefRoomAttributeGroupId)
+    .ThenBy(a => a.SortOrder)
+    .ToListAsync(ct);
 
             // Bu sayfaya/odaya ait mevcut değerler + translations
             var values = await _roomAttributeValueRepository.DataSet
@@ -660,11 +673,15 @@ namespace Economy.Persistence.Tenant.Services
 
             foreach (var attr in attrs)
             {
-                //var groupKey = string.IsNullOrWhiteSpace(attr.GroupId)
-                //    ? "Diğer"
-                //    : attr.Group;
+              
 
-                var groupKey = attr.DefRoomAttributeGroupId == 0 ? "Diğer" : (attr.DefRoomAttributeGroupId.ToString() ?? "Diğer");
+
+                var groupName = attr.DefRoomAttributeGroup.Translations.FirstOrDefault(x => x.AppLanguageId == defLangId)?.Name;
+                var groupKey = string.IsNullOrWhiteSpace(groupName)
+                    ? "Diğer"
+                    : groupName;
+
+
 
                 if (!vm.GroupedAttributes.ContainsKey(groupKey))
                     vm.GroupedAttributes[groupKey] = new List<RoomAttributeItemVm>();
